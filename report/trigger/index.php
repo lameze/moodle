@@ -32,6 +32,7 @@ if (empty($id)) {
     require_login();
     $context = context_system::instance();
     $coursename = format_string($SITE->fullname, true, array('context' => $context));
+    $PAGE->set_context($context);
 } else {
     $course = get_course($id);
     require_login($course);
@@ -40,18 +41,19 @@ if (empty($id)) {
 }
 require_capability('report/trigger:view', $context);
 
-$url = new moodle_url("/report/trigger/index.php", array('id' => $id));
+// Set up the page.
 $a = new stdClass();
 $a->coursename = $coursename;
 $a->reportname = get_string('pluginname', 'report_trigger');
 $title = get_string('title', 'report_trigger', $a);
+$url = new moodle_url("/report/trigger/index.php", array('id' => $id));
 
 $PAGE->set_url($url);
 $PAGE->set_pagelayout('report');
-$PAGE->set_context($context);
 $PAGE->set_title($title);
 $PAGE->set_heading($title);
 
+// Site level report.
 if (empty($id)) {
     admin_externalpage_setup('reporttrigger', '', null, '', array('pagelayout' => 'report'));
 }
