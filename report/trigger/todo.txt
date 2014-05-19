@@ -1,0 +1,2 @@
+# Define caps for subscribe/add triggers
+# use caps
