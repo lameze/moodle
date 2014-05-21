@@ -65,7 +65,7 @@ class eventlist {
 
         $eventinformation = array();
         $directory = $CFG->libdir . '/classes/event';
-        $files = self::get_file_list($directory);
+        $files = report_trigger_get_file_list($directory);
 
         // Remove exceptional events that will cause problems being displayed.
         if (isset($files['unknown_logged'])) {
@@ -94,34 +94,6 @@ class eventlist {
     }
 
     /**
-     * Returns a list of files (events) with a full directory path for events in a specified directory.
-     *
-     * @param string $directory location of files.
-     * @return array full location of files from the specified directory.
-     */
-    private static function get_file_list($directory) {
-        global $CFG;
-        $directoryroot = $CFG->dirroot;
-        $finaleventfiles = array();
-        if (is_dir($directory)) {
-            if ($handle = opendir($directory)) {
-                $eventfiles = scandir($directory);
-                foreach ($eventfiles as $file) {
-                    if ($file != '.' && $file != '..') {
-                        // Ignore the file if it is external to the system.
-                        if (strrpos($directory, $directoryroot) !== false) {
-                            $location = substr($directory, strlen($directoryroot));
-                            $eventname = substr($file, 0, -4);
-                            $finaleventfiles[$eventname] = $location  . '/' . $file;
-                        }
-                    }
-                }
-            }
-        }
-        return $finaleventfiles;
-    }
-
-    /**
      * This function returns an array of all events for the plugins of the system.
      *
      * @param bool $abstract True will return details, but no abstract classes, False will return all events, but no details.
@@ -145,7 +117,7 @@ class eventlist {
             foreach ($pluginlist as $plugin => $directory) {
                 $noncorepluginlist[$plugintype . '_' . $plugin] = array();
                 $plugindirectory = $directory . '/classes/event';
-                foreach (self::get_file_list($plugindirectory) as $eventname => $notused) {
+                foreach (report_trigger_get_file_list($plugindirectory) as $eventname => $notused) {
                     $plugineventname = '\\' . $plugintype . '_' . $plugin . '\\event\\' . $eventname;
                     // Check that this is actually an event.
                     if (method_exists($plugineventname, 'get_static_info')) {
