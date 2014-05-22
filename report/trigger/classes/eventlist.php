@@ -65,7 +65,7 @@ class eventlist {
 
         $eventinformation = array();
         $directory = $CFG->libdir . '/classes/event';
-        $files = report_trigger_get_file_list($directory);
+        $files = \report_trigger\util\helper::get_file_list($directory);
 
         // Remove exceptional events that will cause problems being displayed.
         if (isset($files['unknown_logged'])) {

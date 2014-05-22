@@ -47,7 +47,7 @@ class filter_manager {
         $directory = \core_component::get_plugin_directory('report', 'trigger');
         $directory = $directory . '/classes/local/filters'; // Location for filters.
 
-        foreach (report_trigger_get_file_list($directory) as $name => $path) {
+        foreach ($files = \report_trigger\util\helper::get_file_list($directory) as $name => $path) {
             if ($name == 'base') {
                 continue; // Ignore the base abstract class.
             }
