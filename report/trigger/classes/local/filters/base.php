@@ -25,5 +25,14 @@ abstract class base {
         return array();
     }
 
+    /**
+     * Called at the end of a request, can be used to update custom flags.
+     *
+     * @return bool
+     */
+    public function dispose() {
+        return true;
+    }
+
     // More processing apis here.
 }
