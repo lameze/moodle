@@ -75,8 +75,8 @@ class filter_manager {
      */
     public function dispose() {
         if ($this->filters) {
-            foreach ($this->filters as $store) {
-                $store->dispose();
+            foreach ($this->filters as $filter) {
+                $filter->dispose();
             }
         }
         $this->filters = null;
