@@ -41,9 +41,6 @@ class filter_manager {
         }
         $this->filters = array();
 
-        // Register shutdown handler - this may be useful for buffering, file handle closing, etc.
-        \core_shutdown_manager::register_function(array($this, 'dispose'));
-
         $directory = \core_component::get_plugin_directory('report', 'monitor');
         $directory = $directory . '/classes/local/filters'; // Location for filters.
 
@@ -70,8 +67,7 @@ class filter_manager {
     }
 
     /**
-     * Usually called automatically from shutdown manager,
-     * this allows us to implement buffering of write operations.
+     * Usually called from the scheduled task, at the end of processing the task.
      */
     public function dispose() {
         if ($this->filters) {
