@@ -1,18 +1,17 @@
 <?php
 
-namespace report_trigger\local\filters;
+namespace report_monitor\local\filters;
 
 defined('MOODLE_INTERNAL') || die();
 
-class frequency extends base {
+abstract class base {
 
     /**
-     * Add elements to the new trigger form.
+     * Add elements to the new monitor form.
      *
      * @param $mform
      */
-    public function add_form_elements(&$mform) {
-    }
+    abstract public function add_form_elements(&$mform);
 
     /**
      * Return form validation errors.
@@ -24,6 +23,15 @@ class frequency extends base {
      */
     public function validate_data($data, $files) {
         return array();
+    }
+
+    /**
+     * Called at the end of a request, can be used to update custom flags.
+     *
+     * @return bool
+     */
+    public function dispose() {
+        return true;
     }
 
     // More processing apis here.

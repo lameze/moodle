@@ -17,18 +17,18 @@
 /**
  * Filter manager.
  *
- * @package    tool_trigger
+ * @package    tool_monitor
  * @copyright  2014 onwards Ankit Agarwal <ankit.agrr@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace report_trigger;
+namespace report_monitor;
 
 defined('MOODLE_INTERNAL') || die();
 
 class filter_manager {
 
-    /** @var \report_trigger\local\filters\base[] $filters list of all installed filters */
+    /** @var \report_monitor\local\filters\base[] $filters list of all installed filters */
     protected $filters;
 
     /**
@@ -44,14 +44,14 @@ class filter_manager {
         // Register shutdown handler - this may be useful for buffering, file handle closing, etc.
         \core_shutdown_manager::register_function(array($this, 'dispose'));
 
-        $directory = \core_component::get_plugin_directory('report', 'trigger');
+        $directory = \core_component::get_plugin_directory('report', 'monitor');
         $directory = $directory . '/classes/local/filters'; // Location for filters.
 
-        foreach ($files = \report_trigger\util\helper::get_file_list($directory) as $name => $path) {
+        foreach ($files = \report_monitor\util\helper::get_file_list($directory) as $name => $path) {
             if ($name == 'base') {
                 continue; // Ignore the base abstract class.
             }
-            $classname = "report_trigger\\local\\filters\\$name";
+            $classname = "report_monitor\\local\\filters\\$name";
             if (class_exists($classname)) {
                 $filter = new $classname($this);
                 $this->filters[$name] = $filter;
@@ -62,7 +62,7 @@ class filter_manager {
     /**
      * Returns list of available filters.
      *
-     * @return \report_trigger\local\filters\base[] list of available filters
+     * @return \report_monitor\local\filters\base[] list of available filters
      */
     public function get_filters() {
         $this->init();

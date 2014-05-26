@@ -15,14 +15,17 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Lang strings
+ * Version info
  *
- * This files lists lang strings related to report_trigger.
+ * This file contains version information about report_monitor
  *
- * @package    report_trigger
+ * @package    report_monitor
  * @copyright  2014 onwards Ankit Agarwal <ankit.agrr@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['pluginname'] = 'Activity triggers';
-$string['title'] = '{$a->coursename} : {$a->reportname}';
+defined('MOODLE_INTERNAL') || die;
+
+$plugin->version   = 2014051200;       // The current plugin version (Date: YYYYMMDDXX).
+$plugin->requires  = 2014050800;       // Requires this Moodle version.
+$plugin->component = 'report_monitor'; // Full name of the plugin (used for diagnostics).

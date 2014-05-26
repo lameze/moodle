@@ -17,19 +17,19 @@
 /**
  * Event documentation
  *
- * @package    report_trigger
+ * @package    report_monitor
  * @copyright  2014 onwards Ankit Agarwal <ankit.agrr@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace report_trigger;
+namespace report_monitor;
 
 defined('MOODLE_INTERNAL') || die();
 
 /**
  * Class for returning system event information.
  *
- * @package    report_trigger
+ * @package    report_monitor
  * @copyright  2014 onwards Ankit Agarwal <ankit.agrr@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -65,7 +65,7 @@ class eventlist {
 
         $eventinformation = array();
         $directory = $CFG->libdir . '/classes/event';
-        $files = \report_trigger\util\helper::get_file_list($directory);
+        $files = \report_monitor\util\helper::get_file_list($directory);
 
         // Remove exceptional events that will cause problems being displayed.
         if (isset($files['unknown_logged'])) {
@@ -117,7 +117,7 @@ class eventlist {
             foreach ($pluginlist as $plugin => $directory) {
                 $noncorepluginlist[$plugintype . '_' . $plugin] = array();
                 $plugindirectory = $directory . '/classes/event';
-                foreach (report_trigger_get_file_list($plugindirectory) as $eventname => $notused) {
+                foreach (report_monitor_get_file_list($plugindirectory) as $eventname => $notused) {
                     $plugineventname = '\\' . $plugintype . '_' . $plugin . '\\event\\' . $eventname;
                     // Check that this is actually an event.
                     if (method_exists($plugineventname, 'get_static_info')) {

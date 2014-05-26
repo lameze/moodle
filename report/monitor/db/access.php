@@ -15,19 +15,28 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Links and settings
+ * Capabilities
  *
- * This file contains links and settings used by report_trigger
+ * This files lists capabilites related to report_logline
  *
- * @package    report_trigger
+ * @package    report_monitor
  * @copyright  2014 onwards Ankit Agarwal <ankit.agrr@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-defined('MOODLE_INTERNAL') || die;
 
-// Just a link to the report.
-$ADMIN->add('reports', new admin_externalpage('reporttrigger', get_string('pluginname', 'report_trigger'),
-        "$CFG->wwwroot/report/trigger/index.php", 'report/trigger:view'));
+defined('MOODLE_INTERNAL') || die();
 
-// No report settings.
-$settings = null;
+$capabilities = array(
+
+    'report/monitor:view' => array(
+        'riskbitmask' => RISK_PERSONAL,
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_COURSE,
+        'archetypes' => array(
+            'teacher' => CAP_ALLOW,
+            'editingteacher' => CAP_ALLOW,
+            'manager' => CAP_ALLOW
+        ),
+    ),
+);
+

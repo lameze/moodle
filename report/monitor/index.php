@@ -15,16 +15,16 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This file gives an overview of the triggers present in site.
+ * This file gives an overview of the monitors present in site.
  *
- * @package    report_trigger
+ * @package    report_monitor
  * @copyright  2014 onwards Ankit Agarwal <ankit.agrr@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 require('../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
-require_once($CFG->dirroot . '/report/trigger/locallib.php');
+require_once($CFG->dirroot . '/report/monitor/locallib.php');
 
 $id = optional_param('id', 0, PARAM_INT);
 
@@ -39,14 +39,14 @@ if (empty($id)) {
     $context = context_course::instance($course->id);
     $coursename = format_string($course->fullname, true, array('context' => $context));
 }
-require_capability('report/trigger:view', $context);
+require_capability('report/monitor:view', $context);
 
 // Set up the page.
 $a = new stdClass();
 $a->coursename = $coursename;
-$a->reportname = get_string('pluginname', 'report_trigger');
-$title = get_string('title', 'report_trigger', $a);
-$url = new moodle_url("/report/trigger/index.php", array('id' => $id));
+$a->reportname = get_string('pluginname', 'report_monitor');
+$title = get_string('title', 'report_monitor', $a);
+$url = new moodle_url("/report/monitor/index.php", array('id' => $id));
 
 $PAGE->set_url($url);
 $PAGE->set_pagelayout('report');
@@ -55,7 +55,7 @@ $PAGE->set_heading($title);
 
 // Site level report.
 if (empty($id)) {
-    admin_externalpage_setup('reporttrigger', '', null, '', array('pagelayout' => 'report'));
+    admin_externalpage_setup('reportmonitor', '', null, '', array('pagelayout' => 'report'));
 }
 
 echo $OUTPUT->header();
