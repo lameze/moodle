@@ -17,7 +17,7 @@
 /**
  * Version info
  *
- * This file contains version information about report_monitor.
+ * This file contains version information about report_monitor
  *
  * @package    report_monitor
  * @copyright  2014 onwards Ankit Agarwal <ankit.agrr@gmail.com>
@@ -26,6 +26,6 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-$plugin->version   = 2014061900;       // The current plugin version (Date: YYYYMMDDXX).
-$plugin->requires  = 2014061900;       // Requires this Moodle version.
+$plugin->version   = 2014051200;       // The current plugin version (Date: YYYYMMDDXX).
+$plugin->requires  = 2014050800;       // Requires this Moodle version.
 $plugin->component = 'report_monitor'; // Full name of the plugin (used for diagnostics).

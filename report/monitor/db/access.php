@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Capabilities.
+ * Capabilities
  *
- * This files lists capabilities related to report_monitor.
+ * This files lists capabilites related to report_logline
  *
  * @package    report_monitor
  * @copyright  2014 onwards Ankit Agarwal <ankit.agrr@gmail.com>
@@ -28,20 +28,9 @@ defined('MOODLE_INTERNAL') || die();
 
 $capabilities = array(
 
-    'report/monitor:subscribe' => array(
+    'report/monitor:view' => array(
         'riskbitmask' => RISK_PERSONAL,
         'captype' => 'read',
-        'contextlevel' => CONTEXT_COURSE,
-        'archetypes' => array(
-            'teacher' => CAP_ALLOW,
-            'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW
-        ),
-    ),
-
-    'report/monitor:managerules' => array(
-        'riskbitmask' => RISK_XSS,
-        'captype' => 'write',
         'contextlevel' => CONTEXT_COURSE,
         'archetypes' => array(
             'teacher' => CAP_ALLOW,

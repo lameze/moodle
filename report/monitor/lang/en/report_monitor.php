@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Lang strings.
+ * Lang strings
  *
  * This files lists lang strings related to report_monitor.
  *
@@ -25,5 +25,4 @@
  */
 
 $string['pluginname'] = 'Event monitor';
-$string['report/monitor:managerules'] = 'Manage event monitor rules';
-$string['report/monitor:subscribe'] = 'Subscribe to event monitor rules';
+$string['title'] = '{$a->coursename} : {$a->reportname}';
