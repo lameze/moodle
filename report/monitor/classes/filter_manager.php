@@ -47,7 +47,7 @@ class filter_manager {
         $directory = \core_component::get_plugin_directory('report', 'monitor');
         $directory = $directory . '/classes/local/filters'; // Location for filters.
 
-        foreach ($files = \report_monitor\util\helper::get_file_list($directory) as $name => $path) {
+        foreach ($files = util\helper::get_file_list($directory) as $name => $path) {
             if ($name == 'base') {
                 continue; // Ignore the base abstract class.
             }

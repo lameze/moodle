@@ -117,7 +117,7 @@ class eventlist {
             foreach ($pluginlist as $plugin => $directory) {
                 $noncorepluginlist[$plugintype . '_' . $plugin] = array();
                 $plugindirectory = $directory . '/classes/event';
-                foreach (report_monitor_get_file_list($plugindirectory) as $eventname => $notused) {
+                foreach (util\helper::get_file_list($plugindirectory) as $eventname => $notused) {
                     $plugineventname = '\\' . $plugintype . '_' . $plugin . '\\event\\' . $eventname;
                     // Check that this is actually an event.
                     if (method_exists($plugineventname, 'get_static_info')) {
