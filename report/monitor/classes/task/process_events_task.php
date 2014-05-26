@@ -43,8 +43,32 @@ class process_events_task extends \core\task\scheduled_task{
     public function execute() {
         $filtermanger = new \report_monitor\filter_manager();
 
-        // Process events.
+        // Setup the log reader.
+        $logmanager = get_log_manager();
+        $readers = $logmanager->get_readers('\core\log\sql_select_reader');
+        $reader = reset($readers); // Use the preferred reader.
 
+        if (empty($reader)) {
+            // No readers, nothing to process.
+            return true;
+        }
+
+        // Get the events.
+        $since = $this->get_last_run_time();
+        if (empty($since)) {
+            // Default to now, if last run not set.
+            return true;
+        }
+
+        $selectwhere = "timecreated >= :since";
+        $params = array('since' => $since);
+        $events = $reader->get_events_select($selectwhere, $params);
+        foreach($events as $event) {
+            // Process each event.
+        }
+
+        // Process events.
         $filtermanger->dispose();
+        return true;
     }
 }
