@@ -15,17 +15,36 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version info
- *
- * This file contains version information about report_monitor
+ * Task to monitor events and process them.
  *
  * @package    report_monitor
  * @copyright  2014 onwards Ankit Agarwal <ankit.agrr@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die;
+namespace report_monitor\task;
 
-$plugin->version   = 2014051207;       // The current plugin version (Date: YYYYMMDDXX).
-$plugin->requires  = 2014050800;       // Requires this Moodle version.
-$plugin->component = 'report_monitor'; // Full name of the plugin (used for diagnostics).
+defined('MOODLE_INTERNAL') || die();
+
+/**
+ * Task to monitor events and process them.
+ *
+ * @package    report_monitor
+ * @copyright  2014 onwards Ankit Agarwal <ankit.agrr@gmail.com>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+class process_events_task extends \core\task\scheduled_task{
+
+    public function get_name() {
+        // Shown in admin screens.
+        return get_string('processevents', 'report_monitor');
+    }
+
+    public function execute() {
+        $filtermanger = new \report_monitor\filter_manager();
+
+        // Process events.
+
+        $filtermanger->dispose();
+    }
+}
