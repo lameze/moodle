@@ -26,7 +26,7 @@ $tasks = array(
     array(
         'classname' => 'report_monitor\task\process_events_task',
         'blocking' => 0,
-        'minute' => '*',
+        'minute' => '*', // Runs every minute by default.
         'hour' => '*',
         'day' => '*',
         'dayofweek' => '*',
