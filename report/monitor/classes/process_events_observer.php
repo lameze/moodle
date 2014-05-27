@@ -15,14 +15,14 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Task to monitor events and process them.
+ * Observer to monitor events.
  *
  * @package    report_monitor
  * @copyright  2014 onwards Ankit Agarwal <ankit.agrr@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace report_monitor\task;
+namespace report_monitor;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -33,42 +33,36 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2014 onwards Ankit Agarwal <ankit.agrr@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class process_events_task extends \core\task\scheduled_task{
+class process_events_observer {
 
-    public function get_name() {
-        // Shown in admin screens.
-        return get_string('processevents', 'report_monitor');
-    }
-
-    public function execute() {
-        $filtermanger = new \report_monitor\filter_manager();
-
-        // Setup the log reader.
-        $logmanager = get_log_manager();
-        $readers = $logmanager->get_readers('\core\log\sql_select_reader');
-        $reader = reset($readers); // Use the preferred reader.
-
-        if (empty($reader)) {
-            // No readers, nothing to process.
-            return true;
-        }
+    public static function process_event(\core\event\base $event) {
+        $filtermanger = new filter_manager();
+        $filters = $filtermanger->get_filters();
 
         // Get the events.
-        $since = $this->get_last_run_time();
-        if (empty($since)) {
-            // Default to now, if last run not set.
-            return true;
-        }
+        $subscriptions = array(); // Get it from subscription manager.
+        foreach ($subscriptions as $sub) {
+            $sendmsg = true;
+            if ($sub->cmid === 0 || ($sub->cmid === $event->contextinstanceid && $event->contextlevel = CONTEXT_MODULE)) {
+                foreach ($filters as $filter) {
+                    if (!$filter->process_event($event, $sub)) {
+                        // One of the filters are not satisfied. So no message should be sent.
+                        $sendmsg = false;
+                    }
+                }
+            }
 
-        $selectwhere = "timecreated >= :since";
-        $params = array('since' => $since);
-        $events = $reader->get_events_select($selectwhere, $params);
-        foreach($events as $event) {
-            // Process each event.
+            if ($sendmsg) {
+                self::send_notification($event, $sub);
+            }
         }
 
         // Process events.
         $filtermanger->dispose();
         return true;
+    }
+
+    public static function send_notification(\core\event\base $event, \stdClass $subscription) {
+
     }
 }
