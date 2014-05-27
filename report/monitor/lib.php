@@ -40,17 +40,3 @@ function report_monitor_extend_navigation_course($navigation, $course, $context)
                 new pix_icon('i/report', ''));
     }
 }
-
-/**
- * Callback to verify if the given instance of store is supported by this report or not.
- *
- * @param string $instance store instance.
- *
- * @return bool returns true if the store is supported by the report, false otherwise.
- */
-function report_monitor_supports_logstore($instance) {
-    if ($instance instanceof \core\log\sql_select_reader) {
-        return true;
-    }
-    return false;
-}
