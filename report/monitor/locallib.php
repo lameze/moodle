@@ -24,7 +24,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 function display_rules($rules, $filtermanager, $courseid, $context) {
     global $CFG;
     $systemcontext = context_system::instance();
