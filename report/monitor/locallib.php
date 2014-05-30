@@ -48,8 +48,8 @@ function display_rules($rules, $filtermanager, $courseid, $context) {
         $rule = new \report_monitor\rule($rule, $filtermanager);
         echo html_writer::tag('input', $rule->id, array('type' => 'hidden', 'name' => "[$i]id"));
         echo html_writer::tag('td', $rule->get_name($context));
-        echo html_writer::tag('td', $rule->get_module_select($courseid));
         echo html_writer::tag('td', $rule->get_module_name());
+        echo html_writer::tag('td', $rule->get_module_select($courseid));
         echo html_writer::tag('td', $rule->get_event_name($context));
         echo html_writer::tag('td', $rule->get_filters_description($context));
 
