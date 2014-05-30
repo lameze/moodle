@@ -58,7 +58,7 @@ class subscription_manager {
         $subscription->cmid = $cmid;
         $subscription->userid = $userid;
         $subscription->timecreated = time();
-        return $DB->insert_record('monitor_subscriptions', $subscription, true);
+        return $DB->insert_record('report_monitor_subscriptions', $subscription, true);
     }
 
     /**
@@ -75,7 +75,7 @@ class subscription_manager {
         } else {
             $subscriptionid = $subscriptionorid;
         }
-        return $DB->delete_records('monitor_subscriptions', array('id' => $subscriptionid));
+        return $DB->delete_records('report_monitor_subscriptions', array('id' => $subscriptionid));
     }
 
     /**
@@ -85,7 +85,7 @@ class subscription_manager {
      */
     public static function remove_all_subscribers_for_rule($ruleid) {
         global $DB;
-        return $DB->delete_records('monitor_subscriptions', array('ruleid' => $ruleid));
+        return $DB->delete_records('report_monitor_subscriptions', array('ruleid' => $ruleid));
     }
 
     /**
@@ -98,7 +98,7 @@ class subscription_manager {
      */
     public static function unsubscribe($ruleid, $courseid, $cmid, $userid = 0) {
         global $DB;
-        return $DB->delete_records('monitor_subscriptions', array('ruleid' => $ruleid, 'courseid' => $courseid, 'cmid' => $cmid,
+        return $DB->delete_records('report_monitor_subscriptions', array('ruleid' => $ruleid, 'courseid' => $courseid, 'cmid' => $cmid,
                                                                   'userid' => $userid));
     }
 
@@ -109,7 +109,7 @@ class subscription_manager {
      */
     public static function get_subscription($subscriptionid) {
         global $DB;
-        return $DB->get_record('monitor_subscriptions', array('id' => $subscriptionid), '*', MUST_EXIST);
+        return $DB->get_record('report_monitor_subscriptions', array('id' => $subscriptionid), '*', MUST_EXIST);
     }
 
     /**
@@ -122,7 +122,7 @@ class subscription_manager {
         if ($userid == 0) {
             $userid = $USER->id;
         }
-        return $DB->get_records('monitor_subscriptions', array('userid' => $userid));
+        return $DB->get_records('report_monitor_subscriptions', array('userid' => $userid));
     }
 
     /**
@@ -137,6 +137,6 @@ class subscription_manager {
             $userid = $USER->id;
         }
 
-        return $DB->get_records('monitor_subscriptions', array('courseid' => $courseid, 'userid' => $userid));
+        return $DB->get_records('report_monitor_subscriptions', array('courseid' => $courseid, 'userid' => $userid));
     }
 }
