@@ -26,6 +26,13 @@ namespace report_monitor;
 
 defined('MOODLE_INTERNAL') || die();
 
+/**
+ * Filter manager.
+ *
+ * @package    tool_monitor
+ * @copyright  2014 onwards Ankit Agarwal <ankit.agrr@gmail.com>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class filter_manager {
 
     /** @var \report_monitor\local\filters\base[] $filters list of all installed filters */
