@@ -24,16 +24,17 @@
 
 require('../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
+require_once('locallib.php');
 
-$id = optional_param('id', 0, PARAM_INT);
+$courseid = optional_param('id', 0, PARAM_INT);
 
-if (empty($id)) {
+if (empty($courseid)) {
     require_login();
     $context = context_system::instance();
     $coursename = format_string($SITE->fullname, true, array('context' => $context));
     $PAGE->set_context($context);
 } else {
-    $course = get_course($id);
+    $course = get_course($courseid);
     require_login($course);
     $context = context_course::instance($course->id);
     $coursename = format_string($course->fullname, true, array('context' => $context));
@@ -45,7 +46,7 @@ $a = new stdClass();
 $a->coursename = $coursename;
 $a->reportname = get_string('pluginname', 'report_monitor');
 $title = get_string('title', 'report_monitor', $a);
-$url = new moodle_url("/report/monitor/index.php", array('id' => $id));
+$url = new moodle_url("/report/monitor/index.php", array('id' => $courseid));
 
 $PAGE->set_url($url);
 $PAGE->set_pagelayout('report');
@@ -53,9 +54,15 @@ $PAGE->set_title($title);
 $PAGE->set_heading($title);
 
 // Site level report.
-if (empty($id)) {
+if (empty($courseid)) {
     admin_externalpage_setup('reportmonitor', '', null, '', array('pagelayout' => 'report'));
 }
 
 echo $OUTPUT->header();
+$sql = 'SELECT * FROM {report_monitor_rules} where courseid = ? OR courseid = ?';
+$params = array(0, $courseid);
+$rules = $DB->get_records_sql($sql, $params);
+print_object($rules);
+$filtermanager = new \report_monitor\filter_manager();
+display_rules($rules, $filtermanager, $courseid, $context);
 echo $OUTPUT->footer();
