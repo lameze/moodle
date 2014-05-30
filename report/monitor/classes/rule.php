@@ -156,7 +156,7 @@ class rule {
 
     /**
      * @param $courseid
-     *
+     * TODO mark the forum user is subscribed to as selected.
      * @return string
      * @throws \coding_exception
      */
