@@ -24,7 +24,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+$string['allmodules'] = 'All modules';
+$string['core'] = 'Core';
 $string['eventnotfound'] = 'Event not found';
 $string['pluginname'] = 'Event monitor';
 $string['processevents'] = 'Process events';
+$string['selectcourse'] = 'Visit this report at course level to get a list of possible modules';
 $string['title'] = '{$a->coursename} : {$a->reportname}';

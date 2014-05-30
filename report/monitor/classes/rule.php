@@ -124,6 +124,8 @@ class rule {
     public function get_module_name() {
         if (get_string_manager()->string_exists('pluginname', $this->rule->plugin)) {
             $string = get_string('pluginname', $this->rule->plugin);
+        } else if ($this->plugin === 'core') {
+            get_string('allevents', 'report_monitor');
         } else {
             $string = $this->rule->plugin;
         }
@@ -138,7 +140,31 @@ class rule {
         if ($userid === 0) {
             $userid = $USER->id;
         }
-        return (bool)$DB->get_record('monitor_subscriptions', array('ruleid' => $this->id, 'courseid' => $courseid,
+        return (bool)$DB->get_record('report_monitor_subscriptions', array('ruleid' => $this->id, 'courseid' => $courseid,
                 'userid' => $userid));
+    }
+
+    /**
+     * @param $courseid
+     *
+     * @return string
+     * @throws \coding_exception
+     */
+    public function get_module_select($courseid) {
+        $options = array();
+        $options[0] = get_string('allmodules', 'report_monitor');
+        if (strpos($this->plugin, 'mod_') === 0) {
+            if ($courseid == 0) {
+                // They need to be in a course to select module instance.
+                return get_string('selectcourse', 'report_monitor');;
+            }
+            // Let them select an instance.
+            $cms = get_fast_modinfo($courseid);
+            $instances = $cms->get_instances_of(str_replace('mod_', '', 'forum'));
+            foreach ($instances as $cminfo) {
+                $options[$cminfo->id] = $cminfo->get_formatted_name();
+            }
+        }
+        return \html_writer::select($options, 'cmid');
     }
 }
