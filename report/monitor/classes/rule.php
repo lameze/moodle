@@ -27,7 +27,7 @@ namespace report_monitor;
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Class represents a single rule..
+ * Class represents a single rule.
  *
  * @package    report_monitor
  * @copyright  2014 onwards Ankit Agarwal <ankit.agrr@gmail.com>
@@ -35,11 +35,21 @@ defined('MOODLE_INTERNAL') || die();
  */
 
 class rule {
+    /**
+     * @var \stdClass
+     */
     protected $rule;
 
     /**
+     * @var filter_manager
+     */
+    protected $filtermanager;
+
+    /**
      * TODO use rule manager?
-     * @param $ruleid
+     * TODO may be remove filtermanager from the arguments
+     * @param \stdClass|int $ruleorid
+     * @param filter_manager $filtermanager
      */
     public function __construct($ruleorid, filter_manager $filtermanager) {
         global $DB;
@@ -125,7 +135,7 @@ class rule {
         if (get_string_manager()->string_exists('pluginname', $this->rule->plugin)) {
             $string = get_string('pluginname', $this->rule->plugin);
         } else if ($this->plugin === 'core') {
-            get_string('allevents', 'report_monitor');
+            $string = get_string('core', 'report_monitor');
         } else {
             $string = $this->rule->plugin;
         }
