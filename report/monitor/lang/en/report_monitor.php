@@ -24,6 +24,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+$string['eventnotfound'] = 'Event not found';
 $string['pluginname'] = 'Event monitor';
 $string['processevents'] = 'Process events';
 $string['title'] = '{$a->coursename} : {$a->reportname}';

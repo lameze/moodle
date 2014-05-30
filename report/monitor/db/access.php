@@ -16,7 +16,7 @@
 
 /**
  * Capabilities
- *
+ * TODO - add strings.
  * This files lists capabilites related to report_logline
  *
  * @package    report_monitor
@@ -39,6 +39,17 @@ $capabilities = array(
         ),
 
         'clonepermissionsfrom' => 'report/log:view',
+    ),
+
+    'report/monitor:managerules' => array(
+        'riskbitmask' => RISK_XSS,
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_COURSE,
+        'archetypes' => array(
+            'teacher' => CAP_ALLOW,
+            'editingteacher' => CAP_ALLOW,
+            'manager' => CAP_ALLOW
+        ),
     ),
 );
 
