@@ -57,10 +57,12 @@ $PAGE->set_pagelayout('report');
 $PAGE->set_title($title);
 $PAGE->set_heading(get_string('deleterule', 'report_monitor', $rule->get_name($context)));
 
+$redirecturl = new moodle_url($CFG->wwwroot. '/report/monitor/index.php', array('id' => $rule->courseid));
+$PAGE->navigation->override_active_url($redirecturl);
+
 if ($confirm && $ruleid) {
     $rule = new \report_monitor\rule($ruleid);
     $rule->delete_rule();
-    $redirecturl = new moodle_url($CFG->wwwroot. '/report/monitor/index.php', array('id' => $rule->courseid));
     $msg = $OUTPUT->notification(get_string('deletesuccess', 'report_monitor'), 'notifysuccess');
     redirect($redirecturl, $msg);
 }
