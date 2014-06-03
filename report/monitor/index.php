@@ -27,6 +27,8 @@ require_once($CFG->libdir . '/adminlib.php');
 require_once('locallib.php');
 
 $courseid = optional_param('id', 0, PARAM_INT);
+$copy = optional_param('copy', 0, PARAM_BOOL);
+$ruleid = optional_param('ruleid', 0, PARAM_INT);
 
 if (empty($courseid)) {
     require_login();
@@ -59,10 +61,20 @@ if (empty($courseid)) {
 }
 
 echo $OUTPUT->header();
+
+if ($copy && $ruleid) {
+    require_capability('report/monitor:managerules', $context);
+    $rule = new \report_monitor\rule($ruleid);
+    $rule->copy_rule($courseid);
+    echo $OUTPUT->notification(get_string('copysuccess', 'report_monitor'), 'notifysuccess');
+}
+
+//TODO Use rule manager class.
 $sql = 'SELECT * FROM {report_monitor_rules} where courseid = ? OR courseid = ?';
 $params = array(0, $courseid);
 $rules = $DB->get_records_sql($sql, $params);
 print_object($rules);
 $filtermanager = new \report_monitor\filter_manager();
 display_rules($rules, $filtermanager, $courseid, $context);
+
 echo $OUTPUT->footer();

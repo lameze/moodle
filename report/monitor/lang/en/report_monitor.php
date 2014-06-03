@@ -25,7 +25,11 @@
  */
 
 $string['allmodules'] = 'All modules';
+$string['areyousure'] = 'You are going to delete the following rule : {$a} This can not be undone. Are you sure?';
+$string['copysuccess'] = 'Rule copied';
 $string['core'] = 'Core';
+$string['deleterule'] = 'Delete a rule';
+$string['deletesuccess'] = 'Rule deleted';
 $string['eventnotfound'] = 'Event not found';
 $string['pluginname'] = 'Event monitor';
 $string['processevents'] = 'Process events';

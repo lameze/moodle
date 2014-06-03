@@ -41,17 +41,10 @@ class rule {
     protected $rule;
 
     /**
-     * @var filter_manager
-     */
-    protected $filtermanager;
-
-    /**
      * TODO use rule manager?
-     * TODO may be remove filtermanager from the arguments
      * @param \stdClass|int $ruleorid
-     * @param filter_manager $filtermanager
      */
-    public function __construct($ruleorid, filter_manager $filtermanager) {
+    public function __construct($ruleorid) {
         global $DB;
         if (!is_object($ruleorid)) {
             $rule = $DB->get_record('report_monitor_rules', array('id' => $ruleorid), '*', MUST_EXIST);
@@ -59,7 +52,6 @@ class rule {
             $rule = $ruleorid;
         }
         $this->rule = $rule;
-        $this->filtermanager = $filtermanager;
     }
 
     /**
@@ -111,10 +103,11 @@ class rule {
     }
 
     /**
+     * @param filter_manager $filtermanager
      * @return string
      */
-    public function get_filters_description() {
-        $filters = $this->filtermanager->get_filters();
+    public function get_filters_description(filter_manager $filtermanager) {
+        $filters = $filtermanager->get_filters();
         $desc = '';
         foreach ($filters as $filter) {
             //$desc .= $filter->get_description($this->rule);
@@ -131,7 +124,7 @@ class rule {
      * @return string
      * @throws \coding_exception
      */
-    public function get_module_name() {
+    public function get_plugin_name() {
         if (get_string_manager()->string_exists('pluginname', $this->rule->plugin)) {
             $string = get_string('pluginname', $this->rule->plugin);
         } else if ($this->plugin === 'core') {
@@ -176,5 +169,30 @@ class rule {
             }
         }
         return \html_writer::select($options, 'cmid');
+    }
+
+    /**
+     * TODO Does filter config need any changing?
+     * // TODO Use rule manager class.
+     * @param $finalcourseid
+     */
+    public function copy_rule($finalcourseid) {
+        global $DB;
+        $rule = $this->rule;
+        unset($rule->id);
+        $rule->courseid = $finalcourseid;
+        $time = time();
+        $rule->timecreated = $time;
+        $rule->timemodified = $time;
+        $DB->insert_record('report_monitor_rules', $rule);
+    }
+
+    /**
+     * TODO Does filter config need any changing?
+     * // TODO Use rule manager class.
+     */
+    public function delete_rule() {
+        global $DB;
+        $DB->delete_records('report_monitor_rules', array('id' => $this->id));
     }
 }
