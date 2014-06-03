@@ -26,6 +26,7 @@
 
 $string['allmodules'] = 'All modules';
 $string['areyousure'] = 'You are going to delete the following rule : {$a} This can not be undone. Are you sure?';
+$string['copy'] = 'Copy';
 $string['copysuccess'] = 'Rule copied';
 $string['core'] = 'Core';
 $string['deleterule'] = 'Delete a rule';

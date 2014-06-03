@@ -70,7 +70,7 @@ function display_rules($rules, $filtermanager, $courseid, $context) {
             $deleteurl = new moodle_url($CFG->wwwroot. '/report/monitor/delete.php', array('ruleid' => $rule->id));
             echo html_writer::link($editurl, get_string('edit'));
             echo ' | ';
-            echo html_writer::link($copyurl, get_string('copy'));
+            echo html_writer::link($copyurl, get_string('copy', 'report_monitor'));
             echo ' | ';
             echo html_writer::link($deleteurl, get_string('delete'));
             echo html_writer::end_tag('td');
