@@ -24,6 +24,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+$string['allevents'] = 'All events';
 $string['allmodules'] = 'All modules';
 $string['areyousure'] = 'You are going to delete the following rule : {$a} This can not be undone. Are you sure?';
 $string['copy'] = 'Copy';
@@ -32,8 +33,11 @@ $string['core'] = 'Core';
 $string['deleterule'] = 'Delete a rule';
 $string['deletesuccess'] = 'Rule deleted';
 $string['eventnotfound'] = 'Event not found';
+$string['invalidmodule'] = 'Invalid module';
 $string['managerules'] = 'Manage rules';
+$string['managesubscriptions'] = 'Manage subscriptions';
 $string['pluginname'] = 'Event monitor';
 $string['processevents'] = 'Process events';
+$string['goback'] = 'Go back';
 $string['selectcourse'] = 'Visit this report at course level to get a list of possible modules';
 $string['title'] = '{$a->coursename} : {$a->reportname}';

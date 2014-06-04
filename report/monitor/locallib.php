@@ -107,12 +107,10 @@ function display_rules_manage($rules, $filtermanager, $courseid, $context) {
     echo html_writer::tag('th', 'Criteria');
     echo html_writer::tag('th', 'Manage');
     echo html_writer::end_tag('tr');
-    $i = 0;
+
     foreach ($rules as $rule) {
-        $i++;
         echo html_writer::start_tag('tr');
         $rule = new \report_monitor\rule($rule);
-        echo html_writer::tag('input', '', array('value' => $rule->id, 'type' => 'hidden', 'name' => "[$i]id"));
         echo html_writer::tag('td', $rule->get_name($context));
         echo html_writer::tag('td', $rule->get_plugin_name());
         echo html_writer::tag('td', $rule->get_event_name($context));
@@ -122,7 +120,7 @@ function display_rules_manage($rules, $filtermanager, $courseid, $context) {
             // Can manage this rule. There might be site rules which the user can not manage. Should we show these here or not?
             echo html_writer::start_tag('td');
             $editurl = new moodle_url($CFG->wwwroot. '/report/monitor/edit.php', array('ruleid' => $rule->id));
-            $copyurl = new moodle_url($CFG->wwwroot. '/report/monitor/index.php', array('ruleid' => $rule->id, 'copy' => 1,
+            $copyurl = new moodle_url($CFG->wwwroot. '/report/monitor/managerules.php', array('ruleid' => $rule->id, 'copy' => 1,
                                                                                         'id' => $courseid));
             $deleteurl = new moodle_url($CFG->wwwroot. '/report/monitor/delete.php', array('ruleid' => $rule->id));
             echo html_writer::link($editurl, get_string('edit'));
@@ -138,4 +136,75 @@ function display_rules_manage($rules, $filtermanager, $courseid, $context) {
     $button = html_writer::tag('button', 'Add a new trigger');
     $addurl = new moodle_url($CFG->wwwroot. '/report/monitor/edit.php', array('courseid' => $courseid));
     echo html_writer::link($addurl, $button);
+}
+
+/**
+ * This file gives an overview of the monitors present in site.
+ * TODO move this to renderer
+ * TODO optimise this
+ * TODO use proper strings
+ * @package    report_monitor
+ * @copyright  2014 onwards Ankit Agarwal <ankit.agrr@gmail.com>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+function display_rules_subscriptions($subscriptions, $context) {
+    global $CFG;
+    echo html_writer::tag('h2', 'Your current subscriptions');
+    echo html_writer::start_tag('table' , array('class' => 'generaltable'));
+    echo html_writer::start_tag('tr');
+    echo html_writer::tag('th', 'Name of the rule');
+    echo html_writer::tag('th', 'Description');
+    echo html_writer::tag('th', 'Instance');
+    echo html_writer::tag('th', 'Manage Subscription');
+    echo html_writer::end_tag('tr');
+
+    foreach ($subscriptions as $subscription) {
+        echo html_writer::start_tag('tr');
+        $subscription = new \report_monitor\subscription($subscription);
+        echo html_writer::tag('td', $subscription->get_name($context));
+        echo html_writer::tag('td', $subscription->get_description($context));
+        echo html_writer::tag('td', $subscription->get_instance_name());
+
+        // Can manage this rule. There might be site rules which the user can not manage. Should we show these here or not?
+        echo html_writer::start_tag('td');
+        $deleteurl = new moodle_url($CFG->wwwroot. '/report/monitor/delete.php', array('ruleid' => $subscription->id));
+        echo html_writer::link($deleteurl, get_string('delete'));
+        echo html_writer::end_tag('td');
+
+        echo html_writer::end_tag('tr');
+    }
+    echo html_writer::end_tag('table');
+}
+
+/**
+ * This file gives an overview of the monitors present in site.
+ * TODO move this to renderer
+ * TODO optimise this
+ * TODO use proper strings
+ * @package    report_monitor
+ * @copyright  2014 onwards Ankit Agarwal <ankit.agrr@gmail.com>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+function display_rules_subscription_rules($rules, $context, $courseid) {
+    global $OUTPUT;
+    echo html_writer::tag('h2', 'Rules you can subscribe to');
+    echo html_writer::start_tag('table' , array('class' => 'generaltable'));
+    echo html_writer::start_tag('tr');
+    echo html_writer::tag('th', 'Name of the rule');
+    echo html_writer::tag('th', 'Description');
+    echo html_writer::tag('th', 'Subscribe');
+    echo html_writer::end_tag('tr');
+
+    foreach ($rules as $rule) {
+        echo html_writer::start_tag('tr');
+        $rule = new \report_monitor\rule($rule);
+        echo html_writer::tag('td', $rule->get_name($context));
+        echo html_writer::tag('td', $rule->get_description($context));
+        echo html_writer::tag('td', $OUTPUT->render($rule->get_module_select($courseid)));
+
+        echo html_writer::end_tag('tr');
+    }
+    echo html_writer::end_tag('table');
 }

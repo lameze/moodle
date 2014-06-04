@@ -75,9 +75,17 @@ class rule {
      * @throws \coding_exception
      */
     public function subscribe_user($courseid, $cmid, $userid = 0) {
-        if ($this->courseid !== $courseid && $this->courseid !== 0) {
-            // Trying to subscribe to a rule that belongs to a different course.
+        if ($this->courseid != $courseid && $this->courseid != 0) {
+            // Trying to subscribe to a rule that belongs to a different course. Should never happen.
             throw new \coding_exception('Can not subscribe to rules from a different course');
+        }
+        if ($cmid !== 0) {
+            $cms = get_fast_modinfo($courseid);
+            $cminfo = $cms->get_cm($cmid);
+            if (!$cminfo->uservisible) {
+                // Trying to subscribe to a hidden cm. Should never happen.
+                throw new \coding_exception('You cannot do that');
+            }
         }
         subscription_manager::subscribe($this->id, $courseid, $cmid, $userid);
     }
@@ -120,6 +128,11 @@ class rule {
         return format_text($this->rule->name, $context);
     }
 
+    public function get_description($context) {
+        return '';
+        return format_text($this->description, $context);
+    }
+
     /**
      * @return string
      * @throws \coding_exception
@@ -133,42 +146,6 @@ class rule {
             $string = $this->rule->plugin;
         }
         return $string;
-    }
-
-    /**
-     * TODO optimise this method.
-     */
-    public function is_user_subscribed($courseid, $userid = 0) {
-        global $USER, $DB;
-        if ($userid === 0) {
-            $userid = $USER->id;
-        }
-        return (bool)$DB->get_record('report_monitor_subscriptions', array('ruleid' => $this->id, 'courseid' => $courseid,
-                'userid' => $userid));
-    }
-
-    /**
-     * @param $courseid
-     * TODO mark the forum user is subscribed to as selected.
-     * @return string
-     * @throws \coding_exception
-     */
-    public function get_module_select($courseid) {
-        $options = array();
-        $options[0] = get_string('allmodules', 'report_monitor');
-        if (strpos($this->plugin, 'mod_') === 0) {
-            if ($courseid == 0) {
-                // They need to be in a course to select module instance.
-                return get_string('selectcourse', 'report_monitor');;
-            }
-            // Let them select an instance.
-            $cms = get_fast_modinfo($courseid);
-            $instances = $cms->get_instances_of(str_replace('mod_', '', 'forum'));
-            foreach ($instances as $cminfo) {
-                $options[$cminfo->id] = $cminfo->get_formatted_name();
-            }
-        }
-        return \html_writer::select($options, 'cmid');
     }
 
     /**
@@ -194,5 +171,31 @@ class rule {
     public function delete_rule() {
         global $DB;
         $DB->delete_records('report_monitor_rules', array('id' => $this->id));
+    }
+
+    /**
+     * @throws \coding_exception
+     */
+    public function get_module_select($courseid) {
+        global $CFG;
+        $options = array();
+        $options[0] = get_string('allmodules', 'report_monitor');
+        if (strpos($this->plugin, 'mod_') === 0) {
+            if ($courseid == 0) {
+                // They need to be in a course to select module instance.
+                return get_string('selectcourse', 'report_monitor');;
+            }
+            // Let them select an instance.
+            $cms = get_fast_modinfo($courseid);
+            $instances = $cms->get_instances_of(str_replace('mod_', '', 'forum'));
+            foreach ($instances as $cminfo) {
+                if ($cminfo->uservisible) {
+                    $options[$cminfo->id] = $cminfo->get_formatted_name();
+                }
+            }
+        }
+        $url = new \moodle_url($CFG->wwwroot. '/report/monitor/index.php', array('id' => $courseid, 'ruleid' => $this->id,
+                'action' => 'subscribe'));
+        return new \single_select($url, 'cmid', $options, '', $nothing = array('' => 'choosedots'));
     }
 }
