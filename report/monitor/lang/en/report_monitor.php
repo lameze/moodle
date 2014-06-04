@@ -40,4 +40,6 @@ $string['pluginname'] = 'Event monitor';
 $string['processevents'] = 'Process events';
 $string['goback'] = 'Go back';
 $string['selectcourse'] = 'Visit this report at course level to get a list of possible modules';
+$string['subscribesuccess'] = 'Subscription created';
 $string['title'] = '{$a->coursename} : {$a->reportname}';
+$string['unsubscribesuccess'] = 'Subscription removed';

@@ -34,13 +34,14 @@ defined('MOODLE_INTERNAL') || die;
  * @param context         $context    The context of the course
  */
 function report_monitor_extend_navigation_course($navigation, $course, $context) {
-    $node = navigation_node::create(get_string('pluginname', 'report_monitor'), null, navigation_node::TYPE_COURSE, null, null,
+    $node = navigation_node::create(get_string('pluginname', 'report_monitor'), null, navigation_node::TYPE_SETTING, null, null,
             new pix_icon('i/report', ''));
+
     if (has_capability('report/monitor:subscribe', $context)) {
         $url = new moodle_url('/report/monitor/index.php', array('id' => $course->id));
-        $node1 = navigation_node::create(get_string('managesubscriptions', 'report_monitor'), $url, navigation_node::TYPE_SETTING,
-            null, null, new pix_icon('i/settings', ''));
-        $node->add_node($node1);
+        $subsnode = navigation_node::create(get_string('managesubscriptions', 'report_monitor'), $url,
+                navigation_node::TYPE_SETTING, null, null, new pix_icon('i/settings', ''));
+        $node->add_node($subsnode);
     }
 
     if (has_capability('report/monitor:managerules', $context)) {
@@ -50,7 +51,7 @@ function report_monitor_extend_navigation_course($navigation, $course, $context)
         $node->add_node($settingsnode);
     }
 
-    if (has_capability('report/monitor:managerules', $context) || has_capability('report/monitor:subscribe', $context)) {
+    if (isset($subsnode) || isset($settingsnode)) {
         // Add the node only if there are sub pages.
         $navigation->add_node($node);
     }

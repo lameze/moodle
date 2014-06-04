@@ -29,8 +29,9 @@ require_once('locallib.php');
 $courseid = optional_param('id', 0, PARAM_INT);
 $copy = optional_param('copy', 0, PARAM_BOOL);
 $ruleid = optional_param('ruleid', 0, PARAM_INT);
-$action = optional_param('action', '', PARAM_INT);
+$action = optional_param('action', '', PARAM_ALPHA);
 $cmid = optional_param('cmid', 0, PARAM_INT);
+$subid = optional_param('subscriptionid', 0, PARAM_INT);
 
 if (empty($courseid)) {
     require_login();
@@ -62,18 +63,23 @@ if (empty($courseid)) {
     admin_externalpage_setup('reportmonitor', '', null, '', array('pagelayout' => 'report'));
 }
 
+echo $OUTPUT->header();
+
+// See if some action needs to be performed.
 if (isset($action)) {
     switch ($action) {
         case 'subscribe' :
             $rule = new \report_monitor\rule($ruleid);
             $rule->subscribe_user($courseid, $cmid);
+            echo $OUTPUT->notification(get_string('subscribesuccess', 'report_monitor'), 'notifysuccess');
+            break;
+        case 'unsubscribe' :
+            \report_monitor\subscription_manager::delete_subscription($subid);
+            echo $OUTPUT->notification(get_string('unsubscribesuccess', 'report_monitor'), 'notifysuccess');
             break;
         default :
     }
 }
-
-echo $OUTPUT->header();
-
 
 // Display user's current subscriptions.
 $subscriptions = \report_monitor\subscription_manager::get_user_subscriptions_for_course($courseid);
