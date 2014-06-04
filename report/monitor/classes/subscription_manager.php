@@ -68,12 +68,19 @@ class subscription_manager {
      *
      * @return bool
      */
-    public static function delete_subscription($subscriptionorid) {
-        global $DB;
+    public static function delete_subscription($subscriptionorid, $checkuser = true, $userid = 0) {
+        global $DB, $USER;
         if (is_object($subscriptionorid)) {
             $subscriptionid = $subscriptionorid->id;
         } else {
             $subscriptionid = $subscriptionorid;
+        }
+        if ($checkuser) {
+            $sub = self::get_subscription($subscriptionid);
+            $userid = empty($userid) ? $USER->id : $userid;
+            if ($sub->userid != $userid) {
+                throw new \coding_exception('Invalid subscription supplied');
+            }
         }
         return $DB->delete_records('report_monitor_subscriptions', array('id' => $subscriptionid));
     }
@@ -123,7 +130,7 @@ class subscription_manager {
         if ($userid == 0) {
             $userid = $USER->id;
         }
-        $sql = "SELECT s.*, r.courseid as rulecourseid, r.userid as ruleuserid, r.name, r.event, r.plugin
+        $sql = "SELECT s.*, r.courseid as rulecourseid, r.userid as ruleuserid, r.name, r.event, r.plugin, r.description
                   FROM {report_monitor_rules} r
                   JOIN {report_monitor_subscriptions} s
                      ON r.id = s.ruleid

@@ -61,10 +61,10 @@ class rule {
      * @throws \coding_exception
      */
     public function __get($prop) {
-        if (isset($this->rule->$prop)) {
+        if (property_exists($this->rule, $prop)) {
             return $this->rule->$prop;
         }
-        throw new \coding_exception('Property doesn\'t exist');
+        throw new \coding_exception('Property "' . $prop . '" doesn\'t exist');
     }
 
     /**
@@ -118,7 +118,7 @@ class rule {
         $filters = $filtermanager->get_filters();
         $desc = '';
         foreach ($filters as $filter) {
-            //$desc .= $filter->get_description($this->rule);
+            $desc .= $filter->get_description($this);
         }
 
         return $desc;
@@ -129,7 +129,6 @@ class rule {
     }
 
     public function get_description($context) {
-        return '';
         return format_text($this->description, $context);
     }
 
