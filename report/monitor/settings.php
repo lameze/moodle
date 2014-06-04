@@ -27,7 +27,7 @@ defined('MOODLE_INTERNAL') || die;
 
 // Just a link to the report.
 $ADMIN->add('reports', new admin_externalpage('reportmonitor', get_string('pluginname', 'report_monitor'),
-        "$CFG->wwwroot/report/monitor/index.php", 'report/monitor:view'));
+        "$CFG->wwwroot/report/monitor/index.php", 'report/monitor:managerules'));
 
 // No report settings.
 $settings = null;

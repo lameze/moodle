@@ -29,6 +29,8 @@ require_once('locallib.php');
 $courseid = optional_param('id', 0, PARAM_INT);
 $copy = optional_param('copy', 0, PARAM_BOOL);
 $ruleid = optional_param('ruleid', 0, PARAM_INT);
+$action = optional_param('action', '', PARAM_INT);
+$cmid = optional_param('cmid', 0, PARAM_INT);
 
 if (empty($courseid)) {
     require_login();
@@ -60,19 +62,28 @@ if (empty($courseid)) {
     admin_externalpage_setup('reportmonitor', '', null, '', array('pagelayout' => 'report'));
 }
 
-echo $OUTPUT->header();
-
-if ($copy && $ruleid) {
-    require_capability('report/monitor:managerules', $context);
-    $rule = new \report_monitor\rule($ruleid);
-    $rule->copy_rule($courseid);
-    echo $OUTPUT->notification(get_string('copysuccess', 'report_monitor'), 'notifysuccess');
+if (isset($action)) {
+    switch ($action) {
+        case 'subscribe' :
+            $rule = new \report_monitor\rule($ruleid);
+            $rule->subscribe_user($courseid, $cmid);
+            break;
+        default :
+    }
 }
 
+echo $OUTPUT->header();
+
+
+// Display user's current subscriptions.
 $subscriptions = \report_monitor\subscription_manager::get_user_subscriptions_for_course($courseid);
-print_object($subscriptions);
-/*
 $filtermanager = new \report_monitor\filter_manager();
-display_rules($rules, $filtermanager, $courseid, $context);
-*/
+display_rules_subscriptions($subscriptions, $filtermanager, $courseid, $context);
+
+// Display rules.
+$rules = $DB->get_records_sql("select * from {report_monitor_rules} where courseid = 0 OR courseid = :courseid",
+        array('courseid' => $courseid));
+display_rules_subscription_rules($rules, $context, $courseid);
+
+
 echo $OUTPUT->footer();

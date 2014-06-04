@@ -113,19 +113,6 @@ class subscription_manager {
     }
 
     /**
-     * @param int $userid
-     *
-     * @return array
-     */
-    public static function get_user_subscriptions($userid = 0) {
-        global $DB, $USER;
-        if ($userid == 0) {
-            $userid = $USER->id;
-        }
-        return $DB->get_records('report_monitor_subscriptions', array('userid' => $userid));
-    }
-
-    /**
      * @param $courseid
      * @param int $userid
      *
@@ -136,10 +123,11 @@ class subscription_manager {
         if ($userid == 0) {
             $userid = $USER->id;
         }
-        $sql = "SELECT * FROM {report_monitor_rules} r
-                 JOIN {report_monitor_subscriptions} s
+        $sql = "SELECT s.*, r.courseid as rulecourseid, r.userid as ruleuserid, r.name, r.event, r.plugin
+                  FROM {report_monitor_rules} r
+                  JOIN {report_monitor_subscriptions} s
                      ON r.id = s.ruleid
-                WHERE s.courseid = :courseid AND s.userid = :userid";
+                 WHERE s.courseid = :courseid AND s.userid = :userid";
         return $DB->get_records_sql($sql, array('courseid' => $courseid, 'userid' => $userid));
     }
 }
