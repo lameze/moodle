@@ -32,6 +32,7 @@ $string['core'] = 'Core';
 $string['deleterule'] = 'Delete a rule';
 $string['deletesuccess'] = 'Rule deleted';
 $string['eventnotfound'] = 'Event not found';
+$string['managerules'] = 'Manage rules';
 $string['pluginname'] = 'Event monitor';
 $string['processevents'] = 'Process events';
 $string['selectcourse'] = 'Visit this report at course level to get a list of possible modules';

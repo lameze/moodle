@@ -41,14 +41,14 @@ if (empty($courseid)) {
     $context = context_course::instance($course->id);
     $coursename = format_string($course->fullname, true, array('context' => $context));
 }
-require_capability('report/monitor:subscribe', $context);
+require_capability('report/monitor:managerules', $context);
 
 // Set up the page.
 $a = new stdClass();
 $a->coursename = $coursename;
 $a->reportname = get_string('pluginname', 'report_monitor');
 $title = get_string('title', 'report_monitor', $a);
-$url = new moodle_url("/report/monitor/index.php", array('id' => $courseid));
+$url = new moodle_url("/report/monitor/managerules.php", array('id' => $courseid));
 
 $PAGE->set_url($url);
 $PAGE->set_pagelayout('report');
@@ -63,16 +63,17 @@ if (empty($courseid)) {
 echo $OUTPUT->header();
 
 if ($copy && $ruleid) {
-    require_capability('report/monitor:managerules', $context);
     $rule = new \report_monitor\rule($ruleid);
     $rule->copy_rule($courseid);
     echo $OUTPUT->notification(get_string('copysuccess', 'report_monitor'), 'notifysuccess');
 }
 
-$subscriptions = \report_monitor\subscription_manager::get_user_subscriptions_for_course($courseid);
-print_object($subscriptions);
-/*
+//TODO Use rule manager class.
+$sql = 'SELECT * FROM {report_monitor_rules} where courseid = ? OR courseid = ?';
+$params = array(0, $courseid);
+$rules = $DB->get_records_sql($sql, $params);
+//print_object($rules);
 $filtermanager = new \report_monitor\filter_manager();
-display_rules($rules, $filtermanager, $courseid, $context);
-*/
+display_rules_manage($rules, $filtermanager, $courseid, $context);
+
 echo $OUTPUT->footer();

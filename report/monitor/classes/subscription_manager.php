@@ -136,7 +136,10 @@ class subscription_manager {
         if ($userid == 0) {
             $userid = $USER->id;
         }
-
-        return $DB->get_records('report_monitor_subscriptions', array('courseid' => $courseid, 'userid' => $userid));
+        $sql = "SELECT * FROM {report_monitor_rules} r
+                 JOIN {report_monitor_subscriptions} s
+                     ON r.id = s.ruleid
+                WHERE s.courseid = :courseid AND s.userid = :userid";
+        return $DB->get_records_sql($sql, array('courseid' => $courseid, 'userid' => $userid));
     }
 }
