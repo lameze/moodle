@@ -60,7 +60,7 @@ $PAGE->set_heading($title);
 
 // Site level report.
 if (empty($courseid)) {
-    admin_externalpage_setup('reportmonitor', '', null, '', array('pagelayout' => 'report'));
+    admin_externalpage_setup('reprotmonitorsubscriptions', '', null, '', array('pagelayout' => 'report'));
 }
 
 echo $OUTPUT->header();

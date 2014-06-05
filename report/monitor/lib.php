@@ -41,18 +41,26 @@ function report_monitor_extend_navigation_course($navigation, $course, $context)
         $url = new moodle_url('/report/monitor/index.php', array('id' => $course->id));
         $subsnode = navigation_node::create(get_string('managesubscriptions', 'report_monitor'), $url,
                 navigation_node::TYPE_SETTING, null, null, new pix_icon('i/settings', ''));
-        $node->add_node($subsnode);
     }
 
     if (has_capability('report/monitor:managerules', $context)) {
         $url = new moodle_url('/report/monitor/managerules.php', array('id' => $course->id));
         $settingsnode = navigation_node::create(get_string('managerules', 'report_monitor'), $url, navigation_node::TYPE_SETTING,
             null, null, new pix_icon('i/settings', ''));
-        $node->add_node($settingsnode);
     }
 
     if (isset($subsnode) || isset($settingsnode)) {
         // Add the node only if there are sub pages.
-        $navigation->add_node($node);
+        $node = $navigation->add_node($node);
+
+        // Our navigation lib can not handle nodes that have active child, so we need to always add parent first without
+        // children.
+        if ($subsnode) {
+            $node->add_node($subsnode);
+        }
+
+        if ($settingsnode) {
+            $node->add_node($settingsnode);
+        }
     }
 }

@@ -57,7 +57,7 @@ $PAGE->set_heading($title);
 
 // Site level report.
 if (empty($courseid)) {
-    admin_externalpage_setup('reportmonitor', '', null, '', array('pagelayout' => 'report'));
+    admin_externalpage_setup('reprotmonitorrules', '', null, '', array('pagelayout' => 'report'));
 }
 
 echo $OUTPUT->header();
