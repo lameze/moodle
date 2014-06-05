@@ -30,15 +30,16 @@ if ($hassiteconfig) {
 
     // Manage subscriptions page.
     $url = new moodle_url('/report/monitor/index.php', array('id' => 0));
-    $temp = new admin_externalpage('reprotmonitorrules', get_string('managesubscriptions', 'report_monitor'), $url,
+    $temp = new admin_externalpage('reprotmonitorsubscriptions', get_string('managesubscriptions', 'report_monitor'), $url,
         'report/monitor:subscribe');
 
     $ADMIN->add('reportmonitor', $temp);
 
     // Manage rules page.
     $url = new moodle_url('/report/monitor/managerules.php', array('id' => 0));
-    $temp = new admin_externalpage('reprotmonitorsubscriptions', get_string('managerules', 'report_monitor'), $url,
+    $temp = new admin_externalpage('reprotmonitorrules', get_string('managerules', 'report_monitor'), $url,
             'report/monitor:managerules');
 
     $ADMIN->add('reportmonitor', $temp);
+    $settings = null;
 }

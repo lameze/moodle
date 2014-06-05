@@ -210,7 +210,11 @@ function display_rules_subscription_rules($rules, $context, $courseid) {
         $rule = new \report_monitor\rule($rule);
         echo html_writer::tag('td', $rule->get_name($context));
         echo html_writer::tag('td', $rule->get_description($context));
-        echo html_writer::tag('td', $OUTPUT->render($rule->get_module_select($courseid)));
+        if ($courseid != 0) {
+            echo html_writer::tag('td', $OUTPUT->render($rule->get_module_select($courseid)));
+        } else {
+            echo html_writer::tag('td', $rule->get_module_select($courseid));
+        }
 
         echo html_writer::end_tag('tr');
     }
