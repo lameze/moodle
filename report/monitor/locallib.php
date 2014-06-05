@@ -83,3 +83,59 @@ function display_rules($rules, $filtermanager, $courseid, $context) {
     $addurl = new moodle_url($CFG->wwwroot. '/report/monitor/edit.php', array('courseid' => $courseid));
     echo html_writer::link($addurl, 'Add a new trigger');
 }
+
+/**
+ * This file gives an overview of the monitors present in site.
+ * TODO move this to renderer
+ * TODO optimise this
+ * TODO use proper strings
+ * @package    report_monitor
+ * @copyright  2014 onwards Ankit Agarwal <ankit.agrr@gmail.com>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+function display_rules_manage($rules, $filtermanager, $courseid, $context) {
+    global $CFG;
+    $systemcontext = context_system::instance();
+    $hassystemcap = has_capability('report/monitor:managerules', $systemcontext);
+    $hascurrentcap = has_capability('report/monitor:managerules', $context);
+    echo html_writer::start_tag('table' , array('class' => 'generaltable'));
+    echo html_writer::start_tag('tr');
+    echo html_writer::tag('th', 'Name of the rule');
+    echo html_writer::tag('th', 'Plugin');
+    echo html_writer::tag('th', 'Event');
+    echo html_writer::tag('th', 'Criteria');
+    echo html_writer::tag('th', 'Manage');
+    echo html_writer::end_tag('tr');
+    $i = 0;
+    foreach ($rules as $rule) {
+        $i++;
+        echo html_writer::start_tag('tr');
+        $rule = new \report_monitor\rule($rule);
+        echo html_writer::tag('input', '', array('value' => $rule->id, 'type' => 'hidden', 'name' => "[$i]id"));
+        echo html_writer::tag('td', $rule->get_name($context));
+        echo html_writer::tag('td', $rule->get_plugin_name());
+        echo html_writer::tag('td', $rule->get_event_name($context));
+        echo html_writer::tag('td', $rule->get_filters_description($filtermanager));
+
+        if ($hassystemcap || ($rule->courseid !== 0 && $hascurrentcap)) {
+            // Can manage this rule. There might be site rules which the user can not manage. Should we show these here or not?
+            echo html_writer::start_tag('td');
+            $editurl = new moodle_url($CFG->wwwroot. '/report/monitor/edit.php', array('ruleid' => $rule->id));
+            $copyurl = new moodle_url($CFG->wwwroot. '/report/monitor/index.php', array('ruleid' => $rule->id, 'copy' => 1,
+                                                                                        'id' => $courseid));
+            $deleteurl = new moodle_url($CFG->wwwroot. '/report/monitor/delete.php', array('ruleid' => $rule->id));
+            echo html_writer::link($editurl, get_string('edit'));
+            echo ' | ';
+            echo html_writer::link($copyurl, get_string('copy', 'report_monitor'));
+            echo ' | ';
+            echo html_writer::link($deleteurl, get_string('delete'));
+            echo html_writer::end_tag('td');
+        }
+        echo html_writer::end_tag('tr');
+    }
+    echo html_writer::end_tag('table');
+    $button = html_writer::tag('button', 'Add a new trigger');
+    $addurl = new moodle_url($CFG->wwwroot. '/report/monitor/edit.php', array('courseid' => $courseid));
+    echo html_writer::link($addurl, $button);
+}
