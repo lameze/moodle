@@ -163,15 +163,13 @@ function display_rules_subscriptions($subscriptions, $filtermanager, $courseid, 
     echo html_writer::tag('th', 'Instance');
     echo html_writer::tag('th', 'Manage Subscription',  array('style' => "text-align:center;"));
     echo html_writer::end_tag('tr');
+    $helpicon = new pix_icon('help', '');
 
     foreach ($subscriptions as $subscription) {
         echo html_writer::start_tag('tr');
         $subscription = new \report_monitor\subscription($subscription);
-        $a = new stdClass();
-        $a->description = $subscription->get_description($context);
-        $a->plugin = $subscription->get_plugin_name();
-        $a->criteria = $subscription->get_filters_description($filtermanager);
-        echo html_writer::tag('td', $OUTPUT->help_icon('ruledetails', 'report_monitor', $a));
+        $url = new moodle_url('/report/monitor/ruledetail.php', array('ruleid' => $subscription->ruleid));
+        echo html_writer::tag('td', $OUTPUT->action_icon($url, $helpicon, new popup_action('click', $url)));
         echo html_writer::tag('td', $subscription->get_name($context));
         echo html_writer::tag('td', $subscription->get_instance_name());
 
@@ -198,19 +196,22 @@ function display_rules_subscriptions($subscriptions, $filtermanager, $courseid, 
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-function display_rules_subscription_rules($rules, $context, $courseid) {
+function display_rules_subscription_rules($rules, $filtermanager, $context, $courseid) {
     global $OUTPUT;
     echo html_writer::tag('h2', 'Rules you can subscribe to');
     echo html_writer::start_tag('table' , array('class' => 'generaltable'));
     echo html_writer::start_tag('tr');
-    echo html_writer::tag('th', 'Name of the rule');
+    echo html_writer::tag('th', 'Name of the rule', array('colspan' => 2));
     echo html_writer::tag('th', 'Description');
     echo html_writer::tag('th', 'Subscribe');
     echo html_writer::end_tag('tr');
+    $helpicon = new pix_icon('help', '');
 
     foreach ($rules as $rule) {
         echo html_writer::start_tag('tr');
         $rule = new \report_monitor\rule($rule);
+        $url = new moodle_url('/report/monitor/ruledetail.php', array('ruleid' => $rule->id));
+        echo html_writer::tag('td', $OUTPUT->action_icon($url, $helpicon, new popup_action('click', $url)));
         echo html_writer::tag('td', $rule->get_name($context));
         echo html_writer::tag('td', $rule->get_description($context));
         if ($courseid != 0) {
