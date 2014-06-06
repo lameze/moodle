@@ -89,7 +89,7 @@ display_rules_subscriptions($subscriptions, $filtermanager, $courseid, $context)
 // Display rules.
 $rules = $DB->get_records_sql("select * from {report_monitor_rules} where courseid = 0 OR courseid = :courseid",
         array('courseid' => $courseid));
-display_rules_subscription_rules($rules, $context, $courseid);
+display_rules_subscription_rules($rules, $filtermanager, $context, $courseid);
 
 
 echo $OUTPUT->footer();

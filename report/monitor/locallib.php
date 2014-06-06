@@ -139,7 +139,7 @@ function display_rules_manage($rules, $filtermanager, $courseid, $context) {
         echo html_writer::end_tag('tr');
     }
     echo html_writer::end_tag('table');
-    $button = html_writer::tag('button', 'Add a new trigger');
+    $button = html_writer::tag('button', 'Add a new rule');
     $addurl = new moodle_url($CFG->wwwroot. '/report/monitor/edit.php', array('courseid' => $courseid));
     echo html_writer::link($addurl, $button);
 }
@@ -154,13 +154,12 @@ function display_rules_manage($rules, $filtermanager, $courseid, $context) {
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-function display_rules_subscriptions($subscriptions, $context, $courseid) {
+function display_rules_subscriptions($subscriptions, $filtermanager, $courseid, $context) {
     global $CFG, $OUTPUT;
     echo html_writer::tag('h2', 'Your current subscriptions');
     echo html_writer::start_tag('table' , array('class' => 'generaltable'));
     echo html_writer::start_tag('tr');
-    echo html_writer::tag('th', 'Name of the rule');
-    echo html_writer::tag('th', 'Description');
+    echo html_writer::tag('th', 'Name of the rule', array('colspan' => 2));
     echo html_writer::tag('th', 'Instance');
     echo html_writer::tag('th', 'Manage Subscription',  array('style' => "text-align:center;"));
     echo html_writer::end_tag('tr');
@@ -168,8 +167,12 @@ function display_rules_subscriptions($subscriptions, $context, $courseid) {
     foreach ($subscriptions as $subscription) {
         echo html_writer::start_tag('tr');
         $subscription = new \report_monitor\subscription($subscription);
+        $a = new stdClass();
+        $a->description = $subscription->get_description($context);
+        $a->plugin = $subscription->get_plugin_name();
+        $a->criteria = $subscription->get_filters_description($filtermanager);
+        echo html_writer::tag('td', $OUTPUT->help_icon('ruledetails', 'report_monitor', $a));
         echo html_writer::tag('td', $subscription->get_name($context));
-        echo html_writer::tag('td', $subscription->get_description($context));
         echo html_writer::tag('td', $subscription->get_instance_name());
 
         // Can manage this rule. There might be site rules which the user can not manage. Should we show these here or not?
@@ -215,7 +218,6 @@ function display_rules_subscription_rules($rules, $context, $courseid) {
         } else {
             echo html_writer::tag('td', $rule->get_module_select($courseid));
         }
-
         echo html_writer::end_tag('tr');
     }
     echo html_writer::end_tag('table');

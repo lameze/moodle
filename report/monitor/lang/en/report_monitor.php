@@ -38,6 +38,10 @@ $string['managerules'] = 'Manage rules';
 $string['managesubscriptions'] = 'Manage subscriptions';
 $string['pluginname'] = 'Event monitor';
 $string['processevents'] = 'Process events';
+$string['ruledetails'] = 'Rule details';
+$string['ruledetails_help'] = 'Description: {$a->description}
+Plugin: {$a->plugin}
+Criteria: {$a->description}';
 $string['goback'] = 'Go back';
 $string['selectcourse'] = 'Visit this report at course level to get a list of possible modules';
 $string['subscribesuccess'] = 'Subscription created';
