@@ -87,7 +87,7 @@ class subscription {
         $filters = $filtermanager->get_filters();
         $desc = '';
         foreach ($filters as $filter) {
-            $desc .= $filter->get_description($this->subscription);
+            $desc .= $filter->get_description($this);
         }
 
         return $desc;

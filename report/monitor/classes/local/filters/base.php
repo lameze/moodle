@@ -71,7 +71,7 @@ abstract class base {
      *
      * @return string
      */
-    public function get_description(\report_monitor\rule $rule) {
+    public function get_description($rule) {
         return '';
     }
     // More processing apis here.
