@@ -122,7 +122,7 @@ class subscription {
      */
     public function get_instance_name() {
         if ($this->plugin === 'core') {
-            $string = get_string('allevents', $this->subscription->plugin);
+            $string = get_string('allevents', 'report_monitor');
         } else {
             if ($this->cmid == 0) {
                 $string = get_string('allmodules', 'report_monitor');
