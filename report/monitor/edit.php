@@ -31,7 +31,6 @@ $courseid = optional_param('id', 0, PARAM_INT);
 
 $ruledata = new \stdClass();
 
-
 // Validate course id
 if (empty($courseid)) {
     require_login();

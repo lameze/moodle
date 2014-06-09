@@ -138,12 +138,28 @@ class subscription_manager {
         return $DB->get_records_sql($sql, array('courseid' => $courseid, 'userid' => $userid));
     }
 
-    public static function get_subscriptions_by_event() {
-        global $DB;
-        $sql = "SELECT r.*, s.*
+    public static function get_subscriptions_by_event($event) {
+       global $DB;
+       $sql = "SELECT s.id, s.cmid, r.courseid as rulecourseid, r.userid as ruleuserid, r.name, r.event, r.plugin,
+                       r.description, r.frequency, r.minutes, ec.id as eventcounterid, ec.counter
                 FROM {report_monitor_rules} r
-                INNER JOIN {report_monitor_subscriptions} s
+                JOIN {report_monitor_subscriptions} s
                   ON s.ruleid = r.id
-                WHERE event = '\mod_choice\event\answer_updated'";
+                JOIN {report_monitor_eventcounter} ec
+                  ON s.id = ec.subscriptionid
+                WHERE r.event = :event
+                AND s.courseid = :courseid";
+
+        return $DB->get_records_sql($sql, array('event' => $event->name, 'courseid' => $event->courseid));
+    }
+
+    public static function increment_counter ($subscription) {
+        global $DB;
+        $eventcounter = new \stdClass();
+        $eventcounter->id = $subscription->eventcounterid;
+        //$eventcounter->subscriptionid = $subscription->id;
+        $eventcounter->counter = $subscription->counter+1;
+
+        return $DB->update_record('report_monitor_eventcounter', $eventcounter, true);
     }
 }
