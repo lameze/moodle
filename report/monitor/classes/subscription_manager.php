@@ -144,6 +144,6 @@ class subscription_manager {
                 FROM {report_monitor_rules} r
                 INNER JOIN {report_monitor_subscriptions} s
                   ON s.ruleid = r.id
-                WHERE event = '\mod_choice\event\answer_updated';"
+                WHERE event = '\mod_choice\event\answer_updated'";
     }
 }

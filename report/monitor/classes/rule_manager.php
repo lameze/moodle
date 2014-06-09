@@ -27,12 +27,6 @@ defined('MOODLE_INTERNAL') || die();
 
 class rule_manager {
 
-    /** Status of an active rule. */
-    const RULE_ACTIVE = 1;
-
-    /** Status of an inactive rule. */
-    const RULE_INACTIVE = 0;
-
     /**
      * Create a new rule.
      * @param $ruledata \stdClass
@@ -48,9 +42,8 @@ class rule_manager {
         $rule->plugin = $ruledata->plugin;
         $rule->event = $ruledata->event;
         $rule->description = $ruledata->description;
-        $rule->status = self::RULE_ACTIVE;
-        $rule->frequency = $ruledata->frequency;
-        $rule->minutes = $ruledata->minutes;
+        $rule->frequency = (int)$ruledata->frequency;
+        $rule->minutes = (int)$ruledata->minutes;
         $rule->message_template = $ruledata->message_template;
         $rule->timecreated = $now;
         $rule->timemodified = $now;
