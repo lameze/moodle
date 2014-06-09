@@ -38,12 +38,12 @@ class process_events_observer {
     public static function process_event(\core\event\base $event) {
         $filtermanger = new filter_manager();
         $filters = $filtermanger->get_filters();
-
         // Get the events.
-        $subscriptions = array(); // Get it from subscription manager.
-        $rules = \report_monitor\rule_manager::get_rules_by_event($event);
+        $subscriptions = \report_monitor\subscription_manager::get_subscriptions_by_event($event);
+        print_object($subscriptions);
         foreach ($subscriptions as $sub) {
             $sendmsg = true;
+
             if ($sub->cmid === 0 || ($sub->cmid === $event->contextinstanceid && $event->contextlevel = CONTEXT_MODULE)) {
                 foreach ($filters as $filter) {
                     if (!$filter->process_event($event, $sub)) {

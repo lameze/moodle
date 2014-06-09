@@ -86,5 +86,21 @@ class frequency extends base {
         return get_string('freqdesc', 'report_monitor', $a);
     }
 
+    public function process_event(\core\event\base $event, \stdClass $sub) {
+        $time = time();
+        $timewindow = $sub->minutes * 60;
+        if (($time - $timewindow) > $sub->datecreated) {
+            // flush.
+            $sub->counter = 0;
+        }
+        \report_monitor\subscription_manager::increment_counter($sub);
+        $sub->counter = $sub->counter+1;
+        if ($sub->counter >= $sub->frequency) {
+            $sendmsg = true;
+        } else {
+            $sendmsg = false;
+        }
+        return $sendmsg;
+    }
     // More processing apis here.
 }
