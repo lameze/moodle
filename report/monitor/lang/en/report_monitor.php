@@ -64,6 +64,7 @@ $string['defaultmessagetpl'] = 'Create your customized rule message here.';
 $string['erroremptyname'] = 'You must add a name to your rule.';
 $string['pluginname'] = 'Event monitor';
 $string['processevents'] = 'Process events';
+$string['freqdesc'] = '{$a->freq} times in {$a->mins} minutes';
 
 // Help icons descriptions
 $string['name_help'] = "Choose a name for your rule.";

@@ -120,7 +120,6 @@ class rule {
         foreach ($filters as $filter) {
             $desc .= $filter->get_description($this);
         }
-
         return $desc;
     }
 

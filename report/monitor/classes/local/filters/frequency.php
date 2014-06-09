@@ -53,16 +53,18 @@ class frequency extends base {
      * Get frequencies
      * @return array
      */
-    protected  function get_frequencies() {
-        return array(1, 5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100);
+    protected function get_frequencies() {
+        return array(1 => 1,5 => 5,10 => 10,20 => 20,30 => 30, 40 => 40, 50 => 50, 60 => 60, 70 => 70, 80 => 80, 90 => 90,
+                     100 => 100);
     }
 
     /**
      * Get minutes
      * @return array
      */
-    protected  function get_minutes() {
-        return array(1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60);
+    protected function get_minutes() {
+        return array(1 => 1, 5 => 5, 10 => 10, 15 => 15, 20 => 20, 25 => 25, 30 => 30, 35 => 35, 40 => 40, 45 => 45, 50 => 50,
+                     55 => 55,  60 => 60);
     }
 
     /**
@@ -75,6 +77,13 @@ class frequency extends base {
      */
     public function validate_data($data, $files) {
         return array();
+    }
+
+    public function get_description($rule) {
+        $a = new \stdClass();
+        $a->freq = $rule->frequency;
+        $a->mins = $rule->minutes;
+        return get_string('freqdesc', 'report_monitor', $a);
     }
 
     // More processing apis here.

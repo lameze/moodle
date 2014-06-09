@@ -140,7 +140,7 @@ function display_rules_manage($rules, $filtermanager, $courseid, $context) {
     }
     echo html_writer::end_tag('table');
     $button = html_writer::tag('button', 'Add a new rule');
-    $addurl = new moodle_url($CFG->wwwroot. '/report/monitor/edit.php', array('courseid' => $courseid));
+    $addurl = new moodle_url($CFG->wwwroot. '/report/monitor/edit.php', array('id' => $courseid));
     echo html_writer::link($addurl, $button);
 }
 

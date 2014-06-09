@@ -27,7 +27,7 @@ require_once($CFG->dirroot.'/course/lib.php');
 require_once('locallib.php');
 
 $ruleid = optional_param('ruleid', 0, PARAM_INT);
-$courseid = optional_param('courseid', 0, PARAM_INT);
+$courseid = optional_param('id', 0, PARAM_INT);
 
 $ruledata = new \stdClass();
 
@@ -45,10 +45,10 @@ if (empty($courseid)) {
     $context = context_course::instance($course->id);
     $coursename = format_string($course->fullname, true, array('context' => $context));
 }
+require_capability('report/monitor:managerules', $context);
 
 // Get rule data to edit form
 if ($ruleid) {
-    //require_capability('report/monitor:managerules', $context);
     $rule = \report_monitor\rule_manager::get_rule($ruleid);
 
     $ruledata->ruleid = $rule->id;
@@ -67,7 +67,8 @@ $a = new stdClass();
 $a->coursename = $coursename;
 $a->reportname = get_string('pluginname', 'report_monitor');
 $title = get_string('title', 'report_monitor', $a);
-$url = new moodle_url("/report/monitor/edit.php", array('courseid' => $courseid));
+$url = new moodle_url("/report/monitor/edit.php", array('id' => $courseid));
+$indexurl = new moodle_url("/report/monitor/index.php", array('id' => $courseid));
 
 $PAGE->set_url($url);
 $PAGE->set_pagelayout('report');
@@ -75,9 +76,13 @@ $PAGE->set_title($title);
 $PAGE->set_heading($title);
 $PAGE->requires->js('/report/monitor/event.js');
 
+// Site level report.
+if (empty($courseid)) {
+    admin_externalpage_setup('reprotmonitorrules', '', null, '', array('pagelayout' => 'report'));
+}
+
 $mform = new report_monitor\rule_form();
 if ($mformdata = $mform->get_data()) {
-
     $ruledata = new \stdClass();
     $ruledata->courseid = $mformdata->courseid;
     $ruledata->name = $mformdata->name;
@@ -97,7 +102,7 @@ if ($mformdata = $mform->get_data()) {
         \report_monitor\rule_manager::update_rule($ruledata);
     }
 
-    $url = new moodle_url("/report/monitor/managerules.php", array('id' => $course->id));
+    $url = new moodle_url("/report/monitor/managerules.php", array('id' => $courseid));
     redirect($url);
 } else {
     echo $OUTPUT->header();

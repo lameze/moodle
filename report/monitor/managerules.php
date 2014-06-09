@@ -72,7 +72,6 @@ if ($copy && $ruleid) {
 $sql = 'SELECT * FROM {report_monitor_rules} where courseid = ? OR courseid = ?';
 $params = array(0, $courseid);
 $rules = $DB->get_records_sql($sql, $params);
-//print_object($rules);
 $filtermanager = new \report_monitor\filter_manager();
 display_rules_manage($rules, $filtermanager, $courseid, $context);
 
