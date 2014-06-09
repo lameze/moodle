@@ -186,7 +186,7 @@ class rule {
             }
             // Let them select an instance.
             $cms = get_fast_modinfo($courseid);
-            $instances = $cms->get_instances_of(str_replace('mod_', '', 'forum'));
+            $instances = $cms->get_instances_of(str_replace('mod_', '',  $this->plugin));
             foreach ($instances as $cminfo) {
                 if ($cminfo->uservisible) {
                     $options[$cminfo->id] = $cminfo->get_formatted_name();
