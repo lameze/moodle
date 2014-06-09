@@ -66,6 +66,8 @@ $string['pluginname'] = 'Event monitor';
 $string['processevents'] = 'Process events';
 $string['freqdesc'] = '{$a->freq} times in {$a->mins} minutes';
 
+$string['messageprovider:notification'] = 'Notifications sent by report event monitor';
+
 // Help icons descriptions
 $string['name_help'] = "Choose a name for your rule.";
 $string['plugin_help'] = "Select the plugin that you want to monitor.";
