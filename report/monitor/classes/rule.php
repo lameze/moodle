@@ -177,7 +177,11 @@ class rule {
     public function get_module_select($courseid) {
         global $CFG;
         $options = array();
-        $options[0] = get_string('allmodules', 'report_monitor');
+        if (strpos($this->plugin, 'mod_') === 0) {
+            $options[0] = get_string('allmodules', 'report_monitor');
+        } else {
+            $options[0] = get_string('allevents', 'report_monitor');
+        }
         if (strpos($this->plugin, 'mod_') === 0) {
             if ($courseid == 0) {
                 // They need to be in a course to select module instance.

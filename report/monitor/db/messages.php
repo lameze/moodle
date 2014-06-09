@@ -15,17 +15,18 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version info
- *
- * This file contains version information about report_monitor
+ * Messages
  *
  * @package    report_monitor
  * @copyright  2014 onwards Ankit Agarwal <ankit.agrr@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die;
+defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2014051212;       // The current plugin version (Date: YYYYMMDDXX).
-$plugin->requires  = 2014050800;       // Requires this Moodle version.
-$plugin->component = 'report_monitor'; // Full name of the plugin (used for diagnostics).
+$messageproviders = array (
+    // Notify a user that a rule has happened.
+    'notification' => array (
+        'capability'  => 'report/monitor:subscribe'
+    )
+);

@@ -214,7 +214,7 @@ function display_rules_subscription_rules($rules, $filtermanager, $context, $cou
         echo html_writer::tag('td', $OUTPUT->action_icon($url, $helpicon, new popup_action('click', $url)));
         echo html_writer::tag('td', $rule->get_name($context));
         echo html_writer::tag('td', $rule->get_description($context));
-        if ($courseid != 0) {
+        if ($courseid != 0 || (strpos($rule->plugin, 'mod_') === false && $courseid == 0)) {
             echo html_writer::tag('td', $OUTPUT->render($rule->get_module_select($courseid)));
         } else {
             echo html_writer::tag('td', $rule->get_module_select($courseid));
