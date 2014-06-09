@@ -137,4 +137,13 @@ class subscription_manager {
                  WHERE s.courseid = :courseid AND s.userid = :userid";
         return $DB->get_records_sql($sql, array('courseid' => $courseid, 'userid' => $userid));
     }
+
+    public static function get_subscriptions_by_event() {
+        global $DB;
+        $sql = "SELECT r.*, s.*
+                FROM {report_monitor_rules} r
+                INNER JOIN {report_monitor_subscriptions} s
+                  ON s.ruleid = r.id
+                WHERE event = '\mod_choice\event\answer_updated';"
+    }
 }

@@ -49,3 +49,33 @@ $string['selectcourse'] = 'Visit this report at course level to get a list of po
 $string['subscribesuccess'] = 'Subscription created';
 $string['title'] = '{$a->coursename} : {$a->reportname}';
 $string['unsubscribesuccess'] = 'Subscription removed';
+
+$string['title'] = '{$a->coursename} : {$a->reportname}';
+$string['name'] = 'Name';
+$string['plugin'] = 'Select the plugin type:';
+$string['customize'] = 'Customize your rule';
+$string['event'] = 'Select the event:';
+$string['description'] = 'Description:';
+$string['frequency'] = 'Frequency of events:';
+$string['minutes'] = 'in minutes:';
+$string['message_header'] = 'Customize your notification message';
+$string['message_template'] = 'Message template';
+$string['defaultmessagetpl'] = 'Create your customized rule message here.';
+$string['erroremptyname'] = 'You must add a name to your rule.';
+$string['pluginname'] = 'Event monitor';
+$string['processevents'] = 'Process events';
+
+// Help icons descriptions
+$string['name_help'] = "Choose a name for your rule.";
+$string['plugin_help'] = "Select the plugin that you want to monitor.";
+$string['event_help'] = "Select the event that you want to monitor.";
+$string['frequency_help'] = "Select the frequency in minutes that your want to monitor.";
+$string['message_template_help'] = "Create a customized message to you rule.";
+$string['description_help'] = "Description of your rule.";
+// Error messages
+$string['erroremptyname'] = 'Please select a name to your rule.';
+$string['errorplugin'] = 'Please select your plugin.';
+$string['errorevent'] = 'Please select an event related to the selected plugin.';
+$string['erroremptyfreq'] = 'Please select a frequency and time.';
+$string['erroremptymessage'] = 'The field template message cannot be empty.';
+

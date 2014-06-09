@@ -41,7 +41,7 @@ abstract class base {
      *
      * @param $mform
      */
-    abstract public function add_form_elements(&$mform);
+    abstract public function add_form_elements($mform);
 
     /**
      * Return form validation errors.

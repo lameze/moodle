@@ -41,6 +41,7 @@ class process_events_observer {
 
         // Get the events.
         $subscriptions = array(); // Get it from subscription manager.
+        $rules = \report_monitor\rule_manager::get_rules_by_event($event);
         foreach ($subscriptions as $sub) {
             $sendmsg = true;
             if ($sub->cmid === 0 || ($sub->cmid === $event->contextinstanceid && $event->contextlevel = CONTEXT_MODULE)) {
