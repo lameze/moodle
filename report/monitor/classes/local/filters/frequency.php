@@ -39,9 +39,30 @@ class frequency extends base {
     /**
      * Add elements to the new monitor form.
      *
-     * @param $mform
      */
-    public function add_form_elements(&$mform) {
+    public function add_form_elements($mform) {
+        $rule = array();
+        $rule[] = $mform->createElement('select', 'frequency', get_string('frequency', 'report_monitor'), $this->get_frequencies());
+        $rule[] = $mform->createElement('select', 'minutes', get_string('minutes', 'report_monitor'), $this->get_minutes());
+        $mform->addGroup($rule, 'rule', get_string('frequency', 'report_monitor'), array('&nbsp;&nbsp;in minutes&nbsp;&nbsp;', '<br />'), true);
+        $mform->addRule('rule', get_string('required'), 'required');
+        $mform->addHelpButton('rule', 'frequency', 'report_monitor');
+    }
+
+    /**
+     * Get frequencies
+     * @return array
+     */
+    protected  function get_frequencies() {
+        return array(1, 5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100);
+    }
+
+    /**
+     * Get minutes
+     * @return array
+     */
+    protected  function get_minutes() {
+        return array(1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60);
     }
 
     /**

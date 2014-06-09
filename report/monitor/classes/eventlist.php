@@ -41,8 +41,13 @@ class eventlist {
      * @param bool $abstract True will return all events. False returns events with no abstract classes.
      * @return array All events.
      */
-    public static function get_all_events_list($abstract = false) {
-        return array_merge(array('core' => self::get_core_events_list($abstract)), self::get_non_core_event_list($abstract));
+    public static function get_all_events_list($abstract = false, $plugin = null) {
+        $events = array_merge(array('core' => self::get_core_events_list($abstract)), self::get_non_core_event_list($abstract));
+
+        if ($plugin) {
+            return $events[$plugin];
+        }
+        return $events;
     }
 
     /**
@@ -133,10 +138,37 @@ class eventlist {
                 }
             }
         }
+
         // Now enable developer debugging as event information has been retrieved.
         $CFG->debug          = $debuglevel;
         $CFG->debugdisplay   = $debugdisplay;
         $CFG->debugdeveloper = $debugdeveloper;
+
+        return $noncorepluginlist;
+    }
+    public static function get_events_list() {
+        foreach (self::get_all_events_list() as $index => $eventpath) {
+            if (count($eventpath)>0) {
+                foreach($eventpath as $eventkey => $eventdesc) {
+                    $eventoption[$eventkey] = $eventdesc;
+                }
+            }
+        }
+        return $eventoption;
+
+    }
+    public static function get_plugin_list() {
+        $noncorepluginlist = array();
+        $noncorepluginlist['core'] = 'General';
+        $plugintypes = \core_component::get_plugin_types();
+        foreach ($plugintypes as $plugintype => $notused) {
+            $pluginlist = \core_component::get_plugin_list($plugintype);
+            foreach ($pluginlist as $plugin => $directory) {
+                if ($plugintype == 'mod') {
+                    $noncorepluginlist[$plugintype . '_' . $plugin] = get_string('pluginname', $plugin);
+                }
+            }
+        }
 
         return $noncorepluginlist;
     }
