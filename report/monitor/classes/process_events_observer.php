@@ -76,16 +76,17 @@ class process_events_observer {
     public static function send_notification(\core\event\base $event, subscription $subscription) {
         $user = \core_user::get_user($subscription->userid);
         $context = \context_user::instance($user->id);
-
+        $template = $subscription->message_template;
+        $template = str_replace('{$link}', $event->get_url(), $template);
         $eventdata = new \stdClass();
         $eventdata->component         = 'report_monitor'; // Your component name.
         $eventdata->name              = 'notification'; // This is the message name from messages.php.
         $eventdata->userfrom          = \core_user::get_noreply_user();
         $eventdata->userto            = $user;
         $eventdata->subject           = $subscription->get_name($context);
-        $eventdata->fullmessage       = format_text($subscription->message_template, FORMAT_MOODLE, array('context' => $context));
+        $eventdata->fullmessage       = format_text($template, FORMAT_HTML, array('context' => $context));
         $eventdata->fullmessageformat = FORMAT_HTML;
-        $eventdata->fullmessagehtml   = format_text($subscription->message_template, FORMAT_MOODLE, array('context' => $context));
+        $eventdata->fullmessagehtml   = format_text($template, FORMAT_HTML, array('context' => $context));
         $eventdata->smallmessage      = '';
         $eventdata->notification      = 1; // This is only set to 0 for personal messages between users.
         message_send($eventdata);
