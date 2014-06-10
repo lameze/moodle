@@ -97,7 +97,7 @@ class frequency extends base {
             $sendmsg = false;
         }
 
-        if (!$sub->eventcounterid) {
+        if (!isset($sub->eventcounterid)) {
             $sub->eventcounterid = \report_monitor\subscription_manager::create_counter($sub);
             $sub->counter = 0;
         }
