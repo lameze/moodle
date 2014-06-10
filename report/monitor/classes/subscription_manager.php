@@ -140,6 +140,7 @@ class subscription_manager {
 
     public static function get_subscriptions_by_event(\core\event\base $event) {
        global $DB;
+       $params = array('eventname' => $event->__get('eventname'), 'courseid' => $event->__get('courseid'));
 
        $sql = "SELECT s.id, s.cmid, r.courseid as rulecourseid, r.message_template, r.userid as ruleuserid, s.userid, r.name, r.event, r.plugin,
                        r.description, r.frequency, r.minutes, ec.id as eventcounterid, ec.counter, ec.datecreated
@@ -148,9 +149,12 @@ class subscription_manager {
                   ON s.ruleid = r.id
                 LEFT JOIN {report_monitor_eventcounter} ec
                   ON s.id = ec.subscriptionid
-                WHERE r.event = :eventname AND r.courseid = :courseid";
-
-        return $DB->get_records_sql($sql, array('eventname' => $event->__get('eventname'), 'courseid' => $event->__get('courseid')));
+                WHERE r.event = :eventname AND s.courseid = :courseid";
+//        if ($event->__get('cmid') > 0) {
+//            $sql .= " s.cmid = :cmid";
+//            $params['cmid'] = $event->__get('cmid');
+//        }
+        return $DB->get_records_sql($sql, $params);
     }
 
     public static function increment_counter ($subscription) {
