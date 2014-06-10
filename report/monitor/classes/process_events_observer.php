@@ -38,13 +38,22 @@ class process_events_observer {
     public static function process_event(\core\event\base $event) {
         $filtermanger = new filter_manager();
         $filters = $filtermanger->get_filters();
-        // Get the events.
+
+        $eventdata = $event->get_data();
+        $eventobj = new \stdClass();
+        $eventobj->eventname = $eventdata['eventname'];
+        $eventobj->courseid = $eventdata['courseid'];
+        $eventobj->contextinstanceid = $eventdata['contextinstanceid'];
+        $eventobj->contextlevel = $eventdata['contextlevel'];
+        $eventobj->timecreated = $eventdata['timecreated'];
+
         $subscriptions = \report_monitor\subscription_manager::get_subscriptions_by_event($event);
-        print_object($subscriptions);
+
         foreach ($subscriptions as $sub) {
             $sendmsg = true;
+            $subscription = new subscription($sub);
 
-            if ($sub->cmid === 0 || ($sub->cmid === $event->contextinstanceid && $event->contextlevel = CONTEXT_MODULE)) {
+            if ($sub->cmid == 0 || ($sub->cmid == $eventobj->contextinstanceid && $eventobj->contextlevel = CONTEXT_MODULE)) {
                 foreach ($filters as $filter) {
                     if (!$filter->process_event($event, $sub)) {
                         // One of the filters are not satisfied. So no message should be sent.
@@ -54,7 +63,7 @@ class process_events_observer {
             }
 
             if ($sendmsg) {
-                self::send_notification($event, $sub);
+                self::send_notification($event, $subscription);
             }
         }
 
@@ -64,7 +73,6 @@ class process_events_observer {
     }
 
     public static function send_notification(\core\event\base $event, subscription $subscription) {
-
         $user = \core_user::get_user($subscription->userid);
         $context = \context_user::instance($user->id);
 
@@ -72,7 +80,7 @@ class process_events_observer {
         $eventdata->component         = 'report_monitor'; // Your component name.
         $eventdata->name              = 'notification'; // This is the message name from messages.php.
         $eventdata->userfrom          = \core_user::get_noreply_user();
-        $eventdata->userto            =
+        $eventdata->userto            = $user;
         $eventdata->subject           = $subscription->get_name($context);
         $eventdata->fullmessage       = format_text($subscription->message_template, FORMAT_MOODLE, array('context' => $context));
         $eventdata->fullmessageformat = FORMAT_HTML;
@@ -80,6 +88,5 @@ class process_events_observer {
         $eventdata->smallmessage      = '';
         $eventdata->notification      = 1; // This is only set to 0 for personal messages between users.
         message_send($eventdata);
-
     }
 }

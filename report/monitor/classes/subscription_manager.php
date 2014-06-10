@@ -138,28 +138,39 @@ class subscription_manager {
         return $DB->get_records_sql($sql, array('courseid' => $courseid, 'userid' => $userid));
     }
 
-    public static function get_subscriptions_by_event($event) {
+    public static function get_subscriptions_by_event(\core\event\base $event) {
        global $DB;
-       $sql = "SELECT s.id, s.cmid, r.courseid as rulecourseid, r.userid as ruleuserid, r.name, r.event, r.plugin,
-                       r.description, r.frequency, r.minutes, ec.id as eventcounterid, ec.counter
+
+       $sql = "SELECT s.id, s.cmid, r.courseid as rulecourseid, r.message_template, r.userid as ruleuserid, s.userid, r.name, r.event, r.plugin,
+                       r.description, r.frequency, r.minutes, ec.id as eventcounterid, ec.counter, ec.datecreated
                 FROM {report_monitor_rules} r
                 JOIN {report_monitor_subscriptions} s
                   ON s.ruleid = r.id
-                JOIN {report_monitor_eventcounter} ec
+                LEFT JOIN {report_monitor_eventcounter} ec
                   ON s.id = ec.subscriptionid
-                WHERE r.event = :event
-                AND s.courseid = :courseid";
+                WHERE r.event = :eventname AND r.courseid = :courseid";
 
-        return $DB->get_records_sql($sql, array('event' => $event->name, 'courseid' => $event->courseid));
+        return $DB->get_records_sql($sql, array('eventname' => $event->__get('eventname'), 'courseid' => $event->__get('courseid')));
     }
 
     public static function increment_counter ($subscription) {
         global $DB;
         $eventcounter = new \stdClass();
         $eventcounter->id = $subscription->eventcounterid;
-        //$eventcounter->subscriptionid = $subscription->id;
+        $eventcounter->subscriptionid = $subscription->id;
         $eventcounter->counter = $subscription->counter+1;
-
+        if ($subscription->datecreated) {
+            $eventcounter->datecreated = $subscription->datecreated;
+        }
         return $DB->update_record('report_monitor_eventcounter', $eventcounter, true);
+    }
+
+    public static function create_counter ($subscription) {
+        global $DB;
+        $eventcounter = new \stdClass();
+        $eventcounter->subscriptionid = $subscription->id;
+        $eventcounter->counter = 0;
+        $eventcounter->datecreated = time();
+        return $DB->insert_record('report_monitor_eventcounter', $eventcounter, true);
     }
 }

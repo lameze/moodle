@@ -89,17 +89,24 @@ class frequency extends base {
     public function process_event(\core\event\base $event, \stdClass $sub) {
         $time = time();
         $timewindow = $sub->minutes * 60;
-        if (($time - $timewindow) > $sub->datecreated) {
-            // flush.
+        $sendmsg = true;
+
+        if (($time - $timewindow) > $sub->datecreated && $sub->counter > 0) {
             $sub->counter = 0;
+            $sub->datecreated = $time;
+            $sendmsg = false;
         }
-        \report_monitor\subscription_manager::increment_counter($sub);
-        $sub->counter = $sub->counter+1;
+
+        if (!$sub->eventcounterid) {
+            $sub->eventcounterid = \report_monitor\subscription_manager::create_counter($sub);
+        }
+
         if ($sub->counter >= $sub->frequency) {
             $sendmsg = true;
         } else {
             $sendmsg = false;
         }
+        \report_monitor\subscription_manager::increment_counter($sub);
         return $sendmsg;
     }
     // More processing apis here.
