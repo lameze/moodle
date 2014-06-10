@@ -159,7 +159,7 @@ class subscription_manager {
         $eventcounter = new \stdClass();
         $eventcounter->id = $subscription->eventcounterid;
         $eventcounter->subscriptionid = $subscription->id;
-        $eventcounter->counter = $subscription->counter+1;
+        $eventcounter->counter = $subscription->counter;
         if ($subscription->datecreated) {
             $eventcounter->datecreated = $subscription->datecreated;
         }

@@ -36,10 +36,11 @@ defined('MOODLE_INTERNAL') || die();
 class process_events_observer {
 
     public static function process_event(\core\event\base $event) {
+
         $filtermanger = new filter_manager();
         $filters = $filtermanger->get_filters();
-
         $eventdata = $event->get_data();
+
         $eventobj = new \stdClass();
         $eventobj->eventname = $eventdata['eventname'];
         $eventobj->courseid = $eventdata['courseid'];
@@ -53,7 +54,7 @@ class process_events_observer {
             $sendmsg = true;
             $subscription = new subscription($sub);
 
-            if ($sub->cmid == 0 || ($sub->cmid == $eventobj->contextinstanceid && $eventobj->contextlevel = CONTEXT_MODULE)) {
+            if ($sub->cmid == 0 || ($sub->cmid == $eventobj->contextinstanceid && $eventobj->contextlevel == CONTEXT_MODULE)) {
                 foreach ($filters as $filter) {
                     if (!$filter->process_event($event, $sub)) {
                         // One of the filters are not satisfied. So no message should be sent.
