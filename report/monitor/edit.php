@@ -100,7 +100,7 @@ if ($mformdata = $mform->get_data()) {
         //echo $OUTPUT->notification('Rule updated.', 'notifysuccess');
         \report_monitor\rule_manager::update_rule($ruledata);
     }
-
+    $courseid = $mformdata->courseid;
     $url = new moodle_url("/report/monitor/managerules.php", array('id' => $courseid));
     redirect($url);
 } else {
