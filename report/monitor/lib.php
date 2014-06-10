@@ -55,11 +55,11 @@ function report_monitor_extend_navigation_course($navigation, $course, $context)
 
         // Our navigation lib can not handle nodes that have active child, so we need to always add parent first without
         // children.
-        if ($subsnode) {
+        if (isset($subsnode)) {
             $node->add_node($subsnode);
         }
 
-        if ($settingsnode) {
+        if (isset($settingsnode)) {
             $node->add_node($settingsnode);
         }
     }
