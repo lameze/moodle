@@ -149,6 +149,7 @@ class subscription_manager {
                 LEFT JOIN {report_monitor_eventcounter} ec
                   ON s.id = ec.subscriptionid
                 WHERE r.event = :eventname AND r.courseid = :courseid";
+        print_object( array('eventname' => $event->__get('eventname'), 'courseid' => $event->__get('courseid')));
 
         return $DB->get_records_sql($sql, array('eventname' => $event->__get('eventname'), 'courseid' => $event->__get('courseid')));
     }
