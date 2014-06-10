@@ -99,14 +99,17 @@ class frequency extends base {
 
         if (!$sub->eventcounterid) {
             $sub->eventcounterid = \report_monitor\subscription_manager::create_counter($sub);
+            $sub->counter = 0;
         }
+        $sub->counter++;
+        \report_monitor\subscription_manager::increment_counter($sub);
 
         if ($sub->counter >= $sub->frequency) {
             $sendmsg = true;
         } else {
             $sendmsg = false;
         }
-        \report_monitor\subscription_manager::increment_counter($sub);
+
         return $sendmsg;
     }
     // More processing apis here.
