@@ -42,14 +42,10 @@ class process_events_observer {
         $eventdata = $event->get_data();
 
         $eventobj = new \stdClass();
-        $eventobj->eventname = $eventdata['eventname'];
-        $eventobj->courseid = $eventdata['courseid'];
         $eventobj->contextinstanceid = $eventdata['contextinstanceid'];
         $eventobj->contextlevel = $eventdata['contextlevel'];
         $eventobj->timecreated = $eventdata['timecreated'];
-
         $subscriptions = \report_monitor\subscription_manager::get_subscriptions_by_event($event);
-
         foreach ($subscriptions as $sub) {
             $sendmsg = true;
             $subscription = new subscription($sub);
