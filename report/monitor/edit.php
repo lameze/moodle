@@ -27,8 +27,7 @@ require_once($CFG->dirroot.'/course/lib.php');
 require_once('locallib.php');
 
 $ruleid = optional_param('ruleid', 0, PARAM_INT);
-$courseid = optional_param('id', 0, PARAM_INT);
-
+$courseid = optional_param('id', optional_param('courseid', 0, PARAM_INT), PARAM_INT);
 $ruledata = new \stdClass();
 
 // Validate course id
