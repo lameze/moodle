@@ -30,6 +30,22 @@ $ruleid = optional_param('ruleid', 0, PARAM_INT);
 $courseid = optional_param('id', optional_param('courseid', 0, PARAM_INT), PARAM_INT);
 $ruledata = new \stdClass();
 
+// Get rule data to edit form
+if ($ruleid) {
+    $rule = \report_monitor\rule_manager::get_rule($ruleid);
+
+    $ruledata->ruleid = $rule->id;
+    $ruledata->courseid = $rule->courseid;
+    $ruledata->name = $rule->name;
+    $ruledata->plugin = $rule->plugin;
+    $ruledata->event = $rule->event;
+    $ruledata->description['text'] = $rule->description;
+    $ruledata->rule['frequency'] = $rule->frequency;
+    $ruledata->rule['minutes'] = $rule->minutes;
+    $ruledata->message_template['text'] = $rule->message_template;
+    $courseid = $rule->courseid;
+}
+
 // Validate course id
 if (empty($courseid)) {
     require_login();
@@ -44,21 +60,6 @@ if (empty($courseid)) {
     $coursename = format_string($course->fullname, true, array('context' => $context));
 }
 require_capability('report/monitor:managerules', $context);
-
-// Get rule data to edit form
-if ($ruleid) {
-    $rule = \report_monitor\rule_manager::get_rule($ruleid);
-
-    $ruledata->ruleid = $rule->id;
-    $ruledata->courseid = $rule->courseid;
-    $ruledata->name = $rule->name;
-    $ruledata->plugin = $rule->plugin;
-    $ruledata->event = $rule->event;
-    $ruledata->description['text'] = $rule->description;
-    $ruledata->rule['frequency'] = $rule->frequency;
-    $ruledata->rule['minutes'] = $rule->minutes;
-    $ruledata->message_template['text'] = $rule->message_template;
-}
 
 // Set up the page.
 $a = new stdClass();
