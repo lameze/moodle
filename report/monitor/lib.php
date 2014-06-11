@@ -64,23 +64,3 @@ function report_monitor_extend_navigation_course($navigation, $course, $context)
         }
     }
 }
-
-function report_monitor_extend_navigation_user($args) {
-    global $PAGE;
-    $nav = $PAGE->settingsnav->find('courseadmin', navigation_node::TYPE_COURSE);
-    if ($nav) {
-        // $nav is the course administration node and now you can hackily add anything you want to it.
-        $courseid = $PAGE->course->id;
-        if (empty($courseid)) {
-            $context = context_system::instance($courseid);
-        } else {
-            $context = context_course::instance($courseid);
-        }
-        if (has_capability('report/monitor:subscribe', $context)) {
-            $url = new moodle_url('/report/monitor/index.php', array('id' => $courseid));
-            $subsnode = navigation_node::create(get_string('managesubscriptions', 'report_monitor'), $url,
-                navigation_node::TYPE_SETTING, null, null, new pix_icon('i/settings', ''));
-            $nav->add_node($subsnode);
-        }
-    }
-}
