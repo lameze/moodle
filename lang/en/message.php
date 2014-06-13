@@ -146,3 +146,4 @@ $string['unreadnewnotifications'] = 'New notifications ({$a})';
 $string['userisblockingyou'] = 'This user has blocked you from sending messages to them';
 $string['userisblockingyounoncontact'] = '{$a} only accepts messages from their contacts.';
 $string['userssearchresults'] = 'Users found: {$a}';
+$string['usercantblockhimself'] = 'You can\'t block yourself.';

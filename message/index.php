@@ -144,10 +144,10 @@ if ($addcontact and confirm_sesskey()) {
 if ($removecontact and confirm_sesskey()) {
     message_remove_contact($removecontact);
 }
-if ($blockcontact and confirm_sesskey()) {
+if ($blockcontact and confirm_sesskey() and $user1->id != $blockcontact) {
     message_block_contact($blockcontact);
 }
-if ($unblockcontact and confirm_sesskey()) {
+if ($unblockcontact and confirm_sesskey() and $user1->id != $blockcontact) {
     message_unblock_contact($unblockcontact);
 }
 
@@ -236,6 +236,10 @@ $blockedusers = message_get_blocked_users($user1, $user2);
 $countblocked = count($blockedusers);
 
 list($onlinecontacts, $offlinecontacts, $strangers) = message_get_contacts($user1, $user2);
+// Display a message if the user try to block himself.
+if ($blockcontact and $user1->id == $blockcontact) {
+    echo $OUTPUT->notification(get_string('usercantblockhimself', 'message'), 'notifyproblem');
+}
 
 message_print_contact_selector($countunreadtotal, $viewing, $user1, $user2, $blockedusers, $onlinecontacts, $offlinecontacts, $strangers, $showactionlinks, $page);
 
