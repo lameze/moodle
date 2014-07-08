@@ -394,7 +394,7 @@ class tool_installaddon_validator {
             $this->add_message(self::WARNING, 'multiplelangenfiles');
         } else {
             $this->langfilename = $langfiles[0];
-            $this->add_message(self::DEBUG, 'foundlangfile', $this->langfilename);
+            $this->add_message(self::INFO, 'foundlangfile', $this->langfilename);
         }
 
         if ($this->assertions['plugintype'] === 'mod') {
