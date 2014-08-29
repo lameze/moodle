@@ -119,6 +119,8 @@ class grade_export_form extends moodleform {
             }
         }
         */
+        $mform->addElement('date_time_selector', 'exportsince', get_string('exportsince', 'grades'));
+
         $mform->addElement('select', 'display', get_string('gradeexportdisplaytype', 'grades'), $options);
         $mform->setDefault('display', $CFG->grade_export_displaytype);
 

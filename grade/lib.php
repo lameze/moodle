@@ -101,6 +101,11 @@ class graded_users_iterator {
     protected $suspendedusers = array();
 
     /**
+     * The report will be exported since this date.
+     */
+    protected $exportsince;
+
+    /**
      * Constructor
      *
      * @param object $course A course object
@@ -236,10 +241,12 @@ class graded_users_iterator {
                                        WHERE ra.roleid $gradebookroles_sql
                                          AND ra.contextid $relatedctxsql
                                   ) rainner ON rainner.userid = u.id
-                              WHERE u.deleted = 0
+                              WHERE u.deleted = 0 AND g.timemodified >= '" . $this->exportsince . "'
                               AND g.itemid $itemidsql
                               $groupwheresql
+
                          ORDER BY $order, g.itemid ASC";
+            //print_object($grades_sql);
             $this->grades_rs = $DB->get_recordset_sql($grades_sql, $params);
         } else {
             $this->grades_rs = false;
@@ -392,6 +399,12 @@ class graded_users_iterator {
             return $current;
         } else {
             return array_pop($this->gradestack);
+        }
+    }
+
+    public function exportsince($exportsince) {
+        if (!empty($exportsince)) {
+            $this->exportsince = $exportsince;
         }
     }
 }

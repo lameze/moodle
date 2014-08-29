@@ -81,6 +81,7 @@ class grade_export_ods extends grade_export {
         $gui = new graded_users_iterator($this->course, $this->columns, $this->groupid);
         $gui->require_active_enrolment($this->onlyactive);
         $gui->allow_user_custom_fields($this->usercustomfields);
+        $gui->exportsince($this->exportsince);
         $gui->init();
         while ($userdata = $gui->next_user()) {
             $i++;
@@ -116,6 +117,7 @@ class grade_export_ods extends grade_export {
             }
         }
         $gui->close();
+        $geub->save_exported_period($this->exportsince);
         $geub->close();
 
         // Close the workbook.

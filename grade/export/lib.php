@@ -40,7 +40,7 @@ abstract class grade_export {
     public $decimalpoints; // number of decimal points for exports
     public $onlyactive; // only include users with an active enrolment
     public $usercustomfields; // include users custom fields
-
+    public $exportsince;
     /**
      * @deprecated since Moodle 2.8
      * @var $previewrows Number of rows in preview.
@@ -188,6 +188,10 @@ abstract class grade_export {
 
         if (isset($formdata->updatedgradesonly)) {
             $this->updatedgradesonly = $formdata->updatedgradesonly;
+        }
+
+        if (isset($formdata->exportsince)) {
+            $this->exportsince = $formdata->exportsince;
         }
     }
 
@@ -369,7 +373,8 @@ abstract class grade_export {
                         'displaytype'       =>$this->displaytype,
                         'decimalpoints'     =>$this->decimalpoints,
                         'export_onlyactive' =>$this->onlyactive,
-                        'usercustomfields'  =>$this->usercustomfields);
+                        'usercustomfields'  =>$this->usercustomfields,
+                        'exportsince'       => $this->exportsince);
 
         return $params;
     }
@@ -442,6 +447,23 @@ class grade_export_update_buffer {
             $DB->execute($sql, $params);
             $this->update_list = array();
         }
+    }
+
+    /**
+     * Save exported date.
+     *
+     * @param $exportsince export since date.
+     * @return bool|int
+     */
+    public function save_exported_period ($exportsince) {
+        global $USER, $DB;
+
+        $exporthistory = new stdClass();
+        $exporthistory->datefrom = $exportsince;
+        $exporthistory->dateto = time();
+        $exporthistory->userid = $USER->id;
+
+        return $DB->insert_record('grade_export_history', $exporthistory);
     }
 
     /**
