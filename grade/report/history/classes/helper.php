@@ -174,6 +174,7 @@ class helper {
                   JOIN {grade_grades_history} ggh ON ggh.usermodified = u.id
                   JOIN {grade_items} gi ON gi.id = ggh.itemid
                  WHERE gi.courseid = :courseid
+                   AND ggh.usermodified <> ggh.userid
               GROUP BY u.id, $ufields
               ORDER BY u.lastname ASC, u.firstname ASC";
 
