@@ -54,7 +54,7 @@ require_once(dirname(dirname(__FILE__)) . '/message/lib.php');
  * @param stdClass $eventdata information about the message (component, userfrom, userto, ...)
  * @return mixed the integer ID of the new message or false if there was a problem with submitted data
  */
-function message_send($eventdata) {
+function message_send(\stdClass $eventdata) {
     global $CFG, $DB;
 
     //new message ID to return

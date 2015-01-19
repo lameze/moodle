@@ -3,6 +3,7 @@ information provided here is intended especially for developers.
 
 === 2.8.2 ===
 
+* The function message_send now requires a stdClass object as parameter on messagelib.php.
 * \core_component::fetch_subsystems() now returns a valid path for completion component instead of null.
 
 === 2.8 ===
