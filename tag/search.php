@@ -28,6 +28,9 @@ require_once('locallib.php');
 
 require_login();
 
+$systemcontext = context_system::instance();
+require_capability('moodle/tag:view', $systemcontext);
+
 if (empty($CFG->usetags)) {
     print_error('tagsaredisabled', 'tag');
 }
@@ -47,10 +50,9 @@ if ($perpage !== 18) {
     $params['perpage'] = $perpage;
 }
 $PAGE->set_url(new moodle_url('/tag/search.php', $params));
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context($systemcontext);
 $PAGE->set_pagelayout('standard');
 
-$systemcontext = context_system::instance();
 $manage_link = '&nbsp;';
 
 $PAGE->set_title(get_string('tags', 'tag'));

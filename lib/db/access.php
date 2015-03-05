@@ -1726,6 +1726,19 @@ $capabilities = array(
         )
     ),
 
+    'moodle/tag:view' => array(
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array(
+            'guest' => CAP_ALLOW,
+            'user' => CAP_ALLOW,
+            'student' => CAP_ALLOW,
+            'teacher' => CAP_ALLOW,
+            'editingteacher' => CAP_ALLOW,
+            'manager' => CAP_ALLOW
+        )
+    ),
+
     'moodle/block:view' => array(
         'captype' => 'read',
         'contextlevel' => CONTEXT_BLOCK,

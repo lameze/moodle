@@ -34,8 +34,7 @@ if (empty($CFG->usetags)) {
 
 require_login(0, false);
 if (isguestuser()) {
-    // Guests should not be using this.
-    die();
+    print_error('noguest');
 }
 
 // If a user cannot edit tags, they cannot add related tags which is what this auto complete is for.
