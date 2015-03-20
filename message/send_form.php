@@ -50,6 +50,9 @@ class send_form extends moodleform {
 
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);
+        $mform->addElement('hidden', 'courseid');
+        $mform->setType('courseid', PARAM_INT);
+
         $mform->addElement('hidden', 'viewing');
         $mform->setType('viewing', PARAM_ALPHANUMEXT);
 

@@ -67,7 +67,7 @@ Y.namespace('M.core_message.messenger').Manager = Y.extend(MANAGER, Y.Base, {
             });
         }
 
-        this._sendMessageDialog.prepareForUser(userid, fullname);
+        this._sendMessageDialog.prepareForUser(userid, fullname, e);
         this._sendMessageDialog.show(e);
     },
 

@@ -85,12 +85,17 @@ define('MESSAGE_DEFAULT_PERMITTED', 'permitted');
  * @param array $strangers an array of users who have messaged $user1 who aren't contacts
  * @param bool $showactionlinks show action links (add/remove contact etc)
  * @param int $page if there are so many users listed that they have to be split into pages what page are we viewing
+ * @param int $courseid course ID used to create the link to return to course.
  * @return void
  */
-function message_print_contact_selector($countunreadtotal, $viewing, $user1, $user2, $blockedusers, $onlinecontacts, $offlinecontacts, $strangers, $showactionlinks, $page=0) {
+function message_print_contact_selector($countunreadtotal, $viewing, $user1, $user2, $blockedusers, $onlinecontacts, $offlinecontacts, $strangers, $showactionlinks, $page=0, $courseid) {
     global $PAGE;
 
     echo html_writer::start_tag('div', array('class' => 'contactselector mdl-align'));
+
+    if (substr($viewing, 0, 7) == MESSAGE_VIEW_COURSE) {
+        $courseid = intval(substr($viewing, 7));
+    }
 
     //if 0 unread messages and they've requested unread messages then show contacts
     if ($countunreadtotal == 0 && $viewing == MESSAGE_VIEW_UNREAD_MESSAGES) {
@@ -111,14 +116,14 @@ function message_print_contact_selector($countunreadtotal, $viewing, $user1, $us
         $strunreadmessages = get_string('unreadmessages','message', $countunreadtotal);
     }
 
-    message_print_usergroup_selector($viewing, $courses, $coursecontexts, $countunreadtotal, count($blockedusers), $strunreadmessages, $user1);
+    message_print_usergroup_selector($viewing, $courses, $coursecontexts, $countunreadtotal, count($blockedusers), $strunreadmessages, $user1, $courseid);
 
     if ($viewing == MESSAGE_VIEW_UNREAD_MESSAGES) {
-        message_print_contacts($onlinecontacts, $offlinecontacts, $strangers, $PAGE->url, 1, $showactionlinks,$strunreadmessages, $user2);
+        message_print_contacts($onlinecontacts, $offlinecontacts, $strangers, $PAGE->url, 1, $showactionlinks,$strunreadmessages, $user2, $courseid);
     } else if ($viewing == MESSAGE_VIEW_CONTACTS || $viewing == MESSAGE_VIEW_SEARCH || $viewing == MESSAGE_VIEW_RECENT_CONVERSATIONS || $viewing == MESSAGE_VIEW_RECENT_NOTIFICATIONS) {
-        message_print_contacts($onlinecontacts, $offlinecontacts, $strangers, $PAGE->url, 0, $showactionlinks, $strunreadmessages, $user2);
+        message_print_contacts($onlinecontacts, $offlinecontacts, $strangers, $PAGE->url, 0, $showactionlinks, $strunreadmessages, $user2, $courseid);
     } else if ($viewing == MESSAGE_VIEW_BLOCKED) {
-        message_print_blocked_users($blockedusers, $PAGE->url, $showactionlinks, null, $user2);
+        message_print_blocked_users($blockedusers, $PAGE->url, $showactionlinks, null, $user2, $courseid);
     } else if (substr($viewing, 0, 7) == MESSAGE_VIEW_COURSE) {
         $courseidtoshow = intval(substr($viewing, 7));
 
@@ -126,7 +131,7 @@ function message_print_contact_selector($countunreadtotal, $viewing, $user1, $us
             && array_key_exists($courseidtoshow, $coursecontexts)
             && has_capability('moodle/course:viewparticipants', $coursecontexts[$courseidtoshow])) {
 
-            message_print_participants($coursecontexts[$courseidtoshow], $courseidtoshow, $PAGE->url, $showactionlinks, null, $page, $user2);
+            message_print_participants($coursecontexts[$courseidtoshow], $courseidtoshow, $PAGE->url, $showactionlinks, null, $page, $user2, $courseidtoshow);
         }
     }
 
@@ -142,6 +147,7 @@ function message_print_contact_selector($countunreadtotal, $viewing, $user1, $us
         echo html_writer::end_tag('form');
     }
 
+    message_course_link($courseid);
     echo html_writer::end_tag('div');
 }
 
@@ -155,9 +161,10 @@ function message_print_contact_selector($countunreadtotal, $viewing, $user1, $us
  * @param string $titletodisplay Optionally specify a title to display above the participants
  * @param int $page if there are so many users listed that they have to be split into pages what page are we viewing
  * @param object $user2 the user $user1 is talking to. They will be highlighted if they appear in the list of participants
+ * @param int $courseid the course ID the user is browsing.
  * @return void
  */
-function message_print_participants($context, $courseid, $contactselecturl=null, $showactionlinks=true, $titletodisplay=null, $page=0, $user2=null) {
+function message_print_participants($context, $courseid, $contactselecturl=null, $showactionlinks=true, $titletodisplay=null, $page=0, $user2=null, $courseid = null) {
     global $DB, $USER, $PAGE, $OUTPUT;
 
     if (empty($titletodisplay)) {
@@ -205,7 +212,7 @@ function message_print_participants($context, $courseid, $contactselecturl=null,
 
             $participant->messagecount = 0;//todo it would be nice if the course participant could report new messages
             $content = message_print_contactlist_user($participant, $iscontact, $isblocked,
-                $contactselecturl, $showactionlinks, $user2);
+                $contactselecturl, $showactionlinks, $user2, $courseid);
             $users .= html_writer::tag('li', $content);
         }
     }
@@ -287,8 +294,7 @@ function message_print_blocked_users($blockedusers, $contactselecturl=null, $sho
         $isusercontact = false;
         $blockeduserslist = '';
         foreach ($blockedusers as $blockeduser) {
-            $content = message_print_contactlist_user($blockeduser, $isusercontact, $isuserblocked,
-                $contactselecturl, $showactionlinks, $user2);
+            $content = message_print_contactlist_user($blockeduser, $isusercontact, $isuserblocked,$contactselecturl, $showactionlinks, $user2);
             $blockeduserslist .= html_writer::tag('li', $content);
         }
         echo html_writer::tag('ul', $blockeduserslist, array('id' => 'message-blockedusers', 'class' => 'message-contacts'));
@@ -407,9 +413,10 @@ function message_get_contacts($user1=null, $user2=null) {
  * @param bool $showactionlinks show action links (add/remove contact etc) next to the users
  * @param string $titletodisplay Optionally specify a title to display above the participants
  * @param object $user2 the user $user1 is talking to. They will be highlighted if they appear in the list of contacts
+ * @param int $courseid the course id to create the 'return to course' link.
  * @return void
  */
-function message_print_contacts($onlinecontacts, $offlinecontacts, $strangers, $contactselecturl=null, $minmessages=0, $showactionlinks=true, $titletodisplay=null, $user2=null) {
+function message_print_contacts($onlinecontacts, $offlinecontacts, $strangers, $contactselecturl=null, $minmessages=0, $showactionlinks=true, $titletodisplay=null, $user2=null, $courseid = null) {
     global $CFG, $PAGE, $OUTPUT;
 
     $countonlinecontacts  = count($onlinecontacts);
@@ -440,7 +447,7 @@ function message_print_contacts($onlinecontacts, $offlinecontacts, $strangers, $
         foreach ($onlinecontacts as $contact) {
             if ($minmessages == 0 || $contact->messagecount >= $minmessages) {
                 $content = message_print_contactlist_user($contact, $isusercontact, $isuserblocked,
-                    $contactselecturl, $showactionlinks, $user2);
+                    $contactselecturl, $showactionlinks, $user2, $courseid);
                 $contacts .= html_writer::tag('li', $content);
             }
         }
@@ -464,7 +471,7 @@ function message_print_contacts($onlinecontacts, $offlinecontacts, $strangers, $
         foreach ($offlinecontacts as $contact) {
             if ($minmessages == 0 || $contact->messagecount >= $minmessages) {
                 $content = message_print_contactlist_user($contact, $isusercontact, $isuserblocked,
-                    $contactselecturl, $showactionlinks, $user2);
+                    $contactselecturl, $showactionlinks, $user2, $courseid);
                 $contacts .= html_writer::tag('li', $content);
             }
         }
@@ -484,7 +491,7 @@ function message_print_contacts($onlinecontacts, $offlinecontacts, $strangers, $
         foreach ($strangers as $stranger) {
             if ($minmessages == 0 || $stranger->messagecount >= $minmessages) {
                 $content = message_print_contactlist_user($stranger, $isusercontact, $isuserblocked,
-                    $contactselecturl, $showactionlinks, $user2);
+                    $contactselecturl, $showactionlinks, $user2, $courseid);
                 $contacts .= html_writer::tag('li', $content);
             }
         }
@@ -510,9 +517,10 @@ function message_print_contacts($onlinecontacts, $offlinecontacts, $strangers, $
  * @param int $countblocked how many users has the current user blocked?
  * @param stdClass $user1 The user whose messages we are viewing.
  * @param string $strunreadmessages a preconstructed message about the number of unread messages the user has
+ * @param int $courseid the course ID
  * @return void
  */
-function message_print_usergroup_selector($viewing, $courses, $coursecontexts, $countunreadtotal, $countblocked, $strunreadmessages, $user1 = null) {
+function message_print_usergroup_selector($viewing, $courses, $coursecontexts, $countunreadtotal, $countblocked, $strunreadmessages, $user1 = null, $courseid = null) {
     global $PAGE;
     $options = array();
 
@@ -551,7 +559,10 @@ function message_print_usergroup_selector($viewing, $courses, $coursecontexts, $
         $options[MESSAGE_VIEW_BLOCKED] = $str;
     }
 
-    $select = new single_select($PAGE->url, 'viewing', $options, $viewing, false);
+    $url = $PAGE->url;
+    $url->param('courseid', $courseid);
+
+    $select = new single_select($url, 'viewing', $options, $viewing, false);
     $select->set_label(get_string('messagenavigation', 'message'));
 
     $renderer = $PAGE->get_renderer('core');
@@ -655,9 +666,10 @@ function message_count_blocked_users($user1=null) {
  *
  * @param  boolean $advancedsearch show basic or advanced search form
  * @param  object $user1 the current user
+ * @param  int $courseid the course id the user is browsing.
  * @return boolean true if a search was performed
  */
-function message_print_search($advancedsearch = false, $user1=null) {
+function message_print_search($advancedsearch = false, $user1=null, $courseid = null) {
     $frm = data_submitted();
 
     $doingsearch = false;
@@ -693,7 +705,7 @@ function message_print_search($advancedsearch = false, $user1=null) {
         }
 
         $showicontext = false;
-        message_print_search_results($frm, $showicontext, $user1);
+        message_print_search_results($frm, $showicontext, $user1, $courseid);
 
         return true;
     } else {
@@ -890,9 +902,10 @@ function message_print_recent_notifications($user=null) {
  * @param bool $showicontext show text next to the action icons?
  * @param bool $forcetexttohtml Force text to go through @see text_to_html() via @see format_text()
  * @param bool $showactionlinks
+ * @param int $courseid the course ID the user is browsing.
  * @return void
  */
-function message_print_recent_messages_table($messages, $user = null, $showotheruser = true, $showicontext = false, $forcetexttohtml = false, $showactionlinks = true) {
+function message_print_recent_messages_table($messages, $user = null, $showotheruser = true, $showicontext = false, $forcetexttohtml = false, $showactionlinks = true, $courseid = null) {
     global $OUTPUT;
     static $dateformat;
 
@@ -910,15 +923,15 @@ function message_print_recent_messages_table($messages, $user = null, $showother
             if ($showactionlinks) {
                 if ( $message->contactlistid )  {
                     if ($message->blocked == 0) { // The other user isn't blocked.
-                        $strcontact = message_contact_link($message->id, 'remove', true, null, $showicontext);
-                        $strblock   = message_contact_link($message->id, 'block', true, null, $showicontext);
+                        $strcontact = message_contact_link($message->id, 'remove', true, null, $showicontext, true, $courseid);
+                        $strblock   = message_contact_link($message->id, 'block', true, null, $showicontext, true, $courseid);
                     } else { // The other user is blocked.
-                        $strcontact = message_contact_link($message->id, 'add', true, null, $showicontext);
-                        $strblock   = message_contact_link($message->id, 'unblock', true, null, $showicontext);
+                        $strcontact = message_contact_link($message->id, 'add', true, null, $showicontext, true, $courseid);
+                        $strblock   = message_contact_link($message->id, 'unblock', true, null, $showicontext, true, $courseid);
                     }
                 } else {
-                    $strcontact = message_contact_link($message->id, 'add', true, null, $showicontext);
-                    $strblock   = message_contact_link($message->id, 'block', true, null, $showicontext);
+                    $strcontact = message_contact_link($message->id, 'add', true, null, $showicontext, true, $courseid);
+                    $strblock   = message_contact_link($message->id, 'block', true, null, $showicontext, true, $courseid);
                 }
 
                 //should we show just the icon or icon and text?
@@ -1151,9 +1164,10 @@ function message_get_contact($contactid) {
  * @param mixed $frm submitted form data
  * @param bool $showicontext show text next to action icons?
  * @param object $currentuser the current user
+ * @param int $courseid the course ID the user is browsing.
  * @return void
  */
-function message_print_search_results($frm, $showicontext=false, $currentuser=null) {
+function message_print_search_results($frm, $showicontext=false, $currentuser=null, $courseid = null) {
     global $USER, $DB, $OUTPUT;
 
     if (empty($currentuser)) {
@@ -1199,15 +1213,15 @@ function message_print_search_results($frm, $showicontext=false, $currentuser=nu
 
                 if ( $user->contactlistid )  {
                     if ($user->blocked == 0) { // User is not blocked.
-                        $strcontact = message_contact_link($user->id, 'remove', true, null, $showicontext);
-                        $strblock   = message_contact_link($user->id, 'block', true, null, $showicontext);
+                        $strcontact = message_contact_link($user->id, 'remove', true, null, $showicontext, true, $courseid);
+                        $strblock   = message_contact_link($user->id, 'block', true, null, $showicontext, true, $courseid);
                     } else { // blocked
-                        $strcontact = message_contact_link($user->id, 'add', true, null, $showicontext);
-                        $strblock   = message_contact_link($user->id, 'unblock', true, null, $showicontext);
+                        $strcontact = message_contact_link($user->id, 'add', true, null, $showicontext, true, $courseid);
+                        $strblock   = message_contact_link($user->id, 'unblock', true, null, $showicontext, true, $courseid);
                     }
                 } else {
-                    $strcontact = message_contact_link($user->id, 'add', true, null, $showicontext);
-                    $strblock   = message_contact_link($user->id, 'block', true, null, $showicontext);
+                    $strcontact = message_contact_link($user->id, 'add', true, null, $showicontext, true, $courseid);
+                    $strblock   = message_contact_link($user->id, 'block', true, null, $showicontext, true, $courseid);
                 }
 
                 // Should we show just the icon or icon and text?
@@ -1215,7 +1229,7 @@ function message_print_search_results($frm, $showicontext=false, $currentuser=nu
                 if ($showicontext) {
                     $histicontext = 'both';
                 }
-                $strhistory = message_history_link($USER->id, $user->id, true, '', '', $histicontext);
+                $strhistory = message_history_link($USER->id, $user->id, true, '', '', $histicontext, $courseid);
 
                 echo html_writer::start_tag('tr');
 
@@ -1369,11 +1383,11 @@ function message_print_search_results($frm, $showicontext=false, $currentuser=nu
                 echo html_writer::start_tag('tr', array('valign' => 'top'));
 
                 echo html_writer::start_tag('td', array('class' => 'contact'));
-                message_print_user($userfrom, $fromcontact, $fromblocked, $showicontext);
+                message_print_user($userfrom, $fromcontact, $fromblocked, $showicontext, $courseid);
                 echo html_writer::end_tag('td');
 
                 echo html_writer::start_tag('td', array('class' => 'contact'));
-                message_print_user($userto, $tocontact, $toblocked, $showicontext);
+                message_print_user($userto, $tocontact, $toblocked, $showicontext, $courseid);
                 echo html_writer::end_tag('td');
 
                 echo html_writer::start_tag('td', array('class' => 'summary'));
@@ -1428,9 +1442,10 @@ function message_print_search_results($frm, $showicontext=false, $currentuser=nu
  * @param bool $iscontact is the user being displayed a contact?
  * @param bool $isblocked is the user being displayed blocked?
  * @param bool $includeicontext include text next to the action icons?
+ * @param int $courseid the course ID the user is browsing.
  * @return void
  */
-function message_print_user ($user=false, $iscontact=false, $isblocked=false, $includeicontext=false) {
+function message_print_user ($user=false, $iscontact=false, $isblocked=false, $includeicontext=false, $courseid = null) {
     global $USER, $OUTPUT;
 
     $userpictureparams = array('size' => 20, 'courseid' => SITEID);
@@ -1451,15 +1466,15 @@ function message_print_user ($user=false, $iscontact=false, $isblocked=false, $i
         $return = false;
         $script = null;
         if ($iscontact) {
-            message_contact_link($user->id, 'remove', $return, $script, $includeicontext);
+            message_contact_link($user->id, 'remove', $return, $script, $includeicontext, true, $courseid);
         } else {
-            message_contact_link($user->id, 'add', $return, $script, $includeicontext);
+            message_contact_link($user->id, 'add', $return, $script, $includeicontext, true, $courseid);
         }
 
         if ($isblocked) {
-            message_contact_link($user->id, 'unblock', $return, $script, $includeicontext);
+            message_contact_link($user->id, 'unblock', $return, $script, $includeicontext, true, $courseid);
         } else {
-            message_contact_link($user->id, 'block', $return, $script, $includeicontext);
+            message_contact_link($user->id, 'block', $return, $script, $includeicontext, true, $courseid);
         }
     }
 }
@@ -1473,9 +1488,10 @@ function message_print_user ($user=false, $iscontact=false, $isblocked=false, $i
  * @param string $script the URL to send the user to when the link is clicked. If null, the current page.
  * @param bool $text include text next to the icons?
  * @param bool $icon include a graphical icon?
+ * @param int $courseid the course ID the user is browsing.
  * @return string  if $return is true otherwise bool
  */
-function message_contact_link($userid, $linktype='add', $return=false, $script=null, $text=false, $icon=true) {
+function message_contact_link($userid, $linktype='add', $return=false, $script=null, $text=false, $icon=true, $courseid = null) {
     global $OUTPUT, $PAGE;
 
     //hold onto the strings as we're probably creating a bunch of links
@@ -1496,6 +1512,11 @@ function message_contact_link($userid, $linktype='add', $return=false, $script=n
 
     $command = $linktype.'contact';
     $string  = $str->{$command};
+
+    $courseparam = null;
+    if (!empty($courseid)) {
+        $courseparam = '&amp;courseid='.$courseid;
+    }
 
     $safealttext = s($string);
 
@@ -1526,7 +1547,7 @@ function message_contact_link($userid, $linktype='add', $return=false, $script=n
     }
 
     $output = '<span class="'.$linktype.'contact">'.
-              '<a href="'.$script.'&amp;'.$command.'='.$userid.
+              '<a href="'.$script.'&amp;'.$command.'='.$userid.$courseparam.
               '&amp;sesskey='.sesskey().'" title="'.$safealttext.'">'.
               $img.
               $safestring.'</a></span>';
@@ -1548,9 +1569,10 @@ function message_contact_link($userid, $linktype='add', $return=false, $script=n
  * @param string $keywords any keywords to highlight in the message history
  * @param string $position anchor name to jump to within the message history
  * @param string $linktext optionally specify the link text
+ * @param int $courseid the course ID the user is browsing.
  * @return string|bool. Returns a string if $return is true. Otherwise returns a boolean.
  */
-function message_history_link($userid1, $userid2, $return=false, $keywords='', $position='', $linktext='') {
+function message_history_link($userid1, $userid2, $return=false, $keywords='', $position='', $linktext='', $courseid) {
     global $OUTPUT, $PAGE;
     static $strmessagehistory;
 
@@ -1589,6 +1611,11 @@ function message_history_link($userid1, $userid2, $return=false, $keywords='', $
     if ($PAGE->url && $PAGE->url->get_param('viewing')) {
         $link->param('viewing', $PAGE->url->get_param('viewing'));
     }
+
+    if (!empty($courseid)) {
+        $link->param('courseid', $courseid);
+    }
+
     $action = null;
     $str = $OUTPUT->action_link($link, $fulllink, $action, array('title' => $strmessagehistory));
 
@@ -1602,6 +1629,29 @@ function message_history_link($userid1, $userid2, $return=false, $keywords='', $
     }
 }
 
+/**
+ * Print return to course link.
+ *
+ * @param int $courseid course id.
+ */
+function message_course_link($courseid) {
+    global $OUTPUT;
+
+    $icon = $OUTPUT->pix_icon('i/course', get_string('returntocourse', 'lesson'), 'moodle', array('class' => 'tree-icon', 'title' => ''));
+
+    echo html_writer::start_tag('ul', array('class' => 'course'));
+    echo html_writer::start_tag('div', array('class' => 'course'));
+    echo html_writer::link('courseurl', $icon,
+        array(
+            'class' => 'float-left',
+            'data-action' => 'expand',
+            'title' => get_string('course')
+        )
+    );
+    echo html_writer::link(new moodle_url('/course/view.php', array('id'=>$courseid)), get_string("returntocourse", "lesson"));
+    echo html_writer::end_tag('div');
+    echo html_writer::end_tag('ul');
+}
 
 /**
  * Search through course users.
@@ -2012,8 +2062,9 @@ function message_get_history($user1, $user2, $limitnum=0, $viewingnewmessages=fa
  * @param int $messagelimit maximum number of messages to return
  * @param string $messagehistorylink the html for the message history link or false
  * @param bool $viewingnewmessages are we currently viewing new messages?
+ * @param int $courseid the course ID of the course the user is browsing.
  */
-function message_print_message_history($user1, $user2 ,$search = '', $messagelimit = 0, $messagehistorylink = false, $viewingnewmessages = false, $showactionlinks = true) {
+function message_print_message_history($user1, $user2 ,$search = '', $messagelimit = 0, $messagehistorylink = false, $viewingnewmessages = false, $showactionlinks = true, $courseid = null) {
     global $CFG, $OUTPUT;
 
     echo $OUTPUT->box_start('center', 'message_user_pictures');
@@ -2043,8 +2094,8 @@ function message_print_message_history($user1, $user2 ,$search = '', $messagelim
         $text = true;
         $icon = false;
 
-        $strcontact = message_get_contact_add_remove_link($user2->iscontact, $user2->isblocked, $user2, $script, $text, $icon);
-        $strblock   = message_get_contact_block_link($user2->iscontact, $user2->isblocked, $user2, $script, $text, $icon);
+        $strcontact = message_get_contact_add_remove_link($user2->iscontact, $user2->isblocked, $user2, $script, $text, $icon, $courseid);
+        $strblock   = message_get_contact_block_link($user2->iscontact, $user2->isblocked, $user2, $script, $text, $icon, $courseid);
         $useractionlinks = $strcontact.'&nbsp;|&nbsp;'.$strblock;
 
         echo html_writer::tag('div', $useractionlinks, array('class' => 'useractionlinks'));
@@ -2228,9 +2279,10 @@ function message_post_message($userfrom, $userto, $message, $format) {
  * @param string $selectcontacturl the url to send the user to when a contact's name is clicked
  * @param bool $showactionlinks display action links next to the other users (add contact, block user etc)
  * @param object $selecteduser the user the current user is viewing (if any). They will be highlighted.
+ * @param int $courseid the course ID of the course the users is browsing.
  * @return void
  */
-function message_print_contactlist_user($contact, $incontactlist = true, $isblocked = false, $selectcontacturl = null, $showactionlinks = true, $selecteduser=null) {
+function message_print_contactlist_user($contact, $incontactlist = true, $isblocked = false, $selectcontacturl = null, $showactionlinks = true, $selecteduser=null, $courseid = null) {
     global $OUTPUT, $USER, $COURSE;
     $fullname  = fullname($contact);
     $fullnamelink  = $fullname;
@@ -2251,10 +2303,10 @@ function message_print_contactlist_user($contact, $incontactlist = true, $isbloc
     if ($showactionlinks) {
         // Show block and delete links if user is real user.
         if (core_user::is_real_user($contact->id)) {
-            $strcontact = message_get_contact_add_remove_link($incontactlist, $isblocked, $contact);
-            $strblock   = message_get_contact_block_link($incontactlist, $isblocked, $contact);
+            $strcontact = message_get_contact_add_remove_link($incontactlist, $isblocked, $contact, $courseid);
+            $strblock   = message_get_contact_block_link($incontactlist, $isblocked, $contact, $courseid);
         }
-        $strhistory = message_history_link($USER->id, $contact->id, true, '', '', 'icon');
+        $strhistory = message_history_link($USER->id, $contact->id, true, '', '', 'icon', $courseid);
     }
 
     $output .= html_writer::start_tag('div', array('class' => 'pix'));
@@ -2279,6 +2331,9 @@ function message_print_contactlist_user($contact, $incontactlist = true, $isbloc
         $action = new popup_action('click', $link, "message_$contact->id", $popupoptions);
     }
 
+    if (!empty($courseid)) {
+        $link->param('courseid', $courseid);
+    }
 
     if (strlen($strcontact . $strblock . $strhistory) > 0) {
         $output .= html_writer::tag('div', $strcontact . $strblock . $strhistory, array('class' => 'link'));
@@ -2306,17 +2361,18 @@ function message_print_contactlist_user($contact, $incontactlist = true, $isbloc
  * @param string $script the URL to send the user to when the link is clicked. If null, the current page.
  * @param bool $text include text next to the icons?
  * @param bool $icon include a graphical icon?
+ * @param int $courseid the course ID the user is browsing.
  * @return string
  */
-function message_get_contact_add_remove_link($incontactlist, $isblocked, $contact, $script=null, $text=false, $icon=true) {
+function message_get_contact_add_remove_link($incontactlist, $isblocked, $contact, $script=null, $text=false, $icon=true, $courseid = null) {
     $strcontact = '';
 
     if($incontactlist){
-        $strcontact = message_contact_link($contact->id, 'remove', true, $script, $text, $icon);
+        $strcontact = message_contact_link($contact->id, 'remove', true, $script, $text, $icon, $courseid);
     } else if ($isblocked) {
-        $strcontact = message_contact_link($contact->id, 'add', true, $script, $text, $icon);
+        $strcontact = message_contact_link($contact->id, 'add', true, $script, $text, $icon, $courseid);
     } else{
-        $strcontact = message_contact_link($contact->id, 'add', true, $script, $text, $icon);
+        $strcontact = message_contact_link($contact->id, 'add', true, $script, $text, $icon, $courseid);
     }
 
     return $strcontact;
@@ -2331,9 +2387,10 @@ function message_get_contact_add_remove_link($incontactlist, $isblocked, $contac
  * @param string $script the URL to send the user to when the link is clicked. If null, the current page.
  * @param bool $text include text next to the icons?
  * @param bool $icon include a graphical icon?
+ * @param int $courseid the course ID the user is browsing.
  * @return string
  */
-function message_get_contact_block_link($incontactlist, $isblocked, $contact, $script=null, $text=false, $icon=true) {
+function message_get_contact_block_link($incontactlist, $isblocked, $contact, $script=null, $text=false, $icon=true, $courseid = null) {
     $strblock   = '';
 
     //commented out to allow the user to block a contact without having to remove them first
@@ -2341,9 +2398,9 @@ function message_get_contact_block_link($incontactlist, $isblocked, $contact, $s
         //$strblock = '';
     } else*/
     if ($isblocked) {
-        $strblock   = message_contact_link($contact->id, 'unblock', true, $script, $text, $icon);
+        $strblock   = message_contact_link($contact->id, 'unblock', true, $script, $text, $icon, $courseid);
     } else{
-        $strblock   = message_contact_link($contact->id, 'block', true, $script, $text, $icon);
+        $strblock   = message_contact_link($contact->id, 'block', true, $script, $text, $icon, $courseid);
     }
 
     return $strblock;

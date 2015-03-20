@@ -2229,7 +2229,7 @@ class global_navigation extends navigation_node {
                 $messageargs['user2'] = $user->id;
             }
             if ($course->id != $SITE->id) {
-                $messageargs['viewing'] = MESSAGE_VIEW_COURSE. $course->id;
+                $messageargs['courseid'] = $course->id;
             }
             $url = new moodle_url('/message/index.php',$messageargs);
             $usernode->add(get_string('messages', 'message'), $url, self::TYPE_SETTING, null, 'messages');

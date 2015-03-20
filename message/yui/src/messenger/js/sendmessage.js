@@ -114,12 +114,19 @@ Y.namespace('M.core_message.messenger').sendMessage = Y.extend(SENDMSGDIALOG, M.
      * @method prepareForUser
      * @param  {Number} userid   The user ID.
      * @param  {String} fullname The user full name.
+     * @param  {Event} event The event that triggered the popup.
      */
-    prepareForUser: function(userid, fullname) {
+    prepareForUser: function(userid, fullname, event) {
         var title;
 
         this.set('userid', userid);
         this.set('fullname', fullname);
+
+        // Get the href from the link that was clicked - or fall back to a site level default.
+        var href = event.target.get('href');
+        if (!href) {
+            href = M.cfg.wwwroot + '/message/index.php?id=' + this.get('userid');
+        }
 
         // Prepare the title.
         title = Y.Node.create('<h1>' + Y.Escape.html(fullname) + '</h1>');
@@ -127,7 +134,7 @@ Y.namespace('M.core_message.messenger').sendMessage = Y.extend(SENDMSGDIALOG, M.
 
         // Update the link to the conversation.
         this._bb.one(SELECTORS.SENDMSGDIALOG.HISTORYLINK)
-            .set('href', M.cfg.wwwroot + '/message/index.php?id=' + this.get('userid'));
+            .set('href', href);
 
         // Set the content as empty and lock send.
         this._bb.one(SELECTORS.SENDMSGDIALOG.INPUT).set('value', '');

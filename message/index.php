@@ -76,9 +76,13 @@ if ($user2id !== 0) {
         $viewing = MESSAGE_VIEW_CONTACTS;
     }
 }
-
+$courseid = optional_param('courseid', 0, PARAM_INT);
 if ($viewing != MESSAGE_VIEW_UNREAD_MESSAGES) {
-    $url->param('viewing', $viewing);
+
+    if (substr($viewing, 0, 7) == MESSAGE_VIEW_COURSE) {
+        $courseid = intval(substr($viewing, 7));
+    }
+    $url->param('courseid', $courseid);
 }
 
 $PAGE->set_url($url);
@@ -110,6 +114,11 @@ if (!empty($user2id)) {
 }
 unset($user2id);
 
+$previewnode = $PAGE->navigation->add(get_string('myhome'), new moodle_url('my/index.php'), navigation_node::TYPE_CONTAINER);
+$messagenode = $previewnode->add(get_string('messages', 'message'), new moodle_url($url));
+$messagenode->make_active();
+$PAGE->navbar->add(fullname($user2), new moodle_url($url));
+
 $user2realuser = !empty($user2) && core_user::is_real_user($user2->id);
 $showactionlinks = $showactionlinks && $user2realuser;
 $systemcontext = context_system::instance();
@@ -118,8 +127,7 @@ if ($currentuser === false && !has_capability('moodle/site:readallmessages', $sy
     print_error('accessdenied','admin');
 }
 
-if (substr($viewing, 0, 7) == MESSAGE_VIEW_COURSE) {
-    $courseid = intval(substr($viewing, 7));
+if ($courseid > 1) {
     require_login($courseid);
     require_capability('moodle/course:viewparticipants', context_course::instance($courseid));
     $PAGE->set_pagelayout('incourse');
@@ -235,7 +243,8 @@ $countblocked = count($blockedusers);
 
 list($onlinecontacts, $offlinecontacts, $strangers) = message_get_contacts($user1, $user2);
 
-message_print_contact_selector($countunreadtotal, $viewing, $user1, $user2, $blockedusers, $onlinecontacts, $offlinecontacts, $strangers, $showactionlinks, $page);
+message_print_contact_selector($countunreadtotal, $viewing, $user1, $user2, $blockedusers, $onlinecontacts,
+        $offlinecontacts, $strangers, $showactionlinks, $page, $courseid);
 
 echo html_writer::start_tag('div', array('class' => 'messagearea mdl-align'));
     if (!empty($user2)) {
@@ -267,7 +276,7 @@ echo html_writer::start_tag('div', array('class' => 'messagearea mdl-align'));
             }
 
             $messagehistorylink =  html_writer::start_tag('div', array('class' => 'mdl-align messagehistorytype'));
-                $messagehistorylink .= html_writer::link($PAGE->url->out(false).'&history='.MESSAGE_HISTORY_ALL,
+                $messagehistorylink .= html_writer::link($PAGE->url->out(false).'&history='.MESSAGE_HISTORY_ALL.'&courseid='.$courseid,
                     get_string('messagehistoryfull','message'),
                     array('class' => $historylinkclass));
 
@@ -275,7 +284,7 @@ echo html_writer::start_tag('div', array('class' => 'messagearea mdl-align'));
                     $messagehistorylink .= get_string('messagehistoryfull','message');
                 $messagehistorylink .= html_writer::end_tag('span');
 
-                $messagehistorylink .= '&nbsp;|&nbsp;'.html_writer::link($PAGE->url->out(false).'&history='.MESSAGE_HISTORY_SHORT,
+                $messagehistorylink .= '&nbsp;|&nbsp;'.html_writer::link($PAGE->url->out(false).'&history='.MESSAGE_HISTORY_SHORT.'&courseid='.$courseid,
                     get_string('mostrecent','message'),
                     array('class' => $recentlinkclass));
 
@@ -291,7 +300,7 @@ echo html_writer::start_tag('div', array('class' => 'messagearea mdl-align'));
 
             $messagehistorylink .= html_writer::end_tag('div');
 
-            message_print_message_history($user1, $user2, $search, $displaycount, $messagehistorylink, $viewingnewmessages, $showactionlinks);
+            message_print_message_history($user1, $user2, $search, $displaycount, $messagehistorylink, $viewingnewmessages, $showactionlinks, $courseid);
         echo html_writer::end_tag('div');
 
         //send message form
@@ -323,12 +332,13 @@ echo html_writer::start_tag('div', array('class' => 'messagearea mdl-align'));
             echo html_writer::end_tag('div');
         }
     } else if ($viewing == MESSAGE_VIEW_SEARCH) {
-        message_print_search($advancedsearch, $user1);
+        message_print_search($advancedsearch, $user1, $courseid);
     } else if ($viewing == MESSAGE_VIEW_RECENT_CONVERSATIONS) {
         message_print_recent_conversations($user1, false, $showactionlinks);
     } else if ($viewing == MESSAGE_VIEW_RECENT_NOTIFICATIONS) {
         message_print_recent_notifications($user1);
     }
+
 echo html_writer::end_tag('div');
 
 echo $OUTPUT->box_end();
