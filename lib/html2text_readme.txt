@@ -16,3 +16,6 @@ Modifications
 
 
 Imported from: https://github.com/moodle/custom-html2text/tree/MOODLE_5886_1
+
+The html2text library has not been upgraded to version 2.0.1, since we implemented many custom tweaks in our class and
+it would conflict with the existing code.
