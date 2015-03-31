@@ -2245,3 +2245,41 @@ function check_slasharguments(environment_results $result){
 
     return null;
 }
+
+/**
+ * This function verifies if the database has tables using innoDB Antelope file format.
+ *
+ * @param environment_results $result
+ * @return environment_results|null updated results object, or null if no Antelope table has been found.
+ */
+function check_tables_innodb_file_format(environment_results $result) {
+    global $DB;
+
+    if ($DB->get_dbfamily() == 'mysql') {
+
+        $generator = $DB->get_manager()->generator;
+        $tableneedconversion = 0;
+
+        foreach ($DB->get_tables(false) as $table) {
+            $columns = $DB->get_columns($table, false);
+            $size = $generator->guess_antolope_row_size($columns);
+            $format = $DB->get_row_format($table);
+
+            if ($size <= $generator::ANTELOPE_MAX_ROW_SIZE) {
+                continue;
+            }
+
+            if ($format === 'Compact' or $format === 'Redundant') {
+                $tableneedconversion++;
+            }
+        }
+
+        if ($tableneedconversion > 0) {
+            $result->setInfo('innodb_antelope_table_file_format');
+            $result->setStatus(false);
+            return $result;
+        }
+    }
+
+    return null;
+}

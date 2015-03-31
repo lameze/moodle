@@ -1067,6 +1067,7 @@ $string['unlockaccount'] = 'Unlock account';
 $string['unsettheme'] = 'Unset theme';
 $string['unsupported'] = 'Unsupported';
 $string['unsupporteddbstorageengine'] = 'The database storage engine being used is no longer supported.';
+$string['unsupporteddbtableformat'] = 'Your database has tables using Antelope as file format. You are recommended to convert the tables to Barracuda file format. See the documentation <a href="https://docs.moodle.org/en/cli">Administration via command line</a> for details of a tool for converting InnoDB tables to Barracuda.';
 $string['unsuspenduser'] = 'Activate user account';
 $string['updateaccounts'] = 'Update existing accounts';
 $string['updatecomponent'] = 'Update component';

@@ -1390,6 +1390,11 @@
           <ON_CHECK message="slashargumentswarning" />
         </FEEDBACK>
       </CUSTOM_CHECK>
+      <CUSTOM_CHECK file="lib/upgradelib.php" function="check_tables_innodb_file_format" level="optional">
+        <FEEDBACK>
+          <ON_CHECK message="warningconvertinnodbtableformat" />
+        </FEEDBACK>
+      </CUSTOM_CHECK>
     </CUSTOM_CHECKS>
   </MOODLE>
 </COMPATIBILITY_MATRIX>
