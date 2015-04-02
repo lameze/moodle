@@ -23,6 +23,7 @@ Feature: Allow students to manually mark an activity as complete
       | Enable conditional access | 1 |
     And I log out
     And I log in as "teacher1"
+    And I am on site homepage
     And I follow "Course 1"
     And I turn editing mode on
     And I click on "Edit settings" "link" in the "Administration" "block"
@@ -35,10 +36,12 @@ Feature: Allow students to manually mark an activity as complete
     Then "Student First" user has not completed "Test forum name" activity
     And I log out
     And I log in as "student1"
+    And I am on site homepage
     And I follow "Course 1"
     And I press "Mark as complete: Test forum name"
     And I log out
     And I log in as "teacher1"
+    And I am on site homepage
     And I follow "Course 1"
     And I expand "Reports" node
     And I follow "Activity completion"
