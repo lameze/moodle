@@ -30,6 +30,7 @@ Feature: edit_availability
 
   Scenario: Confirm the 'enable availability' option is working
     When I log in as "teacher1"
+    And I am on site homepage
     And I follow "Course 1"
     And I turn editing mode on
     And I add a "Page" to section "1"
@@ -46,6 +47,7 @@ Feature: edit_availability
 
     When I log out
     And I log in as "teacher1"
+    And I am on site homepage
     And I follow "Course 1"
     And I turn editing mode on
     And I add a "Page" to section "1"
@@ -158,6 +160,7 @@ Feature: edit_availability
       | Enable conditional access | 1 |
     And I log out
     And I log in as "teacher1"
+    And I am on site homepage
     And I follow "Course 1"
     And I turn editing mode on
 
@@ -177,6 +180,7 @@ Feature: edit_availability
   Scenario: 'Add group/grouping access restriction' button unavailable
     # Button does not exist when conditional access restrictions are turned off.
     Given I log in as "admin"
+    And I am on site homepage
     And I follow "Course 1"
     And I turn editing mode on
     And I add a "Forum" to section "1"
@@ -192,7 +196,7 @@ Feature: edit_availability
     And the following "groupings" exist:
       | name | course | idnumber |
       | GX1  | C1     | GXI1     |
-    And I am on homepage
+    And I am on site homepage
     And I follow "Course 1"
     And I turn editing mode on
     And I add a "Forum" to section "1"
