@@ -1,4 +1,4 @@
-@core @core_filepicker
+@core @core_filepicker @repository
 Feature: Zip folders and unzip compressed files
   In order to download or add contents to file areas easily
   As a user
@@ -10,6 +10,7 @@ Feature: Zip folders and unzip compressed files
       | fullname | shortname | category |
       | Course 1 | C1 | 0 |
     And I log in as "admin"
+    And I am on site homepage
     And I follow "Course 1"
     And I turn editing mode on
     And I add a "Folder" to section "0"

@@ -1,4 +1,4 @@
-@core @core_filepicker @_file_upload
+@core @core_filepicker @_file_upload @repository
 Feature: Delete files and folders from the file manager
   In order to clean the file manager contents
   As a user
@@ -7,6 +7,7 @@ Feature: Delete files and folders from the file manager
   @javascript @_bug_phantomjs
   Scenario: Delete a file and a folder
     Given I log in as "admin"
+    And I am on site homepage
     And I navigate to "My private files" node in "My profile"
     And I upload "lib/tests/fixtures/empty.txt" file to "Files" filemanager
     And I create "Delete me" folder in "Files" filemanager

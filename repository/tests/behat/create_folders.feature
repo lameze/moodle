@@ -1,4 +1,4 @@
-@core @core_filepicker
+@core @core_filepicker @repository
 Feature: Create folders in the file manager
   In order to create a directory structure in a file area
   As a user
@@ -10,6 +10,7 @@ Feature: Create folders in the file manager
       | fullname | shortname | category |
       | Course 1 | C1 | 0 |
     And I log in as "admin"
+    And I am on site homepage
     And I follow "Course 1"
     And I turn editing mode on
     And I add a "Folder" to section "0"
