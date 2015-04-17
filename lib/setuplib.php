@@ -109,7 +109,7 @@ class moodle_exception extends Exception {
      * @param string $module name of module
      * @param string $link The url where the user will be prompted to continue. If no url is provided the user will be directed to the site index page.
      * @param mixed $a Extra words and phrases that might be required in the error string
-     * @param string $debuginfo optional debugging information
+     * @param string|null $debuginfo Optional information to aid the debugging process.
      */
     function __construct($errorcode, $module='', $link='', $a=NULL, $debuginfo=null) {
         if (empty($module) || $module == 'moodle' || $module == 'core') {
@@ -157,9 +157,9 @@ class moodle_exception extends Exception {
 class require_login_exception extends moodle_exception {
     /**
      * Constructor
-     * @param string $debuginfo Information to aid the debugging process
+     * @param string|null $debuginfo Optional information to aid the debugging process.
      */
-    function __construct($debuginfo) {
+    function __construct($debuginfo = null) {
         parent::__construct('requireloginerror', 'error', '', NULL, $debuginfo);
     }
 }
@@ -175,7 +175,7 @@ class webservice_parameter_exception extends moodle_exception {
      * Constructor
      * @param string $errorcode The name of the string from webservice.php to print
      * @param string $a The name of the parameter
-     * @param string $debuginfo Optional information to aid debugging
+     * @param string|null $debuginfo Optional information to aid debugging.
      */
     function __construct($errorcode=null, $a = '', $debuginfo = null) {
         parent::__construct($errorcode, 'webservice', '', $a, $debuginfo);
