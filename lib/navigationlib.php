@@ -4350,7 +4350,7 @@ class settings_navigation extends navigation_node {
         if (isloggedin() && !isguestuser($user) && !is_mnet_remote_user($user)) {
             if (($currentuser || is_siteadmin($USER) || !is_siteadmin($user)) &&
                     has_capability('moodle/user:update', $systemcontext)) {
-                $url = new moodle_url('/user/editadvanced.php', array('id' => $user->id));
+                $url = new moodle_url('/user/editadvanced.php', array('id' => $user->id, 'course' => $course->id));
                 $useraccount->add(get_string('editmyprofile'), $url, self::TYPE_SETTING);
             } else if ((has_capability('moodle/user:editprofile', $usercontext) && !is_siteadmin($user)) ||
                     ($currentuser && has_capability('moodle/user:editownprofile', $systemcontext))) {
@@ -4450,7 +4450,7 @@ class settings_navigation extends navigation_node {
             if (portfolio_has_visible_instances()) {
                 $portfolio = $usersetting->add(get_string('portfolios', 'portfolio'), null, self::TYPE_SETTING);
 
-                $url = new moodle_url('/user/portfolio.php');
+                $url = new moodle_url('/user/portfolio.php', array('courseid' => $course->id));
                 $portfolio->add(get_string('configure', 'portfolio'), $url, self::TYPE_SETTING);
 
                 $url = new moodle_url('/user/portfoliologs.php', array('courseid'=>$course->id));
