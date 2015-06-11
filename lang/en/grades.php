@@ -66,6 +66,7 @@ $string['aggregationhintexcluded'] = '( Excluded )';
 $string['aggregationhintextra'] = '( Extra credit )';
 $string['aggregation_link'] = 'grade/aggregation';
 $string['aggregationcoef'] = 'Aggregation coefficient';
+$string['aggregationcoef_help'] = 'Help for aggregation coefficient';
 $string['aggregationcoefextra'] = 'Extra credit'; // for the header of the table at Edit categories and items page
 $string['aggregationcoefextra_help'] = 'If the aggregation is \'Natural\' or \'Simple weighted mean\' and the extra credit checkbox is ticked, the grade item\'s maximum grade is not added to the category\'s maximum grade. This will result in the possibility of achieving the maximum grade in the category without having the maximum grade in all the grade items. If the site administrator has enabled grades over the maximum, there might be grades over the maximum.
 
