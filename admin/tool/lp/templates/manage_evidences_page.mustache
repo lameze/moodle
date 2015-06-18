@@ -1,0 +1,129 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    Manage learning plan evidences of prior learning requests.
+
+    Classes required for JS:
+    * drag-parentnode
+    * drag-handlecontainer
+    * drag-samenode
+    * templateactions
+
+    Data attibutes required for JS:
+    * data-region = managetemplates
+    * data-templateid = id
+    * data-action = deletetemplate
+
+    Context variables required for this template:
+    * evidences - array of objects containing id, name, description, sortorder, visible
+    * canmanage - true if this user has permission to manage the templates
+    * navigation - array of strings containing buttons for navigation
+}}
+<div data-region="managetemplates">
+<table class="generaltable fullwidth managetemplates">
+    <caption>{{#str}}evidencelist, tool_lp{{/str}}</caption>
+    <thead>
+        <tr>
+            <th scope="col">{{#str}}evidencename, tool_lp{{/str}}</th>
+            <th scope="col">{{#str}}evidencedescription, tool_lp{{/str}}</th>
+            <th scope="col">{{#str}}evidencetype, tool_lp{{/str}}</th>
+            <th scope="col">{{#str}}evidencelink, tool_lp{{/str}}</th>
+            <th scope="col">{{#str}}evidenceinstitution, tool_lp{{/str}}</th>
+            <th scope="col">{{#str}}evidencedatecompleted, tool_lp{{/str}}</th>
+            <th scope="col">{{#str}}evidencefileattachments, tool_lp{{/str}}</th>
+            <th scope="col">{{#str}}actions, tool_lp{{/str}}</th>
+        </tr>
+    </thead>
+    <tbody class="drag-parentnode">
+        {{#evidences}}
+        <tr class="drag-samenode" data-templateid="{{id}}">
+            <td>
+                <span><a href="{{pluginbaseurl}}/evidence.php?id={{id}}">{{name}}</a></span>
+            </td>
+            <td>
+                <span>{{description}}</span>
+            </td>
+            <td>
+                <span>{{evidencetypeid}}</span>
+            </td>
+            <td>
+                <span>{{link}}</span>
+            </td>
+            <td>
+                <span>{{institution}}</span>
+            </td>
+            <td>
+                <span>{{datecompleted}}</span>
+            </td>
+            <td>
+                <span>{{fileattachments}}</span>
+            </td>
+            <td>
+            {{#canmanage}}
+            <div style="display: inline-block;">
+            <ul class="templateactions hide">
+                <li>
+                    <a href="{{pluginbaseurl}}/approveevidence.php?id={{id}}">
+                        {{#pix}}t/go{{/pix}}{{#str}}evidenceapprove, tool_lp{{/str}}
+                    </a>
+                </li>
+                <li>
+                    <a href="{{pluginbaseurl}}/declineevidence.php?id={{id}}">
+                        {{#pix}}t/stop{{/pix}}{{#str}}evidencedecline, tool_lp{{/str}}
+                    </a>
+                </li>
+                <li>
+                    <a href="{{pluginbaseurl}}/edittemplate.php?id={{id}}">
+                        {{#pix}}t/edit{{/pix}}{{#str}}editthistemplate, tool_lp{{/str}}
+                    </a>
+                </li>
+                <li>
+                    <a data-action="deletetemplate" data-templateid="{{id}}" href="#">
+                        {{#pix}}t/delete{{/pix}}{{#str}}deletethistemplate, tool_lp{{/str}}
+                    </a>
+                </li>
+            </ul>
+            </div>
+            {{/canmanage}}
+            </td>
+        </tr>
+        {{/evidences}}
+    </tbody>
+</table>
+{{^evidences}}
+<p class="alert-info">
+    {{#str}}noevidences, tool_lp{{/str}}
+</p>
+{{/evidences}}
+
+
+{{#js}}
+// Initialise the JS.
+require(['tool_lp/templatedelete',
+         'core/menu',
+         'tool_lp/templatemove'],
+        function(deleteMod, menu, moveMod) {
+
+    deleteMod.init();
+    moveMod.init();
+
+    menu.menu('{{#str}}edit{{/str}}', '.templateactions');
+});
+
+{{/js}}
+
+</div>

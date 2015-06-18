@@ -1230,4 +1230,89 @@ class api {
 
         return $plan->delete();
     }
+
+    /**
+     * Move the template competency up or down in the display list.
+     *
+     * Requires tool/lp:templatecompetencymanage capability at the system context.
+     *
+     * @param int $templateid The template id
+     * @param int $competencyidfrom The id of the competency we are moving.
+     * @param int $competencyidto The id of the competency we are moving to.
+     * @return boolean
+     */
+    public static function reorder_template_competency($templateid, $competencyidfrom, $competencyidto) {
+        // First we do a permissions check.
+        $context = context_system::instance();
+
+        require_capability('tool/lp:templatecompetencymanage', $context);
+
+        $down = true;
+        $templatecompetency = new template_competency();
+        $matches = $templatecompetency->get_records(array('templateid' => $templateid, 'competencyid' => $competencyidfrom));
+        if (count($matches) == 0) {
+            throw new coding_exception('The link does not exist');
+        }
+
+        $competencyfrom = array_pop($matches);
+        $matches = $templatecompetency->get_records(array('templateid' => $templateid, 'competencyid' => $competencyidto));
+        if (count($matches) == 0) {
+            throw new coding_exception('The link does not exist');
+        }
+
+        $competencyto = array_pop($matches);
+
+        $all = $templatecompetency->get_records(array('templateid' => $templateid), 'sortorder', 'ASC', 0, 0);
+
+        if ($competencyfrom->get_sortorder() > $competencyto->get_sortorder()) {
+            // We are moving up, so put it before the "to" item.
+            $down = false;
+        }
+
+        foreach ($all as $id => $templatecompetency) {
+            $sort = $templatecompetency->get_sortorder();
+            if ($down && $sort > $competencyfrom->get_sortorder() && $sort <= $competencyto->get_sortorder()) {
+                $templatecompetency->set_sortorder($templatecompetency->get_sortorder() - 1);
+                $templatecompetency->update();
+            } else if (!$down && $sort >= $competencyto->get_sortorder() && $sort < $competencyfrom->get_sortorder()) {
+                $templatecompetency->set_sortorder($templatecompetency->get_sortorder() + 1);
+                $templatecompetency->update();
+            }
+        }
+        $competencyfrom->set_sortorder($competencyto->get_sortorder());
+        return $competencyfrom->update();
+    }
+
+    /**
+     * Perform a search based on the provided filters and return a paginated list of records.
+     *
+     * Requires tool/lp:templateread capability at the system context.
+     * @throw required_capability_exception In case of not enough permissions.
+     * @param array $filters A list of filters to apply to the list.
+     * @param string $sort The column to sort on
+     * @param string $order ('ASC' or 'DESC')
+     * @param int $skip Number of records to skip (pagination)
+     * @param int $limit Max of records to return (pagination)
+     * @return array of competency_framework
+     */
+    public static function list_evidences($filters = array(), $sort = '', $order = 'ASC', $skip = 0, $limit = 0) {
+        // First we do a permissions check.
+        $context = context_system::instance();
+
+        /**
+         * Learning plans caps.
+         *
+         * tool_lp/evidence:manageown - can attach evidence of prior learning to a competency in any of their active learning plans
+         * tool_lp/evidence:manageany can edit the evidence for any other user
+         * tool_lp/plancompetency:approve can then review the evidence and either approve or deny the request
+         * (with a text comment). Approving the request will mark the competency as met.
+         */
+//        $caps = array('tool/lp:templateread', 'tool/lp:templatemanage');
+//        if (!has_any_capability($caps, $context)) {
+//            throw new required_capability_exception($context, 'tool/lp:templateread', 'nopermissions', '');
+//        }
+
+        $evidence = new evidence();
+        return $evidence->get_records($filters, $sort, $order, $skip, $limit);
+    }
 }
