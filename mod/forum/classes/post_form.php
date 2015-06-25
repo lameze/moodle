@@ -166,7 +166,7 @@ class mod_forum_post_form extends moodleform {
             $modulecontext = context_module::instance($cm->id);
 
             // Check whether the user has access to all groups in this forum from the accessallgroups cap.
-            if ($groupmode == VISIBLEGROUPS || has_capability('moodle/site:accessallgroups', $modulecontext)) {
+            if ($groupmode == VISIBLEGROUPS && has_capability('moodle/site:accessallgroups', $modulecontext)) {
                 // Only allow posting to all groups if the user has access to all groups.
                 $groupinfo = array('0' => get_string('allparticipants'));
                 $groupcount++;
