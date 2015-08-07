@@ -1532,25 +1532,6 @@ function stats_fix_zeros($stats,$timeafter,$timestr,$line2=true,$line3=false) {
         }
     }
 
-    // Add the base timestamp to the statistics if not present.
-    foreach ($times as $count => $time) {
-        if (!in_array($time,$actualtimes) && $count != count($times) -1) {
-            $newobj = new StdClass;
-            $newobj->timeend = $time;
-            $newobj->id = 0;
-            $newobj->roleid = 0;
-            $newobj->line1 = 0;
-            if (!empty($line2)) {
-                $newobj->line2 = 0;
-            }
-            if (!empty($line3)) {
-                $newobj->line3 = 0;
-            }
-            $newobj->zerofixed = true;
-            $stats[] = $newobj;
-        }
-    }
-
     usort($stats,"stats_compare_times");
     return $stats;
 }
