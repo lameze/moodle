@@ -1485,18 +1485,16 @@ function stats_fix_zeros($stats,$timeafter,$timestr,$line2=true,$line3=false) {
     $actualtimes = array();
     $actualtimeshour = null;
     foreach ($stats as $statid => $s) {
-        // Normalise the month date to the 1st if for any reason it's set to later. But we ignore
-        // anything above or equal to 29 because sometimes we get the end of the month. Also, we will
-        // set the hours of the result to all of them, that way we prevent DST differences.
-        if ($timestr == 'monthly') {
-            $day = date('d', $s->timeend);
-            if (date('d', $s->timeend) > 1 && date('d', $s->timeend) < 29) {
-                $day = 1;
-            }
-            if (is_null($actualtimeshour)) {
-                $actualtimeshour = date('H', $s->timeend);
-            }
-            $s->timeend = mktime($actualtimeshour, 0, 0, date('m', $s->timeend), $day, date('Y', $s->timeend));
+        if ($timestr == 'daily') {
+            $s->timeend = stats_get_base_daily($s->timeend);
+        } else if ($timestr == 'weekly') {
+            $s->timeend = stats_get_base_weekly($s->timeend);
+        } else if ($timestr == 'monthly') {
+            $d = new DateTime();
+            $d->setTimestamp($s->timeend);
+            $d->modify("last day of this month");
+            $d->modify("t12:00:00");
+            $s->timeend = $d->getTimestamp();
         }
         $stats[$statid] = $s;
         $actualtimes[] = $s->timeend;
@@ -1514,18 +1512,11 @@ function stats_fix_zeros($stats,$timeafter,$timestr,$line2=true,$line3=false) {
         } else if ($timestr == 'weekly') {
             $timeafter = stats_get_next_week_start($timeafter);
         } else if ($timestr == 'monthly') {
-            // We can't just simply +1 month because the 31st Jan + 1 month = 2nd of March.
-            $year = date('Y', $timeafter);
-            $month = date('m', $timeafter);
-            $day = date('d', $timeafter);
-            $dayofnextmonth = $day;
-            if ($day >= 29) {
-                $daysinmonth = date('n', mktime(0, 0, 0, $month+1, 1, $year));
-                if ($day > $daysinmonth) {
-                    $dayofnextmonth = $daysinmonth;
-                }
-            }
-            $timeafter = mktime($actualtimeshour, 0, 0, $month+1, $dayofnextmonth, $year);
+            $d = new DateTime();
+            $d->setTimestamp($timeafter);
+            $d->modify("last day of next month");
+            $d->modify("t12:00:00");
+            $timeafter = $d->getTimestamp();
         } else {
             // This will put us in a never ending loop.
             return $stats;
@@ -1533,8 +1524,8 @@ function stats_fix_zeros($stats,$timeafter,$timestr,$line2=true,$line3=false) {
     }
 
     // Add the base timestamp to the statistics if not present.
-    foreach ($times as $count => $time) {
-        if (!in_array($time,$actualtimes) && $count != count($times) -1) {
+    foreach ($times as $time) {
+        if (!in_array($time, $actualtimes)) {
             $newobj = new StdClass;
             $newobj->timeend = $time;
             $newobj->id = 0;
