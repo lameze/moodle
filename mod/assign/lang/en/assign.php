@@ -187,7 +187,7 @@ $string['grantextensionforusers'] = 'Grant extension for {$a} students';
 $string['enabled'] = 'Enabled';
 $string['errornosubmissions'] = 'There are no submissions to download';
 $string['errorquickgradingvsadvancedgrading'] = 'The grades were not saved because this assignment is currently using advanced grading';
-$string['errorrecordmodified'] = 'The grades were not saved because someone has modified one or more records more recently than when you loaded the page.';
+$string['errorrecordmodifiedforuser'] = 'The grade for user "{$a}" was not saved because someone has modified the record more recently than when you loaded the page.';
 $string['feedback'] = 'Feedback';
 $string['feedbackavailabletext'] = '{$a->username} has posted some feedback on your
 assignment submission for \'{$a->assignment}\'
@@ -317,6 +317,8 @@ $string['preventsubmissions'] = 'Prevent the user from making any more submissio
 $string['preventsubmissionsshort'] = 'Prevent submission changes';
 $string['previous'] = 'Previous';
 $string['quickgrading'] = 'Quick grading';
+$string['quickgradingchangeserror'] = 'There following {$a} grades were not updated:';
+$string['quickgradingerrorforuser'] = 'The grades for user "{$a->fullname}" was not updated with value "{$a->grade}".';
 $string['quickgradingresult'] = 'Quick grading';
 $string['quickgradingchangessaved'] = 'The grade changes were saved';
 $string['quickgrading_help'] = 'Quick grading allows you to assign grades (and outcomes) directly in the submissions table. Quick grading is not compatible with advanced grading and is not recommended when there are multiple markers.';
@@ -468,3 +470,5 @@ $string['submissiontypes'] = 'Submission types';
 $string['feedbacktypes'] = 'Feedback types';
 $string['groupsubmissionsettings'] = 'Group submission settings';
 $string['submissionlog'] = 'Student: {$a->fullname}, Status: {$a->status}';
+// Deprecated since Moodle 3.0.
+$string['errorrecordmodified'] = 'The grades were not saved because someone has modified one or more records more recently than when you loaded the page.';

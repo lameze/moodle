@@ -2517,6 +2517,7 @@ class assign {
         $o .= $this->view_footer();
         return $o;
     }
+
     /**
      * Display a continue page after quickgrading.
      *
@@ -2531,10 +2532,18 @@ class assign {
                                                       $this->get_course_module()->id,
                                                       get_string('quickgradingresult', 'assign')));
         $lastpage = optional_param('lastpage', null, PARAM_INT);
+        if ($message[1] && !empty($message[2])) {
+            $problematicgrades = html_writer::start_tag('ul');
+            foreach ($message[2] as $msg) {
+                $problematicgrades .= html_writer::tag('li', $msg);
+            }
+            $problematicgrades .= html_writer::end_tag('ul');
+            $message[0] .= $problematicgrades;
+        }
         $gradingresult = new assign_gradingmessage(get_string('quickgradingresult', 'assign'),
-                                                   $message,
+                                                   $message[0],
                                                    $this->get_course_module()->id,
-                                                   false,
+                                                   $message[1],
                                                    $lastpage);
         $o .= $this->get_renderer()->render($gradingresult);
         $o .= $this->view_footer();
@@ -5279,7 +5288,7 @@ class assign {
     /**
      * Save quick grades.
      *
-     * @return string The result of the save operation
+     * @return array(string, bool, array) - Message, grading error, problematicgrades
      */
     protected function process_save_quick_grades() {
         global $USER, $DB, $CFG;
@@ -5292,8 +5301,10 @@ class assign {
         $gradingmanager = get_grading_manager($this->get_context(), 'mod_assign', 'submissions');
         $controller = $gradingmanager->get_active_controller();
         if (!empty($controller)) {
-            return get_string('errorquickgradingvsadvancedgrading', 'assign');
+            return array(get_string('errorquickgradingvsadvancedgrading', 'assign'), true, array());
         }
+
+        $problematicgrades = array();
 
         $users = array();
         // First check all the last modified values.
@@ -5324,7 +5335,7 @@ class assign {
         }
 
         if (empty($users)) {
-            return get_string('nousersselected', 'assign');
+            return array(get_string('nousersselected', 'assign'), true, array());
         }
 
         list($userids, $params) = $DB->get_in_or_equal(array_keys($users), SQL_PARAMS_NAMED);
@@ -5377,7 +5388,11 @@ class assign {
                     // handle hidden columns.
                     if ($plugin->is_quickgrading_modified($modified->userid, $grade)) {
                         if ((int)$current->lastmodified > (int)$modified->lastmodified) {
-                            return get_string('errorrecordmodified', 'assign');
+                            $problematicuser = $DB->get_record('user', array('id' => $modified->userid),
+                                                               get_all_user_name_fields(true));
+                            $problematicuser = fullname($problematicuser);
+                            $problematicgrades[$modified->userid] = get_string('errorrecordmodifiedforuser', 'assign',
+                                                                               $problematicuser);
                         } else {
                             $modifiedusers[$modified->userid] = $modified;
                             continue;
@@ -5410,7 +5425,9 @@ class assign {
                 }
                 if ((int)$current->lastmodified > (int)$modified->lastmodified) {
                     // Error - record has been modified since viewing the page.
-                    return get_string('errorrecordmodified', 'assign');
+                    $problematicuser = $DB->get_record('user', array('id' => $modified->userid), get_all_user_name_fields(true));
+                    $problematicuser = fullname($problematicuser);
+                    $problematicgrades[$modified->userid] = get_string('errorrecordmodifiedforuser', 'assign', $problematicuser);
                 } else {
                     $modifiedusers[$modified->userid] = $modified;
                 }
@@ -5462,7 +5479,12 @@ class assign {
                     \mod_assign\event\workflow_state_updated::create_from_user($this, $user, $flags->workflowstate)->trigger();
                 }
             }
-            $this->update_grade($grade);
+            if (!$this->update_grade($grade)) {
+                $user = $DB->get_record('user', array('id' => $userid), get_all_user_name_fields(true));
+                $user->fullname = fullname($user);
+                $user->grade = $grade->grade;
+                $problematicgrades[$modified->userid] = get_string('quickgradingerrorforuser', 'assign', $user);
+            }
 
             // Allow teachers to skip sending notifications.
             if (optional_param('sendstudentnotifications', true, PARAM_BOOL)) {
@@ -5494,7 +5516,11 @@ class assign {
             }
         }
 
-        return get_string('quickgradingchangessaved', 'assign');
+        if (count($problematicgrades) == 0) {
+            return array(get_string('quickgradingchangessaved', 'assign'), false, array());
+        } else {
+            return array(get_string('quickgradingchangeserror', 'assign', count($problematicgrades)), true, $problematicgrades);
+        }
     }
 
     /**
