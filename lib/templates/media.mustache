@@ -1,0 +1,60 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template core/media
+
+    Moodle media object template.
+
+    Creates abstract object styles for building various types of components (like blog comments, Tweets, etc)
+    that feature a left- or right-aligned image alongside textual content.
+
+    Classes required for JS:
+    * none
+
+    Data attributes required for JS:
+    * none
+
+    Context variables required for this template:
+    * imgsrc The url of the image.
+    * title A cleaned string (use clean_text()) to display the title
+    * message A cleaned string (use clean_text()) to display as the message.
+
+    Example context (json):
+    {
+        "imgsrc": "https://tracker.moodle.org/secure/attachment/32130/favicon.ico",
+        "alt": "This is the moodle logo",
+        "title": "Forum post",
+        "message": "I want start a new discussion about global warming. Any ideas?"
+    }
+}}
+<div class="media">
+<div class="pull-left">
+{{$ media }}
+<a href="{{href}}">
+        <img class="media-object" src="{{$mediasrc}}{{imgsrc}}{{/mediasrc}}" alt="{{$mediaalt}}{{imgalt}}{{/mediaalt}}"/>
+</a>
+{{/ media }}
+</div>
+<div class="media-body">
+{{$ heading }}
+    <h5 class="media-heading">{{title}}</h5>
+{{/ heading }}
+{{$ content }}
+    <p>{{{message}}}</p>
+{{/ content }}
+</div>
+</div>
