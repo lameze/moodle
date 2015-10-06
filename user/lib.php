@@ -226,7 +226,8 @@ function user_get_default_fields() {
         'institution', 'interests', 'firstaccess', 'lastaccess', 'auth', 'confirmed',
         'idnumber', 'lang', 'theme', 'timezone', 'mailformat', 'description', 'descriptionformat',
         'city', 'url', 'country', 'profileimageurlsmall', 'profileimageurl', 'customfields',
-        'groups', 'roles', 'preferences', 'enrolledcourses'
+        'groups', 'roles', 'preferences', 'enrolledcourses', 'lastnamephonetic','firstnamephonetic', 'middlename',
+        'alternatename'
     );
 }
 
@@ -319,8 +320,20 @@ function user_get_user_details($user, $course = null, array $userfields = array(
         if (in_array('firstname', $userfields)) {
             $userdetails['firstname'] = $user->firstname;
         }
+        if (in_array('middlename', $userfields)) {
+            $userdetails['middlename'] = $user->middlename;
+        }
         if (in_array('lastname', $userfields)) {
             $userdetails['lastname'] = $user->lastname;
+        }
+        if (in_array('firstnamephonetic', $userfields)) {
+            $userdetails['firstnamephonetic'] = $user->firstnamephonetic;
+        }
+        if (in_array('lastnamephonetic', $userfields)) {
+            $userdetails['lastnamephonetic'] = $user->lastnamephonetic;
+        }
+        if (in_array('alternatename', $userfields)) {
+            $userdetails['alternatename'] = $user->alternatename;
         }
     }
     $userdetails['fullname'] = fullname($user);
