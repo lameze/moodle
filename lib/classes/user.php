@@ -49,6 +49,9 @@ class core_user {
     /** @var stdClass keep record of support user */
     public static $supportuser = false;
 
+    /** @var null store the user field definition cache. */
+    public static $definitioncache = null;
+
     /**
      * Return user object from db or create noreply or support user,
      * if userid matches corse_user::NOREPLY_USER or corse_user::SUPPORT_USER
@@ -273,5 +276,158 @@ class core_user {
         if ($checknologin and $user->auth == 'nologin') {
             throw new moodle_exception('suspended', 'auth');
         }
+    }
+
+    /**
+     * Validate user data.
+     *
+     * @param stdClass $data user data object to be validated.
+     *
+     * @return array|true $errors array of errors found on the user object, true otherwise.
+     */
+    public static function validate(stdClass $data) {
+
+        // Get all user profile fields definition.
+        $properties = static::properties_definition();
+
+        foreach ($data as $property => $value) {
+            try {
+                if (isset($properties[$property])) {
+                    validate_param($value, $properties[$property]['type'], $properties[$property]['null']);
+                }
+
+                // Check that the value is part of a list of allowed values.
+                if (isset($properties[$property]['choices']) && isset($data->$property) &&
+                    !array_key_exists($data->$property, $properties[$property]['choices'])) {
+
+                    throw new invalid_parameter_exception($value);
+                }
+            } catch (invalid_parameter_exception $e) {
+                $errors[$property] = $e->getMessage();
+                continue;
+            }
+        }
+
+        return empty($errors) ? true : $errors;
+    }
+
+    /**
+     * Definition of user profile fields and type of parameter, used for data validation.
+     *
+     * Example:
+     *
+     * array(
+     *     'property_name' => array(
+     *          'null' => NULL_ALLOWED,      // Defaults to NULL_NOT_ALLOWED. Takes NULL_NOT_ALLOWED or NULL_ALLOWED.
+     *          'type' => PARAM_TYPE,        // Mandatory.
+     *          'choices' => array(1, 2, 3)  // An array of accepted values.
+     *     )
+     * )
+     *
+     * @return array list of fields with the expected params and list of choices (if any).
+     */
+    protected static function properties_definition() {
+
+        if (self::$definitioncache !== null) {
+            return self::$definitioncache;
+        }
+
+        global $CFG;
+
+        /**
+         * Array of user fields properties and expected parameters.
+         * Every new field on the user table should be added here otherwise we it won't be validated.
+         */
+        $field = array();
+        $field['auth'] = array('null' => NULL_NOT_ALLOWED, 'type' => PARAM_NOTAGS);
+        $field['confirmed'] = array('null' => NULL_NOT_ALLOWED, 'type' => PARAM_BOOL);
+        $field['policyagreed'] = array('null' => NULL_NOT_ALLOWED, 'type' => PARAM_BOOL);
+        $field['deleted'] = array('null' => NULL_NOT_ALLOWED, 'type' => PARAM_BOOL);
+        $field['suspended'] = array('null' => NULL_NOT_ALLOWED, 'type' => PARAM_BOOL);
+        $field['mnethostid'] = array('null' => NULL_NOT_ALLOWED, 'type' => PARAM_BOOL);
+        $field['username'] = array('null' => NULL_NOT_ALLOWED, 'type' => PARAM_USERNAME);
+        $field['password'] = array('null' => NULL_NOT_ALLOWED, 'type' => PARAM_NOTAGS);
+        $field['idnumber'] = array('null' => NULL_NOT_ALLOWED, 'type' => PARAM_NOTAGS);
+        $field['firstname'] = array('null' => NULL_NOT_ALLOWED, 'type' => PARAM_NOTAGS);
+        $field['lastname'] = array('null' => NULL_NOT_ALLOWED, 'type' => PARAM_NOTAGS);
+        $field['surname'] = array('null' => NULL_NOT_ALLOWED, 'type' => PARAM_NOTAGS);
+        $field['email'] = array('null' => NULL_NOT_ALLOWED, 'type' => PARAM_RAW_TRIMMED);
+        $field['emailstop'] = array('null' => NULL_NOT_ALLOWED, 'type' => PARAM_INT);
+        $field['icq'] = array('null' => NULL_NOT_ALLOWED, 'type' => PARAM_NOTAGS);
+        $field['skype'] = array('null' => NULL_ALLOWED, 'type' => PARAM_NOTAGS);
+        $field['aim'] = array('null' => NULL_NOT_ALLOWED, 'type' => PARAM_NOTAGS);
+        $field['yahoo'] = array('null' => NULL_NOT_ALLOWED, 'type' => PARAM_NOTAGS);
+        $field['msn'] = array('null' => NULL_NOT_ALLOWED, 'type' => PARAM_NOTAGS);
+        $field['phone1'] = array('null' => NULL_NOT_ALLOWED, 'type' => PARAM_NOTAGS);
+        $field['phone2'] = array('null' => NULL_NOT_ALLOWED, 'type' => PARAM_NOTAGS);
+        $field['institution'] = array('null' => NULL_NOT_ALLOWED, 'type' => PARAM_TEXT);
+        $field['department'] = array('null' => NULL_NOT_ALLOWED, 'type' => PARAM_TEXT);
+        $field['address'] = array('null' => NULL_NOT_ALLOWED, 'type' => PARAM_TEXT);
+        $field['city'] = array('null' => NULL_NOT_ALLOWED, 'type' => PARAM_TEXT);
+        $field['country'] = array('null' => NULL_NOT_ALLOWED, 'type' => PARAM_TEXT,
+            'choices' => array_merge(array('' => ''), get_string_manager()->get_list_of_countries()));
+        $field['lang'] = array('null' => NULL_NOT_ALLOWED, 'type' => PARAM_TEXT,
+            'choices' => array_merge(array('' => ''), get_string_manager()->get_list_of_translations()));
+        $field['calendartype'] = array('null' => NULL_NOT_ALLOWED, 'type' => PARAM_NOTAGS,
+            'choices' => array_merge(array('' => ''), \core_calendar\type_factory::get_list_of_calendar_types()));
+        $field['theme'] = array('null' => NULL_NOT_ALLOWED, 'type' => PARAM_NOTAGS,
+            'choices' => array_merge(array('' => ''), get_list_of_themes()));
+        $field['timezones'] = array('null' => NULL_NOT_ALLOWED, 'type' => PARAM_TEXT,
+            'choices' => core_date::get_list_of_timezones());
+        $field['firstaccess'] = array('null' => NULL_NOT_ALLOWED, 'type' => PARAM_INT);
+        $field['lastaccess'] = array('null' => NULL_NOT_ALLOWED, 'type' => PARAM_INT);
+        $field['lastlogin'] = array('null' => NULL_NOT_ALLOWED, 'type' => PARAM_INT);
+        $field['currentlogin'] = array('null' => NULL_NOT_ALLOWED, 'type' => PARAM_INT);
+        $field['lastip'] = array('null' => NULL_NOT_ALLOWED, 'type' => PARAM_NOTAGS);
+        $field['secret'] = array('null' => NULL_NOT_ALLOWED, 'type' => PARAM_TEXT);
+        $field['picture'] = array('null' => NULL_NOT_ALLOWED, 'type' => PARAM_INT);
+        $field['url'] = array('null' => NULL_NOT_ALLOWED, 'type' => PARAM_URL);
+        $field['description'] = array('null' => NULL_ALLOWED, 'type' => PARAM_CLEANHTML);
+        $field['descriptionformat'] = array('null' => NULL_NOT_ALLOWED, 'type' => PARAM_INT);
+        $field['mailformat'] = array('null' => NULL_NOT_ALLOWED, 'type' => PARAM_INT);
+        $field['maildigest'] = array('null' => NULL_NOT_ALLOWED, 'type' => PARAM_INT);
+        $field['maildisplay'] = array('null' => NULL_NOT_ALLOWED, 'type' => PARAM_INT);
+        $field['autosubscribe'] = array('null' => NULL_NOT_ALLOWED, 'type' => PARAM_INT);
+        $field['trackforums'] = array('null' => NULL_NOT_ALLOWED, 'type' => PARAM_INT);
+        $field['timecreated'] = array('null' => NULL_NOT_ALLOWED, 'type' => PARAM_INT);
+        $field['timemodified'] = array('null' => NULL_NOT_ALLOWED, 'type' => PARAM_INT);
+        $field['trustbitmask'] = array('null' => NULL_NOT_ALLOWED, 'type' => PARAM_INT);
+        $field['imagealt'] = array('null' => NULL_ALLOWED, 'type' => PARAM_TEXT);
+        $field['lastnamephonetic'] = array('null' => NULL_ALLOWED, 'type' => PARAM_NOTAGS);
+        $field['firstnamephonetic'] = array('null' => NULL_ALLOWED, 'type' => PARAM_NOTAGS);
+        $field['middlename'] = array('null' => NULL_ALLOWED, 'type' => PARAM_NOTAGS);
+        $field['alternatename'] = array('null' => NULL_ALLOWED, 'type' => PARAM_NOTAGS);
+
+
+        // Add filters to enabled user name fields if there are any.
+        require_once($CFG->dirroot . '/user/editlib.php');
+
+        $enabledusernamefields = useredit_get_enabled_name_fields();
+        if (!empty($disabledusernamefields)) {
+            foreach ($enabledusernamefields as $fieldname) {
+                $field[$fieldname] = array('null' => NULL_ALLOWED, 'type' => PARAM_NOTAGS);
+            }
+        }
+
+        // Add filters to disabled user name fields if there are any.
+        $disabledusernamefields = useredit_get_disabled_name_fields($enabledusernamefields);
+        if (!empty($disabledusernamefields)) {
+            foreach ($disabledusernamefields as $fieldname) {
+                $field[$fieldname] = array('null' => NULL_ALLOWED, 'type' => PARAM_NOTAGS);
+            }
+        }
+        self::$definitioncache = $field;
+
+        return self::$definitioncache;
+    }
+
+    /**
+     * Clean the definition cache.
+     *
+     * During unit tests we need to be able to reset all caches so that each new test starts in a known state.
+     * Intended for use only for testing, phpunit calls this before every test.
+     */
+    public static function reset_caches() {
+        self::$definitioncache = null;
     }
 }

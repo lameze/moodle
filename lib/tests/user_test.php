@@ -184,4 +184,40 @@ class core_user_testcase extends advanced_testcase {
         }
 
     }
+
+    /**
+     * Test validate_data() method.
+     */
+    public function test_validate() {
+
+        $this->setUp();
+
+        // Create user with just with username and firstname.
+        $record = array('username' => 's10', 'firstname' => 'Bebe Stevens');
+        $user = $this->getDataGenerator()->create_user($record);
+
+        $validation = core_user::validate($user);
+
+        // Validate the user, should return true as the user data is correct.
+        $this->assertTrue($validation);
+
+        // Create user with incorrect data (invalid country and theme).
+        $record = array('username' => 's1', 'firstname' => 'Eric Cartman', 'country' => 'UU', 'theme' => 'beise');
+        $user = $this->getDataGenerator()->create_user($record);
+
+        // Should return an array with 2 errors.
+        $validation = core_user::validate($user);
+        $this->assertArrayHasKey('country', $validation);
+        $this->assertArrayHasKey('theme', $validation);
+        $this->assertCount(2, $validation);
+
+        // Create user with malicious data (xss).
+        $record = array('username' => 's3', 'firstname' => 'Kyle<script>alert(1);<script> Broflovski');
+        $user = $this->getDataGenerator()->create_user($record);
+
+        // Should return an array with 1 error.
+        $validation = core_user::validate($user);
+        $this->assertCount(1, $validation);
+        $this->assertArrayHasKey('firstname', $validation);
+    }
 }

@@ -115,7 +115,7 @@ class core_userliblib_testcase extends advanced_testcase {
             'email' => 'usertest1@example.com',
             'description' => 'This is a description for user 1',
             'city' => 'Perth',
-            'country' => 'au'
+            'country' => 'AU'
             );
 
         // Create user and capture event.
