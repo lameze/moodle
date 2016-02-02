@@ -5426,20 +5426,21 @@ class assign {
         $params['assignid2'] = $this->get_instance()->id;
 
         // Check them all for currency.
-        $grademaxattempt = 'SELECT s.userid, s.attemptnumber AS maxattempt
+        $grademaxattempt = 'SELECT s.userid, s.attemptnumber AS maxattempt, gmx.groupid
                               FROM {assign_submission} s
                              WHERE s.assignment = :assignid1 AND s.latest = 1';
 
         $sql = 'SELECT u.id AS userid, g.grade AS grade, g.timemodified AS lastmodified,
-                       uf.workflowstate, uf.allocatedmarker, gmx.maxattempt AS attemptnumber
+                       uf.workflowstate, uf.allocatedmarker, gmx.maxattempt AS attemptnumber, gmx.groupid
                   FROM {user} u
-             LEFT JOIN ( ' . $grademaxattempt . ' ) gmx ON u.id = gmx.userid
+             LEFT JOIN ( ' . $grademaxattempt . ' ) gmx ON u.id = gmx.userid 
              LEFT JOIN {assign_grades} g ON
                        u.id = g.userid AND
                        g.assignment = :assignid2 AND
                        g.attemptnumber = gmx.maxattempt
              LEFT JOIN {assign_user_flags} uf ON uf.assignment = g.assignment AND uf.userid = g.userid
                  WHERE u.id ' . $userids;
+
         $currentgrades = $DB->get_recordset_sql($sql, $params);
 
         $modifiedusers = array();
@@ -5505,7 +5506,8 @@ class assign {
                 }
                 $badmodified = (int)$current->lastmodified > (int)$modified->lastmodified;
                 $badattempt = (int)$current->attemptnumber != (int)$modified->attemptnumber;
-                if ($badmodified || $badattempt) {
+                $badgroup = $currentgroup != $current->groupid;
+                if ($badmodified || $badattempt || ($badgroup && $current->userid !== 0)) {
                     // Error - record has been modified since viewing the page.
                     return get_string('errorrecordmodified', 'assign');
                 } else {
