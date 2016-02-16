@@ -293,6 +293,7 @@ class backup_ui_stage_schema extends backup_ui_stage {
      */
     protected function initialise_stage_form() {
         global $PAGE;
+
         if ($this->stageform === null) {
             $form = new backup_schema_form($this, $PAGE->url);
             $tasks = $this->ui->get_tasks();

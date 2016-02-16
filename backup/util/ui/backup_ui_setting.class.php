@@ -318,7 +318,10 @@ abstract class backup_setting_ui extends base_setting_ui {
             // Its not changeable because its locked by permission or config.
             return false;
         } else if ($this->setting->has_dependencies_on_settings()) {
+            //AQUI!
+//            print_object(array_keys($this->setting->get_settings_depended_on()));
             foreach ($this->setting->get_settings_depended_on() as $dependency) {
+                //print_object($dependency);
                 if ($dependency->is_locked() && $dependency->get_setting()->get_level() !== $this->setting->get_level()) {
                     // Its not changeable because one or more dependancies arn't changeable.
                     return false;

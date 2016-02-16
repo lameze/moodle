@@ -175,6 +175,8 @@ abstract class setting_dependency {
      * @return bool
      */
     public function should_be_locked() {
+        echo 'SET LOCKED '. $this->setting->get_name() . '('.$this->dependentsetting->get_name().' - '.$this->setting->get_status().')'. ': ' . $this->setting->get_status() . '<br/>';
+
         return $this->setting->get_status() !== base_setting::NOT_LOCKED || $this->matches();
     }
 }
@@ -208,10 +210,25 @@ class setting_dependency_disabledif_equals extends setting_dependency {
     /**
      * Returns true when the rule matches.
      * @return bool
+     *
+     *
      */
-    protected function matches() {
+    protected function matches()
+    {
         return $this->setting->get_value() == $this->value;
     }
+//    public function is_locked() {
+//        echo "<hr>";
+//        echo "is_locked()<br>";
+//        // If the setting is locked or the dependent setting should be locked then return true
+//        if ($this->setting->get_status() !== base_setting::NOT_LOCKED || $this->dependentsetting->get_value() == $this->value) {
+//            //echo 'SET LOCKED '. $this->setting->get_name() . '('.$this->dependentsetting->get_name().' - '.$this->setting->get_status().')'. ': ' . $this->setting->get_status() . '<br/>';
+//            return true;
+//        }
+//        //echo 'DEP SET LOCKED '. $this->setting->get_name() . '('.$this->dependentsetting->get_name().')'. ': ' . $this->setting->get_status() . '<br/>';
+//        // Else return based upon the dependent settings status
+//        return ($this->dependentsetting->get_status() !== base_setting::NOT_LOCKED);
+//    }
 
     /**
      * Processes a value change in the primary setting
@@ -219,14 +236,19 @@ class setting_dependency_disabledif_equals extends setting_dependency {
      * @return bool
      */
     protected function process_value_change($oldvalue) {
+
         $prevalue = $this->dependentsetting->get_value();
         // If the setting is the desired value enact the dependency
         if ($this->matches()) {
             // The dependent setting needs to be locked by hierachy and set to the
             // default value.
+//            echo "process_value_change() - ".$this->dependentsetting->get_name().
+//                '('.$this->dependentsetting->get_name().'):'. $this->dependentsetting->get_status().'<br>';
+//            $this->dependentsetting->set_status(base_setting::LOCKED_BY_HIERARCHY);
             $this->dependentsetting->set_value($this->defaultvalue);
             $this->dependentsetting->set_status(base_setting::LOCKED_BY_HIERARCHY);
         } else if ($this->dependentsetting->get_status() == base_setting::LOCKED_BY_HIERARCHY) {
+
             // We can unlock the dependent setting
             // THIS DOES NOT WORK YET!
             // When uncommented, it makes the 'user data' selected part working.
@@ -234,9 +256,10 @@ class setting_dependency_disabledif_equals extends setting_dependency {
             // The setting depending on this setting will not be acurately set
             // if the value of this setting is not set to something that does not
             // create a match on ini the dependency rule.
-            // $this->dependentsetting->set_value($this->lastvalue);
-            $this->dependentsetting->set_status(base_setting::NOT_LOCKED);
+             $this->dependentsetting->set_value($this->lastvalue);
+            //$this->dependentsetting->set_status(base_setting::NOT_LOCKED);
         }
+
         // Return true if the value has changed for the dependent setting
         return ($prevalue != $this->dependentsetting->get_value());
     }
@@ -246,6 +269,7 @@ class setting_dependency_disabledif_equals extends setting_dependency {
      * @return bool
      */
     protected function process_status_change($oldstatus) {
+        //echo "process_status_change() </br>";
         // Store the dependent status
         $prevalue = $this->dependentsetting->get_status();
         // Store the current status
@@ -467,6 +491,7 @@ class setting_dependency_disabledif_checked extends setting_dependency_disabledi
      * @return array
      */
     public function get_moodleform_properties() {
+
         return array(
             'setting'=>$this->dependentsetting->get_ui_name(),
             'dependenton'=>$this->setting->get_ui_name(),
@@ -542,6 +567,7 @@ class setting_dependency_disabledif_not_empty extends setting_dependency_disable
      * @return bool
      */
     protected function process_value_change($oldvalue) {
+
         $prevalue = $this->dependentsetting->get_value();
         // If the setting is the desired value enact the dependency
         $value = $this->setting->get_value();

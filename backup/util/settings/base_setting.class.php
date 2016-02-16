@@ -110,6 +110,7 @@ abstract class base_setting {
         $visibility = $this->validate_visibility($visibility);
 
         // Check status
+echo 'BASE SETTING CONSTRUCTOR';
         $status = $this->validate_status($status);
 
         $this->name        = $name;
@@ -199,13 +200,24 @@ abstract class base_setting {
     }
 
     public function set_status($status) {
+
         $status = $this->validate_status($status);
+
 
         // If the setting is being unlocked first check whether an other settings
         // this setting is dependent on are locked. If they are then we still don't
         // want to lock this setting.
-        if (count($this->dependenton) > 0 && $status == base_setting::NOT_LOCKED) {
+
+
+        echo 'BASE SETTING CLASS<BR/>';
+        echo 'SETTING: '. $this->get_name().'<br>';
+        echo 'STATUS: '. $this->get_status() . '<br>';
+        echo 'STATUS 2: '. $status . '<br>';
+
+            if (count($this->dependenton) > 0 && $status == base_setting::NOT_LOCKED) {
+
             foreach ($this->dependenton as $dependency) {
+
                 if ($dependency->should_be_locked()) {
                     // It still needs to be locked
                     $status = base_setting::LOCKED_BY_HIERARCHY;
@@ -214,8 +226,9 @@ abstract class base_setting {
             }
         }
 
-        $oldstatus = $this->status;
-        $this->status = $status;
+        echo 'SET old STATUS ATTR:'.$oldstatus = $this->status . '<BR>';
+        echo 'SET STATUS ATTR:'.$this->status = $status.'<BR>';
+        echo '<hr>';
         if ($status !== $oldstatus) { // Status has changed, let's inform dependencies
             $this->inform_dependencies(self::CHANGED_STATUS, $oldstatus);
         }
@@ -476,6 +489,7 @@ abstract class base_setting {
 
     protected function validate_status($status) {
         if (is_null($status)) {
+            echo 'STATUS null';
             $status = self::NOT_LOCKED;
         }
         if ($status !== self::NOT_LOCKED && $status !== self::LOCKED_BY_CONFIG &&

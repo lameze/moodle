@@ -291,10 +291,12 @@ abstract class base_moodleform extends moodleform {
                             array('class' => 'smallicon lockedicon permissionlock'));
                     break;
                 case backup_setting::LOCKED_BY_CONFIG:
+                    echo 2;
                     $icon = ' '.$OUTPUT->pix_icon('i/configlock', get_string('lockedbyconfig', 'backup'), 'moodle',
                             array('class' => 'smallicon lockedicon configlock'));
                     break;
                 case backup_setting::LOCKED_BY_HIERARCHY:
+                    echo 3;
                     $icon = ' '.$OUTPUT->pix_icon('i/hierarchylock', get_string('lockedbyhierarchy', 'backup'), 'moodle',
                             array('class' => 'smallicon lockedicon configlock'));
                     break;
