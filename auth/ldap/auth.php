@@ -2083,16 +2083,15 @@ class auth_plugin_ldap extends auth_plugin_base {
         $maxpwdage = $info['maxpwdage'][0];
         if ($sr = ldap_read($ldapconn, $user_dn, '(objectClass=*)', array('msDS-ResultantPSO', 'msDS-MaximumPasswordAge'))) {
             if ($entry = ldap_get_entries_moodle($ldapconn, $sr)) {
-                $info = array_change_key_case($entry[0], CASE_LOWER);
-                $userpso = $info['msds-resultantpso'][0];
+                $haspsoage = isset($entry['msds-resultantpso']);
+                $haspsoage = $haspsoage && !empty($entry['msds-resultantpso'][0]);
+                $haspsoage = $haspsoage && isset($entry['msds-maximumpasswordage']);
+                $haspsoage = $haspsoage && !empty($entry['msds-maximumpasswordage'][0]);
 
                 // If a PSO exists, FGPP is being utilized.
                 // Grab the new maxpwdage from the msDS-MaximumPasswordAge attribute of the PSO.
-                if (!empty($userpso)) {
-                    if ($entry = ldap_get_entries_moodle($ldapconn, $sr)) {
-                        $info = array_change_key_case($entry[0], CASE_LOWER);
-                        $maxpwdage = $info['msds-maximumpasswordage'][0];
-                    }
+                if ($haspsoage) {
+                    $maxpwdage = $entry['msds-maximumpasswordage'][0];
                 }
             }
         }
