@@ -495,7 +495,7 @@ abstract class testing_util {
                 }
             }
             if ($queries) {
-                $DB->change_database_structure(implode(';', $queries));
+                $DB->change_database_structure(implode(';', $queries), "{$prefix}{$table}");
             }
 
         } else if ($dbfamily === 'mysql') {
@@ -534,7 +534,7 @@ abstract class testing_util {
                 }
             }
             if ($queries) {
-                $DB->change_database_structure(implode(';', $queries));
+                $DB->change_database_structure(implode(';', $queries), "{$prefix}{$table}");
             }
 
         } else if ($dbfamily === 'oracle') {
@@ -572,8 +572,8 @@ abstract class testing_util {
                     // reset as fast as possible - alternatively we could use http://stackoverflow.com/questions/51470/how-do-i-reset-a-sequence-in-oracle
                     $seqname = $sequences[$table];
                     $cachesize = $DB->get_manager()->generator->sequence_cache_size;
-                    $DB->change_database_structure("DROP SEQUENCE $seqname");
-                    $DB->change_database_structure("CREATE SEQUENCE $seqname START WITH $nextid INCREMENT BY 1 NOMAXVALUE CACHE $cachesize");
+                    $DB->change_database_structure("DROP SEQUENCE $seqname", $table);
+                    $DB->change_database_structure("CREATE SEQUENCE $seqname START WITH $nextid INCREMENT BY 1 NOMAXVALUE CACHE $cachesize", $table);
                 }
             }
 

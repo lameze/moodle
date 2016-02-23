@@ -652,10 +652,11 @@ class pgsql_native_moodle_database extends moodle_database {
     /**
      * Do NOT use in code, to be used by database_manager only!
      * @param string|array $sql query
+     * @param array|string|null $tablenames a single or an array of xmldb tables to be purged.
      * @return bool true
      * @throws ddl_change_structure_exception A DDL specific exception is thrown for any errors.
      */
-    public function change_database_structure($sql) {
+    public function change_database_structure($sql, $tablenames = null) {
         $this->get_manager(); // Includes DDL exceptions classes ;-)
         if (is_array($sql)) {
             $sql = implode("\n;\n", $sql);
@@ -675,11 +676,12 @@ class pgsql_native_moodle_database extends moodle_database {
                 $result = @pg_query($this->pgsql, "ROLLBACK");
                 @pg_free_result($result);
             }
-            $this->reset_caches();
+
+            $this->reset_single_entry($tablenames);
             throw $e;
         }
 
-        $this->reset_caches();
+        $this->reset_single_entry($tablenames);
         return true;
     }
 

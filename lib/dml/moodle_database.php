@@ -60,7 +60,7 @@ define('SQL_QUERY_AUX', 5);
  * @copyright  2008 Petr Skoda (http://skodak.org)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-abstract class moodle_database {
+abstract class  moodle_database {
 
     /** @var database_manager db manager which allows db structure modifications. */
     protected $database_manager;
@@ -1028,13 +1028,122 @@ abstract class moodle_database {
 
     /**
      * Resets the internal column details cache
+     *
+     * @param array|string|null $tablenames a single or an array of xmldb tables to be purged.
      * @return void
      */
-    public function reset_caches() {
-        $this->tables = null;
-        // Purge MUC as well
-        $identifiers = array('dbfamily' => $this->get_dbfamily(), 'settings' => $this->get_settings_hash());
-        cache_helper::purge_by_definition('core', 'databasemeta', $identifiers);
+    public function reset_caches($tablenames = null) {
+        //$identifiers = array('dbfamily' => $this->get_dbfamily(), 'settings' => $this->get_settings_hash());
+////print_object($this->tables);
+//        echo "TABLsssES___________________";
+
+//        echo "END__________________________________";
+        // Purge cache of a specific table?
+//global $CFG;
+//        if (!empty($tablenames)) {
+//            // Create the cache.
+//            //$cache = cache::make('core', 'databasemeta', $identifiers);
+//
+//            if (is_array($tablenames)) {
+//                //if ($this->get_metacache()->get_many($tablenames) != false) {
+//                   // $this->get_metacache()->delete_many($tablenames);
+//                    foreach ($tablenames as $index => $tablename) {
+//                        //echo "TAB444MES___________________";
+//                        //print_object($tablename); die ('here');
+////                        $tablenam = str_replace($CFG->phpunit_prefix, "", $tablename);
+////                        $this->get_metacache()->delete($tablenam);
+////                        if (isset($this->tables[$tablenam])) {
+////                            unset($this->tables[$tablenam]); // = null;
+////                        }
+//                        if (isset($this->tables[$tablename])) {
+//                            echo "TABLE" . $tablename . " EXISTS \n";
+//                        } else {
+//                            echo "TABLE" . $tablename . " DOESNOT EXISTS \n";
+//                        }
+//                    }
+//                //}
+//            } else {
+//                if (isset($this->tables[$tablenames])) {
+//                    echo "TABLE " . $tablenames . " EXISTS \n";
+//                } else {
+//                    echo "TABLE " . $tablenames . " DOESNOT EXISTS \n";
+//                }
+////                $tablename = str_replace($CFG->phpunit_prefix, "", $tablenames);
+////
+////                if ($result = $this->get_metacache()->get($tablename) != false) {
+////                    //var_dump($result);
+//////                    $this->get_metacache()->delete($tablename);
+//////                    print_object($tablename); die ('here');
+//////                    if (isset($this->tables[$tablename])) {
+////                        unset($this->tables[$tablename]);// = null;
+//////                    }
+////                }
+//            }
+//        } else {
+            $this->tables = null;
+            // Purge MUC as well.
+            $this->get_metacache()->purge();
+            $this->metacache = null;
+      //  }
+    }
+
+    public function reset_single_entry($tablenames) {
+        //$identifiers = array('dbfamily' => $this->get_dbfamily(), 'settings' => $this->get_settings_hash());
+print_object($tablenames);
+//        echo "TABLsssES___________________";
+
+//        echo "END__________________________________";
+        // Purge cache of a specific table?
+//global $CFG;
+        print_object($this->get_metacache()); die('metacache');
+        if (!empty($tablenames)) {
+
+
+            if (is_array($tablenames)) {
+                //if ($this->get_metacache()->get_many($tablenames) != false) {
+                // $this->get_metacache()->delete_many($tablenames);
+                foreach ($tablenames as $index => $tablename) {
+                    //echo "TAB444MES___________________";
+                    //print_object($tablename); die ('here');
+//                        $tablenam = str_replace($CFG->phpunit_prefix, "", $tablename);
+                        $this->get_metacache()->delete($tablename);
+//                        if (isset($this->tables[$tablenam])) {
+                            unset($this->tables[$tablename]); // = null;
+//                        }
+                    if (isset($this->tables[$tablename])) {
+                        echo "\n TABLE" . $tablename . " EXISTS \n";
+                    } else {
+                        echo "\n TABLE" . $tablename . " DOESNOT EXISTS \n";
+                    }
+                }
+                //}
+            } else {
+                if (isset($this->tables[$tablenames])) {
+                    echo "\n TABLE " . $tablenames . " EXISTS \n";
+                } else {
+                    echo "\n TABLE " . $tablenames . " DOESNOT EXISTS \n";
+                }
+//                $tablename = str_replace($CFG->phpunit_prefix, "", $tablenames);
+//
+//                if ($result = $this->get_metacache()->get($tablename) != false) {
+//                    //var_dump($result);
+                    $this->get_metacache()->delete($tablenames);
+////                    print_object($tablename); die ('here');
+////                    if (isset($this->tables[$tablename])) {
+//                        unset($this->tables[$tablename]);// = null;
+////                    }
+//                }
+            }
+<<<<<<< HEAD
+        } else {
+            // If it there's no table name, purge everything.
+            // We must do that for backwards compatibility.
+            $this->tables = null;
+            // Purge MUC as well
+            cache_helper::purge_by_definition('core', 'databasemeta', $identifiers);
+=======
+>>>>>>> c491dd7... latest changes
+        }
     }
 
     /**
@@ -1103,10 +1212,11 @@ abstract class moodle_database {
     /**
      * Do NOT use in code, this is for use by database_manager only!
      * @param string|array $sql query or array of queries
+     * @param array|string|null $tablenames a single or an array of xmldb tables to be purged.
      * @return bool true
      * @throws ddl_change_structure_exception A DDL specific exception is thrown for any errors.
      */
-    public abstract function change_database_structure($sql);
+    public abstract function change_database_structure($sql, $tablenames);
 
     /**
      * Executes a general sql query. Should be used only when no other method suitable.

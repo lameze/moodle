@@ -1421,7 +1421,7 @@ class core_ddl_testcase extends database_driver_testcase {
                 $indexname = '"' . $indexname . '"';
         }
         $stmt = "CREATE INDEX {$indexname} ON {$DB->get_prefix()}test_table1 (course, name)";
-        $DB->change_database_structure($stmt);
+        $DB->change_database_structure($stmt, "{$DB->get_prefix()}test_table1");
         $this->assertNotEmpty($dbman->find_index_name($table, $index));
         // Index created, let's drop it using db manager stuff.
         $index = new xmldb_index('indexname', XMLDB_INDEX_NOTUNIQUE, array('course', 'name'));

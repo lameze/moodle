@@ -719,7 +719,7 @@ class sqlsrv_native_moodle_database extends moodle_database {
      * @return bool true
      * @throws ddl_change_structure_exception A DDL specific exception is thrown for any errors.
      */
-    public function change_database_structure($sql) {
+    public function change_database_structure($sql, $tablenames = null) {
         $this->get_manager(); // Includes DDL exceptions classes ;-)
         $sqls = (array)$sql;
 

@@ -80,7 +80,7 @@ if (!empty($options['collation'])) {
             $skipped++;
 
         } else {
-            $DB->change_database_structure("ALTER TABLE $table->name DEFAULT COLLATE = $collation");
+            $DB->change_database_structure("ALTER TABLE $table->name DEFAULT COLLATE = $collation", $table->name);
             echo "CONVERTED\n";
             $converted++;
         }
@@ -101,14 +101,14 @@ if (!empty($options['collation'])) {
                 $default = (!is_null($column->default) and $column->default !== '') ? "DEFAULT '$column->default'" : '';
                 // primary, unique and inc are not supported for texts
                 $sql = "ALTER TABLE $table->name MODIFY COLUMN $column->field $column->type COLLATE $collation $notnull $default";
-                $DB->change_database_structure($sql);
+                $DB->change_database_structure($sql, $table->name);
 
             } else if (strpos($column->type, 'varchar') === 0) {
                 $notnull = ($column->null === 'NO') ? 'NOT NULL' : 'NULL';
                 $default = !is_null($column->default) ? "DEFAULT '$column->default'" : '';
                 // primary, unique and inc are not supported for texts
                 $sql = "ALTER TABLE $table->name MODIFY COLUMN $column->field $column->type COLLATE $collation $notnull $default";
-                $DB->change_database_structure($sql);
+                $DB->change_database_structure($sql, $table->name);
             } else {
                 echo "ERROR (unknown column type: $column->type)\n";
                 $error++;

@@ -158,7 +158,7 @@ if (!empty($options['info'])) {
     }
 
     foreach ($fixtables as $table) {
-        $DB->change_database_structure("ALTER TABLE {$prefix}$table ROW_FORMAT=Compressed");
+        $DB->change_database_structure("ALTER TABLE {$prefix}$table ROW_FORMAT=Compressed", $prefix);
         echo str_pad($prefix . $table, 32, ' ', STR_PAD_RIGHT) . " ... Compressed\n";
     }
 

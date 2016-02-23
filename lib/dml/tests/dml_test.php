@@ -4645,7 +4645,7 @@ class core_dml_testcase extends database_driver_testcase {
         $DB->insert_record($tablename, (object)array('course'=>1));
         $this->assertEquals(1, $DB->count_records($tablename));
         try {
-            $DB->change_database_structure('xxxx');
+            $DB->change_database_structure('xxxx', $tablename);
         } catch (moodle_exception $e) {
             // This must be ignored and it must not roll back the whole transaction.
         }
@@ -5510,7 +5510,7 @@ class moodle_database_for_testing extends moodle_database {
     protected function normalise_value($column, $value) {}
     public function set_debug($state) {}
     public function get_debug() {}
-    public function change_database_structure($sql) {}
+    public function change_database_structure($sql, $tablenames = null) {}
     public function execute($sql, array $params=null) {}
     public function get_recordset_sql($sql, array $params=null, $limitfrom=0, $limitnum=0) {}
     public function get_records_sql($sql, array $params=null, $limitfrom=0, $limitnum=0) {}

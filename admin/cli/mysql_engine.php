@@ -84,7 +84,7 @@ if (!empty($options['engine'])) {
         echo str_pad($table->name, 40). " - ";
 
         try {
-            $DB->change_database_structure("ALTER TABLE {$table->name} ENGINE = $engine");
+            $DB->change_database_structure("ALTER TABLE {$table->name} ENGINE = $engine", $table->name);
             $newengine = mysql_get_table_engine($table->name);
             if (strtoupper($newengine) !== strtoupper($engine)) {
                 echo "ERROR ($newengine)\n";

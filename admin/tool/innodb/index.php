@@ -63,7 +63,7 @@ if (data_submitted() and $confirm and confirm_sesskey()) {
         $DB->set_debug(true);
         $fulltable = $table->name;
         try {
-            $DB->change_database_structure("ALTER TABLE $fulltable ENGINE=INNODB");
+            $DB->change_database_structure("ALTER TABLE $fulltable ENGINE=INNODB", $fulltable);
         } catch (moodle_exception $e) {
             echo $OUTPUT->notification(s($e->getMessage()).'<br />'.s($e->debuginfo));
         }
