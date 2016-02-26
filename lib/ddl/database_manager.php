@@ -443,7 +443,7 @@ class database_manager {
         if (!$sqlarr = $this->generator->getCreateTableSQL($xmldb_table)) {
             throw new ddl_exception('ddlunknownerror', null, 'table create sql not generated');
         }
-        $this->execute_sql_arr($sqlarr, $xmldb_table->getName());
+        $this->execute_sql_arr($sqlarr);
     }
 
     /**
@@ -467,7 +467,7 @@ class database_manager {
             throw new ddl_exception('ddlunknownerror', null, 'temp table create sql not generated');
         }
 
-        $this->execute_sql_arr($sqlarr, $xmldb_table->getName());
+        $this->execute_sql_arr($sqlarr);
     }
 
     /**
