@@ -271,4 +271,9 @@ $definitions = array(
         'staticaccelerationsize' => 3
     ),
 
+    // Store temporary tables information.
+    'temp_tables' => array(
+        'mode' => cache_store::MODE_REQUEST
+    ),
+
 );

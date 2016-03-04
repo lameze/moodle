@@ -337,6 +337,15 @@ abstract class moodle_database {
     }
 
     /**
+     * Handle the creation and caching of the temporary tables.
+     *
+     * @return cache_application The temp_tables cachestore to complete operations on.
+     */
+    protected function get_temp_tables_cache() {
+        return cache::make('core', 'temp_tables');
+    }
+
+    /**
      * Attempt to create the database
      * @param string $dbhost The database host.
      * @param string $dbuser The database user to connect as.
@@ -1040,13 +1049,30 @@ abstract class moodle_database {
 
     /**
      * Resets the internal column details cache
+     *
+     * @param string|array|null $tablenames a table name or an array of table names affected by this request.
      * @return void
      */
-    public function reset_caches() {
-        $this->tables = null;
-        // Purge MUC as well.
-        $this->get_metacache()->purge();
-        $this->metacache = null;
+    public function reset_caches($tablenames = null) {
+        if (!empty($tablenames)) {
+            if (!is_array($tablenames)) {
+                $tablenames = array($tablenames);
+            }
+            foreach ($tablenames as $tablename) {
+                if ($this->temptables->is_temptable($tablename)) {
+                    $this->get_temp_tables_cache()->purge();
+                } else {
+                    $this->tables = null;
+                    $this->get_metacache()->purge();
+                    $this->metacache = null;
+                }
+            }
+        } else {
+            $this->tables = null;
+            // Purge MUC as well.
+            $this->get_metacache()->purge();
+            $this->metacache = null;
+        }
     }
 
     /**
@@ -1115,10 +1141,11 @@ abstract class moodle_database {
     /**
      * Do NOT use in code, this is for use by database_manager only!
      * @param string|array $sql query or array of queries
+     * @param string|array|null $tablenames a table name or an array of table names affected by this request.
      * @return bool true
      * @throws ddl_change_structure_exception A DDL specific exception is thrown for any errors.
      */
-    public abstract function change_database_structure($sql);
+    public abstract function change_database_structure($sql, $tablenames = null);
 
     /**
      * Executes a general sql query. Should be used only when no other method suitable.
