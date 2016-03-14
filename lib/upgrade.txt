@@ -3,6 +3,7 @@ information provided here is intended especially for developers.
 
 === 3.1 ===
 
+* The pear library has been upgraded to 1.10.0 version. The PEAR5.php has been deleted as it is no longer necessary.
 * The core_user::fill_properties_cache() static method has been introduced to be a reference
   and allow standard user fields data validation. Right now only type validation is supported
   checking it against the parameter (PARAM_*) type of the target user field. MDL-52781 is
