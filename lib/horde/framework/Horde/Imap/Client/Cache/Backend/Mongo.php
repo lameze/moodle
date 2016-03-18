@@ -1,12 +1,12 @@
 <?php
 /**
- * Copyright 2013-2014 Horde LLC (http://www.horde.org/)
+ * Copyright 2013-2016 Horde LLC (http://www.horde.org/)
  *
  * See the enclosed file COPYING for license information (LGPL). If you
  * did not receive this file, see http://www.horde.org/licenses/lgpl21.
  *
  * @category  Horde
- * @copyright 2013-2014 Horde LLC
+ * @copyright 2013-2016 Horde LLC
  * @license   http://www.horde.org/licenses/lgpl21 LGPL 2.1
  * @package   Imap_Client
  */
@@ -17,11 +17,13 @@
  *
  * @author    Michael Slusarz <slusarz@horde.org>
  * @category  Horde
- * @copyright 2013-2014 Horde LLC
+ * @copyright 2013-2016 Horde LLC
  * @license   http://www.horde.org/licenses/lgpl21 LGPL 2.1
  * @package   Imap_Client
  */
-class Horde_Imap_Client_Cache_Backend_Mongo extends Horde_Imap_Client_Cache_Backend implements Horde_Mongo_Collection_Index
+class Horde_Imap_Client_Cache_Backend_Mongo
+extends Horde_Imap_Client_Cache_Backend
+implements Horde_Mongo_Collection_Index
 {
     /** Mongo collection names. */
     const BASE = 'horde_imap_client_cache_data';
@@ -125,7 +127,9 @@ class Horde_Imap_Client_Cache_Backend_Mongo extends Horde_Imap_Client_Cache_Back
                 )
             );
             foreach ($cursor as $val) {
-                $out[$val[self::MSG_MSGUID]] = $this->_value($val[self::MSG_DATA]);
+                try {
+                    $out[$val[self::MSG_MSGUID]] = $this->_value($val[self::MSG_DATA]);
+                } catch (Exception $e) {}
             }
         } catch (MongoException $e) {}
 
@@ -237,7 +241,9 @@ class Horde_Imap_Client_Cache_Backend_Mongo extends Horde_Imap_Client_Cache_Back
                 )
             );
             foreach ($cursor as $val) {
-                $out[$val[self::MD_FIELD]] = $this->_value($val[self::MD_DATA]);
+                try {
+                    $out[$val[self::MD_FIELD]] = $this->_value($val[self::MD_DATA]);
+                } catch (Exception $e) {}
             }
 
             if (is_null($uidvalid) ||

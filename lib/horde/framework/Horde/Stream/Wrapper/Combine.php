@@ -1,12 +1,12 @@
 <?php
 /**
- * Copyright 2009-2014 Horde LLC (http://www.horde.org/)
+ * Copyright 2009-2016 Horde LLC (http://www.horde.org/)
  *
  * See the enclosed file COPYING for license information (BSD). If you
  * did not receive this file, see http://www.horde.org/licenses/bsd.
  *
  * @category  Horde
- * @copyright 2009-2014 Horde LLC
+ * @copyright 2009-2016 Horde LLC
  * @license   http://www.horde.org/licenses/bsd BSD
  * @package   Stream_Wrapper
  */
@@ -17,7 +17,7 @@
  *
  * @author    Michael Slusarz <slusarz@horde.org>
  * @category  Horde
- * @copyright 2009-2014 Horde LLC
+ * @copyright 2009-2016 Horde LLC
  * @license   http://www.horde.org/licenses/bsd BSD
  * @package   Stream_Wrapper
  */
@@ -73,7 +73,7 @@ class Horde_Stream_Wrapper_Combine
      *
      * @var integer
      */
-    static private $_id = 0;
+    private static $_id = 0;
 
     /**
      * Create a stream from multiple data sources.
@@ -85,7 +85,7 @@ class Horde_Stream_Wrapper_Combine
      *
      * @return resource  A PHP stream.
      */
-    static public function getStream($data)
+    public static function getStream($data)
     {
         if (!self::$_id) {
             stream_wrapper_register(self::WRAPPER_NAME, __CLASS__);
@@ -164,9 +164,13 @@ class Horde_Stream_Wrapper_Combine
         }
 
         $out = '';
+        $tmp = &$this->_data[$this->_datapos];
 
         while ($count) {
-            $tmp = &$this->_data[$this->_datapos];
+            if (!is_resource($tmp['fp'])) {
+                return false;
+            }
+
             $curr_read = min($count, $tmp['l'] - $tmp['p']);
             $out .= fread($tmp['fp'], $curr_read);
             $count -= $curr_read;
@@ -180,7 +184,10 @@ class Horde_Stream_Wrapper_Combine
                     $tmp['p'] += $curr_read;
                 }
             } elseif ($count) {
-                $tmp = &$this->_data[++$this->_datapos];
+                if (!isset($this->_data[++$this->_datapos])) {
+                    return false;
+                }
+                $tmp = &$this->_data[$this->_datapos];
                 rewind($tmp['fp']);
                 $tmp['p'] = 0;
             } else {

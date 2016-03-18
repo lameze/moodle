@@ -2,7 +2,7 @@
 /**
  * Horde exception class that converts PEAR errors to exceptions.
  *
- * Copyright 2008-2014 Horde LLC (http://www.horde.org/)
+ * Copyright 2008-2016 Horde LLC (http://www.horde.org/)
  *
  * See the enclosed file COPYING for license information (LGPL). If you
  * did not receive this file, see http://www.horde.org/licenses/lgpl21.
@@ -17,7 +17,7 @@ class Horde_Exception_Pear extends Horde_Exception
      *
      * @var string
      */
-    static protected $_class = __CLASS__;
+    protected static $_class = __CLASS__;
 
     /**
      * Exception constructor.
@@ -73,9 +73,9 @@ class Horde_Exception_Pear extends Horde_Exception
      *
      * @throws Horde_Exception_Pear In case the result was a PEAR_Error.
      */
-    static public function catchError($result)
+    public static function catchError($result)
     {
-        if ($result instanceOf PEAR_Error) {
+        if ($result instanceof PEAR_Error) {
             throw new self::$_class($result);
         }
         return $result;
