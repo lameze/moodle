@@ -1,0 +1,5 @@
+{
+    "require": {
+        "aescarcha/udemy-api-client": "dev-master"
+    }
+}
