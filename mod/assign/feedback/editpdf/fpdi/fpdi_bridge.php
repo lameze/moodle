@@ -16,15 +16,8 @@
  * This way it is possible to use FPDI for both FPDF and TCPDF with one FPDI version.
  */
 
-if (!class_exists('TCPDF', false)) {
-    /**
-     * Class fpdi_bridge
-     */
-    class fpdi_bridge extends FPDF
-    {
-        // empty body
-    }
-
+if (!class_exists('pdf', false)) {
+    require_once "pdf.php";
 } else {
 
     /**
