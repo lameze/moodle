@@ -37,6 +37,9 @@ class chart_pie extends chart_base {
     /** @var bool $doughnut Whether the chart should be displayed as doughnut. */
     protected $doughnut = null;
 
+    /** @var int $cutoutpercentage size of the hole in the doughnut */
+    protected $cutoutpercentage = null;
+
     /**
      * Get parent JSON and add specific pie related attributes and values.
      *
@@ -45,6 +48,7 @@ class chart_pie extends chart_base {
     public function jsonSerialize() { // @codingStandardsIgnoreLine (CONTRIB-6469).
         $data = parent::jsonSerialize();
         $data['doughnut'] = $this->get_doughnut();
+        $data['cutoutPercentage'] = $this->get_cutoutpercentage();
         return $data;
     }
 
@@ -65,4 +69,23 @@ class chart_pie extends chart_base {
     public function set_doughnut($doughnut) {
         $this->doughnut = $doughnut;
     }
+
+    /**
+     * Get the size of the hole in the doughnut.
+     *
+     * @return bool
+     */
+    public function get_cutoutpercentage() {
+        return $this->cutoutpercentage;
+    }
+
+    /**
+     * Set the size of the hole in the doughnut.
+     *
+     * @param int $cutoutpercentage
+     */
+    public function set_cutoutpercentage($cutoutpercentage) {
+        $this->cutoutpercentage = $cutoutpercentage;
+    }
+
 }
