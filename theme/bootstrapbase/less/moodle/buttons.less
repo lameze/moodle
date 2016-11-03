@@ -78,6 +78,13 @@ input[type="reset"] {
     .btn-lineup;
 }
 
+// The above buttons rules are really dumb and muck things up for simple pages using bootstrap correctly.
+// e.g. cohort search form.
+// Undo the above silly rules one by one for pages we know to be broken by them.
+#searchcohortquery input[type="text"] + input[type="submit"] {
+    margin-bottom: 0px;
+}
+
 button {
     &.yui3-button {
         &.closebutton {

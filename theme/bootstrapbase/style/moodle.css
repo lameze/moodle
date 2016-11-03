@@ -15818,6 +15818,9 @@ input[type="submit"],
 input[type="reset"] {
   margin: 0 0 10px 5px;
 }
+#searchcohortquery input[type="text"] + input[type="submit"] {
+  margin-bottom: 0px;
+}
 button.yui3-button.closebutton {
   background-position: 0 0;
 }
