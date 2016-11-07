@@ -216,7 +216,7 @@ class chart_base implements JsonSerializable, renderable {
      * @param string[] $labels The labels.
      */
     public function set_labels(array $labels) {
-        $this->labels = $labels;
+        $this->labels = clean_param_array($labels, PARAM_NOTAGS);
     }
 
     /**

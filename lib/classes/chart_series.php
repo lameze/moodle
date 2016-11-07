@@ -214,7 +214,7 @@ class chart_series implements JsonSerializable {
      * @param array $labels The labels for the series values.
      */
     public function set_labels($labels) {
-        $this->labels = $labels;
+        $this->labels = clean_param_array($labels, PARAM_NOTAGS);
     }
 
     /**
