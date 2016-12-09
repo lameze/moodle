@@ -16,15 +16,15 @@
 
 .environmenttable {
     .warn {
-        background-color: $state-warning-bg;
+        @extend .statuswarning;
     }
 
     .error {
-        background-color: $state-danger-bg;
+        @extend .statuscritical;
     }
 
     .ok {
-        background-color: $state-success-bg;
+        @extend .statusok;
     }
 }
 
