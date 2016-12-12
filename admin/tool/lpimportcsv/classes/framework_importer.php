@@ -264,6 +264,10 @@ class framework_importer {
             $this->fail(get_string('invalidimportfile', 'tool_lpimportcsv'));
             return;
         } else {
+            // Raise time execution to one hour and memory limit to extra as this can take a while to finish.
+            \core_php_time_limit::raise(3600);
+            raise_memory_limit(MEMORY_EXTRA);
+
             // Build a tree from this flat list.
             $this->add_children($this->framework, '');
         }
