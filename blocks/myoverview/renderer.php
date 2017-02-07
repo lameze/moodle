@@ -38,6 +38,7 @@ class block_myoverview_renderer extends plugin_renderer_base {
      * @return {string} HTML string
      */
     public function get_content() {
-        return $this->render_from_template('block_myoverview/main', []);
+        $courses = enrol_get_my_courses('*');
+        return $this->render_from_template('block_myoverview/main', ['courses' => array_values($courses)]);
     }
 }

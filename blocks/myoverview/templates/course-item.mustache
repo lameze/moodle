@@ -22,12 +22,19 @@
     Example context (json):
     {}
 }}
-<ul class="list-group unstyled" id="timeline-view-courses-{{uniqid}}" data-region="timeline-view-courses">
-    {{#courses}} {{> block_myoverview/course-item }} {{/courses}}
-</ul>
-{{#js}}
-    require(['jquery', 'block_myoverview/events_by_course_list'], function($, EventByCourseList) {
-    var root = $("#timeline-view-courses-{{uniqid}}");
-    EventByCourseList.init(root);
-    });
-{{/js}}
+<li class="list-group-item m-y-1" data-region="course-events-list-item">
+<div data-region="course-events-container" id="course-events-container-{{id}}" data-course-id="{{id}}">
+    <div class="row">
+        <div class="col-md-3">
+            {{> block_myoverview/course-summary }}
+        </div>
+        <div class="col-md-9">
+            {{< block_myoverview/event-list }}
+                {{$limit}}10{{/limit}}
+                {{$offset}}0{{/offset}}
+                {{$courseid}}{{id}}{{/courseid}}
+            {{/ block_myoverview/event-list }}
+        </div>
+    </div>
+</div>
+</li>
