@@ -70,7 +70,7 @@ define(['jquery', 'core/custom_interaction_events'],
 
             root.trigger(EVENTS.PAGE_SELECTED, [{
                 pageNumber: pageNumber,
-                isSamePage: isSamePage,
+                isSamePage: isSamePage
             }]);
 
             data.originalEvent.preventDefault();
@@ -80,6 +80,6 @@ define(['jquery', 'core/custom_interaction_events'],
     return {
         registerEventListeners: registerEventListeners,
         events: EVENTS,
-        rootSelector: SELECTORS.ROOT,
+        rootSelector: SELECTORS.ROOT
     };
 });
