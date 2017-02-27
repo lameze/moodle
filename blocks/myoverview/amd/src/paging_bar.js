@@ -34,7 +34,12 @@ define(['jquery', 'core/custom_interaction_events'],
     var EVENTS = {
         PAGE_SELECTED: 'block_myoverview-paging-bar-page-selected',
     };
-
+    /**
+     * Get the page element by number
+     * @param root
+     * @param pageNumber
+     * @returns {*}
+     */
     var getPageByNumber = function(root, pageNumber) {
         return root.find(SELECTORS.PAGE_ITEM + '[data-page-number="' + pageNumber + '"]');
     };
