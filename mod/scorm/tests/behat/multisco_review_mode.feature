@@ -169,4 +169,5 @@ Feature: Scorm multi-sco review mode.
     And I follow "ADV Multi-sco SCORM package"
     And I should see "Normal"
     And I press "Enter"
+    And I wait until the page is ready
     Then I should see "Review mode"
