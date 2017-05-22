@@ -185,18 +185,7 @@ if ($mform->is_cancelled()) {
         if ($groupmode) {
             $fromform->sortorder = $fromform->id;
 
-            $overridecountgroup = $DB->count_records('assign_overrides',
-                array('userid' => null, 'assignid' => $assigninstance->id));
-            $overridecountall = $DB->count_records('assign_overrides', array('assignid' => $assigninstance->id));
-            if ((!$overridecountgroup) && ($overridecountall)) { // No group overrides and there are user overrides.
-                $fromform->sortorder = 1;
-            } else {
-                $fromform->sortorder = $overridecountgroup;
-
-            }
-
-            $DB->update_record('assign_overrides', $fromform);
-
+            reorder_group_overrides($assigninstance->id);
         }
 
         // Determine which override created event to fire.
