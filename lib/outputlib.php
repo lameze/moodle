@@ -2000,6 +2000,15 @@ class theme_config {
     }
 
     /**
+     * Get RTL mode
+     * 
+     * @return bool $inrtl True when in RTL mode.
+     */
+    public function get_rtl_mode() {
+        return $this->rtlmode;
+    }
+
+    /**
      * Checks if file with any image extension exists.
      *
      * The order to these images was adjusted prior to the release of 2.4

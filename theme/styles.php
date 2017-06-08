@@ -185,7 +185,7 @@ if ($type === 'editor') {
         }
     }
 
-    css_store_css($theme, "$candidatedir/$type.css", $csscontent, true, $chunkurl);
+    css_store_theme_css($theme, "$candidatedir/$type.css", $csscontent, $chunkurl);
 
     // Release the lock.
     if ($lock) {

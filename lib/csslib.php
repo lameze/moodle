@@ -85,6 +85,32 @@ function css_store_css(theme_config $theme, $csspath, $csscontent, $chunk = fals
 }
 
 /**
+ * Create a temp copy of the generated CSS and save the default CSS file.
+ *
+ * @param theme_config $theme The theme_config object of the theme CSS belongs to.
+ * @param string $cssfile The path to store the CSS at.
+ * @param string $csscontent The whole generated css content.
+ * @param string $chunkurl If the CSS is be chunked then we need to know the URL
+ *      to use for the chunked files.
+ *
+ * @return void
+ */
+function css_store_theme_css(theme_config $theme, $cssfile, $csscontent, $chunkurl) {
+    global $CFG;
+
+    $tempfolder = $CFG->tempdir .'/theme/' . $theme->name;
+    $rtlmode = ($theme->get_rtl_mode() == true) ? 'rtl' : 'ltr';
+
+    // Create temp directory and save the css file.
+    if (!check_dir_exists($tempfolder)) {
+        $tempfolder = make_temp_directory($tempfolder);
+    }
+    file_put_contents($tempfolder . '/all_' . $rtlmode . '.css', $csscontent);
+
+    css_store_css($theme, $cssfile, $csscontent, true, $chunkurl);
+}
+
+/**
  * Writes a CSS file.
  *
  * @param string $filename
