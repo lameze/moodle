@@ -87,6 +87,7 @@ $candidatename = $type;
 if (!$usesvg) {
     // Add to the sheet name, one day we'll be able to just drop this.
     $candidatedir .= '/nosvg';
+    $candidatename .= '-nosvg';
     $etag .= '/nosvg';
 }
 
@@ -130,6 +131,7 @@ if ($themerev <= 0 or $themerev != $rev) {
     $candidatename = $type;
     if (!$usesvg) {
         // Add to the sheet name, one day we'll be able to just drop this.
+        $candidatename .= '-nosvg';
         $candidatedir .= '/nosvg';
         $etag .= '/nosvg';
     }
@@ -146,7 +148,7 @@ make_localcache_directory('theme', false);
 
 if ($type === 'editor') {
     $csscontent = $theme->get_css_content_editor();
-    css_store_css($theme, "$candidatedir/editor.css", $csscontent, false);
+    css_store_css($theme, "$candidatedir/{$candidatename}.css", $csscontent, false);
 
 } else {
 
@@ -185,7 +187,7 @@ if ($type === 'editor') {
         }
     }
 
-    css_store_css($theme, "$candidatedir/$type.css", $csscontent, true, $chunkurl);
+    css_store_css($theme, "$candidatedir/$candidatename.css", $csscontent, true, $chunkurl);
 
     // Release the lock.
     if ($lock) {

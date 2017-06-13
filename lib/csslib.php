@@ -60,6 +60,11 @@ function css_store_css(theme_config $theme, $csspath, $csscontent, $chunk = fals
     // First up write out the single file for all those using decent browsers.
     css_write_file($csspath, $csscontent);
 
+    // Write again to the temp directory.
+    // This file is used as a fallback when waiting for a theme to compile and is not versioned in any way.
+    $temppath = make_temp_directory("theme/{$theme->name}") . DIRECTORY_SEPARATOR . basename($csspath);
+    css_write_file($temppath, $csscontent);
+
     if ($chunk) {
         // If we need to chunk the CSS for browsers that are sub-par.
         $css = css_chunk_by_selector_count($csscontent, $chunkurl);
@@ -69,12 +74,15 @@ function css_store_css(theme_config $theme, $csspath, $csscontent, $chunk = fals
             if ($count === $files) {
                 // If there is more than one file and this IS the last file.
                 $filename = preg_replace('#\.css$#', '.0.css', $csspath);
+                $tempfilename = preg_replace('#\.css$#', '.0.css', $temppath);
             } else {
                 // If there is more than one file and this is not the last file.
-                $filename = preg_replace('#\.css$#', '.'.$count.'.css', $csspath);
+                $filename = preg_replace('#\.css$#', ".{$count}.css", $csspath);
+                $tempfilename = preg_replace('#\.css$#', ".{$count}.css", $temppath);
             }
             $count++;
             css_write_file($filename, $content);
+            css_write_file($tempfilename, $content);
         }
     }
 
