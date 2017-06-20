@@ -2812,10 +2812,13 @@ a.skip:active {
   margin: 5px 12%;
 }
 .loginbox .potentialidps .potentialidplist {
-  margin-left: 40%;
+  margin-left: 60%;
 }
 .loginbox .potentialidps .potentialidplist div {
   text-align: left;
+}
+.loginbox .potentialidps .potentialidplist .potentialidp a {
+  width: 50%;
 }
 .loginbox .loginform {
   margin-top: 1em;
