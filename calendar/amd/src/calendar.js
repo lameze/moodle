@@ -37,7 +37,8 @@ define([
             'core_calendar/modal_event_form',
             'core_calendar/summary_modal',
             'core_calendar/repository',
-            'core_calendar/events'
+            'core_calendar/events',
+            'core_calendar/calendar_view_manager'
         ],
         function(
             $,
@@ -51,7 +52,8 @@ define([
             ModalEventForm,
             SummaryModal,
             CalendarRepository,
-            CalendarEvents
+            CalendarEvents,
+            CalendarViewManager
         ) {
 
     var SELECTORS = {
@@ -228,6 +230,7 @@ define([
 
     return {
         init: function() {
+            CalendarViewManager.init();
             registerEventListeners();
         }
     };
