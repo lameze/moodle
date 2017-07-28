@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -16,12 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * The mform for creating a calendar event. Based on the
- * old event form.
+ * The mform for creating a calendar event. Based on the old event form.
  *
  * @copyright 2017 Ryan Wyllie <ryan@moodle.com>
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @package calendar
  */
 namespace core_calendar\local\event\forms;
 
@@ -32,6 +29,7 @@ require_once($CFG->dirroot.'/lib/formslib.php');
 /**
  * The mform class for creating a calendar event.
  *
+ * @package core_calendar
  * @copyright 2017 Ryan Wyllie <ryan@moodle.com>
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -55,7 +53,7 @@ class create extends \moodleform {
         $this->add_default_hidden_elements($mform);
 
         // Event name field.
-        $mform->addElement('text', 'name', get_string('eventname','calendar'), 'size="50"');
+        $mform->addElement('text', 'name', get_string('eventname', 'calendar'), 'size="50"');
         $mform->addRule('name', get_string('required'), 'required', null, 'client');
         $mform->setType('name', PARAM_TEXT);
 
@@ -65,10 +63,10 @@ class create extends \moodleform {
         // Add the select elements for the available event types.
         $this->add_event_type_elements($mform, $eventtypes);
 
-        // ********* START OF ADVANCED ELEMENTS *********.
-        // Advanced elements are not visible to the user by default. They are
-        // displayed through the user of a show more / less button.
-        $mform->addElement('editor', 'description', get_string('eventdescription','calendar'), ['rows' => 3]);
+        // Start of advanced elements.
+        // Advanced elements are not visible to the user by default.
+        // They are displayed through the user of a show more / less button.
+        $mform->addElement('editor', 'description', get_string('eventdescription', 'calendar'), ['rows' => 3]);
         $mform->setType('description', PARAM_RAW);
         $mform->setAdvanced('description');
 
@@ -78,8 +76,8 @@ class create extends \moodleform {
         // Add the form elements for repeating events.
         $this->add_event_repeat_elements($mform);
 
-        // Add the javascript required to enhance this mform. Including the show/hide of advanced elements
-        // and the display of the correct select elements for chosen event types.
+        // Add the javascript required to enhance this mform.
+        // Including the show/hide of advanced elements and the display of the correct select elements for event types.
         $PAGE->requires->js_call_amd('core_calendar/event_form', 'init', [$mform->getAttribute('id'), $haserror]);
     }
 
@@ -119,13 +117,12 @@ class create extends \moodleform {
      * Add the list of hidden elements that should appear in this form each
      * time. These elements will never be visible to the user.
      *
-     * @method add_default_hidden_elements
      * @param MoodleQuickForm $mform
      */
     protected function add_default_hidden_elements($mform) {
         global $USER;
 
-        // Add some hidden fields
+        // Add some hidden fields.
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);
         $mform->setDefault('id', 0);
@@ -163,7 +160,6 @@ class create extends \moodleform {
      *                   from the above course select) and a select
      *                   element for the group.
      *
-     * @method add_event_type_elements
      * @param MoodleQuickForm $mform
      * @param array $eventtypes The available event types for the user
      */
@@ -238,7 +234,6 @@ class create extends \moodleform {
      * Add the various elements to express the duration options available
      * for an event.
      *
-     * @method add_event_duration_elements
      * @param MoodleQuickForm $mform
      */
     protected function add_event_duration_elements($mform) {
@@ -260,7 +255,7 @@ class create extends \moodleform {
         $mform->disabledIf('timedurationuntil[minute]', 'duration', 'noteq', 1);
 
         $mform->setType('timedurationminutes', PARAM_INT);
-        $mform->disabledIf('timedurationminutes','duration','noteq', 2);
+        $mform->disabledIf('timedurationminutes', 'duration', 'noteq', 2);
 
         $mform->setDefault('duration', 0);
     }
@@ -268,7 +263,6 @@ class create extends \moodleform {
     /**
      * Add the repeat elements for the form when creating a new event.
      *
-     * @method add_event_repeat_elements
      * @param MoodleQuickForm $mform
      */
     protected function add_event_repeat_elements($mform) {
@@ -276,7 +270,7 @@ class create extends \moodleform {
         $mform->addElement('text', 'repeats', get_string('repeatweeksl', 'calendar'), 'maxlength="10" size="10"');
         $mform->setType('repeats', PARAM_INT);
         $mform->setDefault('repeats', 1);
-        $mform->disabledIf('repeats','repeat','notchecked');
+        $mform->disabledIf('repeats', 'repeat', 'notchecked');
         $mform->setAdvanced('repeat');
         $mform->setAdvanced('repeats');
     }
