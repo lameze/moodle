@@ -735,7 +735,7 @@ if ($formdata = $mform2->is_cancelled()) {
             $upt->track('suspended', $stryesnooptions[$user->suspended], 'normal', false);
 
             if (empty($user->auth)) {
-                $user->auth = 'manual';
+                $user->auth = $formdata->auth;
             }
             $upt->track('auth', $user->auth, 'normal', false);
 
