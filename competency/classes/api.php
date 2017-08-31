@@ -4723,6 +4723,28 @@ class api {
     }
 
     /**
+     * Action to perform when a user is deleted.
+     *
+     * @param int $userid The user id.
+     */
+    public static function hook_user_deleted($userid) {
+        global $DB;
+
+        $usercompetencies = $DB->get_records(user_competency::TABLE, ['userid' => $userid], '', 'id');
+        foreach ($usercompetencies as $usercomp) {
+            $DB->delete_records('competency_evidence', ['usercompetencyid' => $usercomp->id]);
+        }
+        $DB->delete_records(user_competency::TABLE, array('userid' => $userid));
+        $DB->delete_records(user_competency_course::TABLE, array('userid' => $userid));
+        $DB->delete_records(user_competency_plan::TABLE, array('userid' => $userid));
+
+        $userevidences = $DB->get_records(user_evidence::TABLE, ['userid' => $userid], '', 'id');
+        foreach($userevidences as $userevidence) {
+            $DB->delete_records(user_evidence_competency::TABLE, ['userevidenceid' => $userevidence->id]);
+        }
+    }
+
+    /**
      * Manually grade a user competency.
      *
      * @param int $userid
