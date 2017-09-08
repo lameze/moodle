@@ -39,5 +39,9 @@ define([], function() {
         calendarPeriods: {
             month: "[data-period='month']",
         },
+        editLink: 'a[data-action="edit"]',
+        deleteLink: 'a[data-action="delete"]',
+        courseSelector: 'select[name="course"]',
+        newEventButton: 'button[data-action="new-event-button"]'
     };
 });

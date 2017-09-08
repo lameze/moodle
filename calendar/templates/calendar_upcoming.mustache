@@ -15,11 +15,11 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template calendar/header
+    @template calendar/calendar_upcoming
 
-    Calendar header.
+    Calendar upcoming view.
 
-    The purpose of this template is to render the month header.
+    The purpose of this template is to render the calendar upcoming view.
 
     Classes required for JS:
     * none
@@ -31,9 +31,11 @@
     {
     }
 }}
-{{#filter_selector}}
-<div class="header">
-    {{{filter_selector}}}
-    {{> core_calendar/add_event_button}}
+<div id="calendar-upcoming-{{uniqid}}" data-template="core_calendar/upcoming_detailed">
+    {{> core_calendar/upcoming_detailed}}
 </div>
-{{/filter_selector}}
+{{#js}}
+require(['jquery', 'core_calendar/calendar_view'], function($, CalendarView) {
+    CalendarView.init($("#calendar-upcoming-{{uniqid}}"));
+});
+{{/js}}
