@@ -137,6 +137,36 @@ define(['jquery', 'core/templates', 'core/notification', 'core_calendar/reposito
             loadingIconContainer.addClass('hidden');
         };
 
+        /**
+         * Refresh the month content.
+         *
+         * @param {object} root The root element.
+         * @param {Number} year Year
+         * @param {Number} month Month
+         * @param {Number} day Day
+         * @param {Number} courseid The id of the course whose events are shown
+         * @return {promise}
+         */
+        var refreshDayContent = function(root, year, month, day, courseid) {
+            startLoading(root);
+
+            return CalendarRepository.getCalendarDayData(year, month, day, courseid)
+                .then(function(context) {
+                    return Templates.render(root.attr('data-template'), context);
+                })
+                .then(function(html, js) {
+                    return Templates.replaceNode(root.find(SELECTORS.CALENDAR_MONTH_WRAPPER), html, js);
+                })
+                .then(function() {
+                    $('body').trigger(CalendarEvents.viewUpdated);
+                    return;
+                })
+                .always(function() {
+                    return stopLoading(root);
+                })
+                .fail(Notification.exception);
+        };
+
         return {
             init: function(root) {
                 registerEventListeners(root);
