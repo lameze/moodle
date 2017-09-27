@@ -42,6 +42,10 @@ define([], function() {
         editLink: 'a[data-action="edit"]',
         deleteLink: 'a[data-action="delete"]',
         courseSelector: 'select[name="course"]',
-        newEventButton: 'button[data-action="new-event-button"]'
+        newEventButton: 'button[data-action="new-event-button"]',
+        actions: {
+            edit: '[data-action="edit"]',
+            remove: '[data-action="delete"]',
+        },
     };
 });
