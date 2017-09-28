@@ -79,6 +79,9 @@ class calendar_upcoming_exporter extends exporter {
             'filter_selector' => [
                 'type' => PARAM_RAW,
             ],
+            'courseid' => [
+                'type' => PARAM_INT,
+            ],
         ];
     }
 
@@ -123,6 +126,7 @@ class calendar_upcoming_exporter extends exporter {
             $return['defaulteventcontext'] = $context->id;
         }
         $return['filter_selector'] = $this->get_course_filter_selector($output);
+        $return['courseid'] = $this->calendar->courseid;
         return $return;
     }
 
