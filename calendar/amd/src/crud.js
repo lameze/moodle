@@ -30,6 +30,7 @@ define([
     'core/modal_registry',
     'core/modal_factory',
     'core/modal_events',
+    'core_calendar/modal_event_form',
     'core_calendar/repository',
     'core_calendar/events',
     'core_calendar/modal_delete',
@@ -44,6 +45,7 @@ function(
     ModalRegistry,
     ModalFactory,
     ModalEvents,
+    ModalEventForm,
     CalendarRepository,
     CalendarEvents,
     ModalDelete,
@@ -142,6 +144,29 @@ function(
     }
 
     /**
+     * Create the event form modal for creating new events and
+     * editing existing events.
+     *
+     * @method registerEventFormModal
+     * @param {object} root The calendar root element
+     * @param {object} newEventButton The new event button element
+     * @return {object} The create modal promise
+     */
+    var registerEventFormModal = function(root, newEventButton) {
+
+        var contextId = newEventButton.data('context-id');
+
+        return ModalFactory.create(
+            {
+                type: ModalEventForm.TYPE,
+                large: true,
+                templateContext: {
+                    contextid: contextId
+                }
+            }, [root, CalendarSelectors.newEventButton]
+        );
+    };
+    /**
      * Register the listeners required to remove the event.
      *
      * @param   {jQuery} root
@@ -160,6 +185,11 @@ function(
     }
 
     return {
+        init: function(root) {
+            registerEventFormModal(root, $(CalendarSelectors.newEventButton));
+        },
         registerRemove: registerRemove,
+        confirmDeletion: confirmDeletion,
+        registerEventFormModal: registerEventFormModal
     };
 });
