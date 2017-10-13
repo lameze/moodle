@@ -269,7 +269,7 @@ class create extends \moodleform {
                     ['context' => \context_course::instance($group->courseid)]);
             }
 
-            $mform->addElement('select', 'groupid', get_string('group'), $groupoptions);
+            $mform->addElement('select', 'groupid', get_string('group'), $groupoptions, array('disabled' => 'true'));
             $mform->hideIf('groupid', 'eventtype', 'noteq', 'group');
             // We handle the group select hide/show actions on the event_form module.
         }
