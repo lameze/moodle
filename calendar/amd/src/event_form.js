@@ -70,9 +70,14 @@ define(['jquery'], function($) {
     var addCourseGroupSelectListeners = function(formElement) {
         var courseGroupSelect = formElement.find(SELECTORS.EVENT_GROUP_COURSE_ID);
         var groupSelect = formElement.find(SELECTORS.EVENT_GROUP_ID);
-        var groupSelectOptions = groupSelect.find(SELECTORS.SELECT_OPTION);
+        var groupSelectOptions = groupSelect.find(SELECTORS.SELECT_OPTION)
+        if (courseGroupSelect.val()) {
+            console.log(courseGroupSelect.val());
+            groupSelect.prop('disabled', false);
+        }
         var filterGroupSelectOptions = function() {
             var selectedCourseId = courseGroupSelect.val();
+
             var selectedIndex = null;
             var hasGroups = false;
             groupSelectOptions.each(function(index, element) {
