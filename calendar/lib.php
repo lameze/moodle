@@ -588,33 +588,42 @@ class calendar_event {
 
             if ($updaterepeated) {
                 // Update all.
+                $groupid = (isset($this->properties->groupid)) ? $this->properties->groupid : '';
+                $courseid = (isset($this->properties->courseid)) ? $this->properties->courseid : '';
+
+                $params = [
+                    $this->properties->name,
+                    $this->properties->description
+                ];
+
+                $fields = "name = ?,
+                           description = ?,";
+
+                if (!empty($groupid)) {
+                    $fields .= "groupid = ?,";
+                    array_push($params, $groupid);
+                }
+
+                if (!empty($courseid)) {
+                    $fields .= "courseid = ?,";
+                    array_push($params, $courseid);
+                }
+
                 if ($this->properties->timestart != $event->timestart) {
                     $timestartoffset = $this->properties->timestart - $event->timestart;
-                    $sql = "UPDATE {event}
-                               SET name = ?,
-                                   description = ?,
-                                   timestart = timestart + ?,
-                                   timeduration = ?,
-                                   timemodified = ?,
-                                   groupid = ?,
-                                   courseid = ?
-                             WHERE repeatid = ?";
-                    $params = array($this->properties->name, $this->properties->description, $timestartoffset,
-                            $this->properties->timeduration, time(), $this->properties->groupid,
-                            $this->properties->courseid, $event->repeatid);
-                } else {
-                    $sql = "UPDATE {event}
-                               SET name = ?,
-                                   description = ?,
-                                   timeduration = ?,
-                                   timemodified = ?,
-                                   groupid = ?,
-                                   courseid = ?
-                            WHERE repeatid = ?";
-                    $params = array($this->properties->name, $this->properties->description,
-                            $this->properties->timeduration, time(), $this->properties->groupid,
-                            $this->properties->courseid, $event->repeatid);
+                    $fields .= "timestart = timestart + ?,";
+                    array_push($params, $timestartoffset);
                 }
+
+                $fields .= "timeduration = ?,
+                            timemodified = ?";
+
+                array_push($params, $this->properties->timeduration, time(), $event->repeatid);
+
+                $sql = "UPDATE {event}
+                           SET $fields
+                         WHERE repeatid = ?";
+
                 $DB->execute($sql, $params);
 
                 // Trigger an update event for each of the calendar event.
