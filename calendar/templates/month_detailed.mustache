@@ -71,12 +71,14 @@
                         data-region="day"
                         data-new-event-timestamp="{{neweventtimestamp}}">
                         <div class="hidden-sm-down text-xs-center">
-                            {{#hasevents}}
-                                <a data-action="view-day-link" href="{{viewdaylink}}" class="day" title="{{viewdaylinktitle}}">{{mday}}</a>
-                            {{/hasevents}}
-                            {{^hasevents}}
-                                {{mday}}
-                            {{/hasevents}}
+                            <div id="todaylink">
+                                {{#hasevents}}
+                                    <a data-action="view-day-link" href="{{viewdaylink}}" class="day" title="{{viewdaylinktitle}}">{{mday}}</a>
+                                {{/hasevents}}
+                                {{^hasevents}}
+                                    {{mday}}
+                                {{/hasevents}}
+                            </div>
                             {{#hasevents}}
                                 <div data-region="day-content">
                                     <ul>
@@ -120,7 +122,9 @@
                         </div>
                         <div class="hidden-md-up hidden-desktop">
                             {{#hasevents}}
-                                <a href="{{viewdaylink}}" class="day" title="{{viewdaylinktitle}}">{{mday}}</a>
+                                <span class="badge badge-circle">
+                                    <a href="{{viewdaylink}}" class="day" title="{{viewdaylinktitle}}">{{mday}}</a>
+                                </span>
                             {{/hasevents}}
                             {{^hasevents}}
                                 <div data-region="day-content">
