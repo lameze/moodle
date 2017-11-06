@@ -116,8 +116,11 @@
 </div>
 {{#js}}
 require(['jquery'], function($) {
-    $('#{{id}}').change(function() {
-        $('#{{formid}}').submit();
+    var singleSelect = $('#{{id}}');
+    singleSelect.change(function() {
+        if (singleSelect.val()) {
+            $('#{{formid}}').submit();
+        }
     });
 });
 {{/js}}
