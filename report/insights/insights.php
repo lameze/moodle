@@ -34,6 +34,10 @@ if ($perpage > 1000) {
     $perpage = 1000;
 }
 
+if (!$contextid) {
+    $contextid = context_system::instance()->id;
+}
+
 list($context, $course, $cm) = get_context_info_array($contextid);
 require_login($course, false, $cm);
 if ($context->contextlevel < CONTEXT_COURSE) {
