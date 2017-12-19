@@ -60,7 +60,7 @@
                     <td class="dayblank">&nbsp;</td>
                 {{/prepadding}}
                 {{#days}}
-                    <td class="clickable day text-sm-center text-md-left{{!
+                    <td class="{{#defaulteventcontext}}clickable{{/defaulteventcontext}} day text-sm-center text-md-left{{!
                             }}{{#istoday}} today{{/istoday}}{{!
                             }}{{#isweekend}} weekend{{/isweekend}}{{!
                             }}{{#durationevents.0}} duration{{/durationevents.0}}{{!

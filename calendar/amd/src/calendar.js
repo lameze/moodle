@@ -170,8 +170,9 @@ define([
      * Register event listeners for the module.
      *
      * @param {object} root The calendar root element
+     * @param {Boolean} canCreateEvents Whether the current user can create events.
      */
-    var registerEventListeners = function(root) {
+    var registerEventListeners = function(root, canCreateEvents) {
         root.on('change', CalendarSelectors.elements.courseSelector, function() {
             var selectElement = $(this);
             var courseId = selectElement.val();
@@ -186,39 +187,43 @@ define([
         var eventFormPromise = CalendarCrud.registerEventFormModal(root);
         registerCalendarEventListeners(root, eventFormPromise);
 
-        // Bind click events to calendar days.
-        root.on('click', SELECTORS.DAY, function(e) {
+        if (canCreateEvents) {
 
-            var target = $(e.target);
+            // Bind click events to calendar days.
+            root.on('click', SELECTORS.DAY, function(e) {
 
-            if (!target.is(SELECTORS.VIEW_DAY_LINK)) {
-                var startTime = $(this).attr('data-new-event-timestamp');
-                eventFormPromise.then(function(modal) {
-                    var wrapper = target.closest(CalendarSelectors.wrapper);
-                    modal.setCourseId(wrapper.data('courseid'));
+                var target = $(e.target);
 
-                    var categoryId = wrapper.data('categoryid');
-                    if (typeof categoryId !== 'undefined') {
-                        modal.setCategoryId(categoryId);
-                    }
+                if (!target.is(SELECTORS.VIEW_DAY_LINK)) {
+                    var startTime = $(this).attr('data-new-event-timestamp');
+                    eventFormPromise.then(function(modal) {
+                        var wrapper = target.closest(CalendarSelectors.wrapper);
+                        modal.setCourseId(wrapper.data('courseid'));
 
-                    modal.setContextId(wrapper.data('contextId'));
-                    modal.setStartTime(startTime);
-                    modal.show();
-                    return;
-                })
-                .fail(Notification.exception);
+                        var categoryId = wrapper.data('categoryid');
+                        if (typeof categoryId !== 'undefined') {
+                            modal.setCategoryId(categoryId);
+                        }
 
-                e.preventDefault();
-            }
-        });
+                        modal.setContextId(wrapper.data('contextId'));
+                        modal.setStartTime(startTime);
+                        modal.show();
+                        return;
+                    })
+                        .fail(Notification.exception);
+
+                    e.preventDefault();
+                }
+            });
+        }
+
     };
 
     return {
-        init: function(root) {
+        init: function(root, canCreateEvents) {
             root = $(root);
             CalendarViewManager.init(root);
-            registerEventListeners(root);
+            registerEventListeners(root, canCreateEvents);
         }
     };
 });

@@ -36,6 +36,12 @@
 </div>
 {{#js}}
 require(['jquery', 'core_calendar/calendar'], function($, Calendar) {
-    Calendar.init($("#calendar-month-{{uniqid}}"));
+    Calendar.init($("#calendar-month-{{uniqid}}"),
+    {{#defaulteventcontext}}
+        true
+    {{/defaulteventcontext}}
+    {{^defaulteventcontext}}
+        false
+    {{/defaulteventcontext}});
 });
 {{/js}}
