@@ -38,6 +38,7 @@ list($thispageurl, $contexts, $cmid, $cm, $quiz, $pagevars) =
 $returnurl = optional_param('returnurl', '', PARAM_LOCALURL);
 $addonpage = optional_param('addonpage', 0, PARAM_INT);
 $category = optional_param('category', 0, PARAM_INT);
+$tags = optional_param_array('tags', false, PARAM_TAGLIST);
 $scrollpos = optional_param('scrollpos', 0, PARAM_INT);
 
 // Get the course object and related bits.

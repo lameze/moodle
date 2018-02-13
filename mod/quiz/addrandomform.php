@@ -51,6 +51,9 @@ class quiz_add_random_form extends moodleform {
                 array('contexts' => $usablecontexts, 'top' => true));
         $mform->setDefault('category', $this->_customdata['cat']);
 
+        $mform->addElement('tags', 'tags', get_string('tags'),
+            ['itemtype' => 'question', 'component' => 'core_question']);
+
         $mform->addElement('checkbox', 'includesubcategories', '', get_string('recurse', 'quiz'));
 
         $tops = question_get_top_categories_for_contexts(array_column($contexts->all(), 'id'));
