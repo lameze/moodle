@@ -147,24 +147,53 @@ class core_question_external extends external_api {
         parse_str($params['formdata'], $data);
 
         if (!empty($data['id'])) {
-            $questionid = clean_param($data['id'], PARAM_INT);
-            $question = $DB->get_record('question', array('id' => $questionid));
-
+            $id = clean_param($data['id'], PARAM_INT);
+            $cmid = !empty($data['cmid']) ? clean_param($data['cmid'], PARAM_INT) : null;
+            $courseid = !empty($data['courseid']) ? clean_param($data['courseid'], PARAM_INT) : null;
+            $question = $DB->get_record('question', array('id' => $id));
+            get_question_options($question, true);
+            $category = $DB->get_record('question_categories', array('id' => $question->category));
+            $categorycontext = \context::instance_by_id($category->contextid);
             require_once($CFG->libdir . '/questionlib.php');
             $cantag = question_has_capability_on($question, 'tag');
 
             require_once($CFG->dirroot . '/question/type/tags_form.php');
-            $mform = new \core_question\form\tags(null, null, 'post', '', null, $cantag, $data);
+
+            if ($cmid){
+                $thiscontext = context_module::instance($cmid);
+            } elseif ($courseid) {
+                $thiscontext = context_course::instance($courseid);
+            } else {
+                print_error('missingcourseorcmid', 'question');
+            }
+            $coursecontext = $thiscontext->get_course_context();
+            $contexts = new question_edit_contexts($thiscontext);
+            $iscoursequestion = ($categorycontext->id == $coursecontext->id || $categorycontext->id == $thiscontext->id);
+
+            $formoptions = new stdClass();
+            $formoptions->iscoursequestion = $iscoursequestion;
+            $formoptions->context = $categorycontext;
+            $formoptions->contexts = $contexts;
+            $mform = new \core_question\form\tags(null, $formoptions, 'post', '', null, $cantag, $data);
 
             if ($validateddata = $mform->get_data()) {
                 // Due to a mform bug, if there's no tags set on the tag element, it submits the name as the value.
                 // The only way to discover is checking if the tag element is an array.
-                if ($cantag) {
-                    if (is_array($validateddata->tags)) {
-                        $categorycontext = context::instance_by_id($validateddata->contextid);
 
-                        core_tag_tag::set_item_tags('core_question', 'question', $validateddata->id,
-                            $categorycontext, $validateddata->tags);
+                if ($cantag) {
+                    if (is_array($validateddata->tags) || is_array($validateddata->coursetags)) {
+
+                        if (isset($validateddata->tags)) {
+                            // If we have any question context level tags then set those tags now.
+                            core_tag_tag::set_item_tags('core_question', 'question', $question->id,
+                                context::instance_by_id($validateddata->contextid), $validateddata->tags, 0);
+                        }
+
+                        if (isset($validateddata->coursetags)) {
+                            // If we have and course context level tags then set those now.
+                            core_tag_tag::set_item_tags('core_question', 'question', $question->id,
+                                context_course::instance($validateddata->courseid), $validateddata->coursetags, 0);
+                        }
 
                         $result['status'] = true;
                     } else {

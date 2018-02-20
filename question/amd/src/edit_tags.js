@@ -150,7 +150,9 @@ define([
 
             var questionId = currentTarget.data('questionid'),
                 canTag = !!currentTarget.data('cantag'),
-                contextId = currentTarget.data('contextid');
+                contextId = currentTarget.data('contextid'),
+                cmId = currentTarget.data('cmid'),
+                courseId = currentTarget.data('courseid');
 
             // This code gets called each time the user clicks the tag link
             // so we can use it to reload the contents of the tag modal.
@@ -162,6 +164,13 @@ define([
                 var args = {
                     id: questionId
                 };
+
+                if (cmId) {
+                    args.cm = cmId;
+                }
+                if (courseId) {
+                    args.courseid = courseId;
+                }
 
                 var tagsFragment = Fragment.loadFragment('question', 'tags_form', contextId, args);
                 modal.setBody(tagsFragment);

@@ -57,9 +57,13 @@ class tags_action_column extends action_column_base {
 
             $cantag = question_has_capability_on($question, 'tag');
             $category = $DB->get_record('question_categories', ['id' => $question->category], 'contextid');
-            $url = $this->qbank->edit_question_url($question->id);
 
-            $this->print_tag_icon($question->id, $url, $cantag, $category->contextid);
+            $qbank = $this->qbank;
+            $url = $qbank->edit_question_url($question->id);
+            $cmid = $qbank->get_cmid();
+            $courseid = $qbank->get_courseid();
+
+            $this->print_tag_icon($question->id, $url, $cantag, $category->contextid, $cmid, $courseid);
         }
     }
 
@@ -70,15 +74,19 @@ class tags_action_column extends action_column_base {
      * @param string $url Editing question url.
      * @param bool $cantag Whether the user can tag questions or not.
      * @param int $contextid Question category context ID.
+     * @param int $cmid Course module id.
+     * @param int $courseid Course id.
      */
-    protected function print_tag_icon($id, $url, $cantag, $contextid) {
+    protected function print_tag_icon($id, $url, $cantag, $contextid, $cmid, $courseid) {
         global $OUTPUT;
 
         $params = [
             'data-action' => 'edittags',
             'data-cantag' => $cantag,
             'data-contextid' => $contextid,
-            'data-questionid' => $id
+            'data-questionid' => $id,
+            'data-cmid' => $cmid,
+            'data-courseid' => $courseid
         ];
 
         echo \html_writer::link($url, $OUTPUT->pix_icon('t/tags', get_string('managetags', 'tag')), $params);

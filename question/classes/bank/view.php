@@ -217,6 +217,19 @@ class view {
         return $this->course->id;
     }
 
+    /**
+     * Return the cmid if the course module object is set or null otherwise.
+     *
+     * @return int|null
+     */
+    public function get_cmid() {
+        if (!empty($this->cm)) {
+            return $this->cm->id;
+        }
+
+        return null;
+    }
+
     protected function init_sort() {
         $this->init_sort_from_params();
         if (empty($this->sort)) {

@@ -41,10 +41,17 @@ class tags extends \moodleform {
      */
     public function definition() {
         $mform = $this->_form;
+        $customdata = $this->_customdata;
         $mform->disable_form_change_checker();
 
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);
+
+        $mform->addElement('hidden', 'cmid');
+        $mform->setType('cmid', PARAM_INT);
+
+        $mform->addElement('hidden', 'courseid');
+        $mform->setType('courseid', PARAM_INT);
 
         $mform->addElement('hidden', 'categoryid');
         $mform->setType('categoryid', PARAM_INT);
@@ -56,7 +63,25 @@ class tags extends \moodleform {
         $mform->addElement('static', 'questioncategory', get_string('categorycurrent', 'question'));
         $mform->addElement('static', 'context', '');
 
-        $mform->addElement('tags', 'tags', get_string('tags'),
-                ['itemtype' => 'question', 'component' => 'core_question']);
+
+        // All questions can now be tagged at the course context.
+        $coursecontext = $customdata->contexts->lowest()->get_course_context();
+        $coursetagheader = get_string('questionformtagheader', 'core_question',
+            $coursecontext->get_context_name(true));
+        $mform->addElement('header', 'coursetagsheader', $coursetagheader);
+        $mform->addElement('tags', 'coursetags', get_string('tags'),
+            array('itemtype' => 'question', 'component' => 'core_question'));
+
+        // If this question isn't at the course context (e.g. it's a system context question)
+        // then we allow tags to be added at that context as well.
+        if (!$customdata->iscoursequestion) {
+            $tagheader = get_string('questionformtagheader', 'core_question',
+                $customdata->context->get_context_name(true));
+
+            $mform->addElement('header', 'tagsheader', $tagheader);
+            $mform->addElement('tags', 'tags', get_string('tags'),
+                array('itemtype' => 'question', 'component' => 'core_question'));
+        }
+
     }
 }
