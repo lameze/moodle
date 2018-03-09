@@ -168,6 +168,7 @@ class core_question_external extends external_api {
             'editingcontext' => $editingcontext,
             'questioncontext' => $questioncontext
         ];
+
         $mform = new \core_question\form\tags(null, $formoptions, 'post', '', null, $cantag, $data);
 
         if ($validateddata = $mform->get_data()) {
