@@ -384,4 +384,28 @@ $definitions = array(
         'simpledata' => true,
         'ttl' => 1800,
     ),
+
+    // Caches the question data for the question_has_capability_on function.
+    // This should be a static cache that only lasts the length of the request.
+    'question_has_capability_on_questions' => array(
+        'mode' => cache_store::MODE_REQUEST,
+        'simplekeys' => true,
+        'staticacceleration' => true,
+    ),
+
+    // Caches the categories data for the question_has_capability_on function.
+    // This should be a static cache that only lasts the length of the request.
+    'question_has_capability_on_categories' => array(
+        'mode' => cache_store::MODE_REQUEST,
+        'simplekeys' => true,
+        'staticacceleration' => true,
+    ),
+
+    // Caches the cachedcat data for the question_has_capability_on function.
+    // This should be a static cache that only lasts the length of the request.
+    'question_has_capability_on_cachedcat' => array(
+        'mode' => cache_store::MODE_REQUEST,
+        'simplekeys' => true,
+        'staticacceleration' => true,
+    ),
 );

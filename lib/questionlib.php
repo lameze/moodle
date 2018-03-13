@@ -1614,40 +1614,54 @@ class context_to_string_translator{
 function question_has_capability_on($question, $cap, $cachecat = -1) {
     global $USER, $DB;
 
-    // these are capabilities on existing questions capabilties are
-    //set per category. Each of these has a mine and all version. Append 'mine' and 'all'
-    $question_questioncaps = array('edit', 'view', 'use', 'move', 'tag');
-    static $questions = array();
-    static $categories = array();
-    static $cachedcat = array();
-    if ($cachecat != -1 && array_search($cachecat, $cachedcat) === false) {
-        $questions += $DB->get_records('question', array('category' => $cachecat), '', 'id,category,createdby');
-        $cachedcat[] = $cachecat;
+    // These are capabilities on existing questions capabilties are
+    // set per category. Each of these has a mine and all version.
+    // Append 'mine' and 'all'.
+    $questioncaps = ['edit', 'view', 'use', 'move', 'tag'];
+    // These caches are all request (static) caches that purge when the process ends.
+    $questionscache = cache::make('core', 'question_has_capability_on_questions');
+    $categoriescache = cache::make('core', 'question_has_capability_on_categories');
+    $cachedcatcache = cache::make('core', 'question_has_capability_on_cachedcat');
+
+    if ($cachecat != -1 && !$cachedcatcache->get($cachecat)) {
+        $questions = $DB->get_records('question', ['category' => $cachecat], '', 'id,category,createdby');
+        $questionscache->set_many($questions);
+        $cachedcatcache->set($cachecat, true);
     }
+
     if (!is_object($question)) {
-        if (!isset($questions[$question])) {
-            if (!$questions[$question] = $DB->get_record('question',
-                    array('id' => $question), 'id,category,createdby')) {
+        $questionid = $question;
+        if (!$question = $questionscache->get($questionid)) {
+            $question = $DB->get_record('question', ['id' => $questionid], 'id,category,createdby');
+
+            if ($question) {
+                $questionscache->set($questionid, $question);
+            } else {
                 print_error('questiondoesnotexist', 'question');
             }
         }
-        $question = $questions[$question];
     }
+
     if (empty($question->category)) {
         // This can happen when we have created a fake 'missingtype' question to
         // take the place of a deleted question.
         return false;
     }
-    if (!isset($categories[$question->category])) {
-        if (!$categories[$question->category] = $DB->get_record('question_categories',
-                array('id'=>$question->category))) {
+
+    $categoryid = $question->category;
+    if (!$category = $categoriescache->get($categoryid)) {
+        $category = $DB->get_record('question_categories',['id' => $categoryid]);
+
+        if ($category) {
+            $categoriescache->set($categoryid, $category);
+        } else {
             print_error('invalidcategory', 'question');
         }
     }
-    $category = $categories[$question->category];
+
     $context = context::instance_by_id($category->contextid);
 
-    if (array_search($cap, $question_questioncaps)!== false) {
+    if (array_search($cap, $questioncaps) !== false) {
         if (!has_capability('moodle/question:' . $cap . 'all', $context)) {
             if ($question->createdby == $USER->id) {
                 return has_capability('moodle/question:' . $cap . 'mine', $context);
@@ -1660,7 +1674,6 @@ function question_has_capability_on($question, $cap, $cachecat = -1) {
     } else {
         return has_capability('moodle/question:' . $cap, $context);
     }
-
 }
 
 /**
