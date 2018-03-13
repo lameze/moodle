@@ -121,6 +121,25 @@ class core_questionlib_testcase extends advanced_testcase {
         return array($category, $course, $quiz, $qcat, $questions);
     }
 
+    /**
+     * Create a user with the capability to tag all questions.
+     *
+     * @return stdClass The user record
+     */
+    public function create_user_can_tag_questions() {
+        $generator = $this->getDataGenerator();
+        $user = $generator->create_user();
+        $roleid = $generator->create_role();
+        $systemcontext = context_system::instance();
+
+        $generator->role_assign($roleid, $user->id, $systemcontext->id);
+
+        // Give the user ability to tag questions.
+        assign_capability('moodle/question:tagall', CAP_ALLOW, $roleid, $systemcontext, true);
+
+        return $user;
+    }
+
     public function test_question_reorder_qtypes() {
         $this->assertEquals(
             array(0 => 't2', 1 => 't1', 2 => 't3'),
@@ -1498,4 +1517,76 @@ class core_questionlib_testcase extends advanced_testcase {
         }
     }
 
+    /*
+     * question_has_capability_on should statically cache the question record if
+     * it is given a question id so that subsequent calls to the function for the
+     * same question id don't result in additional database requests.
+     */
+    public function test_question_has_capability_on_static_question_cache() {
+        global $DB;
+
+        list($category, $course, $quiz, $qcat, $questions) = $this->setup_quiz_and_questions();
+        $user = $this->create_user_can_tag_questions();
+        $questionid = $questions[0]->id;
+        $this->setUser($user);
+        // This first call should warm the cache by pulling the question from
+        // the DB.
+        $this->assertTrue(question_has_capability_on($questionid, 'tag'));
+        // Now remove the record from the DB.
+        $DB->delete_records('question', ['id' => $questionid]);
+        // The second call should still work even though the record has been
+        // removed from the DB because it should be referencing the cache value
+        // it stored in the first call.
+        $this->assertTrue(question_has_capability_on($questionid, 'tag'));
+    }
+
+    /**
+     * question_has_capability_on should statically cache the question_categories
+     * record if so that subsequent calls to the function for questions in the same
+     * question category don't result in additional database requests.
+     */
+    public function test_question_has_capability_on_static_categories_cache() {
+        global $DB;
+
+        list($category, $course, $quiz, $qcat, $questions) = $this->setup_quiz_and_questions();
+        $user = $this->create_user_can_tag_questions();
+        $question = $questions[0];
+        $this->setUser($user);
+        // This first call should warm the cache by pulling the question category
+        // from the DB.
+        $this->assertTrue(question_has_capability_on($question, 'tag'));
+        // Now remove the question category record from the DB.
+        $DB->delete_records('question_categories', ['id' => $question->category]);
+        // The second call should still work even though the record has been
+        // removed from the DB because it should be referencing the cache value
+        // it stored in the first call.
+        $this->assertTrue(question_has_capability_on($question, 'tag'));
+    }
+
+    /**
+     * question_has_capability_on should statically cache the question record if
+     * it is given a question id so that subsequent calls to the function for the
+     * same question id don't result in additional database requests.
+     */
+    public function test_question_has_capability_on_static_cachecat_cache() {
+        global $DB;
+
+        list($category, $course, $quiz, $qcat, $questions) = $this->setup_quiz_and_questions();
+        $user = $this->create_user_can_tag_questions();
+        $question1 = $questions[0];
+        $question2 = $questions[1];
+        $this->setUser($user);
+        // This first call should warm the cache by pulling all of the questions
+        // in the given category from the DB and setting them in the cache.
+        $this->assertTrue(question_has_capability_on($question1, 'tag', $qcat->id));
+        // Now remove the question records in that category from the DB.
+        $DB->delete_records('question', ['category' => $qcat->id]);
+        // Subsequent calls for questions in that category or to re-cache the same
+        // category questions should not result in any DB calls to load the questions.
+        // They should all be hitting the static cache populate by the first call.
+        $this->assertTrue(question_has_capability_on($question1, 'tag'));
+        $this->assertTrue(question_has_capability_on($question2, 'tag'));
+        $this->assertTrue(question_has_capability_on($question1, 'tag', $qcat->id));
+        $this->assertTrue(question_has_capability_on($question2, 'tag', $qcat->id));
+    }
 }
