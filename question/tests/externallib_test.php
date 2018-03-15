@@ -383,7 +383,7 @@ class core_question_external_testcase extends externallib_advanced_testcase {
             // If the use case is expecting course tags to be created then split
             // the tags into course tags and question tags and ensure we have
             // the correct number of course tags.
-            while($tagobject = array_shift($tagobjects)) {
+            while ($tagobject = array_shift($tagobjects)) {
                 if ($tagobject->taginstancecontextid == $questioncontext->id) {
                     $questiontagobjects[] = $tagobject;
                 } else if ($tagobject->taginstancecontextid == $coursecontext->id) {

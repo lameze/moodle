@@ -1650,7 +1650,7 @@ function question_has_capability_on($question, $cap, $cachecat = -1) {
 
     $categoryid = $question->category;
     if (!$category = $categoriescache->get($categoryid)) {
-        $category = $DB->get_record('question_categories',['id' => $categoryid]);
+        $category = $DB->get_record('question_categories', ['id' => $categoryid]);
 
         if ($category) {
             $categoriescache->set($categoryid, $category);

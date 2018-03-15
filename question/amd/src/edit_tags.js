@@ -101,8 +101,8 @@ define([
     /**
      * Set the context Id data attribute on the modal.
      *
-     * @param modal
-     * @param contextId
+     * @param {Promise} modal The modal promise.
+     * @param {int} contextId The context id.
      */
     var setContextId = function(modal, contextId) {
         modal.getBody().attr('data-contextid', contextId);
@@ -111,7 +111,8 @@ define([
     /**
      * Get the context Id data attribute value from the modal body.
      *
-     * @param modal
+     * @param {Promise} modal The modal promise.
+     * @return {int} The context id.
      */
     var getContextId = function(modal) {
         return modal.getBody().data('contextid');
@@ -120,8 +121,8 @@ define([
     /**
      * Set the question Id data attribute on the modal.
      *
-     * @param modal
-     * @param questionId
+     * @param {Promise} modal The modal promise.
+     * @param {int} questionId The question Id.
      */
     var setQuestionId = function(modal, questionId) {
         modal.getBody().attr('data-questionid', questionId);
@@ -130,7 +131,8 @@ define([
     /**
      * Get the question Id data attribute value from the modal body.
      *
-     * @param modal
+     * @param {Promise} modal The modal promise.
+     * @return {int} The question Id.
      */
     var getQuestionId = function(modal) {
         return modal.getBody().data('questionid');

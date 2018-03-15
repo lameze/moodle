@@ -153,7 +153,7 @@ class core_question_external extends external_api {
         self::validate_context($editingcontext);
         parse_str($params['formdata'], $data);
 
-        $question = $question = $DB->get_record_sql('
+        $question = $DB->get_record_sql('
                 SELECT q.*, qc.contextid
                 FROM {question} q
                 JOIN {question_categories} qc ON qc.id = q.category
