@@ -464,6 +464,11 @@ define([
         // trigger an actual submission because there is some JS code in the form that is
         // listening for this event and doing some stuff (e.g. saving draft areas etc).
         this.getModal().on(CustomEvents.events.activate, SELECTORS.SAVE_BUTTON, function(e, data) {
+            // We need to add this call otherwise TinyMCE editor content is not submitted.
+            if (typeof window.tinyMCE !== 'undefined') {
+                window.tinyMCE.triggerSave();
+            }
+
             this.getForm().submit();
             data.originalEvent.preventDefault();
             e.stopPropagation();
