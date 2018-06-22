@@ -985,9 +985,11 @@ class core_calendar_external extends external_api {
 
         $time = $type->convert_to_timestamp($params['year'], $params['month'], 1);
         $calendar = \calendar_information::create($time, $params['courseid'], $params['categoryid']);
-        self::validate_context($calendar->context);
 
         $view = $params['mini'] ? 'mini' : 'month';
+        if ($view == 'month') {
+            self::validate_context($calendar->context);
+        }
         list($data, $template) = calendar_get_view($calendar, $view, $params['includenavigation']);
 
         return $data;
