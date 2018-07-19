@@ -3661,20 +3661,20 @@ function calendar_get_allowed_event_types(int $courseid = null) {
     ];
 
     if (!empty($courseid) && $courseid != SITEID) {
-        $context = \context_course::instance($courseid);
+        $coursecontext = \context_course::instance($courseid);
         $groups = groups_get_all_groups($courseid);
 
-        $types['user'] = has_capability('moodle/calendar:manageownentries', $context);
+        $types['user'] = has_capability('moodle/calendar:manageownentries', $coursecontext);
 
-        if (has_capability('moodle/calendar:manageentries', $context) || !empty($CFG->calendar_adminseesall)) {
+        if (has_capability('moodle/calendar:manageentries', $coursecontext) || !empty($CFG->calendar_adminseesall)) {
             $types['course'] = true;
-
-            $types['group'] = (!empty($groups) && has_capability('moodle/site:accessallgroups', $context))
-                || array_filter($groups, function($group) use ($USER) {
-                    return groups_is_member($group->id);
-                });
-        } else if (has_capability('moodle/calendar:managegroupentries', $context)) {
-            $types['group'] = (!empty($groups) && has_capability('moodle/site:accessallgroups', $context))
+            // Allow group event type if the user has access to all groups and the course has any groups.
+            $types['group'] = (!empty($groups) && has_capability('moodle/site:accessallgroups', $coursecontext));
+        } else if (has_capability('moodle/calendar:managegroupentries', $coursecontext)) {
+            // Allow group event type if:
+            // 1) the user has capabilities to manage group entries and the course has groups.
+            // 2) If the user can access all groups OR if the user is member of one of the groups.
+            $types['group'] = (!empty($groups) && has_capability('moodle/site:accessallgroups', $coursecontext))
                 || array_filter($groups, function($group) use ($USER) {
                     return groups_is_member($group->id);
                 });
@@ -3692,11 +3692,11 @@ function calendar_get_allowed_event_types(int $courseid = null) {
         $types['category'] = true;
     }
 
-    // We still don't know if the user can create group and course events, so iterate over the courses to find out
-    // if the user has capabilities in one of the courses.
+    // We still don't know if the user can create group and course events.
+    // Iterate over the courses user has access to find out if the user has course or group capabilities in one of the courses.
     if ($types['course'] == false || $types['group'] == false) {
+        // Fetch list of courses user has access to.
         $courses = calendar_get_default_courses(null, 'id', true);
-
         if (!empty($courses)) {
             $courseids = array_map(function($c) {
                 return $c->id;
@@ -3715,10 +3715,12 @@ function calendar_get_allowed_event_types(int $courseid = null) {
                 $coursecontext = context_course::instance($course->id);
                 if (has_capability('moodle/calendar:manageentries', $coursecontext)
                         && ($courseid == $course->id || empty($courseid))) {
+                    // WHY && ($courseid == $course->id || empty($courseid))
                     $types['course'] = true;
                     break;
                 }
             }
+
 
             $sql = "SELECT c.id, " . context_helper::get_preload_record_columns_sql('ctx') . "
                       FROM {course} c
@@ -3727,6 +3729,7 @@ function calendar_get_allowed_event_types(int $courseid = null) {
                      WHERE c.id $insql
                   GROUP BY c.id, ctx.id
                     HAVING COUNT(g.id) > 0";
+            // use recordset?
             $courseswithgroups = $DB->get_records_sql($sql, $params);
             foreach ($courseswithgroups as $coursewithgroup) {
                 $groups = groups_get_all_groups($coursewithgroup->id);
@@ -3759,4 +3762,46 @@ function calendar_get_allowed_event_types(int $courseid = null) {
     }
 
     return $types;
+}
+
+/**
+ * Check if the user can create group events in a course or in a array of courses.
+ *
+ * @param int|$courseids
+ * @return bool Whether or not the user can add group event
+ */
+function calendar_user_can_add_group_event($courseids) {
+    global $DB;
+    list($insql, $params) = $DB->get_in_or_equal($courseids);
+    $sql = "SELECT c.id, " . context_helper::get_preload_record_columns_sql('ctx') . "
+                      FROM {course} c
+                      JOIN {groups} g ON g.courseid = c.id
+                      JOIN {context} ctx ON ctx.contextlevel = ? AND ctx.instanceid = c.id
+                     WHERE c.id $insql
+                  GROUP BY c.id, ctx.id
+                    HAVING COUNT(g.id) > 0";
+    // use recordset?
+    $courseswithgroups = $DB->get_records_sql($sql, $params);
+    foreach ($courseswithgroups as $coursewithgroup) {
+        $groups = groups_get_all_groups($coursewithgroup->id);
+        context_helper::preload_from_record($coursewithgroup);
+        $context = context_course::instance($coursewithgroup->id);
+
+        if (has_capability('moodle/calendar:manageentries', $context)) {
+            if (!empty($groups)) {
+                $types['group'] = (!empty($groups) && has_capability('moodle/site:accessallgroups',
+                            $context)) || array_filter($groups, function($group) use ($USER) {
+                        return groups_is_member($group->id);
+                    });
+            }
+        }
+
+        if (has_any_capability(['moodle/site:accessallgroups', 'moodle/calendar:managegroupentries'],
+            $context)) {
+            // The user can manage group entries or access any group.
+            if (!empty($groups)) {
+                $types['group'] = true;
+            }
+        }
+    }
 }
