@@ -173,3 +173,48 @@ Feature: Perform basic calendar functionality
     And I set the field "Event title" to "Really awesome event!"
     When I click on "Save" "button"
     Then I should see "Select a course"
+
+  @javascript
+  Scenario: Changing the event type should clear previous data
+    Given I log in as "admin"
+    And I am on "Course 1" course homepage
+    And I create a calendar event with form data:
+      | Type of event | group |
+      | Group         | Group 1 |
+      | Event title | Group 1 event |
+    And I am on "Course 1" course homepage
+    When I follow "This month"
+    And I click on "Group 1 event" "link"
+    Then I should see "Group event"
+    And I should see "Group 1"
+    When I click on "Edit" "button"
+    And I set the following fields to these values:
+      | Event title | My own user event |
+      | Type of event | user |
+    And I press "Save"
+    And I click on "My own user event" "link"
+    Then I should see "User event"
+    And I should not see "Group 1"
+    When I click on "Edit" "button"
+    And I set the following fields to these values:
+      | Event title | Site event |
+      | Type of event | site |
+    And I press "Save"
+    And I click on "Site event" "link"
+    Then I should see "Site event"
+    When I click on "Edit" "button"
+    And I set the following fields to these values:
+      | Event title | Course 1 event |
+      | Type of event | course |
+    And I open the autocomplete suggestions list
+    And I click on "Course 1" item in the autocomplete list
+    And I press "Save"
+    And I click on "Course 1 event" "link"
+    Then I should see "Course event"
+    When I click on "Edit" "button"
+    And I set the following fields to these values:
+      | Event title | Category event |
+      | Type of event | category |
+    And I press "Save"
+    And I click on "Category event" "link"
+    Then I should see "Category event"
