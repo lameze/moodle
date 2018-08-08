@@ -254,6 +254,7 @@ class event_exporter_base extends exporter {
         $values['isactionevent'] = false;
         $values['iscourseevent'] = false;
         $values['iscategoryevent'] = false;
+
         if ($moduleproxy = $event->get_course_module()) {
             $values['isactionevent'] = true;
         } else if ($event->get_type() == 'course') {
@@ -283,7 +284,7 @@ class event_exporter_base extends exporter {
 
         $courseid = (!$course) ? SITEID : $course->id;
 
-        $values['canedit'] = calendar_edit_event_allowed($legacyevent, true);
+        $values['canedit'] = calendar_edit_event_allowed($legacyevent, true) && !$event->get_course_module();
         $values['candelete'] = calendar_delete_event_allowed($legacyevent);
 
         $deleteurl = new moodle_url('/calendar/delete.php', ['id' => $event->get_id(), 'course' => $courseid]);

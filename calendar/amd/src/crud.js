@@ -239,8 +239,11 @@ function(
             // to edit an event then show the event form modal.
             $('body').on(CalendarEvents.editEvent, function(e, eventId) {
                 var calendarWrapper = root.find(CalendarSelectors.wrapper);
+                console.log(calendarWrapper.data('courseid'));
                 modal.setEventId(eventId);
+                modal.setCourseId(calendarWrapper.data('courseid'));
                 modal.setContextId(calendarWrapper.data('contextId'));
+
                 modal.show();
 
                 e.stopImmediatePropagation();

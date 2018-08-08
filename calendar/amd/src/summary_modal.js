@@ -33,6 +33,7 @@ define([
     'core_calendar/repository',
     'core_calendar/events',
     'core_calendar/crud',
+    'core_calendar/selectors',
 ],
 function(
     $,
@@ -45,7 +46,8 @@ function(
     ModalEvents,
     CalendarRepository,
     CalendarEvents,
-    CalendarCrud
+    CalendarCrud,
+    CalendarSelectors
 ) {
 
     var registered = false;
@@ -108,6 +110,18 @@ function(
      */
     ModalEventSummary.prototype.getEventId = function() {
         return this.getBody().find(SELECTORS.ROOT).attr('data-event-id');
+    };
+
+    /**
+     * Get the id for the event being shown in this modal. This value is
+     * not cached because it will change depending on which event is
+     * being displayed.
+     *
+     * @method getCourseId
+     * @return {int}
+     */
+    ModalEventSummary.prototype.getCourseId = function() {
+        return this.getBody().find(SELECTORS.ROOT).attr('data-course-id');
     };
 
     /**
@@ -192,7 +206,9 @@ function(
             } else {
                 // When the edit button is clicked we fire an event for the calendar UI to handle.
                 // We don't care how the UI chooses to handle it.
-                $('body').trigger(CalendarEvents.editEvent, [this.getEventId()]);
+                // add course id here?
+                $('body').trigger(CalendarEvents.editEvent, [this.getEventId(), this.getCourseId()]);
+                //console.log(this.getEventId());
             }
 
             // There is nothing else for us to do so let's hide.
