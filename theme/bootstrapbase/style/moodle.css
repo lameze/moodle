@@ -16631,6 +16631,42 @@ body {
     flex-basis: calc(33% - 0.5rem);
   }
 }
+.block_starredcourses [data-region="starred-courses-view-content"] {
+  overflow-x: hidden;
+}
+.block_starredcourses .course-card-container {
+  height: 155px;
+  overflow: hidden;
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+.block_starredcourses .starred-course-card {
+  flex-basis: auto;
+  height: 150px;
+  width: 200px;
+  flex-shrink: 0;
+  margin-left: 0.25rem;
+  margin-right: 0.25rem;
+  margin-bottom: 0.25rem;
+}
+.block_starredcourses .starred-course-img {
+  height: 7rem;
+  background-position: center;
+  background-size: cover;
+}
+.block_starredcourses .starred-course-info-container {
+  padding: 0.8rem;
+}
+.block_starredcourses .starred-course-info-container .card-title {
+  max-width: 100%;
+}
+.block_starredcourses .starred-course-info-container .card-title a {
+  max-width: 100%;
+}
+.block_starredcourses .empty-placeholder-image-lg {
+  height: 125px;
+}
 /**
  * Moodle forms HTML isn't changeable via renderers (yet?) so this
  * .less file imports styles from the bootstrap @variables file and

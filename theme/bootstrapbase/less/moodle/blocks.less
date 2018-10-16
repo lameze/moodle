@@ -424,3 +424,42 @@
         }
     }
 }
+
+.block_starredcourses {
+    [data-region="starred-courses-view-content"] {
+        overflow-x: hidden;
+    }
+    .course-card-container {
+        height: 155px;
+        overflow: hidden;
+        display: flex;
+        justify-content: space-around;
+        flex-wrap: wrap;
+    }
+    .starred-course-card {
+        flex-basis: auto;
+        height: 150px;
+        width: 200px;
+        flex-shrink: 0;
+        margin-left: 0.25rem;
+        margin-right: 0.25rem;
+        margin-bottom: 0.25rem;
+    }
+    .starred-course-img {
+        height: 7rem;
+        background-position: center;
+        background-size: cover;
+    }
+    .starred-course-info-container {
+        padding: 0.8rem;
+        .card-title {
+            max-width: 100%;
+            a {
+                max-width: 100%;
+            }
+        }
+    }
+    .empty-placeholder-image-lg {
+        height: 125px;
+    }
+}
