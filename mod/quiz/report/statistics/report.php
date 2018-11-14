@@ -449,13 +449,37 @@ class quiz_statistics_report extends quiz_default_report {
      *                                                                                               variants.
      */
     protected function output_quiz_structure_analysis_table($questionstats) {
-        $tooutput = array();
         $limitvariants = !$this->table->is_downloading();
+        $background = false;
         foreach ($questionstats->get_all_slots() as $slot) {
             // Output the data for these question statistics.
-            $tooutput = array_merge($tooutput, $questionstats->structure_analysis_for_one_slot($slot, $limitvariants));
+            $structureanalysis = $questionstats->structure_analysis_for_one_slot($slot, $limitvariants);
+            if (is_null($structureanalysis)) {
+                $this->table->add_separator();
+            } else {
+                foreach ($structureanalysis as $row) {
+                    $issummaryrow = false;
+                    $background = !$background;
+
+                    // The only way to identify in this point of the report if a row is a summary row
+                    // is checking if it's a instance of calculated_question_summary class.
+                    if ($row instanceof \core_question\statistics\questions\calculated_question_summary) {
+                        // Summary rows should have the background colour of the "parent" question.
+                        // For those roles we have a custom class that removes borders and reduce padding.
+                        $background = !$background;
+                        $issummaryrow = true;
+                    }
+
+                    $bgclass = $background ? 'bg-secondary ' : ' bg-white ';
+
+                    // If it's a summary row, apply quiz_statistics-summaryrow css class to that row.
+                    $this->table->add_data_keyed($this->table->format_row($row),
+                            !$issummaryrow ? $bgclass : $bgclass . 'quiz_statistics-summaryrow');
+                }
+            }
         }
-        $this->table->format_and_add_array_of_rows($tooutput);
+
+        $this->table->finish_output(!$this->table->is_downloading());
     }
 
     /**
