@@ -71,6 +71,7 @@ $string['hidden'] = 'Hidden courses';
 $string['hidecourse'] = 'Hide from view';
 $string['hiddencourses'] = 'Hidden';
 $string['show'] = 'Show this course';
+$string['starred'] = 'Starred';
 $string['privacy:request:preference:set'] = 'The value of the setting \'{$a->name}\' was \'{$a->value}\'';
 
 // Deprecated since Moodle 3.6.
