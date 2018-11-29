@@ -98,4 +98,27 @@ trait submission_legacy_polyfill {
     public static function delete_submission_for_userid(assign_plugin_request_data $exportdata) {
         return static::_delete_submission_for_userid($exportdata);
     }
+
+    /**
+     * If you have tables that contain userids and you can generate entries in your tables without creating an
+     * entry in the assign_submission table then please fill in this method.
+     *
+     * @param \core_privacy\local\request\userlist $userlist The userlist object
+     */
+    public static function get_userids_from_context(\core_privacy\local\request\userlist $userlist) {
+        // Not required.
+    }
+
+    /**
+     * Deletes all submissions for the submission ids / userids provided in a context.
+     * assign_plugin_request_data contains:
+     * - context
+     * - assign object
+     * - submission ids (pluginids)
+     * - user ids
+     * @param  assign_plugin_request_data $deletedata A class that contains the relevant information required for deletion.
+     */
+    public static function delete_submissions(assign_plugin_request_data $deletedata) {
+        return static::delete_submissions($deletedata);
+    }
 }
