@@ -718,6 +718,7 @@ class edit_renderer extends \plugin_renderer_base {
      * @return string HTML to output.
      */
     public function question(structure $structure, $slot, \moodle_url $pageurl) {
+        global $CFG;
         $output = '';
         $output .= html_writer::start_tag('div');
 
@@ -748,10 +749,20 @@ class edit_renderer extends \plugin_renderer_base {
 
         // Closing the tag which contains everything but edit icons. Content part of the module should not be part of this.
         $output .= html_writer::end_tag('div'); // .activityinstance.
+        $qtagids = null;
+        if (!empty($CFG->usetags)) {
+            $slotid = $structure->get_slot_by_number($slot)->id;
+            $slottags = $structure->get_slot_tags_for_slot_id($slotid);
+
+            foreach ($slottags as $index => $slottag) {
+                $qtagids["qtagids[{$index}]"] = $slottag->tagid;
+            }
+        }
 
         // Action icons.
         $questionicons = '';
-        $questionicons .= $this->question_preview_icon($structure->get_quiz(), $structure->get_question_in_slot($slot));
+        $questionicons .= $this->question_preview_icon($structure->get_quiz(), $structure->get_question_in_slot($slot),
+                null, null, $qtagids);
         if ($structure->can_be_edited()) {
             $questionicons .= $this->question_remove_icon($structure, $slot, $pageurl);
         }
@@ -803,8 +814,8 @@ class edit_renderer extends \plugin_renderer_base {
      * @param int $variant which question variant to preview (optional).
      * @return string HTML to output.
      */
-    public function question_preview_icon($quiz, $question, $label = null, $variant = null) {
-        $url = quiz_question_preview_url($quiz, $question, $variant);
+    public function question_preview_icon($quiz, $question, $label = null, $variant = null, $tags = null) {
+        $url = quiz_question_preview_url($quiz, $question, $variant, $tags);
 
         // Do we want a label?
         $strpreviewlabel = '';

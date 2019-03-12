@@ -44,7 +44,7 @@ define('QUESTION_PREVIEW_MAX_VARIANTS', 100);
 // Get and validate question id.
 $id = required_param('id', PARAM_INT);
 $question = question_bank::load_question($id);
-
+print_object($question);
 // Were we given a particular context to run the question in?
 // This affects things like filter settings, or forced theme or language.
 if ($cmid = optional_param('cmid', 0, PARAM_INT)) {

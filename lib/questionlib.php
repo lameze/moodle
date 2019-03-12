@@ -777,8 +777,8 @@ function question_move_category_to_context($categoryid, $oldcontextid, $newconte
  * @return moodle_url the URL.
  */
 function question_preview_url($questionid, $preferredbehaviour = null,
-        $maxmark = null, $displayoptions = null, $variant = null, $context = null) {
-
+        $maxmark = null, $displayoptions = null, $variant = null, $context = null, $tags = null) {
+    global $CFG;
     $params = array('id' => $questionid);
 
     if (is_null($context)) {
@@ -811,6 +811,10 @@ function question_preview_url($questionid, $preferredbehaviour = null,
 
     if ($variant) {
         $params['variant'] = $variant;
+    }
+
+    if (!empty($CFG->usetags) && !is_null($tags)) {
+        $params['qtagids'] = http_build_query($tags);
     }
 
     return new moodle_url('/question/preview.php', $params);
