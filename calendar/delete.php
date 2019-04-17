@@ -59,7 +59,7 @@ if (!$course) {
 }
 $title = get_string('deleteevent', 'calendar');
 // Check the user has the required capabilities to delete an event
-if (!calendar_delete_event_allowed($event)) {
+if (!$event->can_delete()) {
     print_error('nopermissions', 'error', $PAGE->url, $title);
 }
 

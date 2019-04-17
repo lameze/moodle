@@ -122,7 +122,7 @@ if ($eventid !== 0) {
     $event->timedurationuntil = $event->timestart + $event->timeduration;
     $event->count_repeats();
 
-    if (!calendar_add_event_allowed($event)) {
+    if (!$event->can_add()) {
         print_error('nopermissions');
     }
 
