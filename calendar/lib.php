@@ -444,12 +444,20 @@ class calendar_event {
      */
     public function update($data, $checkcapability=true) {
         global $DB, $USER;
+        $eventid = !empty($data->id) ? $data->id : $this->properties->id;
 
+        if (!empty($eventid)) {
+            $event = $DB->get_record('event', ['id' => $this->properties->id], '*', MUST_EXIST);
+        }
+        $datatoupdate = [];
         foreach ($data as $key => $value) {
+            // Se o valor eh diferent, entao tem que ser atualizado
+            if (isset($event->$key) && $event->$key != $value && $key != 'timemodified') {
+                $datatoupdate[$key] = $value;
+            }
             $this->properties->$key = $value;
         }
 
-        $this->properties->timemodified = time();
         $usingeditor = (!empty($this->properties->description) && is_array($this->properties->description));
 
         // Prepare event data.
@@ -603,8 +611,6 @@ class calendar_event {
                 }
             }
 
-            $event = $DB->get_record('event', array('id' => $this->properties->id));
-
             $updaterepeated = (!empty($this->properties->repeatid) && !empty($this->properties->repeateditall));
 
             if ($updaterepeated) {
@@ -639,33 +645,38 @@ class calendar_event {
                     $sqlset .= ', location = ?';
                     $params[] = $this->properties->location;
                 }
-
-                // Update all.
-                $sql = "UPDATE {event}
+                if (!empty($datatoupdate)) {
+                    // Update all.
+                    $sql = "UPDATE {event}
                            SET $sqlset
                          WHERE repeatid = ?";
 
-                $params[] = $event->repeatid;
-                $DB->execute($sql, $params);
+                    $params[] = $event->repeatid;
+                    $DB->execute($sql, $params);
 
-                // Trigger an update event for each of the calendar event.
-                $events = $DB->get_records('event', array('repeatid' => $event->repeatid), '', '*');
-                foreach ($events as $calendarevent) {
-                    $eventargs['objectid'] = $calendarevent->id;
-                    $eventargs['other']['timestart'] = $calendarevent->timestart;
+                    // Trigger an update event for each of the calendar event.
+                    $events = $DB->get_records('event', array('repeatid' => $event->repeatid), '', '*');
+                    foreach ($events as $calendarevent) {
+                        $eventargs['objectid'] = $calendarevent->id;
+                        $eventargs['other']['timestart'] = $calendarevent->timestart;
+                        $event = \core\event\calendar_event_updated::create($eventargs);
+                        $event->add_record_snapshot('event', $calendarevent);
+                        $event->trigger();
+                    }
+                }
+
+            } else {
+                if (!empty($datatoupdate)) {
+                    $this->properties->timemodified = time();
+                    $DB->update_record('event', $this->properties);
+                    $event = self::load($this->properties->id);
+                    $this->properties = $event->properties();
+
+                    // Trigger an update event.
                     $event = \core\event\calendar_event_updated::create($eventargs);
-                    $event->add_record_snapshot('event', $calendarevent);
+                    $event->add_record_snapshot('event', $this->properties);
                     $event->trigger();
                 }
-            } else {
-                $DB->update_record('event', $this->properties);
-                $event = self::load($this->properties->id);
-                $this->properties = $event->properties();
-
-                // Trigger an update event.
-                $event = \core\event\calendar_event_updated::create($eventargs);
-                $event->add_record_snapshot('event', $this->properties);
-                $event->trigger();
             }
 
             return true;
