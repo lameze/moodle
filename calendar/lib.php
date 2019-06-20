@@ -3688,7 +3688,9 @@ function calendar_get_allowed_event_types(int $courseid = null) {
 
         $types['user'] = has_capability('moodle/calendar:manageownentries', $context);
 
-        if (has_capability('moodle/calendar:manageentries', $context) || !empty($CFG->calendar_adminseesall)) {
+        // In this case, viewing a course calendar the user needs manageentries capability in that specific course.
+        // Or if the setting $CFG->calendar_adminseesall is enabled, admin view all course and can create course events.
+        if (!empty($CFG->calendar_adminseesall) && has_capability('moodle/calendar:manageentries', $context)) {
             $types['course'] = true;
 
             $types['group'] = (!empty($groups) && has_capability('moodle/site:accessallgroups', $context))
@@ -3717,7 +3719,10 @@ function calendar_get_allowed_event_types(int $courseid = null) {
     // We still don't know if the user can create group and course events, so iterate over the courses to find out
     // if the user has capabilities in one of the courses.
     if ($types['course'] == false || $types['group'] == false) {
-        if ($CFG->calendar_adminseesall && has_capability('moodle/calendar:manageentries', context_system::instance())) {
+        //
+        if (!empty($CFG->calendar_adminseesall) &&
+            has_capability('moodle/calendar:manageentries', context_system::instance())) {
+
             $sql = "SELECT c.id, " . context_helper::get_preload_record_columns_sql('ctx') . "
                       FROM {course} c
                       JOIN {context} ctx ON ctx.contextlevel = ? AND ctx.instanceid = c.id
