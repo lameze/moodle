@@ -91,7 +91,7 @@ class create extends \moodleform {
         $mform->addElement('date_time_selector', 'timestart', get_string('date'), ['defaulttime' => $starttime]);
 
         // Add the select elements for the available event types.
-        $this->add_event_type_elements($mform, $eventtypes);
+        $this->add_event_type_elements($mform, $eventtypes, $courseid);
 
         // Start of advanced elements.
         // Advanced elements are not visible to the user by default.

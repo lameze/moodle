@@ -51,8 +51,9 @@ trait eventtype {
      *
      * @param MoodleQuickForm $mform
      * @param array $eventtypes The available event types for the user
+     * @param int $courseid The current course id.
      */
-    protected function add_event_type_elements($mform, $eventtypes) {
+    protected function add_event_type_elements($mform, $eventtypes, $courseid) {
         global $CFG, $DB;
         $options = [];
 
@@ -98,7 +99,18 @@ trait eventtype {
             $mform->hideIf('categoryid', 'eventtype', 'noteq', 'category');
         }
 
-        $showall = $CFG->calendar_adminseesall && !has_capability('moodle/calendar:manageentries', \context_system::instance());
+        if (is_siteadmin()) {
+            $showall = !empty($CFG->calendar_adminseesall);
+        } else {
+            if (!empty($courseid) && $courseid != SITEID) {
+                $context = \context_course::instance($courseid);
+            } else {
+                $context = \context_system::instance();
+            }
+
+            $showall = has_capability('moodle/calendar:manageentries', \context_system::instance())
+                || has_capability('moodle/calendar:manageentries', $context);
+        }
         if (!empty($eventtypes['course'])) {
             $mform->addElement('course', 'courseid', get_string('course'), ['limittoenrolled' => !$showall]);
             $mform->hideIf('courseid', 'eventtype', 'noteq', 'course');
