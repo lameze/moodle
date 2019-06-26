@@ -441,3 +441,11 @@ table.calendartable caption {
 .cal_courses_flt {
     color: #868e96;
 }
+
+#page-calendar-view {
+    #fitem_id_courseid {
+        .col-md-3 {
+            display: none;
+        }
+    }
+}

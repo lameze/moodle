@@ -33,8 +33,10 @@
 }}
 <div class="header d-flex flex-wrap">
     {{> core_calendar/view_selector}}
+        <div>
     {{#filter_selector}}
         {{{filter_selector}}}
     {{/filter_selector}}
+        </div>
     {{> core_calendar/add_event_button}}
 </div>

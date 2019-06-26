@@ -251,10 +251,17 @@ class month_exporter extends exporter {
      * @return string The html code for the course filter selector.
      */
     protected function get_course_filter_selector(renderer_base $output) {
-        $content = '';
-        $content .= $output->course_filter_selector($this->url, '', $this->calendar->course->id);
+        $mform = new \core_calendar\local\event\forms\course_selector(
+            null,
+            null,
+            'post',
+            '',
+            null,
+            true,
+            null
+        );
 
-        return $content;
+        return $mform->render();
     }
 
     /**
