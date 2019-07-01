@@ -5248,6 +5248,12 @@ function forum_extend_settings_navigation(settings_navigation $settingsnav, navi
     global $USER, $PAGE, $CFG, $DB, $OUTPUT;
 
     $forumobject = $DB->get_record("forum", array("id" => $PAGE->cm->instance));
+
+    $vaultfactory = mod_forum\local\container::get_vault_factory();
+    $managerfactory = mod_forum\local\container::get_manager_factory();
+    $forumvault = $vaultfactory->get_forum_vault();
+    $forumentity = $forumvault->get_from_id($forumobject->id);
+
     if (empty($PAGE->cm->context)) {
         $PAGE->cm->context = context_module::instance($PAGE->cm->instance);
     }
@@ -5387,8 +5393,11 @@ function forum_extend_settings_navigation(settings_navigation $settingsnav, navi
         $forumnode->add($string, $url, settings_navigation::TYPE_SETTING, null, null, new pix_icon('i/rss', ''));
     }
 
-    $url = new moodle_url('/mod/forum/export.php', ['id' => $forumobject->id]);
-    $forumnode->add(get_string('export', 'mod_forum'), $url, navigation_node::TYPE_SETTING);
+    $capabilitymanager = $managerfactory->get_capability_manager($forumentity);
+    if ($capabilitymanager->can_export_forum($USER)) {
+        $url = new moodle_url('/mod/forum/export.php', ['id' => $forumobject->id]);
+        $forumnode->add(get_string('export', 'mod_forum'), $url, navigation_node::TYPE_SETTING);
+    }
 }
 
 /**
