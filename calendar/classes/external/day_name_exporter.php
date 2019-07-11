@@ -72,7 +72,7 @@ class day_name_exporter extends exporter {
     protected static function define_properties() {
         return [
             'dayno' => [
-                'type' => PARAM_INT,
+                'type' => PARAM_RAW,
             ],
             'shortname' => [
                 // Note: The calendar type class has already formatted the names.

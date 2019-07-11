@@ -154,7 +154,10 @@ class week_exporter extends exporter {
             $daydata['istoday'] = $istoday;
 
             $daydata['isweekend'] = !!($weekend & (1 << ($daydata['wday'] % $numberofdaysinweek)));
-
+            $type = $this->related['type'];
+            $days = $type->get_days();
+            $mday = isset($days[$daydata['mday']]) ? $days[$daydata['mday']] : 0;
+            $daydata['mday'] = $mday;
             $day = new week_day_exporter($this->calendar, $daydata, [
                 'events' => $events,
                 'cache' => $this->related['cache'],

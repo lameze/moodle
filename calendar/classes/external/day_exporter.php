@@ -95,7 +95,7 @@ class day_exporter extends exporter {
                 'type' => PARAM_INT,
             ],
             'mday' => [
-                'type' => PARAM_INT,
+                'type' => PARAM_RAW,
             ],
             'wday' => [
                 'type' => PARAM_INT,

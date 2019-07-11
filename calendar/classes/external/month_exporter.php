@@ -266,16 +266,16 @@ class month_exporter extends exporter {
      */
     protected function get_day_names(renderer_base $output) {
         $weekdays = $this->related['type']->get_weekdays();
-        $daysinweek = count($weekdays);
 
+        $daysinweek = count($weekdays);
+        $days = $this->related['type']->get_days();
         $daynames = [];
         for ($i = 0; $i < $daysinweek; $i++) {
             // Bump the currentdayno and ensure it loops.
             $dayno = ($i + $this->firstdayofweek + $daysinweek) % $daysinweek;
-            $dayname = new day_name_exporter($dayno, $weekdays[$dayno]);
+            $dayname = new day_name_exporter($days[$dayno+1], $weekdays[$dayno]);
             $daynames[] = $dayname->export($output);
         }
-
         return $daynames;
     }
 
@@ -325,11 +325,13 @@ class month_exporter extends exporter {
         $monthdays = $this->related['type']->get_num_days_in_month($date['year'], $date['mon']);
 
         $days = [];
+
         for ($dayno = 1; $dayno <= $monthdays; $dayno++) {
             // Get the gregorian representation of the day.
             $timestamp = $this->related['type']->convert_to_timestamp($date['year'], $date['mon'], $dayno);
+            $daydata = $this->related['type']->timestamp_to_date_array($timestamp);
 
-            $days[] = $this->related['type']->timestamp_to_date_array($timestamp);
+            $days[] =$daydata;
         }
 
         return $days;
