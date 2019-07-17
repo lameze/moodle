@@ -2122,10 +2122,14 @@ class mod_forum_external extends external_api {
      */
     public static function get_discussion_posts_by_userid_parameters() {
         return new external_function_parameters ([
-                'userid' => new external_value(PARAM_INT, 'The ID of the user of whom to fetch posts.', VALUE_REQUIRED),
-                'cmid' => new external_value(PARAM_INT, 'The ID of the module of which to fetch items.', VALUE_REQUIRED),
-                'sortby' => new external_value(PARAM_ALPHA, 'Sort by this element: id, created or modified', VALUE_DEFAULT, 'created'),
-                'sortdirection' => new external_value(PARAM_ALPHA, 'Sort direction: ASC or DESC', VALUE_DEFAULT, 'DESC')
+                'userid' => new external_value(
+                        PARAM_INT, 'The ID of the user of whom to fetch posts.', VALUE_REQUIRED),
+                'cmid' => new external_value(
+                        PARAM_INT, 'The ID of the module of which to fetch items.', VALUE_REQUIRED),
+                'sortby' => new external_value(
+                        PARAM_ALPHA, 'Sort by this element: id, created or modified', VALUE_DEFAULT, 'created'),
+                'sortdirection' => new external_value(
+                        PARAM_ALPHA, 'Sort direction: ASC or DESC', VALUE_DEFAULT, 'DESC')
         ]);
     }
 
