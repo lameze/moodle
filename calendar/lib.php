@@ -605,6 +605,15 @@ class calendar_event {
 
             $event = $DB->get_record('event', array('id' => $this->properties->id));
 
+            $triggerevent = false;
+            $ignoredfields = ['id', 'timemodified'];
+            foreach ($event as $key => $value) {
+                if (isset($data->$key) && $event->$key != $data->$key && !array_key_exists($key, $ignoredfields)) {
+                    $triggerevent  = true;
+                    break;
+                }
+            }
+
             $updaterepeated = (!empty($this->properties->repeatid) && !empty($this->properties->repeateditall));
 
             if ($updaterepeated) {
@@ -662,10 +671,12 @@ class calendar_event {
                 $event = self::load($this->properties->id);
                 $this->properties = $event->properties();
 
-                // Trigger an update event.
-                $event = \core\event\calendar_event_updated::create($eventargs);
-                $event->add_record_snapshot('event', $this->properties);
-                $event->trigger();
+                if ($triggerevent) {
+                    // Trigger an update event.
+                    $event = \core\event\calendar_event_updated::create($eventargs);
+                    $event->add_record_snapshot('event', $this->properties);
+                    $event->trigger();
+                }
             }
 
             return true;
