@@ -196,6 +196,13 @@ class core_calendar_events_testcase extends advanced_testcase {
         $this->assertEquals($other, $event->other);
         $this->assertEventContextNotUsed($event);
 
+        // Validate that it does not trigger event if it's only updating just timemodified field.
+        $sink = $this->redirectEvents();
+        $prop = new stdClass();
+        $prop->timemodified = time();
+        $calevent->update($prop);
+        $this->assertEquals(0, count($sink->get_events()));
+
         // Now we create a repeated course event and update it.
         $record = new stdClass();
         $record->courseid = $this->course->id;
@@ -217,6 +224,7 @@ class core_calendar_events_testcase extends advanced_testcase {
             $this->assertEquals($this->course->id, $event->courseid);
             $this->assertEquals($calevent->context, $event->get_context());
         }
+
     }
 
     /**
