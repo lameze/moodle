@@ -37,13 +37,13 @@ const getHelpers = (config) => {
     let graderLayout = null;
     let graderContainer = null;
 
-    const displayContent = (html, js) => {
+    /*const displayContent = (html, js) => {
         let widget = document.createElement('div');
         widget.className = "grader-module-content-display col-sm-12";
         widget.dataset.replace = "grader-module-content";
         widget.innerHTML = html;
         return Templates.replaceNode(Selectors.regions.moduleReplace, widget, js);
-    };
+    };*/
 
     const displayUsers = (html) => {
         return Templates.replaceNode(Selectors.regions.gradingReplace, html);
@@ -54,12 +54,12 @@ const getHelpers = (config) => {
             .getUsersForCmidFunction(cmid)
             .catch(Notification.exception);
     };
-    const showUser = (userid) => {
+    /*const showUser = (userid) => {
         config
             .getContentForUserId(userid)
             .then(displayContent)
             .catch(Notification.exception);
-    };
+    };*/
 
     const renderUserContent = (index, user) => {
         config.getContentForUserId(user.id)
@@ -118,7 +118,6 @@ const getHelpers = (config) => {
     };
 
     return {
-        showUser,
         getUsers,
         renderUserPicker,
         displayUsers,
@@ -129,7 +128,6 @@ const getHelpers = (config) => {
 
 export const launch = (config) => {
     const {
-        showUser,
         getUsers,
         renderUserPicker,
         displayUsers,
@@ -138,9 +136,6 @@ export const launch = (config) => {
     } = getHelpers(config);
 
     displayGrader().then(() => {
-        if (config.initialUserId) {
-            showUser(config.initialUserId);
-        }
 
         getUsers(config.cmid)
             .then(state => {
@@ -154,7 +149,4 @@ export const launch = (config) => {
         registerEventListeners();
     })
     .catch();
-
-    // You might instantiate the user selector here, and pass it the function displayContentForUser as the thing to call
-    // when it has selected a user.
 };
