@@ -7,7 +7,7 @@ export const createPicker = (items, startIndex, callback) => {
         displayIndex: currentIndex + 1,
         total: items.length
     };
-    return Templates.render('mod_forum/user_navigator', context)
+    return Templates.render('mod_forum/local/grades/unified_grader/user_navigator', context)
         .then((html) => {
             let widget = document.createElement('div');
             widget.dataset.graderreplace = "grading-panel-display";
