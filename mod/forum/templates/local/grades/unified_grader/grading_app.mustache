@@ -15,7 +15,7 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template core_grades/grading_panel
+    @template core_grades/grading_app
 
     Classes required for JS:
     * TODO
@@ -30,11 +30,18 @@
     {
     }
 }}
-<div class="grader-grading-panel col-md-4">
-    <div class="col-md-12">
-        <h4 class="font-weight-bold">Grading</h4>
+<div class="container-fluid" {{!
+    }}data-region="unified-grader" {{!
+    }}{{#userid}}data-first-userid="{{userid}}"{{/userid}} {{!
+    }}data-cmid="{{cmid}}" {{!
+    }}>
+    <a href="#" class="btn btn-outline-dark float-right" data-action="closegrader">{{#str}}closebuttontitle, moodle{{/str}}</a>
+    <a href="#" class="btn" data-action="togglefullscreen">Toggle fullscreen</a>
+    <div class="row-fluid">
+        {{> mod_forum/local/grades/unified_grader/grading_navigation }}
     </div>
-    <div data-graderreplace="grading-panel-display" class="grader-grading-panel-display col-sm-12">
-        {{> core/loading }}
+    <div class="row-fluid">
+        {{> mod_forum/local/grades/unified_grader/module_content }}
+        {{> mod_forum/local/grades/unified_grader/grading_panel }}
     </div>
 </div>
