@@ -94,7 +94,7 @@ define(['jquery', 'core/ajax'], function($, Ajax) {
         return Ajax.call([request])[0];
     };
 
-    var getUsersFromCourseModuleID = function (cmid) {
+    var getUsersFromCourseModuleID = function(cmid) {
         var args = {};
 
         args.cmid = cmid;

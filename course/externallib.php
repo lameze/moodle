@@ -4092,7 +4092,6 @@ class core_course_external extends external_api {
     /**
      * Create user return value description.
      *
-     * @param array $additionalfields some additional field
      * @return single_structure_description
      */
     public static function user_description() {

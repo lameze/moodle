@@ -20,12 +20,12 @@ export const createPicker = (items, startIndex, callback) => {
 
             nameElement.innerText = `${items[currentIndex].firstname} ${items[currentIndex].lastname}`;
             indexNumber.innerText = context.displayIndex;
-            callback(currentIndex,  {id: items[currentIndex].userid});
+            callback(currentIndex, {id: items[currentIndex].userid});
             nextButton.addEventListener('click', () => {
                 currentIndex++;
                 nameElement.innerText = `${items[currentIndex].firstname} ${items[currentIndex].lastname}`;
                 indexNumber.innerText = currentIndex + 1;
-                callback(currentIndex,  {id: items[currentIndex].userid});
+                callback(currentIndex, {id: items[currentIndex].userid});
             });
 
             previousButton.addEventListener('click', () => {

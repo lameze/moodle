@@ -69,7 +69,8 @@ const getHelpers = (config) => {
                 widget.dataset.replace = "grader-module-content";
                 widget.innerHTML = html;
                 return Templates.replaceNode(Selectors.regions.moduleReplace, widget, js);
-            });
+            })
+            .catch();
     };
 
     const renderUserPicker = (state) => {
