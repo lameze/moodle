@@ -2095,29 +2095,33 @@ class mod_forum_external extends external_api {
 
         $discussionvault = $vaultfactory->get_discussion_vault();
         $discussions = $discussionvault->get_all_discussions_in_forum($forum);
-        $discussionids = array_keys($discussions);
 
         $postvault = $vaultfactory->get_post_vault();
 
-        // Handle events where there are no posts for a given user. Return empty array and handle it with template maybe.
-        $posts = $postvault->get_posts_in_forum_for_user_id(
-            $discussionids,
-            $params['userid'],
-            $capabilitymanager->can_view_any_private_reply($USER),
-            "{$sortby} {$sortdirection}"
-        );
 
         $builderfactory = mod_forum\local\container::get_builder_factory();
         $postbuilder = $builderfactory->get_exported_posts_builder();
 
-        if (!empty($posts)) {
-            $builtposts = $postbuilder->build($user, [$forum], $discussions, $posts);
-        } else {
-            $builtposts = [];
+        $builtdiscussions = [];
+        foreach ($discussions as $id => $discussion) {
+            $posts = $postvault->get_posts_in_discussion_for_user_id(
+                    $discussion->get_id(),
+                    $user->id,
+                    $capabilitymanager->can_view_any_private_reply($USER),
+                    "{$sortby} {$sortdirection}"
+            );
+            if (empty($posts)){
+                continue;
+            }
+
+            $passback = [];
+            $passback['name'] = $discussion->get_name();
+            $passback['posts'] = $postbuilder->build($user, [$forum], [$discussion], $posts);
+            $builtdiscussions[] = $passback;
         }
 
         return [
-                'posts' => $builtposts,
+                'discussions' => $builtdiscussions,
                 'warnings' => $warnings,
         ];
     }
@@ -2147,7 +2151,11 @@ class mod_forum_external extends external_api {
      */
     public static function get_discussion_posts_by_userid_returns() {
         return new external_single_structure([
-                'posts' => new external_multiple_structure(\mod_forum\local\exporters\post::get_read_structure()),
+                'discussions' => new external_multiple_structure(
+                    new external_single_structure([
+                            'name' => new external_value(PARAM_RAW, 'Name of the discussion'),
+                            'posts' => new external_multiple_structure(\mod_forum\local\exporters\post::get_read_structure()),
+                    ])),
                 'warnings' => new external_warnings(),
         ]);
     }

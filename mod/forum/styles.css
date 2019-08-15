@@ -360,13 +360,12 @@ span.unread {
 }
 /* stylelint-enable declaration-block-no-duplicate-properties */
 
-/* THis is some wip styles for HR with a text cut */
+/* Forum grading non striked through line */
 .hr-sect {
     display: flex;
     flex-basis: 100%;
+    font-weight: bold;
     align-items: center;
-    color: rgba(0, 0, 0, 0.35);
-    font-size: 12px;
     margin: 8px 0px;
 }
 .hr-sect::before,
@@ -377,5 +376,11 @@ span.unread {
     height: 1px;
     font-size: 0px;
     line-height: 0px;
-    margin: 0px;
+}
+.hr-sect::before {
+    margin-right: 15px;
+}
+
+.hr-sect::after {
+    margin-left: 15px;
 }

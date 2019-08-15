@@ -29,10 +29,13 @@
     {
     }
 }}
-<div class="hr-sect mt-0">Discussion 25</div>
-{{#posts}}
-    {{> mod_forum/forum_discussion_post }}
-{{/posts}}
-{{^posts}}
+{{#discussions}}
+    <div class="hr-sect mt-0">{{name}}</div>
+    {{#posts}}
+        {{> mod_forum/forum_discussion_post }}
+    {{/posts}}
+{{/discussions}}
+{{^discussions}}
     <h3>{{#str}} noposts, forum {{/str}}</h3>
-{{/posts}}
+{{/discussions}}
+
