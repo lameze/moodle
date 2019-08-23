@@ -252,11 +252,11 @@ class rrule_manager {
         if (count($eventtimes) > 0 && !in_array($eventrec->timestart, $eventtimes)) {
             $updatedata->timestart = reset($eventtimes);
         }
-        $calevent->update($updatedata, false);
+        $calevent->update($updatedata, false); // 6.1 Second call to update();
         $eventrec->timestart = $calevent->timestart;
 
         // Create the recurring calendar events.
-        $this->create_recurring_events($eventrec, $eventtimes);
+        $this->create_recurring_events($eventrec, $eventtimes); // 7
     }
 
     /**
@@ -725,7 +725,7 @@ class rrule_manager {
             unset($cloneevent->id);
             // UUID should only be set on the first instance of the recurring events.
             unset($cloneevent->uuid);
-            calendar_event::create($cloneevent, false);
+            calendar_event::create($cloneevent, false); // 7.1
         }
 
         // If COUNT rule is defined and the number of the generated event times is less than the the COUNT rule,

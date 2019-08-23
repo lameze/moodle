@@ -920,6 +920,15 @@ class core_calendar_external extends external_api {
             }
 
             $legacyevent->update($properties);
+            $properties->context = $context;
+            if (isset($eventid)) {
+                // Trigger calendar event updated event.
+                calendar_event_updated($properties);
+            } else {
+                // Trigger calendar event created event.
+                calendar_event_created($properties);
+            }
+
             $eventcontext = $legacyevent->context;
 
             file_remove_editor_orphaned_files($validateddata->description);
