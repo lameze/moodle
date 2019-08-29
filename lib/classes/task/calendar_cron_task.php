@@ -51,10 +51,14 @@ class calendar_cron_task extends scheduled_task {
         require_once($CFG->libdir . '/bennu/bennu.inc.php');
 
         $time = time();
+
+        // Update subscriptions for active users only.
         $sql = "SELECT *
-                  FROM {event_subscriptions}
-                 WHERE pollinterval > 0
-                   AND lastupdated + pollinterval < :time";
+                  FROM {event_subscriptions} es
+       LEFT OUTER JOIN {user} u ON u.id = es.userid
+                 WHERE u.deleted = 0
+                   AND es.pollinterval > 0
+                   AND es.lastupdated + es.pollinterval < :time";
         $subscriptions = $DB->get_records_sql($sql, array('time' => $time));
         foreach ($subscriptions as $sub) {
             mtrace("Updating calendar subscription {$sub->name} in course {$sub->courseid}");
