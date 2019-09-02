@@ -599,11 +599,11 @@ $functions = array(
         'ajax' => true,
         'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
     ),
-    'core_course_get_users_by_cmid' => array(
+    'core_course_get_enrolled_users_by_cmid' => array(
         'classname' => 'core_course_external',
-        'methodname' => 'get_users_by_cmid',
+        'methodname' => 'get_enrolled_users_by_cmid',
         'classpath' => 'course/externallib.php',
-        'description' => 'List by course module id.',
+        'description' => 'List users bycourse module id.',
         'type' => 'read',
         'ajax' => true,
     ),

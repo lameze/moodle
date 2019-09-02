@@ -94,13 +94,20 @@ define(['jquery', 'core/ajax'], function($, Ajax) {
         return Ajax.call([request])[0];
     };
 
-    var getUsersFromCourseModuleID = function(cmid) {
+    /**
+     * Get the list of courses that the user has most recently accessed.
+     *
+     * @method getUsersFromCourseModuleID
+     * @param {int} cmid Course Module from which the users will be obtained
+     * @return {promise} Resolved with an array of users
+     */
+    var getEnrolledUsersFromCourseModuleID = function(cmid) {
         var args = {};
 
         args.cmid = cmid;
 
         var request = {
-            methodname: 'core_course_get_users_by_cmid',
+            methodname: 'core_course_get_enrolled_users_by_cmid',
             args: args
         };
 
@@ -110,6 +117,6 @@ define(['jquery', 'core/ajax'], function($, Ajax) {
     return {
         getEnrolledCoursesByTimelineClassification: getEnrolledCoursesByTimelineClassification,
         getLastAccessedCourses: getLastAccessedCourses,
-        getUsersFromCourseModuleID: getUsersFromCourseModuleID
+        getUsersFromCourseModuleID: getEnrolledUsersFromCourseModuleID
     };
 });
