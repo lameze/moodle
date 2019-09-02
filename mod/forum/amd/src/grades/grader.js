@@ -24,7 +24,7 @@
 import * as Selectors from './grader/selectors';
 import Repository from 'mod_forum/repository';
 import Templates from 'core/templates';
-import * as Grader from '../local/grades/unified_grader';
+import * as Grader from '../local/grades/grader';
 import Notification from 'core/notification';
 import CourseRepository from 'core_course/repository';
 
@@ -51,19 +51,18 @@ const getWholeForumFunctions = (cmid) => {
     };
 
     const getUsersForCmidFunction = () => {
-        return (cmid) => {
+        return () => {
             return CourseRepository.getUsersFromCourseModuleID(cmid)
                 .then((context) => {
-                    return context;
+                    return context.users;
                 })
                 .catch(Notification.exception);
         };
     };
 
     return {
-        getPostContext: getPostContextFunction(),
         getContentForUserId: getContentForUserIdFunction(),
-        getUsersForCmidFunction: getUsersForCmidFunction()
+        getUsers: getUsersForCmidFunction()
     };
 };
 
@@ -83,12 +82,9 @@ export const registerLaunchListeners = () => {
             if (rootNode.matches(Selectors.gradableItems.wholeForum)) {
                 const wholeForumFunctions = getWholeForumFunctions(rootNode.dataset.cmid);
 
-                Grader.launch({
-                    cmid: rootNode.dataset.cmid,
+                Grader.launch(wholeForumFunctions.getUsers, wholeForumFunctions.getContentForUserId, {
                     groupid: rootNode.dataset.groupid,
                     initialUserId: rootNode.dataset.initialuserid,
-                    getContentForUserId: wholeForumFunctions.getContentForUserId,
-                    getUsersForCmidFunction: wholeForumFunctions.getUsersForCmidFunction,
                 });
 
                 e.preventDefault();
