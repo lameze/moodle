@@ -15,7 +15,7 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template mod_forum/local/grades/unified_grader/module_content
+    @template mod_forum/local/grades/local/grader/grading
 
     Classes required for JS:
     * TODO
@@ -30,8 +30,15 @@
     {
     }
 }}
-<div class="grader-module-content col-sm-12 col-md-8">
-    <div data-replace="grader-module-content" class="grader-module-content-display col-sm-12">
+<div class="grader-grading-panel  border-left border-secondary col-md-4">
+    <div class="col-md-12 bg-light px-2 py-3 mb-3">
+        <!--TODO  Manipulate grader panel-->
+        <h4 class="d-inline font-weight-bold mb-0 fa fa-arrow-right" aria-label="Open or close grader panel" data-action="expandgrader"></h4>
+
+        <h4 class="d-inline font-weight-bold mb-0">{{#str}}grading, mod_forum{{/str}}</h4>
+    </div>
+    <div data-region="user_picker"></div>
+    <div class="grader-grading-panel-display col-sm-12">
         {{> core/loading }}
     </div>
 </div>

@@ -15,7 +15,7 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template mod_forum/local/layout/fullscreen
+    @template mod_forum/local/grades/local/grader/user_picker/user
 
     Classes required for JS:
     * TODO
@@ -30,6 +30,5 @@
     {
     }
 }}
-<div>
-    <p>Hello</p>
-</div>
+<div class="d-block font-weight-bold" data-region="name" data-userid="{{id}}">{{fullname}}</div>
+<div class="d-block"><div class="d-inline" data-region="index">{{displayIndex}}</div>/{{total}}</div>

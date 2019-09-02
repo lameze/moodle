@@ -15,7 +15,7 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template mod_forum/local/grades/unified_grader/user_navigator
+    @template mod_forum/local/grades/local/grader/user_picker
 
     Classes required for JS:
     * TODO
@@ -33,25 +33,24 @@
 <div class="col-md-12">
     <div class="row">
         <div class="col-md-8">
-            <div class="d-block font-weight-bold" data-region="name" data-userid="{{id}}">{{name}}</div>
-            <div class="d-block"><div class="d-inline" data-region="index">{{diaplyIndex}}</div>/{{total}}</div>
+            <div data-region="user_picker/user"></div>
         </div>
         <div class="col-md-4">
             <ul class="pagination">
                 <li class="page-item mr-3">
-                    <a class="page-link" href="#" aria-label="Previous" data-action="previous-user">
+                    <a class="page-link" href="#" aria-label="Previous" data-action="change-user" data-direction="-1">
                         <span aria-hidden="true">&langle;</span>
                         <span class="sr-only">Previous</span>
                     </a>
                 </li>
                 <li class="page-item mr-3">
-                    <a class="page-link" href="#" aria-label="Next" data-action="next-user">
+                    <a class="page-link" href="#" aria-label="Next" data-action="change-user" data-direction="1">
                         <span aria-hidden="true">&rangle;</span>
                         <span class="sr-only">Next</span>
                     </a>
                 </li>
                 <li class="page-item">
-                    <a class="page-link" href="#" aria-label="Search" data-action="search-user">
+                    <a class="page-link disabled" href="#" aria-label="Search" data-action="search-user">
                         <span class="fa fa-search" aria-hidden="true"></span>
                         <span class="sr-only">Search</span>
                     </a>
