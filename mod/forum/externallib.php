@@ -2098,7 +2098,6 @@ class mod_forum_external extends external_api {
 
         $postvault = $vaultfactory->get_post_vault();
 
-
         $builderfactory = mod_forum\local\container::get_builder_factory();
         $postbuilder = $builderfactory->get_exported_posts_builder();
 
@@ -2110,7 +2109,7 @@ class mod_forum_external extends external_api {
                     $capabilitymanager->can_view_any_private_reply($USER),
                     "{$sortby} {$sortdirection}"
             );
-            if (empty($posts)){
+            if (empty($posts)) {
                 continue;
             }
 
