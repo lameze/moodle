@@ -126,9 +126,9 @@
                     {{/author}}
                 {{/isdeleted}}
 
-                <div class="no-overflow w-100 content-alignment-container">
+                <div class="no-overflow w-100 content-alignment-container text-muted">
                     <div id="post-content-{{id}}" class="post-content-container">
-                        {{{message}}}
+                        {{#shortentext}}100, {{{message}}} {{/shortentext}}
                     </div>
 
                     {{^isdeleted}}

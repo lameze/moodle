@@ -117,9 +117,10 @@ define(['core/ajax'], function(Ajax) {
      *
      * @param {number} userid
      * @param {number} cmid
+     * @param {string} sortby
+     * @param {string} sortdirection
      * @return {*|Promise}
      */
-        // TODO add in sort order for posts/ discussions.
     var getDiscussionByUserID = function(userid, cmid, sortby = 'modified', sortdirection = 'DESC') {
         var request = {
             methodname: 'mod_forum_get_discussion_posts_by_userid',

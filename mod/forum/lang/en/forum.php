@@ -704,6 +704,7 @@ $string['forumbodydeleted'] = 'The content of this forum post has been removed a
 $string['gradeusers'] = 'Grade users';
 $string['forumgrader'] = 'Forum grader';
 $string['grading'] = 'Grading';
+$string['viewconversation'] = 'View conversation';
 
 // Deprecated since Moodle 3.8.
 $string['inpagereplysubject'] = 'Re: {$a}';

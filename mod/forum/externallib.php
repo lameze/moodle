@@ -2113,9 +2113,18 @@ class mod_forum_external extends external_api {
                 continue;
             }
 
+            $parentids = array_filter(array_map(function($post) {
+                return $post->has_parent() ? $post->get_parent_id() : null;
+            }, $posts));
+
+            $parentposts = $postvault->get_from_ids(array_values($parentids));
+
             $passback = [];
             $passback['name'] = $discussion->get_name();
-            $passback['posts'] = $postbuilder->build($user, [$forum], [$discussion], $posts);
+            $passback['id'] = $discussion->get_id();
+            $passback['posts']['userposts'] = $postbuilder->build($user, [$forum], [$discussion], $posts);
+            $passback['posts']['parentposts'] = $postbuilder->build($user, [$forum], [$discussion], $parentposts);
+
             $builtdiscussions[] = $passback;
         }
 
@@ -2152,8 +2161,12 @@ class mod_forum_external extends external_api {
         return new external_single_structure([
                 'discussions' => new external_multiple_structure(
                     new external_single_structure([
-                            'name' => new external_value(PARAM_RAW, 'Name of the discussion'),
-                            'posts' => new external_multiple_structure(\mod_forum\local\exporters\post::get_read_structure()),
+                        'name' => new external_value(PARAM_RAW, 'Name of the discussion'),
+                        'id' => new external_value(PARAM_INT, 'ID of the discussion'),
+                        'posts' => new external_single_structure([
+                            'userposts' => new external_multiple_structure(\mod_forum\local\exporters\post::get_read_structure()),
+                            'parentposts' => new external_multiple_structure(\mod_forum\local\exporters\post::get_read_structure()),
+                        ]),
                     ])),
                 'warnings' => new external_warnings(),
         ]);
