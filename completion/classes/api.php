@@ -94,7 +94,7 @@ class api {
                 $event->timeduration = 0;
 
                 $calendarevent = \calendar_event::load($event->id);
-                $calendarevent->update($event, false);
+                $calendarevent->update($event, false); // Update COMPLETION calendar events here. (2)
             } else {
                 // Calendar event is no longer needed.
                 $calendarevent = \calendar_event::load($event->id);
@@ -115,7 +115,7 @@ class api {
                 $event->visible = instance_is_visible($modulename, $instance);
                 $event->timeduration = 0;
 
-                \calendar_event::create($event, false);
+                \calendar_event::create($event, false); // Create COMPLETION calendar events here. (2)
             }
         }
 

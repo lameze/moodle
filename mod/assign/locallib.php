@@ -1365,9 +1365,9 @@ class assign {
             // Now process the event.
             if ($event->id) {
                 $calendarevent = calendar_event::load($event->id);
-                $calendarevent->update($event, false);
+                $calendarevent->update($event, false); // Assign update calendar event 1. (ASSIGN_EVENT_TYPE_DUE)
             } else {
-                calendar_event::create($event, false);
+                calendar_event::create($event, false); // Assign update calendar event 1. (ASSIGN_EVENT_TYPE_DUE)
             }
         } else {
             $DB->delete_records('event', array('modulename' => 'assign', 'instance' => $instance->id,
@@ -1386,9 +1386,9 @@ class assign {
             // Now process the event.
             if ($event->id) {
                 $calendarevent = calendar_event::load($event->id);
-                $calendarevent->update($event, false);
+                $calendarevent->update($event, false); // Assign update calendar event 2. (ASSIGN_EVENT_TYPE_GRADINGDUE)
             } else {
-                calendar_event::create($event, false);
+                calendar_event::create($event, false); // Assign create calendar event 2. (ASSIGN_EVENT_TYPE_GRADINGDUE)
             }
         } else {
             $DB->delete_records('event', array('modulename' => 'assign', 'instance' => $instance->id,

@@ -158,7 +158,7 @@ function assign_prepare_update_events($assign, $course = null, $cm = null) {
     }
     // Refresh the assignment's calendar events.
     $context = context_module::instance($cm->id);
-    $assignment = new assign($context, $cm, $course);
+    $assignment = new assign($context, $cm, $course); // Assign events.
     $assignment->update_calendar($cm->id);
     // Refresh the calendar events also for the assignment overrides.
     $overrides = $DB->get_records('assign_overrides', ['assignid' => $assign->id], '',
@@ -170,7 +170,7 @@ function assign_prepare_update_events($assign, $course = null, $cm = null) {
         if (empty($override->groupid)) {
             unset($override->groupid);
         }
-        assign_update_events($assignment, $override);
+        assign_update_events($assignment, $override); // Overrides.
     }
 }
 
@@ -345,14 +345,14 @@ function assign_update_events($assign, $override = null) {
                 unset($event->id);
             }
             $event->name      = $eventname.' ('.get_string('duedate', 'assign').')';
-            calendar_event::create($event, false);
+            calendar_event::create($event, false); // Create/update OVERRIDE calendar events here. (1)
         }
     }
 
     // Delete any leftover events.
     foreach ($oldevents as $badevent) {
         $badevent = calendar_event::load($badevent);
-        $badevent->delete();
+        $badevent->delete(); // DELETE OVERRIDE calendar events here. (1)
     }
 }
 

@@ -1402,7 +1402,7 @@ function course_module_update_calendar_events($modulename, $instance = null, $cm
  */
 function course_module_bulk_update_calendar_events($modulename, $courseid = 0) {
     global $DB;
-
+$DB->set_debug(true);
     $instances = null;
     if ($courseid) {
         if (!$instances = $DB->get_records($modulename, array('course' => $courseid))) {
@@ -1414,9 +1414,17 @@ function course_module_bulk_update_calendar_events($modulename, $courseid = 0) {
         }
     }
 
+    $date = new \DateTime('now', core_date::get_user_timezone_object(99));
+    $date->modify('-1 year');
+    $oneyearago = $date->getTimestamp();
+
     foreach ($instances as $instance) {
         if ($cm = get_coursemodule_from_instance($modulename, $instance->id, $instance->course)) {
-            course_module_calendar_event_update_process($instance, $cm);
+            // We only need to update events from one year range.
+            // We also should only keep updating visible events.
+            if ($cm->completionexpected > $oneyearago || $cm->visible == true) {
+                course_module_calendar_event_update_process($instance, $cm);
+            }
         }
     }
     return true;
@@ -1437,6 +1445,7 @@ function course_module_calendar_event_update_process($instance, $cm) {
         call_user_func($refresheventsfunction, $cm->course, $instance, $cm);
     }
     $completionexpected = (!empty($cm->completionexpected)) ? $cm->completionexpected : null;
+
     \core_completion\api::update_completion_date_event($cm->id, $cm->modname, $instance, $completionexpected);
 }
 
