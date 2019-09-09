@@ -34,7 +34,8 @@ const templateNames = {
 };
 
 const displayUserPicker = (root, html) => {
-    root.querySelector(Selectors.regions.pickerRegion).append(html);
+    const pickerRegion = root.querySelector(Selectors.regions.pickerRegion);
+    Templates.replaceNodeContents(pickerRegion, html, '');
 };
 
 const getUpdateUserContentFunction = (root, getContentForUser) => {

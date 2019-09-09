@@ -37,8 +37,32 @@
 
         <h4 class="d-inline font-weight-bold mb-0">{{#str}}grading, mod_forum{{/str}}</h4>
     </div>
-    <div data-region="user_picker"></div>
+    <div data-region="user_picker">
+        {{> mod_forum/local/grades/local/grader/user_picker_placeholder }}
+        <hr/>
+    </div>
     <div class="grader-grading-panel-display col-sm-12">
-        {{> core/loading }}
+        <h4 class="d-inline mb-0 fa fa-magic"></h4>
+        <h4 class="d-inline mb-0 ">Grade:</h4>
+        {{> mod_forum/local/grades/local/grader/grade_placeholder }}
+        <hr/>
+    </div>
+    <div class="grader-feedback-panel-display col-sm-12">
+        <h4 class="d-inline mb-0 fa fa-thumb-tack"></h4>
+        <h4 class="d-inline mb-0 ">Feedback:</h4>
+        {{> mod_forum/local/grades/local/grader/user_picker_placeholder }}
+        <hr/>
+    </div>
+    <div class="grader-notification-panel-display col-sm-12">
+        <h4 class="d-inline mb-0 fa fa-bolt"></h4>
+        <h4 class="d-inline mb-0 ">Notifications:</h4>
+        {{> mod_forum/local/grades/local/grader/user_picker_placeholder }}
+        <hr/>
+    </div>
+    <div class="grader-details-panel-display col-sm-12">
+        <h4 class="d-inline mb-0 fa fa-user"></h4>
+        <h4 class="d-inline mb-0 ">Student details:</h4>
+        {{> mod_forum/local/grades/local/grader/user_picker_placeholder }}
+        <hr/>
     </div>
 </div>
