@@ -72,6 +72,43 @@ namespace tests\core_grades {
         }
 
         /**
+         * Data provider for is_valid_itemname tests.
+         *
+         * @return array
+         */
+        public function is_valid_itemname_provider(): array {
+            return [
+                'valid' => [
+                    'someother',
+                    true,
+                ],
+                'validnotadvanced' => [
+                    'rating',
+                    true,
+                ],
+                'invalid' => [
+                    'doesnotexist',
+                    false,
+                ],
+            ];
+        }
+
+        /**
+         * Ensure that a component implementing advanced grading returns the correct areas.
+         *
+         * @dataProvider is_valid_itemname_provider
+         * @param string $itemname
+         * @param bool $isadvanced
+         */
+        public function test_is_valid_itemname(string $itemname, bool $isadvanced): void {
+            $this->assertEquals(
+                $isadvanced,
+                component_gradeitems::is_valid_itemname('tests\core_grades\component_gradeitems\valid_and_advanced', $itemname)
+            );
+        }
+
+
+        /**
          * Ensure that a component which does not implement the advancedgrading interface returns this.
          */
         public function test_defines_advancedgrading_itemnames_for_component_does_not_exist(): void {

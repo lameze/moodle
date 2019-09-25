@@ -68,6 +68,19 @@ class component_gradeitems {
     }
 
     /**
+     * Whether the named grading item exists.
+     *
+     * @param string $component
+     * @param string $itemname
+     * @return bool
+     */
+    public static function is_valid_itemname(string $component, string $itemname): bool {
+        $items = self::get_itemname_mapping_for_component($component);
+
+        return array_search($itemname, $items) !== false;
+    }
+
+    /**
      * Check whether the component class defines the advanced grading items.
      *
      * @return bool
@@ -92,7 +105,7 @@ class component_gradeitems {
     }
 
     /**
-     * Whether the named grading item name supports advanced grading.o
+     * Whether the named grading item name supports advanced grading.
      *
      * @param string $component
      * @param string $itemname
