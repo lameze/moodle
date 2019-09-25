@@ -17,24 +17,25 @@
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Coverage information for the grades component.
+ * Coverage information for the gradingform_guide plugin.
  *
- * @package    core_grades
+ * @package    gradingform_guide
  * @category   test
  * @copyright  2019 Andrew Nicols <andrew@nicols.co.uk>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 /**
- * Coverage information for the core_grades subsystem.
+ * Coverage information for the gradingform_guide plugin.
  *
- * @package    core_grades
+ * @package    gradingform_guide
  * @copyright  2019 Andrew Nicols <andrew@nicols.co.uk>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 return new class extends phpunit_coverage_info {
     /** @var array The list of folders relative to the plugin root to whitelist in coverage generation. */
     protected $whitelistfolders = [
-        'classes/local',
+        'classes',
+        'tests/generator',
     ];
 };
