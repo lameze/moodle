@@ -1224,13 +1224,14 @@ class rating_exception extends moodle_exception {
      * @var string The message to accompany the thrown exception
      */
     public $message;
+
     /**
      * Generate exceptions that can be easily identified as coming from the ratings system
      *
      * @param string $errorcode the error code to generate
      */
-    public function __construct($errorcode) {
+    public function __construct(string $errorcode, string $component = 'error', stdClass $a = null) {
         $this->errorcode = $errorcode;
-        $this->message = get_string($errorcode, 'error');
+        $this->message = get_string($errorcode, $component, $a);
     }
 }
