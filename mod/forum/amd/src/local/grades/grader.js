@@ -54,13 +54,11 @@ const getUpdateUserContentFunction = (root, getContentForUser) => {
 const registerEventListeners = (graderLayout) => {
     const graderContainer = graderLayout.getContainer();
     graderContainer.addEventListener('click', (e) => {
-        if (e.target.matches(Selectors.buttons.toggleFullscreen)) {
-            // TODO the user should not listen to button clicks specifically.
+        if (e.target.closest(Selectors.buttons.toggleFullscreen)) {
             e.stopImmediatePropagation();
             e.preventDefault();
             graderLayout.toggleFullscreen();
-        } else if (e.target.matches(Selectors.buttons.closeGrader)) {
-            // TODO the user should not listen to button clicks specifically.
+        } else if (e.target.closest(Selectors.buttons.closeGrader)) {
             e.stopImmediatePropagation();
             e.preventDefault();
 
