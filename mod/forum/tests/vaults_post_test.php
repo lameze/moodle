@@ -1114,8 +1114,7 @@ class mod_forum_vaults_post_testcase extends advanced_testcase {
     /**
      * Test get_from_user_id.
      *
-     * @covers ::get_from_user_id
-     * @covers ::<!public>
+     * @covers ::get_posts_in_forum_for_user_id
      */
     public function test_get_from_user_id() {
         $this->resetAfterTest();
