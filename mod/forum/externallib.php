@@ -2118,15 +2118,24 @@ class mod_forum_external extends external_api {
                 return $post->has_parent() ? $post->get_parent_id() : null;
             }, $posts));
 
-            $parentposts = $postvault->get_from_ids(array_values($parentids));
+            $parentposts = [];
+            if ($parentids) {
+                $parentposts = $postbuilder->build(
+                    $user,
+                    [$forum],
+                    [$discussion],
+                    $postvault->get_from_ids(array_values($parentids))
+                );
+            }
 
-            $passback = [];
-            $passback['name'] = $discussion->get_name();
-            $passback['id'] = $discussion->get_id();
-            $passback['posts']['userposts'] = $postbuilder->build($user, [$forum], [$discussion], $posts);
-            $passback['posts']['parentposts'] = $postbuilder->build($user, [$forum], [$discussion], $parentposts);
-
-            $builtdiscussions[] = $passback;
+            $builtdiscussions[] = [
+                'name' => $discussion->get_name(),
+                'id' => $discussion->get_id(),
+                'posts' => [
+                    'userposts' => $postbuilder->build($user, [$forum], [$discussion], $posts),
+                    'parentposts' => $parentposts,
+                ],
+            ];
         }
 
         return [
