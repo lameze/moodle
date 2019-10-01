@@ -39,7 +39,10 @@ use code_grades\local\gradeitem\advancedgrading_mapping;
 class component_gradeitems {
 
     /**
-     * Get the gradeitems classname fo rhte specific component.
+     * Get the gradeitems classname for the specific component.
+     *
+     * @param string $component The component to fetch the classname for
+     * @return string The composed classname
      */
     protected static function get_component_classname(string $component): string {
         return "{$component}\\grades\gradeitems";
@@ -83,6 +86,7 @@ class component_gradeitems {
     /**
      * Check whether the component class defines the advanced grading items.
      *
+     * @param string $component The component to check
      * @return bool
      */
     public static function defines_advancedgrading_itemnames_for_component(string $component): bool {
@@ -143,7 +147,7 @@ class component_gradeitems {
      * For legacy reasons, the first itemnumber has no suffix on field names.
      *
      * @param string $component The component that the grade item belongs to
-     * @param int $itemname The grade itemname
+     * @param string $itemname The grade itemname
      * @param string $fieldname The name of the field to be rewritten
      * @return string The translated field name
      */

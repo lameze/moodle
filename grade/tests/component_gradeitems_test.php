@@ -238,7 +238,7 @@ namespace tests\core_grades {
          * Ensure that valid field names are correctly mapped for a valid component.
          *
          * @dataProvider get_field_name_for_itemnumber_provider
-         * @param string $itemnumber The item itemnumber to test
+         * @param int $itemnumber The item itemnumber to test
          * @param string $fieldname The field name being translated
          * @param string $expected The expected value
          */
