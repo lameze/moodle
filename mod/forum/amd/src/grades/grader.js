@@ -29,7 +29,7 @@ import Notification from 'core/notification';
 import CourseRepository from 'core_course/repository';
 
 const templateNames = {
-    contentRegion: 'mod_forum/grader/forum_grader_discussion_posts',
+    contentRegion: 'mod_forum/grades/grader/discussion/posts',
 };
 
 const getWholeForumFunctions = (cmid) => {
