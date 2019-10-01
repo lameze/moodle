@@ -29,25 +29,23 @@
     {
     }
 }}
-{{#builtdiscussions}}
+{{#discussions}}
     <div class="hr-sect mt-0">{{name}}</div>
     {{#posts}}
-        {{#userposts}}
-            {{#parent}}
-                {{> mod_forum/grader/forum_grader_discussion_post_parent }}
-            {{/parent}}
-            {{#starter}}
-                {{> mod_forum/forum_discussion_post }}
-            {{/starter}}
-            {{^starter}}
-                {{> mod_forum/grader/forum_grader_discussion_post }}
-            {{/starter}}
-            <a class="btn btn-outline-dark" role="button" href="/mod/forum/discuss.php?d={{id}}">{{#str}} viewconversation, forum {{/str}}</a>
-            <hr>
-        {{/userposts}}
+        {{#parent}}
+            {{> mod_forum/grader/forum_grader_discussion_post_parent }}
+        {{/parent}}
+        {{#starter}}
+            {{> mod_forum/forum_discussion_post }}
+        {{/starter}}
+        {{^starter}}
+            {{> mod_forum/grader/forum_grader_discussion_post }}
+        {{/starter}}
+        <a class="btn btn-outline-dark" role="button" href="/mod/forum/discuss.php?d={{id}}">{{#str}} viewconversation, forum {{/str}}</a>
+        <hr>
     {{/posts}}
-{{/builtdiscussions}}
-{{^builtdiscussions}}
+{{/discussions}}
+{{^discussions}}
     <h3>{{#str}} noposts, forum {{/str}}</h3>
-{{/builtdiscussions}}
+{{/discussions}}
 

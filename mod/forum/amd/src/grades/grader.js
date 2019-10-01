@@ -41,22 +41,15 @@ const getWholeForumFunctions = (cmid) => {
 
     const getContentForUserIdFunction = () => {
         const postContextFunction = getPostContextFunction(cmid);
-        return (userid) => {
+        return userid => {
             return postContextFunction(userid)
-                .then((context) => {
-                    if (context.discussions.length === 0) {
-                        return context;
-                    } else {
-                        context.builtdiscussions = context.discussions.map(discussion => {
-                            return discussionPostMapper(discussion);
-                        });
-                        return context;
-                    }
-                })
-                .then((context) => {
-                    return Templates.render(templateNames.contentRegion, context);
-                })
-                .catch(Notification.exception);
+            .then(context => {
+                // Rebuild the returned data for the template.
+                context.discussions = context.discussions.map(discussionPostMapper);
+
+                return Templates.render(templateNames.contentRegion, context);
+            })
+            .catch(Notification.exception);
         };
     };
 
@@ -80,36 +73,24 @@ const findGradableNode = (node) => {
     return node.closest(Selectors.gradableItem);
 };
 
-const discussionPostMapper = (initialDiscussion) => {
-    // Lets build a mapping for Parent posts & Children.
-    const parentmap = initialDiscussion.posts.parentposts.map(post => {
-        return post.id;
-    });
+const discussionPostMapper = discussion => {
+    // Map postid => post.
+    const parentMap = new Map();
+    discussion.posts.parentposts.forEach(post => parentMap.set(post.id, post));
 
-    const newBuiltPosts = initialDiscussion.posts.userposts.map(post => {
+    const userPosts = discussion.posts.userposts.map(post => {
         post.subject = null;
         post.readonly = true;
-        if (post.parentid) {
-            parentmap.map((key, index) => {
-                if (post.parentid === key) {
-                    post.parent = initialDiscussion.posts.parentposts[index];
-                }
-            });
-        } else {
-            parentmap.map((key) => {
-                if (post.id === key) {
-                    post.starter = true;
-                }
-            });
-        }
+        post.starter = !post.parentid;
+        post.parent = parentMap.get(post.parentid);
+
         return post;
     });
+
     return {
-        id: initialDiscussion.id,
-        name: initialDiscussion.name,
-        posts: {
-            userposts: newBuiltPosts
-        }
+        id: discussion.id,
+        name: discussion.name,
+        posts: userPosts,
     };
 };
 
