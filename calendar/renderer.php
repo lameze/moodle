@@ -373,8 +373,10 @@ class core_calendar_renderer extends plugin_renderer_base {
      * @return string
      */
     protected function subscription_action_form($subscription) {
+        $managesubsurl = new moodle_url('/calendar/managesubscriptions.php', ['course' => 2]);
+
         // Assemble form for the subscription row.
-        $html = html_writer::start_tag('form', array('action' => new moodle_url('/calendar/managesubscriptions.php'), 'method' => 'post'));
+        $html = html_writer::start_tag('form', array('action' => $managesubsurl->out(), 'method' => 'post'));
         if (empty($subscription->url)) {
             // Don't update an iCal file, which has no URL.
             $html .= html_writer::empty_tag('input', array('type' => 'hidden', 'name' => 'pollinterval', 'value' => '0'));
@@ -395,6 +397,7 @@ class core_calendar_renderer extends plugin_renderer_base {
         }
         $html .= html_writer::empty_tag('input', array('type' => 'hidden', 'name' => 'sesskey', 'value' => sesskey()));
         $html .= html_writer::empty_tag('input', array('type' => 'hidden', 'name' => 'id', 'value' => $subscription->id));
+//        $html .= html_writer::empty_tag('input', array('type' => 'hidden', 'name' => 'course', 'value' => $courseid));
         $html .= html_writer::start_tag('div', array('class' => 'btn-group float-right'));
         if (!empty($subscription->url)) {
             $html .= html_writer::tag('button', get_string('update'), array('type'  => 'submit', 'name' => 'action',

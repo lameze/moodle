@@ -78,10 +78,6 @@ $customdata = [
     'groups' => $groups,
 ];
 $form = new \core_calendar\local\event\forms\managesubscriptions(null, $customdata);
-$form->set_data(array(
-    'course' => $course->id
-));
-
 $importresults = '';
 
 $formdata = $form->get_data();
@@ -104,6 +100,7 @@ if (!empty($formdata)) {
             print_error($e->errorcode, $e->module, $PAGE->url);
         }
     }
+    
     // Redirect to prevent refresh issues.
     redirect($PAGE->url, $importresults);
 } else if (!empty($subscriptionid)) {
@@ -119,6 +116,9 @@ if (!empty($formdata)) {
     } else {
         print_error('nopermissions', 'error', $PAGE->url, get_string('managesubscriptions', 'calendar'));
     }
+    $managesubsurl = new moodle_url('/calendar/managesubscriptions.php', ['course' => $courseid]);
+    echo $courseid; die;
+    redirect($managesubsurl->out());
 }
 
 $types = calendar_get_allowed_event_types($courseid);

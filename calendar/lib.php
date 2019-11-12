@@ -2970,7 +2970,7 @@ function calendar_process_subscription_row($subscriptionid, $pollinterval, $acti
             return "<p>" . get_string('subscriptionupdated', 'calendar', $sub->name) . "</p>" .
                 calendar_update_subscription_events($subscriptionid);
         case CALENDAR_SUBSCRIPTION_REMOVE:
-            calendar_delete_subscription($subscriptionid);
+            //calendar_delete_subscription($subscriptionid);
             return get_string('subscriptionremoved', 'calendar', $sub->name);
             break;
         default:

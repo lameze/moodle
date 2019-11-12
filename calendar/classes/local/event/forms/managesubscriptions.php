@@ -42,6 +42,11 @@ class managesubscriptions extends \moodleform {
     public function definition() {
         global $PAGE;
         $mform = $this->_form;
+        $courseid = !(empty($this->_customdata['courseid'])) ? $this->_customdata['courseid'] : null;
+        // ID of existing tour.
+        $mform->addElement('hidden', 'course', $courseid);
+        $mform->setType('course', PARAM_INT);
+        
         $eventtypes = calendar_get_allowed_event_types();
         if (in_array(true, $eventtypes, true) === false) {
             print_error('nopermissiontoupdatecalendar');
