@@ -1,0 +1,80 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template core_calendar/event_list
+
+    Calendar event list.
+
+    The purpose of this template is to render a list of events.
+
+    Classes required for JS:
+    * none
+
+    Data attributes required for JS:
+    * none
+
+    Example context (json):
+    {
+    }
+}}
+<table class="generaltable" id="subscriptionslist">
+    <thead>
+    <tr>
+        <th class="header c0" style="text-align:left;" scope="col">{{#str}}colcalendar, calendar{{/str}}</th>
+        <th class="header c1" style="text-align:left;" scope="col">{{#str}}collastupdated, calendar{{/str}}</th>
+        <th class="header c2" style="text-align:left;" scope="col">{{#str}}eventkind, calendar{{/str}}</th>
+        <th class="header c3" style="text-align:center;" scope="col">{{#str}}colpoll, calendar{{/str}}</th>
+        <th class="header c4 lastcol" style="" scope="col">{{#str}}colactions, calendar{{/str}}</th>
+    </tr>
+    </thead>
+    <tbody>
+    {{#subscriptions}}
+        <tr>
+            <td class="cell c0" style="text-align:left;"><a href="{{url}}">{{name}}</a></td>
+            <td class="cell c1" style="text-align:left;">{{lastupdated}}</td>
+            <td class="cell c2" style="text-align:left;">{{eventtype}}</td>
+            <td class="cell c3 lastcol" style="text-align:center;" colspan="2">
+                <form action="http://localhost/stable_master/calendar/managesubscriptions.php" method="post">
+                    <div style="float:left;">
+                        <select name="pollinterval" class="custom-select">
+                            <option value="0">Never</option>
+                            <option value="3600">Hourly</option>
+                            <option value="86400">Daily</option>
+                            <option selected="selected" value="604800">Weekly</option>
+                            <option value="2628000">Monthly</option>
+                            <option value="31536000">Annually</option>
+                        </select>
+                    </div>
+                    <input type="hidden" name="sesskey" value="pcbDL6QO5e">
+                    <input type="hidden" name="id" value="37">
+                    <div>
+                        <a title="{{#str}}refresh, repository{{/str}}" href="#">{{#pix}}a/refresh{{/pix}}</a>
+                        <a class="delete" href="#" title="{{#str}} delete {{/str}}">
+                            {{#pix}} t/delete, core, {{#str}} delete {{/str}}{{/pix}}
+                        </a>
+                    </div>
+                </form>
+            </td>
+        </tr>
+    {{/subscriptions}}
+    </tbody>
+</table>
+{{#js}}
+require(['core_calendar/subscriptions_list'], function(SubscriptionsList) {
+    SubscriptionsList.init($("#subscriptions-list-{{uniqid}}"));
+});
+{{/js}}

@@ -363,7 +363,9 @@ class core_calendar_renderer extends plugin_renderer_base {
         $out .= $importresults;
         $out .= html_writer::table($table);
         $out .= $this->output->box_end();
-        return $out;
+print_object($subscriptions);
+        return $this->render_from_template('core_calendar/subscription_list', ['subscriptions' => array_values($subscriptions)]);
+        //return $out;
     }
 
     /**

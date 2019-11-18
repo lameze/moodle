@@ -100,7 +100,6 @@ if (!empty($formdata)) {
             print_error($e->errorcode, $e->module, $PAGE->url);
         }
     }
-    
     // Redirect to prevent refresh issues.
     redirect($PAGE->url, $importresults);
 } else if (!empty($subscriptionid)) {
@@ -117,7 +116,7 @@ if (!empty($formdata)) {
         print_error('nopermissions', 'error', $PAGE->url, get_string('managesubscriptions', 'calendar'));
     }
     $managesubsurl = new moodle_url('/calendar/managesubscriptions.php', ['course' => $courseid]);
-    echo $courseid; die;
+
     redirect($managesubsurl->out());
 }
 
