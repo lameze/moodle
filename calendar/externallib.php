@@ -1454,4 +1454,54 @@ class core_calendar_external extends external_api {
             ]
         );
     }
+
+    /**
+     * Returns description of method parameters
+     *
+     * @return external_function_parameters
+     * @since Moodle 3.8
+     */
+    public static function delete_subscription_parameters() {
+        return new external_function_parameters(
+            array(
+                'subscriptionid' => new external_value(PARAM_INT, 'Subscription to be deleted.'),
+            )
+        );
+    }
+
+    /**
+     * Deletes a calendar subscription.
+     *
+     * @param int $subscriptionid The subscription ID to be deleted.
+     * @throws invalid_parameter_exception
+     */
+    public static function delete_subscription($subscriptionid) {
+
+        $params = self::validate_parameters(self::delete_subscription_parameters(), [
+            'subscriptionid' => $subscriptionid,
+        ]);
+
+        calendar_delete_subscription($subscriptionid);
+
+        $result = [];
+        $result['status'] = true;
+        $result['warnings'] = null;
+        return $result;
+    }
+
+
+    /**
+     * Returns description of method result value
+     *
+     * @return external_description
+     * @since Moodle 3.9
+     */
+    public static function delete_subscription_returns() {
+        return new external_single_structure(
+            array(
+                'status' => new external_value(PARAM_BOOL, 'True if the subscription was deleted, false otherwise.'),
+                'warnings' => new external_warnings()
+            )
+        );
+    }
 }
