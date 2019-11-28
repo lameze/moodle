@@ -2605,10 +2605,12 @@ function calendar_user_can_add_event($course) {
     if (!isloggedin() || isguestuser()) {
         return false;
     }
+    // Check which types of events the user can create events for.
+    $types = calendar_get_allowed_event_types($course->id);
 
-    calendar_get_allowed_types($allowed, $course);
-
-    return (bool)($allowed->user || $allowed->groups || $allowed->courses || $allowed->categories || $allowed->site);
+    // If at least one of those return true, user has permission to add events.
+    return (bool)(!empty($types['user']) || !empty($types['group']) || !empty($types['course']) ||
+        !empty($types['category']) || !empty($types['site']));
 }
 
 /**
