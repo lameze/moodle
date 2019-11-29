@@ -87,6 +87,7 @@ $importresults = '';
 $formdata = $form->get_data();
 if (!empty($formdata)) {
     require_sesskey(); // Must have sesskey for all actions.
+    $existing = !empty($formdata->id);
     $subscriptionid = calendar_add_subscription($formdata);
     if ($formdata->importfrom == CALENDAR_IMPORT_FROM_FILE) {
         // Blank the URL if it's a file import.
@@ -94,7 +95,7 @@ if (!empty($formdata)) {
         $calendar = $form->get_file_content('importfile');
         $ical = new iCalendar();
         $ical->unserialize($calendar);
-        $importresults = calendar_import_icalendar_events($ical, null, $subscriptionid);
+        $importresults = calendar_import_icalendar_events($ical, null, $subscriptionid, $existing);
     } else {
         try {
             $importresults = calendar_update_subscription_events($subscriptionid);

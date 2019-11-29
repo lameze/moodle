@@ -3018,9 +3018,10 @@ function calendar_get_icalendar($url) {
  * @param iCalendar $ical The iCalendar object.
  * @param int $courseid The course ID for the calendar.
  * @param int $subscriptionid The subscription ID.
+ * @param bool $existing Whether this is an existing subscription or not.
  * @return string A log of the import progress, including errors.
  */
-function calendar_import_icalendar_events($ical, $unused = null, $subscriptionid = null) {
+function calendar_import_icalendar_events($ical, $unused = null, $subscriptionid = null, $existing = false) {
     global $DB;
 
     $return = '';
@@ -3066,7 +3067,7 @@ function calendar_import_icalendar_events($ical, $unused = null, $subscriptionid
         }
     }
 
-    if (!empty($subscriptionid)) {
+    if ($existing) {
         $eventsuuids = $DB->get_records_menu('event', ['subscriptionid' => $subscriptionid], '', 'id, uuid');
 
         $icaleventscount = count($icaluuids);
