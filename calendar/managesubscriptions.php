@@ -98,7 +98,7 @@ if (!empty($formdata)) {
         $importresults = calendar_import_icalendar_events($ical, null, $subscriptionid, $existing);
     } else {
         try {
-            $importresults = calendar_update_subscription_events($subscriptionid);
+            $importresults = calendar_update_subscription_events($subscriptionid, $existing);
         } catch (moodle_exception $e) {
             // Delete newly added subscription and show invalid url error.
             calendar_delete_subscription($subscriptionid);

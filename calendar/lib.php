@@ -3095,9 +3095,10 @@ function calendar_import_icalendar_events($ical, $unused = null, $subscriptionid
  * Fetch a calendar subscription and update the events in the calendar.
  *
  * @param int $subscriptionid The course ID for the calendar.
+ * @param bool $existing Whether this is an existing subscription or not.
  * @return string A log of the import progress, including errors.
  */
-function calendar_update_subscription_events($subscriptionid) {
+function calendar_update_subscription_events($subscriptionid, $existing = false) {
     $sub = calendar_get_subscription($subscriptionid);
 
     // Don't update a file subscription.
@@ -3106,7 +3107,7 @@ function calendar_update_subscription_events($subscriptionid) {
     }
 
     $ical = calendar_get_icalendar($sub->url);
-    $return = calendar_import_icalendar_events($ical, null, $subscriptionid);
+    $return = calendar_import_icalendar_events($ical, null, $subscriptionid, $existing);
     $sub->lastupdated = time();
 
     calendar_update_subscription($sub);
