@@ -3016,7 +3016,7 @@ function calendar_get_icalendar($url) {
  * Import events from an iCalendar object into a course calendar.
  *
  * @param iCalendar $ical The iCalendar object.
- * @param int $courseid The course ID for the calendar.
+ * @param int $unused
  * @param int $subscriptionid The subscription ID.
  * @param bool $existing Whether this is an existing subscription or not.
  * @return string A log of the import progress, including errors.
