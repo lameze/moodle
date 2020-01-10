@@ -261,7 +261,7 @@ class raw_event_retrieval_strategy implements raw_event_retrieval_strategy_inter
         }
 
         // Set subquery filter condition for the courses.
-        if (!empty($subquerycourses)) {
+        if (!empty($usercourses) && empty($subquerycourses)) {
             list($incourses, $incoursesparams) = $DB->get_in_or_equal($subquerycourses, SQL_PARAMS_NAMED);
             $subqueryconditions[] = "(ev.groupid = 0 AND ev.courseid $incourses AND ev.categoryid = 0)";
             $subqueryparams = array_merge($subqueryparams, $incoursesparams);
