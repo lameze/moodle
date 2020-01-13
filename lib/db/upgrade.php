@@ -2145,5 +2145,18 @@ function xmldb_main_upgrade($oldversion) {
         upgrade_main_savepoint(true, 2019122000.01);
     }
 
+    if ($oldversion < 2020010900.01) {
+        $table = new xmldb_table('logstore_standard_log');
+        $index = new xmldb_index('std_logstore_ix', XMLDB_INDEX_NOTUNIQUE, ['courseid', 'userid', 'timecreated']);
+
+        // Conditionally launch add index analysableid.
+        if (!$dbman->index_exists($table, $index)) {
+            $dbman->add_index($table, $index);
+        }
+
+        // Main savepoint reached.
+        upgrade_main_savepoint(true, 2020010900.01);
+    }
+
     return true;
 }
