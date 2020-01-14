@@ -26,6 +26,7 @@ if ($data = $action_form->get_data()) {
         case 5: redirect($CFG->wwwroot.'/'.$CFG->admin.'/user/user_bulk_download.php');
         case 7: redirect($CFG->wwwroot.'/'.$CFG->admin.'/user/user_bulk_forcepasswordchange.php');
         case 8: redirect($CFG->wwwroot.'/'.$CFG->admin.'/user/user_bulk_cohortadd.php');
+        case 9: redirect($CFG->wwwroot.'/'.$CFG->admin.'/user/user_bulk_suspend.php');
     }
 }
 
