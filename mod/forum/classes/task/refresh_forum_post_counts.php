@@ -70,7 +70,7 @@ class refresh_forum_post_counts extends \core\task\adhoc_task {
             $DB->update_record('forum_posts', $record);
         }
 
-        $recordscount = count($recordset);
+        $recordscount = iterator_count($recordset);
         $recordset->close();
 
         return ($recordscount == $chunksize);
