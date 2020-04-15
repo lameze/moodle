@@ -1415,7 +1415,7 @@ class flexible_table {
      * @param int $pagenumber The page number.
      */
     public function set_page_number(int $pagenumber): void {
-        $this->currpage = $pagenumber - 1;
+        $this->currpage = $pagenumber;
     }
 
     /**
@@ -1517,7 +1517,7 @@ class flexible_table {
                 'data-table-sort-order' => $sortdata['sortorder'],
                 'data-table-first-initial' => $this->prefs['i_first'],
                 'data-table-last-initial' => $this->prefs['i_last'],
-                'data-table-page-number' => $this->currpage + 1,
+                'data-table-page-number' => $this->currpage,
                 'data-table-page-size' => $this->pagesize,
             ]);
         }
