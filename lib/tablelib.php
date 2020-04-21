@@ -157,6 +157,9 @@ class flexible_table {
     /** @var array $hiddencolumns List of hidden columns. */
     protected $hiddencolumns;
 
+    /** @var $resetting bool Whether the table preferences is resetting. */
+    protected $resetting;
+
     /**
      * Constructor
      * @param string $uniqueid all tables have to have a unique id, this is used
@@ -479,6 +482,26 @@ class flexible_table {
     }
 
     /**
+     * Mark the table preferences to be reset.
+     */
+    public function mark_table_to_reset(): void {
+        $this->resetting = true;
+    }
+
+    /**
+     * Is the table marked for reset preferences?
+     *
+     * @return bool True if the table is marked to reset, false otherwise.
+     */
+    protected function is_resetting_preferences(): bool {
+        if ($this->resetting === null) {
+            $this->resetting = optional_param($this->request[TABLE_VAR_RESET], false, PARAM_BOOL);
+        }
+
+        return $this->resetting;
+}
+
+    /**
      * Must be called after table is defined. Use methods above first. Cannot
      * use functions below till after calling this method.
      * @return type?
@@ -490,43 +513,7 @@ class flexible_table {
             return false;
         }
 
-        // Load any existing user preferences.
-        if ($this->persistent) {
-            $this->prefs = json_decode(get_user_preferences('flextable_' . $this->uniqueid), true);
-            $oldprefs = $this->prefs;
-        } else if (isset($SESSION->flextable[$this->uniqueid])) {
-            $this->prefs = $SESSION->flextable[$this->uniqueid];
-            $oldprefs = $this->prefs;
-        }
-
-        // Set up default preferences if needed.
-        if (!$this->prefs or optional_param($this->request[TABLE_VAR_RESET], false, PARAM_BOOL)) {
-            $this->prefs = array(
-                'collapse' => array(),
-                'sortby'   => array(),
-                'i_first'  => '',
-                'i_last'   => '',
-                'textsort' => $this->column_textsort,
-            );
-        }
-
-        if (!isset($oldprefs)) {
-            $oldprefs = $this->prefs;
-        }
-
-        $this->set_hide_show_preferences();
-        $this->set_sorting_preferences();
-        $this->set_initials_preferences();
-
-        // Save user preferences if they have changed.
-        if ($this->prefs != $oldprefs) {
-            if ($this->persistent) {
-                set_user_preference('flextable_' . $this->uniqueid, json_encode($this->prefs));
-            } else {
-                $SESSION->flextable[$this->uniqueid] = $this->prefs;
-            }
-        }
-        unset($oldprefs);
+        $this->initialise_table_preferences();
 
         if (empty($this->baseurl)) {
             debugging('You should set baseurl when using flexible_table.');
@@ -1404,6 +1391,106 @@ class flexible_table {
      */
     public function set_hidden_columns(array $columns): void {
         $this->hiddencolumns = $columns;
+    }
+
+    /**
+     * Initialise table preferences.
+     */
+    protected function initialise_table_preferences(): void {
+
+        // Load any existing user preferences.
+        if ($this->persistent) {
+            $this->prefs = json_decode(get_user_preferences('flextable_' . $this->uniqueid), true);
+            $oldprefs = $this->prefs;
+        } else if (isset($SESSION->flextable[$this->uniqueid])) {
+            $this->prefs = $SESSION->flextable[$this->uniqueid];
+            $oldprefs = $this->prefs;
+        }
+
+        // Set up default preferences if needed.
+        if (!$this->prefs || $this->is_resetting_preferences()) {
+            $this->prefs = [
+                'collapse' => [],
+                'sortby'   => [],
+                'i_first'  => '',
+                'i_last'   => '',
+                'textsort' => $this->column_textsort,
+            ];
+        }
+
+        if (!isset($oldprefs)) {
+            $oldprefs = $this->prefs;
+        }
+
+        // Save user preferences if they have changed.
+        if ($this->is_resetting_preferences()) {
+            $this->save_preferences($oldprefs);
+            return;
+        }
+
+        if ($this->is_resetting_preferences()) {
+            // The current preferences are being reset.
+            // Stop processing any params now.
+            return;
+        }
+
+        if (($showcol = optional_param($this->request[TABLE_VAR_SHOW], '', PARAM_ALPHANUMEXT)) &&
+            isset($this->columns[$showcol])) {
+            $this->prefs['collapse'][$showcol] = false;
+        } else if (($hidecol = optional_param($this->request[TABLE_VAR_HIDE], '', PARAM_ALPHANUMEXT)) &&
+            isset($this->columns[$hidecol])) {
+            $this->prefs['collapse'][$hidecol] = true;
+            if (array_key_exists($hidecol, $this->prefs['sortby'])) {
+                unset($this->prefs['sortby'][$hidecol]);
+            }
+        }
+
+        // Now, update the column attributes for collapsed columns
+        foreach (array_keys($this->columns) as $column) {
+            if (!empty($this->prefs['collapse'][$column])) {
+                $this->column_style[$column]['width'] = '10px';
+            }
+        }
+
+        // Now, update the column attributes for collapsed columns
+        foreach (array_keys($this->columns) as $column) {
+            if (!empty($this->prefs['collapse'][$column])) {
+                $this->column_style[$column]['width'] = '10px';
+            }
+        }
+
+        if (!$this->is_resetting_preferences()) {
+            $this->set_sorting_preferences();
+            $this->set_initials_preferences();
+        }
+
+        if (empty($this->baseurl)) {
+            debugging('You should set baseurl when using flexible_table.');
+            global $PAGE;
+            $this->baseurl = $PAGE->url;
+        }
+
+        if ($this->currpage == null) {
+            $this->currpage = optional_param($this->request[TABLE_VAR_PAGE], 0, PARAM_INT);
+        }
+
+        $this->save_preferences($oldprefs);
+    }
+
+    /**
+     * Save preferences.
+     *
+     * @param array $oldprefs Old preferences to compare against.
+     */
+    protected function save_preferences($oldprefs): void {
+        if ($this->prefs != $oldprefs) {
+            if ($this->persistent) {
+                set_user_preference('flextable_' . $this->uniqueid, json_encode($this->prefs));
+            } else {
+                $SESSION->flextable[$this->uniqueid] = $this->prefs;
+            }
+        }
+        unset($oldprefs);
     }
 
     /**
