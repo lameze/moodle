@@ -97,8 +97,9 @@ class core_weblib_format_text_testcase extends advanced_testcase {
     }
 
     public function test_format_text_overflowdiv() {
-        $this->assertEquals('<div class="no-overflow"><p>:-)</p></div>',
-                format_text('<p>:-)</p>', FORMAT_HTML, array('overflowdiv' => true)));
+        $expected = '<div class="no-overflow"><p><img class="icon emoticon" alt="smile" title="smile"'
+            .  ' src="https://www.example.com/moodle/theme/image.php/_s/boost/core/1/s/smiley" /></p></div>';
+        $this->assertEquals($expected, format_text('<p>:-)</p>', FORMAT_HTML, ['overflowdiv' => true]));
     }
 
     /**
