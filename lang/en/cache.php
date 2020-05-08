@@ -52,6 +52,7 @@ $string['cachedef_coursemodinfo'] = 'Accumulated information about modules and s
 $string['cachedef_course_user_dates'] = 'The user dates for courses set to relative dates mode';
 $string['cachedef_completion'] = 'Activity completion status';
 $string['cachedef_databasemeta'] = 'Database meta information';
+$string['cachedef_campaigncontent'] = 'Campaign content';
 $string['cachedef_eventinvalidation'] = 'Event invalidation';
 $string['cachedef_externalbadges'] = 'External badges for particular user';
 $string['cachedef_fontawesomeiconmapping'] = 'Mapping of icons for font awesome';

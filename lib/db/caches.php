@@ -469,4 +469,12 @@ $definitions = array(
         'simplekeys' => false,
         'simpledata' => false
     ],
+
+    // Campaign content cache.
+    'campaigncontent' => [
+        'mode' => cache_store::MODE_APPLICATION,
+        'simplekeys' => true,
+        'simpledata' => true,
+        'ttl' => 21600, // 6 hours.
+    ],
 );
