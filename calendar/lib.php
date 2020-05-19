@@ -3734,7 +3734,7 @@ function calendar_get_allowed_event_types(int $courseid = null) {
     if (has_capability('moodle/calendar:manageownentries', \context_system::instance())) {
         $types['user'] = true;
     }
-    if (core_course_category::has_manage_capability_on_any()) {
+    if (core_course_category::make_categories_list()) {
         $types['category'] = true;
     }
 
