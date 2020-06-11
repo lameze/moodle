@@ -25,6 +25,9 @@
     margin: 0.3rem 0.5rem;
     width: 14px;
 }
+.que.multichoice .rightanswer div {
+    display: flex;
+}
 
 /* Editing form. */
 body#page-question-type-multichoice div[id^=fitem_id_][id*=answer_] {
