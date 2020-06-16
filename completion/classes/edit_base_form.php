@@ -273,16 +273,17 @@ abstract class core_completion_edit_base_form extends moodleform {
      * @return object submitted data; NULL if not valid or not submitted or cancelled
      */
     public function get_data() {
-	    $data = parent::get_data();
-	    if ($data) {
-		    $autocompletion = !empty($data->completion) &&
-			    $data->completion == COMPLETION_TRACKING_AUTOMATIC;
-		    if (!$autocompletion) {
-			    $data->completionview = 0;
-		    }
-		    if ($this->hascustomrules)
-			    $this->get_module_form()->data_postprocessing($data);
-	    }
-	    return $data;
+        if ($data = parent::get_data()) {
+            $autocompletion = !empty($data->completion) && $data->completion == COMPLETION_TRACKING_AUTOMATIC;
+
+            if (!$autocompletion) {
+                $data->completionview = 0;
+            }
+
+            if ($this->hascustomrules) {
+                $this->get_module_form()->data_postprocessing($data);
+            }
+        }
+        return $data;
     }
 }
