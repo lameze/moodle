@@ -290,10 +290,10 @@
     <licenseversion>2.0+</licenseversion>
   </library>
   <library>
-    <location>amd/src/popper.js</location>
+    <location>amd/src/popperjs/</location>
     <name>Popper.js</name>
     <license>MIT</license>
-    <version>v1.12.6</version>
+    <version>v2.4.4</version>
     <licenseversion></licenseversion>
   </library>
   <library>
