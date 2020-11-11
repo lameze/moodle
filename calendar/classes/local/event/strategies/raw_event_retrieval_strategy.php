@@ -192,7 +192,7 @@ class raw_event_retrieval_strategy implements raw_event_retrieval_strategy_inter
                         false, $userrecord->id);
 
                 // Set calendar filters.
-                list($usercourses, $usergroups, $user) = calendar_set_filters($usercourses, true, $userrecord);
+                list($usercourses, $usergroups, $user, $categories) = calendar_set_filters($usercourses, true, $userrecord, $categories);
 
                 $allusercourses = array_merge($allusercourses, $usercourses);
 

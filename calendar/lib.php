@@ -2094,15 +2094,17 @@ function calendar_events_by_day($events, $month, $year, &$eventsbyday, &$duratio
  * @param array $courseeventsfrom An array of courses to load calendar events for
  * @param bool $ignorefilters specify the use of filters, false is set as default
  * @param stdClass $user The user object. This defaults to the global $USER object.
+ * @param array|null $categories array of category ids and/or objects.
  * @return array An array of courses, groups, and user to load calendar events for based upon filters
  */
-function calendar_set_filters(array $courseeventsfrom, $ignorefilters = false, stdClass $user = null) {
+function calendar_set_filters(array $courseeventsfrom, $ignorefilters = false, stdClass $user = null, $categories = null) {
     global $CFG, $USER;
 
     if (is_null($user)) {
         $user = $USER;
     }
 
+    $cats = [];
     $courses = array();
     $userid = false;
     $group = false;
@@ -2111,6 +2113,10 @@ function calendar_set_filters(array $courseeventsfrom, $ignorefilters = false, s
     $allgroupscaps = array('moodle/site:accessallgroups', 'moodle/calendar:manageentries');
 
     $isvaliduser = !empty($user->id);
+
+    if ($ignorefilters || calendar_show_event_type(CALENDAR_EVENT_COURSECAT, $user)) {
+        $cats = $categories;
+    }
 
     if ($ignorefilters || calendar_show_event_type(CALENDAR_EVENT_COURSE, $user)) {
         $courses = array_keys($courseeventsfrom);
@@ -2168,7 +2174,7 @@ function calendar_set_filters(array $courseeventsfrom, $ignorefilters = false, s
         $courses = false;
     }
 
-    return array($courses, $group, $userid);
+    return array($courses, $group, $userid, $cats);
 }
 
 /**
@@ -2515,7 +2521,7 @@ function calendar_format_event_time($event, $now, $linkparams = null, $usecommon
  * @return bool True if the tyep should be displayed false otherwise
  */
 function calendar_show_event_type($type, $user = null) {
-    $default = CALENDAR_EVENT_SITE + CALENDAR_EVENT_COURSE + CALENDAR_EVENT_GROUP + CALENDAR_EVENT_USER;
+    $default = CALENDAR_EVENT_SITE + CALENDAR_EVENT_COURSE + CALENDAR_EVENT_GROUP + CALENDAR_EVENT_USER + CALENDAR_EVENT_COURSECAT;
 
     if (get_user_preferences('calendar_persistflt', 0, $user) === 0) {
         global $SESSION;
