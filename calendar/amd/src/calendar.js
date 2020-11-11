@@ -152,6 +152,9 @@ define([
         body.on(CalendarEvents.updated, function() {
             CalendarViewManager.reloadCurrentMonth(root);
         });
+        body.on(CalendarEvents.eventKeyFilterChanged, function() {
+            CalendarViewManager.reloadCurrentMonth(root);
+        });
         body.on(CalendarEvents.editActionEvent, function(e, url) {
             // Action events needs to be edit directly on the course module.
             window.location.assign(url);

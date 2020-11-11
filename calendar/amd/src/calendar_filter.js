@@ -27,13 +27,15 @@ define([
     'core_calendar/events',
     'core/str',
     'core/templates',
+    'core_calendar/repository'
 ],
 function(
     $,
     CalendarSelectors,
     CalendarEvents,
     Str,
-    Templates
+    Templates,
+    Repository
 ) {
 
     var registerEventListeners = function(root) {
@@ -65,7 +67,8 @@ function(
         data.hidden = !data.hidden;
 
         M.util.js_pending("core_calendar/calendar_filter:toggleFilter");
-        return Str.get_string('eventtype' + data.eventtype, 'calendar')
+        return Repository.toggleFilter(data.eventtype)
+        .then(Str.get_string('eventtype' + data.eventtype, 'calendar')
         .then(function(nameStr) {
             data.name = nameStr;
             data.icon = true;
@@ -84,7 +87,7 @@ function(
             fireFilterChangedEvent(data);
             M.util.js_complete("core_calendar/calendar_filter:toggleFilter");
             return;
-        });
+        }));
     };
 
     /**

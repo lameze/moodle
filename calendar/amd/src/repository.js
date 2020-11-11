@@ -196,3 +196,20 @@ export const getCourseGroupsData = (courseId) => {
 
     return Ajax.call([request])[0];
 };
+
+/**
+ * Toggle event type filter visibility.
+ *
+ * @param {string} eventType The event type which visibility will be toggled.
+ * @return {promise}
+ */
+export const toggleFilter = (eventType) => {
+    const request = {
+        methodname: 'core_calendar_toggle_eventkey_filter',
+        args: {
+            eventtype: eventType
+        }
+    };
+
+    return Ajax.call([request])[0];
+};

@@ -36,5 +36,6 @@ define([], function() {
         moveEvent: 'calendar-events:move_event',
         filterChanged: 'calendar-events:filter_changed',
         viewUpdated: 'calendar-events:view_updated',
+        eventKeyFilterChanged: 'core_calendar/calendar_filter:toggleFilter'
     };
 });

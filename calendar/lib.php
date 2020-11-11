@@ -3724,9 +3724,30 @@ function calendar_get_filter_types() {
             'name' => get_string("eventtype{$type}", "calendar"),
             'icon' => true,
             'key' => 'i/' . $type . 'event',
-            'component' => 'core'
+            'component' => 'core',
+            'hidden' => calendar_is_eventtype_hidden($type)
         ];
     }, $types);
+}
+
+/**
+ * Match event type to CALENDAR_EVENT_* constant and check if given type is hidden.
+ *
+ * @param string $eventtype  Calendar event type.
+ * @return bool Whether the event type is hidden or not.
+ */
+function calendar_is_eventtype_hidden($eventtype) {
+    // Map event types keyword to CALENDAR_EVENT_* constants.
+    $eventtypeconst = [
+        'site' => CALENDAR_EVENT_SITE,
+        'course' => CALENDAR_EVENT_COURSE,
+        'group' => CALENDAR_EVENT_GROUP,
+        'user' => CALENDAR_EVENT_USER,
+        'category' => CALENDAR_EVENT_COURSECAT,
+        'other' => CALENDAR_EVENT_GLOBAL
+    ];
+
+    return calendar_show_event_type($eventtypeconst[$eventtype]) != $eventtypeconst[$eventtype];
 }
 
 /**
