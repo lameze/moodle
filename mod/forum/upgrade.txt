@@ -9,6 +9,7 @@ information provided here is intended especially for developers.
     * get_discussion_posts_by_userid
     * get_discussion_post
     * add_discussion_post
+    * The function forum_count_replies() and the get_forum_discussion_posts() webservice have been removed from core.
 
 === 3.10 ===
 
