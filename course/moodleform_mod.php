@@ -27,6 +27,7 @@ require_once($CFG->libdir.'/completionlib.php');
 require_once($CFG->libdir.'/gradelib.php');
 require_once($CFG->libdir.'/plagiarismlib.php');
 
+use core\content\export\exporters\component_exporter;
 use core_grades\component_gradeitems;
 
 /**
@@ -602,6 +603,25 @@ abstract class moodleform_mod extends moodleform {
                              VISIBLEGROUPS  => get_string('groupsvisible'));
             $mform->addElement('select', 'groupmode', get_string('groupmode', 'group'), $options, NOGROUPS);
             $mform->addHelpButton('groupmode', 'groupmode', 'group');
+        }
+
+        if ($CFG->downloadcoursecontentallowed) {
+            $classname = component_exporter::get_classname_for_component("mod_{$this->_modname}");
+            if (component_exporter::check_for_module_implementation($classname)) {
+                $choices = [
+                    DOWNLOAD_COURSE_CONTENT_DISABLED => get_string('no'),
+                    DOWNLOAD_COURSE_CONTENT_ENABLED => get_string('yes'),
+                ];
+                $mform->addElement('select', 'enabledownloadcmcontent', get_string('enabledownloadcmcontent', 'course'), $choices);
+                $enabledownloadcmcontentdefault = isset($this->_cm->enabledownloadcmcontent) ? $this->_cm->enabledownloadcmcontent : DOWNLOAD_COURSE_CONTENT_ENABLED;
+                $mform->addHelpButton('enabledownloadcmcontent', 'enabledownloadcmcontent', 'course');
+                if (has_capability('moodle/course:configuredownloadcontent', $this->get_context())) {
+                    $mform->setDefault('enabledownloadcmcontent', $enabledownloadcmcontentdefault);
+                } else {
+                    $mform->hardFreeze('enabledownloadcmcontent');
+                    $mform->setConstant('enabledownloadcmcontent', $enabledownloadcmcontentdefault);
+                }
+            }
         }
 
         if ($this->_features->groupings) {

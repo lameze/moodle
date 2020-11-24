@@ -109,4 +109,15 @@ abstract class component_exporter {
     public static function get_classname_for_component(string $component): string {
         return "{$component}\\content\\exporter";
     }
+
+
+    /**
+     * Checks for content API implementation.
+     *
+     * @param string $classname The classname for the component being verified.
+     * @return bool
+     */
+    public static function check_for_module_implementation(string $classname): bool {
+        return class_exists($classname) && is_a($classname, abstract_mod_exporter::class, true);
+    }
 }

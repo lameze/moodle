@@ -67,6 +67,9 @@ function add_moduleinfo($moduleinfo, $course, $mform = null) {
     if (isset($moduleinfo->cmidnumber)) {
         $newcm->idnumber         = $moduleinfo->cmidnumber;
     }
+    if (isset($moduleinfo->enabledownloadcmcontent)) {
+        $newcm->enabledownloadcmcontent = $moduleinfo->enabledownloadcmcontent;
+    }
     $newcm->groupmode        = $moduleinfo->groupmode;
     $newcm->groupingid       = $moduleinfo->groupingid;
     $completion = new completion_info($course);
@@ -644,6 +647,10 @@ function update_moduleinfo($cm, $moduleinfo, $course, $mform = null) {
     if (isset($moduleinfo->cmidnumber)) { // Label.
         // Set cm idnumber - uniqueness is already verified by form validation.
         set_coursemodule_idnumber($moduleinfo->coursemodule, $moduleinfo->cmidnumber);
+    }
+
+    if (isset($moduleinfo->enabledownloadcmcontent)) {
+        set_enabledownloadcmcontent($moduleinfo->coursemodule, $moduleinfo->enabledownloadcmcontent);
     }
 
     // Update module tags.

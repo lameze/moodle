@@ -132,6 +132,11 @@ class content {
                     return false;
                 }
 
+                // Do not export course content if disabled at activity level.
+                if (isset($cm->enabledownloadcmcontent) && $cm->enabledownloadcmcontent == DOWNLOAD_COURSE_CONTENT_DISABLED) {
+                    return false;
+                }
+
                 // Defer to setting checks.
                 return self::can_export_context($context, $user);
             }
@@ -153,7 +158,7 @@ class content {
                 // For example, in mod_folder it will export the list of folders.
                 $classname = component_exporter::get_classname_for_component($component);
                 $exportables = [];
-                if (class_exists($classname) && is_a($classname, abstract_mod_exporter::class, true)) {
+                if (component_exporter::check_for_module_implementation($classname)) {
                     $controller = new $classname($context, $component, $user, $archive);
                     $exportables = $controller->get_exportables();
                 }
