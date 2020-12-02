@@ -2095,9 +2095,9 @@ function calendar_events_by_day($events, $month, $year, &$eventsbyday, &$duratio
  * @param bool $ignorefilters specify the use of filters, false is set as default
  * @param stdClass $user The user object. This defaults to the global $USER object.
  * @param array|null $categories array of category ids and/or objects.
- * @return array An array of courses, groups, and user to load calendar events for based upon filters
+ * @return array An array of categories, courses, groups, and user to load calendar events for based upon filters
  */
-function calendar_set_filters(array $courseeventsfrom, $ignorefilters = false, stdClass $user = null, $categories = null) {
+function calendar_set_filters(array $courseeventsfrom, $ignorefilters = false, stdClass $user = null, array $categories = null) {
     global $CFG, $USER;
 
     if (is_null($user)) {

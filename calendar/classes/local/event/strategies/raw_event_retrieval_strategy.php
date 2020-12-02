@@ -68,6 +68,7 @@ class raw_event_retrieval_strategy implements raw_event_retrieval_strategy_inter
      * @param array|int|boolean $users array of users, user id or boolean for all/no user events
      * @param array|int|boolean $groups array of groups, group id or boolean for all/no group events
      * @param array|int|boolean $courses array of courses, course id or boolean for all/no course events
+     * @param array|int|boolean $categories array of categories, category id or boolean for all/no category events
      * @param string $whereconditions The conditions in the WHERE clause.
      * @param array $whereparams The parameters for the WHERE clause.
      * @param string $ordersql The ORDER BY clause.
@@ -192,7 +193,7 @@ class raw_event_retrieval_strategy implements raw_event_retrieval_strategy_inter
                         false, $userrecord->id);
 
                 // Set calendar filters.
-                list($usercourses, $usergroups, $user, $categories) = calendar_set_filters($usercourses, true, $userrecord, $categories);
+                [$usercourses, $usergroups, $user, $categories] = calendar_set_filters($usercourses, true, $userrecord, $categories);
 
                 $allusercourses = array_merge($allusercourses, $usercourses);
 

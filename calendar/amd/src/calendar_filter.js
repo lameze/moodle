@@ -67,9 +67,11 @@ function(
         data.hidden = !data.hidden;
 
         M.util.js_pending("core_calendar/calendar_filter:toggleFilter");
-        return Repository.toggleFilter(data.eventtype)
-        .then(Str.get_string('eventtype' + data.eventtype, 'calendar')
-        .then(function(nameStr) {
+        return Promise.all([
+            Repository.toggleFilter(data.eventtype),
+            Str.get_string('eventtype' + data.eventtype, 'calendar'),
+        ])
+        .then(([, nameStr]) => {
             data.name = nameStr;
             data.icon = true;
             data.key = 'i/' + data.eventtype + 'event';
@@ -87,7 +89,7 @@ function(
             fireFilterChangedEvent(data);
             M.util.js_complete("core_calendar/calendar_filter:toggleFilter");
             return;
-        }));
+        });
     };
 
     /**
