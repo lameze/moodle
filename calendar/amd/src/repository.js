@@ -198,16 +198,18 @@ export const getCourseGroupsData = (courseId) => {
 };
 
 /**
- * Toggle event type filter visibility.
+ * Change the event type filter visibility.
  *
- * @param {string} eventType The event type which visibility will be toggled.
+ * @param {string} eventType The event type which visibility will be changed.
+ * @param {bool} hidden Hide or show the event type
  * @return {promise}
  */
-export const toggleFilter = (eventType) => {
+export const updateFilter = (eventType, hidden) => {
     const request = {
-        methodname: 'core_calendar_toggle_eventkey_filter',
+        methodname: 'core_calendar_update_eventkey_filter',
         args: {
-            eventtype: eventType
+            eventtype: eventType,
+            hidden: hidden
         }
     };
 

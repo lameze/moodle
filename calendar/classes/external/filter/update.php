@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This is the external method for toggling events key filter preference.
+ * This is the external method for updating events key filter preference.
  *
  * @package    core_calendar
  * @copyright  2020 Simey Lameze <simey@moodle.com>
@@ -34,16 +34,15 @@ use external_api;
 use external_function_parameters;
 use external_single_structure;
 use external_warnings;
-use moodle_exception;
 use external_value;
 
 /**
- * This is the external method for toggling events key filter preference.
+ * This is the external method for updating events key filter preference.
  *
  * @copyright  2020 Simey Lameze <simey@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class toggle extends external_api {
+class update extends external_api {
 
     /**
      * Returns description of method parameters.
@@ -53,20 +52,27 @@ class toggle extends external_api {
      */
     public static function execute_parameters(): external_function_parameters {
         return new external_function_parameters([
-            'eventtype' => new external_value(PARAM_ALPHA, 'Event type key to be toggled')
+            'eventtype' => new external_value(PARAM_ALPHA, 'Event type key to be changed'),
+            'hidden' => new external_value(PARAM_BOOL, "Hide or show the event type"),
         ]);
     }
 
     /**
-     * Toggle visibility of event key filter.
+     * Change the visibility of event key filter.
      *
-     * @param string $eventtype The event type key to be toggled 'site', 'course, 'category'...
+     * @param string $eventtype The event type key to be changed 'site', 'course, 'category'...
+     * @param bool $hidden Whether those events should be hidden or not.
      * @return array The access information
      */
-    public static function execute(string $eventtype) {
+    public static function execute(string $eventtype, bool $hidden) {
 
-        $params = external_api::validate_parameters(self::execute_parameters(), ['eventtype' => $eventtype]);
-        $eventtype = $params['eventtype'];
+        [
+            'eventtype' => $eventtype,
+            'hidden' => $hidden,
+        ] = self::validate_parameters(self::execute_parameters(), [
+            'eventtype' => $eventtype,
+            'hidden' => $hidden,
+        ]);
 
         if(!calendar_is_valid_eventtype($eventtype)) {
             throw new \moodle_exception("The provided event type '" . $eventtype . "' is invalid.");
@@ -76,6 +82,8 @@ class toggle extends external_api {
         self::validate_context($context);
 
         // Map event types keyword to CALENDAR_EVENT_* constants.
+        // That is required because calendar_set_event_type_display() works with the CALENDAR_EVENT_* constant value and
+        // not the event key 'site', 'course', 'user' and etc.
         $eventtypeconst = [
             'site' => CALENDAR_EVENT_SITE,
             'course' => CALENDAR_EVENT_COURSE,
@@ -84,8 +92,8 @@ class toggle extends external_api {
             'category' => CALENDAR_EVENT_COURSECAT
         ];
 
-        // Toggle visibility of event type.
-        calendar_set_event_type_display($eventtypeconst[$eventtype]);
+        // Change visibility of the event type.
+        calendar_set_event_type_display($eventtypeconst[$eventtype], $hidden);
 
         return [
             'warnings' => []
@@ -96,7 +104,7 @@ class toggle extends external_api {
      * Returns description of method result value.
      *
      * @return external_single_structure.
-     * @since  Moodle 3.10
+     * @since  Moodle 3.11
      */
     public static function execute_returns() {
         return new external_single_structure([

@@ -294,10 +294,10 @@ $functions = array(
         'type'          => 'read',
         'services'      => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
     ],
-    'core_calendar_toggle_eventkey_filter' => [
-        'classname'     => 'core_calendar\external\filter\toggle',
+    'core_calendar_update_eventkey_filter' => [
+        'classname'     => 'core_calendar\external\filter\update',
         'methodname'    => 'execute',
-        'description'   => 'Toggle the visibility of events for a given event type',
+        'description'   => 'Change the visibility of events for a given event type',
         'type'          => 'write',
         'services'      => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
         'ajax' => true,

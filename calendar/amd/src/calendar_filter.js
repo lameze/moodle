@@ -68,7 +68,7 @@ function(
 
         M.util.js_pending("core_calendar/calendar_filter:toggleFilter");
         return Promise.all([
-            Repository.toggleFilter(data.eventtype),
+            Repository.updateFilter(data.eventtype, data.hidden),
             Str.get_string('eventtype' + data.eventtype, 'calendar'),
         ])
         .then(([, nameStr]) => {
