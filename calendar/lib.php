@@ -2518,7 +2518,7 @@ function calendar_format_event_time($event, $now, $linkparams = null, $usecommon
  *
  * @param int $type The type to check the display for (default is to display all)
  * @param stdClass|int|null $user The user to check for - by default the current user
- * @return bool True if the tyep should be displayed false otherwise
+ * @return bool True if the type should be displayed false otherwise
  */
 function calendar_show_event_type($type, $user = null) {
     $default = CALENDAR_EVENT_SITE + CALENDAR_EVENT_COURSE + CALENDAR_EVENT_GROUP + CALENDAR_EVENT_USER + CALENDAR_EVENT_COURSECAT;
@@ -2546,9 +2546,11 @@ function calendar_show_event_type($type, $user = null) {
  * @param stdClass|int $user moodle user object or id, null means current user
  */
 function calendar_set_event_type_display($type, $display = null, $user = null) {
+
     $persist = get_user_preferences('calendar_persistflt', 0, $user);
     $default = CALENDAR_EVENT_SITE + CALENDAR_EVENT_COURSE + CALENDAR_EVENT_GROUP
             + CALENDAR_EVENT_USER + CALENDAR_EVENT_COURSECAT;
+//    echo 'default:' . $default;
     if ($persist === 0) {
         global $SESSION;
         if (!isset($SESSION->calendarshoweventtype)) {
@@ -2559,17 +2561,21 @@ function calendar_set_event_type_display($type, $display = null, $user = null) {
         $preference = get_user_preferences('calendar_savedflt', $default, $user);
     }
     $current = $preference & $type;
+//    echo "current: ". $current;
     if ($display === null) {
         $display = !$current;
     }
+
     if ($display && !$current) {
         $preference += $type;
     } else if (!$display && $current) {
         $preference -= $type;
     }
+
     if ($persist === 0) {
         $SESSION->calendarshoweventtype = $preference;
     } else {
+
         if ($preference == $default) {
             unset_user_preference('calendar_savedflt', $user);
         } else {

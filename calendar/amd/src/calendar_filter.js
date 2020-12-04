@@ -71,7 +71,7 @@ function(
             Repository.updateFilter(data.eventtype, data.hidden),
             Str.get_string('eventtype' + data.eventtype, 'calendar'),
         ])
-        .then(([, nameStr]) => {
+        .then(([nameStr]) => {
             data.name = nameStr;
             data.icon = true;
             data.key = 'i/' + data.eventtype + 'event';
