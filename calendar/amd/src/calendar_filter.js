@@ -61,17 +61,16 @@ function(
     };
 
     var toggleFilter = function(target) {
+
         var data = getFilterData(target);
 
         // Toggle the hidden. We need to render the template before we change the value.
         data.hidden = !data.hidden;
 
         M.util.js_pending("core_calendar/calendar_filter:toggleFilter");
-        return Promise.all([
-            Repository.updateFilter(data.eventtype, data.hidden),
-            Str.get_string('eventtype' + data.eventtype, 'calendar'),
-        ])
-        .then(([nameStr]) => {
+        return Repository.updateFilter(data.eventtype, data.hidden)
+        .then(Str.get_string('eventtype' + data.eventtype, 'calendar')
+        .then((nameStr) => {
             data.name = nameStr;
             data.icon = true;
             data.key = 'i/' + data.eventtype + 'event';
@@ -89,7 +88,7 @@ function(
             fireFilterChangedEvent(data);
             M.util.js_complete("core_calendar/calendar_filter:toggleFilter");
             return;
-        });
+        }));
     };
 
     /**
