@@ -51,6 +51,43 @@ class mod_forum_external_testcase extends externallib_advanced_testcase {
         \mod_forum\subscriptions::reset_forum_cache();
     }
 
+    protected function get_expected_attachment(stored_file $file, array $values  = [], ?moodle_url $url = null): array {
+        if (!$url) {
+            $url = moodle_url::make_pluginfile_url(
+                $file->get_contextid(),
+                $file->get_component(),
+                $file->get_filearea(),
+                $file->get_itemid(),
+                $file->get_filepath(),
+                $file->get_filename()
+            );
+            $url->param('forcedownload', 1);
+        }
+
+        return array_merge(
+            [
+                'contextid' => $file->get_contextid(),
+                'component' => $file->get_component(),
+                'filearea' => $file->get_filearea(),
+                'itemid' => $file->get_itemid(),
+                'filepath' => $file->get_filepath(),
+                'filename' => $file->get_filename(),
+                'isdir' => $file->is_directory(),
+                'isimage' => $file->is_valid_image(),
+                'timemodified' => $file->get_timemodified(),
+                'timecreated' => $file->get_timecreated(),
+                'filesize' => $file->get_filesize(),
+                'author' => $file->get_author(),
+                'license' => $file->get_license(),
+                'filenameshort' => $file->get_filename(),
+                'filesizeformatted' => display_size((int) $file->get_filesize()),
+                'icon' => $file->is_directory() ? file_folder_icon(128) : file_file_icon($file, 128),
+                'timecreatedformatted' => userdate($file->get_timecreated()),
+                'timemodifiedformatted' => userdate($file->get_timemodified()),
+                'url' => $url->out(),
+            ], $values);
+    }
+
     /**
      * Test get forums
      */
@@ -384,7 +421,7 @@ class mod_forum_external_testcase extends externallib_advanced_testcase {
         );
         $fs = get_file_storage();
         $timepost = time();
-        $fs->create_file_from_string($filerecordinline, 'image contents (not really)');
+        $file = $fs->create_file_from_string($filerecordinline, 'image contents (not really)');
 
         $record->parent = $discussion1reply1->id;
         $record->userid = $user3->id;
@@ -451,6 +488,7 @@ class mod_forum_external_testcase extends externallib_advanced_testcase {
             'charcount' => count_letters($message),
             'author'=> $exporteduser3,
             'attachments' => [],
+            'inlineattachments' => [],
             'tags' => [],
             'html' => [
                 'rating' => null,
@@ -509,6 +547,9 @@ class mod_forum_external_testcase extends externallib_advanced_testcase {
             'charcount' => count_letters($message),
             'author'=> $exporteduser2,
             'attachments' => [],
+            'inlineattachments' => [
+                0 => $this->get_expected_attachment($file)
+            ],
             'tags' => [],
             'html' => [
                 'rating' => null,
@@ -1895,9 +1936,9 @@ class mod_forum_external_testcase extends externallib_advanced_testcase {
      * Test get posts discussions including rating information.
      */
     public function test_mod_forum_get_discussion_rating_information() {
-        global $DB, $CFG;
+        global $DB, $CFG, $PAGE;
         require_once($CFG->dirroot . '/rating/lib.php');
-
+        $PAGE->set_url('/my/index.php');    // Need this because some internal API calls require the $PAGE url to be set.
         $this->resetAfterTest(true);
 
         $user1 = self::getDataGenerator()->create_user();
@@ -1973,16 +2014,16 @@ class mod_forum_external_testcase extends externallib_advanced_testcase {
 
         // This block had to be commented because it was showing a debugging message after changing the code to call
         // the mod_forum_external::get_discussion_posts webservice, this bug is going to be fixed by MDL-70487.
-        // // Retrieve the rating for the post as teacher.
-        // $this->setUser($teacher);
-        // $posts = mod_forum_external::get_discussion_posts($discussion->id, 'id', 'DESC');
-        // $posts = external_api::clean_returnvalue(mod_forum_external::get_discussion_posts_returns(), $posts);
-        // $this->assertCount(1, $posts['ratinginfo']['ratings']);
-        // $this->assertTrue($posts['ratinginfo']['ratings'][0]['canviewaggregate']);
-        // $this->assertTrue($posts['ratinginfo']['canviewall']);
-        // $this->assertTrue($posts['ratinginfo']['ratings'][0]['canrate']);
-        // $this->assertEquals(2, $posts['ratinginfo']['ratings'][0]['count']);
-        // $this->assertEquals(($rating1->rating + $rating2->rating) / 2, $posts['ratinginfo']['ratings'][0]['aggregate']);
+         // Retrieve the rating for the post as teacher.
+         $this->setUser($teacher);
+         $posts = mod_forum_external::get_discussion_posts($discussion->id, 'id', 'DESC');
+         $posts = external_api::clean_returnvalue(mod_forum_external::get_discussion_posts_returns(), $posts);
+         $this->assertCount(1, $posts['ratinginfo']['ratings']);
+         $this->assertTrue($posts['ratinginfo']['ratings'][0]['canviewaggregate']);
+         $this->assertTrue($posts['ratinginfo']['canviewall']);
+         $this->assertTrue($posts['ratinginfo']['ratings'][0]['canrate']);
+         $this->assertEquals(2, $posts['ratinginfo']['ratings'][0]['count']);
+         $this->assertEquals(($rating1->rating + $rating2->rating) / 2, $posts['ratinginfo']['ratings'][0]['aggregate']);
     }
 
     /**
@@ -2454,7 +2495,7 @@ class mod_forum_external_testcase extends externallib_advanced_testcase {
                 'filename'  => $filename,
         );
         $fs = get_file_storage();
-        $fs->create_file_from_string($filerecordinline, 'image contents (not really)');
+        $file1 = $fs->create_file_from_string($filerecordinline, 'image contents (not really)');
 
         // Add 1 reply to the discussion 2 from a different user.
         $record = new stdClass();
@@ -2473,7 +2514,7 @@ class mod_forum_external_testcase extends externallib_advanced_testcase {
                 'filename'  => $filename,
         );
         $fs = get_file_storage();
-        $fs->create_file_from_string($filerecordinline, 'image contents (not really)');
+        $file2 = $fs->create_file_from_string($filerecordinline, 'image contents (not really)');
 
         // Following line enrol and assign default role id to the user.
         // So the user automatically gets mod/forum:viewdiscussion on all forums of the course.
@@ -2527,6 +2568,9 @@ class mod_forum_external_testcase extends externallib_advanced_testcase {
                         'wordcount' => null,
                         'author' => $exporteduser2,
                         'attachments' => [],
+                        'inlineattachments' => [
+                            0 => $this->get_expected_attachment($file1),
+                        ],
                         'tags' => [],
                         'html' => [
                             'rating' => null,
@@ -2592,6 +2636,7 @@ class mod_forum_external_testcase extends externallib_advanced_testcase {
                         'wordcount' => null,
                         'author' => $exporteduser1,
                         'attachments' => [],
+                        'inlineattachments' => [],
                         'tags' => [],
                         'html' => [
                             'rating' => null,
@@ -2668,6 +2713,9 @@ class mod_forum_external_testcase extends externallib_advanced_testcase {
                         'wordcount' => null,
                         'author' => $exporteduser2,
                         'attachments' => [],
+                        'inlineattachments' => [
+                            0 => $this->get_expected_attachment($file2),
+                        ],
                         'tags' => [],
                         'html' => [
                             'rating' => null,
@@ -2733,6 +2781,7 @@ class mod_forum_external_testcase extends externallib_advanced_testcase {
                         'wordcount' => null,
                         'author' => $exporteduser1,
                         'attachments' => [],
+                        'inlineattachments' => [],
                         'tags' => [],
                         'html' => [
                             'rating' => null,
@@ -3040,24 +3089,33 @@ class mod_forum_external_testcase extends externallib_advanced_testcase {
         $newpost = $result['post'];
         $this->assertTrue(\mod_forum\subscriptions::is_subscribed($user->id, $forum, $discussion->id, $cm));
 
-        // Add files in the different areas.
+        // Test inline and regular attachment in post
+        // Create a file in a draft area for inline attachments.
+        $draftidinlineattach = file_get_unused_draft_itemid();
         $draftidattach = file_get_unused_draft_itemid();
+        self::setUser($user);
+        $usercontext = context_user::instance($user->id);
+        $filepath = '/';
+        $filearea = 'draft';
+        $component = 'user';
+        $filenameimg = 'fakeimage.png';
         $filerecordinline = array(
-            'contextid' => context_user::instance($user->id)->id,
-            'component' => 'user',
-            'filearea'  => 'draft',
-            'itemid'    => $draftidattach,
-            'filepath'  => '/',
-            'filename'  => 'faketxt.txt',
+            'contextid' => $usercontext->id,
+            'component' => $component,
+            'filearea'  => $filearea,
+            'itemid'    => $draftidinlineattach,
+            'filepath'  => $filepath,
+            'filename'  => $filenameimg,
         );
         $fs = get_file_storage();
-        $fs->create_file_from_string($filerecordinline, 'fake txt contents 1.');
 
-        // Create files in post area (inline).
-        $draftidinlineattach = file_get_unused_draft_itemid();
-        $filerecordinline['itemid'] = $draftidinlineattach;
-        $filerecordinline['filename'] = 'fakeimage.png';
-        $fs->create_file_from_string($filerecordinline, 'img...');
+        // Create a file in a draft area for regular attachments.
+        $filerecordattach = $filerecordinline;
+        $attachfilename = 'faketxt.txt';
+        $filerecordattach['filename'] = $attachfilename;
+        $filerecordattach['itemid'] = $draftidattach;
+        $fs->create_file_from_string($filerecordinline, 'image contents (not really)');
+        $fs->create_file_from_string($filerecordattach, 'simple text attachment');
 
         // Do not update subject.
         $message = 'Hey message updated';
@@ -3075,7 +3133,7 @@ class mod_forum_external_testcase extends externallib_advanced_testcase {
         $this->assertFalse(\mod_forum\subscriptions::is_subscribed($user->id, $forum, $discussion->id, $cm));
 
         // Get the post from WS.
-        $result = mod_forum_external::get_discussion_posts($discussion->id, 'modified', 'ASC');
+        $result = mod_forum_external::get_discussion_posts($discussion->id, 'modified', 'DESC');
         $result = external_api::clean_returnvalue(mod_forum_external::get_discussion_posts_returns(), $result);
         $found = false;
         foreach ($result['posts'] as $post) {
@@ -3083,6 +3141,8 @@ class mod_forum_external_testcase extends externallib_advanced_testcase {
                 $this->assertEquals($newpost->subject, $post['subject']);
                 $this->assertEquals($message, $post['message']);
                 $this->assertEquals($messageformat, $post['messageformat']);
+                $this->assertCount(1, $post['inlineattachments']);
+                $this->assertEquals('fakeimage.png', $post['inlineattachments'][0]['filename']);
                 $this->assertCount(1, $post['attachments']);
                 $this->assertEquals('faketxt.txt', $post['attachments'][0]['filename']);
                 $found = true;
