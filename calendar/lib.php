@@ -337,7 +337,7 @@ class calendar_event {
         }
 
         $isactionevent = !empty($data->type) && $data->type == CALENDAR_EVENT_TYPE_ACTION;
-        $isuseroverride = !empty($data->priority) && $data->priority == CALENDAR_EVENT_USER_OVERRIDE_PRIORITY;
+        $isuseroverride = isset($data->priority) && $data->priority == CALENDAR_EVENT_USER_OVERRIDE_PRIORITY;
         if ($isactionevent && $isuseroverride) {
             return true;
         }
