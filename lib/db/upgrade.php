@@ -2495,5 +2495,19 @@ function xmldb_main_upgrade($oldversion) {
         upgrade_main_savepoint(true, 2021030500.01);
     }
 
+    if ($oldversion < 2021031200.01) {
+        // Define field 'showactivitydates' to be added to course table.
+        $table = new xmldb_table('course');
+        $field = new xmldb_field('showactivitydates', XMLDB_TYPE_INTEGER, '1', null,
+            XMLDB_NOTNULL, null, '0', 'originalcourseid');
+
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Main savepoint reached.
+        upgrade_main_savepoint(true, 2021031200.01);
+    }
+
     return true;
 }
