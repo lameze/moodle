@@ -35,6 +35,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\user_fields;
 use core_completion\cm_completion_details;
 use core_course\activity_dates;
 use core_course\output\activity_information;
@@ -928,7 +929,8 @@ class core_renderer extends renderer_base {
         $overrideby = $cmdetails->overridden_by();
         $overridebyname = null;
         if (!empty($overrideby)) {
-            $overridebyrecord = core_user::get_user($overrideby, 'id, ' . get_all_user_name_fields(true), MUST_EXIST);
+            $userfields = user_fields::for_name();
+            $overridebyrecord = core_user::get_user($overrideby, 'id ' . $userfields->get_sql()->selects, MUST_EXIST);
             $overridebyname = fullname($overridebyrecord);
         }
 
