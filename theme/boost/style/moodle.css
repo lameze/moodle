@@ -16754,6 +16754,12 @@ textarea[data-auto-rows] {
 select {
   width: auto; }
 
+.path-mod div.activity-information {
+  border-bottom: 1px solid #dee2e6;
+  padding-top: 0.5rem;
+  padding-bottom: 1rem;
+  margin-bottom: 0.5rem; }
+
 .path-mod-choice .horizontal .choices .option {
   display: inline-block; }
 
