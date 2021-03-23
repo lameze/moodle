@@ -2471,6 +2471,15 @@ function xmldb_main_upgrade($oldversion) {
         upgrade_main_savepoint(true, 2021052500.64);
     }
 
+    if ($oldversion < 2021052500.65) {
+        // This upgrade step has been removed because it caused data loss issues in the calendar event table.
+        // We need to flag sites affected by this issue so we can recover that data in another upgrade step.
+        set_config('skipeventsrecovery', true);
+
+        // Main savepoint reached.
+        upgrade_main_savepoint(true, 2021052500.65);
+    }
+
     if ($oldversion < 2021052500.67) {
         // The $CFG->badges_site_backpack setting has been removed because it's not required anymore. From now, the default backpack
         // will be the one with lower sortorder value.
