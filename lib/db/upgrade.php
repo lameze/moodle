@@ -2711,5 +2711,14 @@ function xmldb_main_upgrade($oldversion) {
         upgrade_main_savepoint(true, 2020061504.07);
     }
 
+    if ($oldversion < 2020061504.08) {
+        // This upgrade step has been removed because it caused data loss issues in the calendar event table.
+        // We need to flag sites affected by this issue so we can recover that data in another upgrade step.
+        set_config('skipeventsrecovery', true);
+
+        // Main savepoint reached.
+        upgrade_main_savepoint(true, 2020061504.08);
+    }
+
     return true;
 }
