@@ -3023,6 +3023,15 @@ function xmldb_main_upgrade($oldversion) {
         upgrade_main_savepoint(true, 2020110901.03);
     }
 
+    if ($oldversion < 2020110901.09) {
+        // This upgrade step has been removed because it caused data loss issues in the calendar event table.
+        // We need to flag sites affected by this issue so we can recover that data in another upgrade step.
+        set_config('skipeventsrecovery', true);
+
+        // Main savepoint reached.
+        upgrade_main_savepoint(true, 2020110901.09);
+    }
+
     if ($oldversion < 2020110901.08) {
         // Get all the external backpacks and update the sortorder column, to avoid repeated/wrong values. As sortorder was not
         // used since now, the id column will be the criteria to follow for re-ordering them with a valid value.
