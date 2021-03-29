@@ -54,16 +54,16 @@ class activity_custom_completion_test extends advanced_testcase {
     public function get_state_provider(): array {
         return [
             'Undefined rule' => [
-                'somenonexistentrule', COMPLETION_DISABLED, false, null, coding_exception::class
+                'somenonexistentrule', COMPLETION_DISABLED, 0, null, coding_exception::class
             ],
             'Rule not available' => [
-                'completionentries', COMPLETION_DISABLED, false, null, moodle_exception::class
+                'completionentries', COMPLETION_DISABLED, 0, null, moodle_exception::class
             ],
             'Rule available, user has not created entries' => [
-                'completionentries', COMPLETION_ENABLED, false, COMPLETION_INCOMPLETE, null
+                'completionentries', COMPLETION_ENABLED, 0, COMPLETION_INCOMPLETE, null
             ],
             'Rule available, user has created entries' => [
-                'completionentries', COMPLETION_ENABLED, true, COMPLETION_COMPLETE, null
+                'completionentries', COMPLETION_ENABLED, 2, COMPLETION_COMPLETE, null
             ],
         ];
     }
@@ -74,11 +74,11 @@ class activity_custom_completion_test extends advanced_testcase {
      * @dataProvider get_state_provider
      * @param string $rule The custom completion rule.
      * @param int $available Whether this rule is available.
-     * @param bool $submitted
+     * @param int $entries The number of entries.
      * @param int|null $status Expected status.
      * @param string|null $exception Expected exception.
      */
-    public function test_get_state(string $rule, int $available, ?bool $submitted, ?int $status, ?string $exception) {
+    public function test_get_state(string $rule, int $available, int $entries, ?int $status, ?string $exception) {
         global $DB;
 
         if (!is_null($exception)) {
@@ -110,7 +110,7 @@ class activity_custom_completion_test extends advanced_testcase {
         $DB = $this->createMock(get_class($DB));
         $DB->expects($this->atMost(1))
             ->method('count_records')
-            ->willReturn($submitted);
+            ->willReturn($entries);
 
         $customcompletion = new custom_completion($mockcminfo, 2);
         $this->assertEquals($status, $customcompletion->get_state($rule));
