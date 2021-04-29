@@ -86,7 +86,7 @@ body:not(.editing)  .sitetopic ul.section {
             min-width: 40%;
             display: table-cell;
             padding-right: 4px;
-            min-height: 2em;
+            min-height: 0;
 
             > a {
                 display: inline-block;
@@ -201,7 +201,14 @@ body:not(.editing)  .sitetopic ul.section {
 
 .section .activity.modtype_label.label {
     font-weight: normal;
-    padding: .2em;
+
+    padding-right: 3px;
+    padding-left: 3px;
+
+    p,
+    i {
+        margin-bottom: 0;
+    }
 }
 
 .section li.activity {
