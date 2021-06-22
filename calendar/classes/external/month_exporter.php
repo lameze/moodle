@@ -190,6 +190,10 @@ class month_exporter extends exporter {
                 'type' => PARAM_INT,
                 'default' => 0,
             ],
+            'managesubscriptionsurl' => [
+                'optional' => true,
+                'type' => PARAM_URL,
+            ],
         ];
     }
 
@@ -228,6 +232,18 @@ class month_exporter extends exporter {
             'includenavigation' => $this->includenavigation,
             'initialeventsloaded' => $this->initialeventsloaded,
         ];
+
+        if (calendar_user_can_add_event($this->calendar->course)) {
+            $params = [];
+            if (SITEID !== $this->calendar->course->id) {
+                $params['course'] = $this->calendar->course->id;
+            } else if (null !== $this->calendar->categoryid && $this->calendar->categoryid > 0) {
+                $params['category'] = $this->calendar->categoryid;
+            }
+
+            $managesubscriptionurl = new moodle_url('/calendar/managesubscriptions.php', $params);
+            $return['managesubscriptionsurl'] = $managesubscriptionurl->out(false);
+        }
 
         if ($this->showcoursefilter) {
             $return['filter_selector'] = $this->get_course_filter_selector($output);
