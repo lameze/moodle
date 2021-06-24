@@ -171,6 +171,11 @@ if ($action != 'advanced') {
 
 echo $calendarurl;
 
+// Add a link back to the calendar subscriptions page.
+$subscriptionsurl = new moodle_url('/calendar/managesubscriptions.php');
+$subcscriptionslink = html_writer::link($subscriptionsurl, get_string('calendarsubscriptions', 'calendar'));
+echo html_writer::div($subcscriptionslink, 'mt-3');
+
 echo $renderer->complete_layout();
 
 echo $OUTPUT->footer();
