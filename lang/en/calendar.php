@@ -142,7 +142,6 @@ $string['eventsubscriptioneditwarning'] = 'This calendar event is part of a subs
 $string['expired'] = 'Expired';
 $string['explain_site_timeformat'] = 'You can choose to see times in either 12 or 24 hour format for the whole site. If you choose "default", then the format will be automatically chosen according to the language you use in the site. This setting can be overridden by user preferences.';
 $string['export'] = 'Export';
-$string['exporthelp'] = 'How do I subscribe to this calendar from a calendar application (Google/Outlook/Other)?';
 $string['exportbutton'] = 'Export';
 $string['exportcalendar'] = 'Export calendar';
 $string['forcecalendartype'] = 'Force calendar';
@@ -280,6 +279,7 @@ $string['youcandeleteallrepeats'] = 'This event is part of a repeating event ser
 
 // Deprecated since Moodle 4.0.
 $string['calendarurl'] = 'Calendar URL: {$a}';
+$string['exporthelp'] = 'How do I subscribe to this calendar from a calendar application (Google/Outlook/Other)?';
 
 // Deprecated since Moodle 3.8.
 $string['global'] = 'Global';
