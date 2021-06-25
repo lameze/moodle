@@ -51,6 +51,14 @@ class mod_forum_external_testcase extends externallib_advanced_testcase {
         \mod_forum\subscriptions::reset_forum_cache();
     }
 
+    /**
+     * Get the expected attachment.
+     *
+     * @param stored_file $file
+     * @param array $values
+     * @param moodle_url|null $url
+     * @return array
+     */
     protected function get_expected_attachment(stored_file $file, array $values  = [], ?moodle_url $url = null): array {
         if (!$url) {
             $url = moodle_url::make_pluginfile_url(
@@ -2012,18 +2020,16 @@ class mod_forum_external_testcase extends externallib_advanced_testcase {
         $this->assertEquals(2, $posts['ratinginfo']['ratings'][0]['count']);
         $this->assertEquals(($rating1->rating + $rating2->rating) / 2, $posts['ratinginfo']['ratings'][0]['aggregate']);
 
-        // This block had to be commented because it was showing a debugging message after changing the code to call
-        // the mod_forum_external::get_discussion_posts webservice, this bug is going to be fixed by MDL-70487.
-         // Retrieve the rating for the post as teacher.
-         $this->setUser($teacher);
-         $posts = mod_forum_external::get_discussion_posts($discussion->id, 'id', 'DESC');
-         $posts = external_api::clean_returnvalue(mod_forum_external::get_discussion_posts_returns(), $posts);
-         $this->assertCount(1, $posts['ratinginfo']['ratings']);
-         $this->assertTrue($posts['ratinginfo']['ratings'][0]['canviewaggregate']);
-         $this->assertTrue($posts['ratinginfo']['canviewall']);
-         $this->assertTrue($posts['ratinginfo']['ratings'][0]['canrate']);
-         $this->assertEquals(2, $posts['ratinginfo']['ratings'][0]['count']);
-         $this->assertEquals(($rating1->rating + $rating2->rating) / 2, $posts['ratinginfo']['ratings'][0]['aggregate']);
+        // Retrieve the rating for the post as teacher.
+        $this->setUser($teacher);
+        $posts = mod_forum_external::get_discussion_posts($discussion->id, 'id', 'DESC');
+        $posts = external_api::clean_returnvalue(mod_forum_external::get_discussion_posts_returns(), $posts);
+        $this->assertCount(1, $posts['ratinginfo']['ratings']);
+        $this->assertTrue($posts['ratinginfo']['ratings'][0]['canviewaggregate']);
+        $this->assertTrue($posts['ratinginfo']['canviewall']);
+        $this->assertTrue($posts['ratinginfo']['ratings'][0]['canrate']);
+        $this->assertEquals(2, $posts['ratinginfo']['ratings'][0]['count']);
+        $this->assertEquals(($rating1->rating + $rating2->rating) / 2, $posts['ratinginfo']['ratings'][0]['aggregate']);
     }
 
     /**

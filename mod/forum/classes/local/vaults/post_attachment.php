@@ -95,4 +95,39 @@ class post_attachment {
             return $carry;
         }, $filesbyid);
     }
+
+    /**
+     * Get the inline attachments for the given posts. The results are indexed by
+     * post id.
+     *
+     * @param context $context The (forum) context that the posts are in
+     * @param post_entity[] $posts The list of posts to load attachments for
+     * @return array Post attachments indexed by post id
+     */
+    public function get_inline_attachments_for_posts(context $context, array $posts) {
+        $itemids = array_map(function($post) {
+            return $post->get_id();
+        }, $posts);
+
+        $files = $this->filestorage->get_area_files(
+            $context->id,
+            self::COMPONENT,
+            self::FILE_AREA,
+            $itemids,
+            self::SORT,
+            self::INCLUDE_DIRECTORIES
+        );
+
+        $filesbyid = array_reduce($posts, function($carry, $post) {
+            $carry[$post->get_id()] = [];
+            return $carry;
+        }, []);
+
+        return array_reduce($files, function($carry, $file) {
+            $itemid = $file->get_itemid();
+            $carry[$itemid] = array_merge($carry[$itemid], [$file]);
+            return $carry;
+        }, $filesbyid);
+    }
+
 }
