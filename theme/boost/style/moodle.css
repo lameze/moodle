@@ -12887,7 +12887,10 @@ input[disabled] {
 
 .calendar-controls .current {
   text-align: center;
-  width: 76%; }
+  width: 76%;
+  color: #cc8500;
+  font-size: x-large;
+  font-weight: bold; }
 
 .calendar-controls .next {
   text-align: right;
