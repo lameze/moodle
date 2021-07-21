@@ -80,11 +80,9 @@ if ($courseid != SITEID && !empty($courseid)) {
     // Course ID must be valid and existing.
     $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
     $courses = array($course->id => $course);
-    $issite = false;
 } else {
     $course = get_site();
     $courses = calendar_get_default_courses();
-    $issite = true;
 }
 require_login($course, false);
 
@@ -97,21 +95,18 @@ if ($action !== '') {
 if ($course !== NULL) {
     $url->param('course', $course->id);
 }
+
+navigation_node::override_active_url(new moodle_url('/calendar/view.php', array('view' => 'month')));
+
 $PAGE->set_url($url);
 
 $calendar = new calendar_information(0, 0, 0, $time);
 $calendar->set_sources($course, $courses);
 
 $pagetitle = get_string('export', 'calendar');
-
-// Print title and header
-if ($issite) {
-    $PAGE->navbar->add($course->shortname, new moodle_url('/course/view.php', array('id'=>$course->id)));
-}
-$link = new moodle_url(CALENDAR_URL.'view.php', array('view'=>'upcoming', 'course'=>$calendar->courseid));
-$PAGE->navbar->add(get_string('calendar', 'calendar'), calendar_get_link_href($link, 0, 0, 0, $time));
 $PAGE->navbar->add($pagetitle);
 
+// Print title and header.
 $PAGE->set_title($course->shortname.': '.get_string('calendar', 'calendar').': '.$pagetitle);
 $PAGE->set_heading($course->fullname);
 $PAGE->set_pagelayout('standard');
