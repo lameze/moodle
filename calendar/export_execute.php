@@ -9,6 +9,7 @@ $userid = optional_param('userid', 0, PARAM_INT);
 $username = optional_param('username', '', PARAM_TEXT);
 $authtoken = required_param('authtoken', PARAM_ALPHANUM);
 $generateurl = optional_param('generateurl', '', PARAM_TEXT);
+$courseid = optional_param('course', SITEID, PARAM_INT);
 
 if (empty($CFG->enablecalendarexport)) {
     die('no export');
@@ -30,6 +31,12 @@ $authusername = !empty($username) && $authtoken == sha1($username . $user->passw
 if (!$authuserid && !$authusername) {
     die('Invalid authentication');
 }
+if ($courseid != SITEID) {
+    $context = context_course::instance($courseid);
+} else {
+    $context = context_system::instance();
+}
+$PAGE->set_context($context);
 
 // Get the calendar type we are using.
 $calendartype = \core_calendar\type_factory::get_calendar_instance();
@@ -49,6 +56,7 @@ if (!empty($generateurl)) {
     $params['preset_what'] = $what;
     $params['preset_time'] = $time;
     $params['userid'] = $userid;
+    $params['courseid'] = $courseid;
     $params['authtoken'] = $authtoken;
     $params['generateurl'] = true;
 
