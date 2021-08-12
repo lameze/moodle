@@ -570,6 +570,11 @@ function url_guess_icon($fullurl, $size = null) {
         return null;
     }
 
+    // Ignore all # and ? characters in the URL. It is possible that they appear multiple times.
+    while (preg_match("|^(.*)[#?].*|", $fullurl, $matches)) {
+        $fullurl = $matches[1];
+    }
+
     $icon = file_extension_icon($fullurl, $size);
     $htmlicon = file_extension_icon('.htm', $size);
     $unknownicon = file_extension_icon('', $size);
