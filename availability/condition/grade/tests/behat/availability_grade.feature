@@ -4,6 +4,8 @@ Feature: availability_grade
   As a teacher
   I need to set date conditions which prevent student access
 
+  # this behat is not very well structured, with a single Scenario, lots of steps and more than one Given/When/Then
+  # But I think we should move the assign activity creation to the Background section to keep the Feature more organized.
   Background:
     Given the following "courses" exist:
       | fullname | shortname | format | enablecompletion |
@@ -16,13 +18,6 @@ Feature: availability_grade
       | user     | course | role           |
       | teacher1 | C1     | editingteacher |
       | student1 | C1     | student        |
-
-  @javascript
-  Scenario: Test condition
-    # Basic setup.
-    Given I log in as "teacher1"
-
-    # Add an assignment.
     And the following "activity" exists:
       | activity | assign |
       | course   | C1     |
@@ -31,6 +26,10 @@ Feature: availability_grade
       | intro    | x      |
       | assignsubmission_onlinetext_enabled | 1 |
 
+  @javascript
+  Scenario: Test condition
+    # Basic setup.
+    Given I log in as "teacher1"
     And I am on "Course 1" course homepage with editing mode on
 
     # Add a Page with a grade condition for 'any grade'.

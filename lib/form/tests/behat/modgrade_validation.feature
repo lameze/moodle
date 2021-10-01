@@ -19,6 +19,7 @@ Feature: Using the activity grade form element
 
   Scenario: Being able to change the grade type, scale and maximum grade when there are no grades
     Given I log in as "admin"
+    # Scale being created here (1).
     And I navigate to "Grades > Scales" in site administration
     And I press "Add a new scale"
     And I set the following fields to these values:
@@ -66,6 +67,7 @@ Feature: Using the activity grade form element
   @javascript
   Scenario: Attempting to change the scale when grades already exist in rating activity
     Given I log in as "admin"
+    # Same scale being created again (2).
     And I navigate to "Grades > Scales" in site administration
     And I press "Add a new scale"
     And I set the following fields to these values:
@@ -114,10 +116,12 @@ Feature: Using the activity grade form element
 
   @javascript
   Scenario: Attempting to change the scale when grades already exist in non-rating activity
+    # Scale being created again (3)
     Given the following "scales" exist:
       | name | scale |
       | ABCDEF | F,E,D,C,B,A |
       | Letter scale | Disappointing, Good, Very good, Excellent |
+    # Assign being created (1).
     And the following "activity" exists:
       | activity | assign |
       | course   | C1     |
@@ -177,6 +181,7 @@ Feature: Using the activity grade form element
 
   @javascript
   Scenario: Attempting to change the maximum grade when no rescaling option has been chosen
+    # Another assign being created again (2).
     Given the following "activity" exists:
       | course   | C1               |
       | activity | assign           |

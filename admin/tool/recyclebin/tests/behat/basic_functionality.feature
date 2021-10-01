@@ -3,6 +3,9 @@ Feature: Basic recycle bin functionality
   As a teacher
   I want be able to recover deleted content and manage the recycle bin content
   So that I can fix an accidental deletion and clean the recycle bin
+ # In some cases we can optimize the existing behat feature further.
+ # When the activity is going to be used in more than one Scenario, we can add it to the Background section and then just
+  # use it in the scenarios
 
   Background: Course with teacher exists.
     Given the following "users" exist:
@@ -14,6 +17,10 @@ Feature: Basic recycle bin functionality
       | fullname | shortname |
       | Course 1 | C1 |
       | Course 2 | C2 |
+    And the following "activities" exist:
+      | activity | course | section | name          | intro  |
+      | assign   | C1     | 1       | Test assign 1 | Test 1 |
+      | assign   | C1     | 1       | Test assign 2 | Test 2 |
     And the following "course enrolments" exist:
       | user | course | role |
       | teacher1 | C1 | editingteacher |
@@ -43,23 +50,16 @@ Feature: Basic recycle bin functionality
 
   Scenario: Restore a deleted assignment
     Given I log in as "teacher1"
-    And the following "activity" exists:
-      | activity    | assign                      |
-      | name        | Test assign                 |
-      | intro       | Test                        |
-      | course      | C1                          |
-      | idnumber    | 0001                        |
-      | section     | 1                           |
     And I am on "Course 1" course homepage with editing mode on
-    And I delete "Test assign" activity
+    And I delete "Test assign 1" activity
     When I navigate to "Recycle bin" in current page administration
-    Then I should see "Test assign"
+    Then I should see "Test assign 1"
     And I should see "Contents will be permanently deleted after 7 days"
     And I click on "Restore" "link" in the "region-main" "region"
-    And I should see "'Test assign' has been restored"
+    And I should see "'Test assign 1' has been restored"
     And I wait to be redirected
     And I am on "Course 1" course homepage
-    And I should see "Test assign" in the "Topic 1" "section"
+    And I should see "Test assign 1" in the "Topic 1" "section"
 
   Scenario: Restore a deleted course
     Given I log in as "admin"
@@ -89,32 +89,23 @@ Feature: Basic recycle bin functionality
 
   @javascript
   Scenario: Deleting a single item from the recycle bin
-    Given the following "activity" exists:
-      | activity         | assign       |
-      | course           | C1           |
-      | name             | Test assign  |
-      | intro            | Test         |
-    And I log in as "teacher1"
+    Given I log in as "teacher1"
     And I am on "Course 1" course homepage with editing mode on
-    And I delete "Test assign" activity
+    And I delete "Test assign 1" activity
     And I run all adhoc tasks
     And I navigate to "Recycle bin" in current page administration
     When I click on "Delete" "link"
     Then I should see "Are you sure you want to delete the selected item from the recycle bin?"
     And I click on "Cancel" "button" in the "Confirmation" "dialogue"
-    And I should see "Test assign"
+    And I should see "Test assign 1"
     And I click on "Delete" "link"
     And I press "Yes"
-    And I should see "'Test assign' has been deleted"
+    And I should see "'Test assign 1' has been deleted"
     And I should see "There are no items in the recycle bin."
 
   @javascript
   Scenario: Deleting all the items from the recycle bin
     Given I log in as "teacher1"
-    And the following "activities" exist:
-      | activity | course | section | name | intro |
-      | assign   | C1     | 1       | Test assign 1 | Test 1 |
-      | assign   | C1     | 1       | Test assign 2 | Test 2 |
     And I am on "Course 1" course homepage with editing mode on
     And I delete "Test assign 1" activity
     And I delete "Test assign 2" activity

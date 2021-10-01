@@ -4,20 +4,30 @@ Feature: Award badges
   As an admin
   I need to add criteria to badges in the system
 
-  @javascript
-  Scenario: Award badge on other badges as criteria
-    Given the following "users" exist:
+  Background:
+    Given the following "courses" exist:
+      | fullname | shortname | format | enablecompletion |
+      | Course 1 | C1        | topics | 1                |
+    And the following "users" exist:
       | username | firstname | lastname | email |
       | teacher1 | Teacher | 1 | teacher1@example.com |
       | student1 | Student | 1 | student1@example.com |
-    And the following "courses" exist:
-      | fullname | shortname | category | groupmode |
-      | Course 1 | C1 | 0 | 1 |
+      | student2 | Student | 2 | student2@example.com |
     And the following "course enrolments" exist:
-      | user | course | role |
-      | teacher1 | C1 | editingteacher |
-      | student1 | C1 | student |
-    And I log in as "teacher1"
+      | user     | course | role           |
+      | teacher1 | C1     | editingteacher |
+      | student1 | C1     | student        |
+    And the following "activity" exists:
+      | activity | assign |
+      | course   | C1     |
+      | section  | 1      |
+      | name     | A1     |
+      | intro    | x      |
+      | assignsubmission_onlinetext_enabled | 1 |
+
+  @javascript
+  Scenario: Award badge on other badges as criteria
+    Given I log in as "teacher1"
     And I am on "Course 1" course homepage
     # Create course badge 1.
     And I navigate to "Badges > Add a new badge" in current page administration
@@ -126,11 +136,7 @@ Feature: Award badges
 
   @javascript
   Scenario: Award site badge
-    Given the following "users" exist:
-      | username | firstname | lastname | email |
-      | teacher | teacher | 1 | teacher1@example.com |
-      | student | student | 1 | student1@example.com |
-    And I log in as "admin"
+    Given I log in as "admin"
     And I navigate to "Badges > Add a new badge" in site administration
     And I set the following fields to these values:
       | Name | Site Badge |
@@ -158,20 +164,7 @@ Feature: Award badges
 
   @javascript
   Scenario: Award course badge
-    Given the following "users" exist:
-      | username | firstname | lastname | email |
-      | teacher1 | Teacher | 1 | teacher1@example.com |
-      | student1 | Student | 1 | student1@example.com |
-      | student2 | Student | 2 | student2@example.com |
-    And the following "courses" exist:
-      | fullname | shortname | category | groupmode |
-      | Course 1 | C1 | 0 | 1 |
-    And the following "course enrolments" exist:
-      | user | course | role |
-      | teacher1 | C1 | editingteacher |
-      | student1 | C1 | student |
-      | student2 | C1 | student |
-    And I log in as "teacher1"
+    Given I log in as "teacher1"
     And I am on "Course 1" course homepage
     And I navigate to "Badges > Add a new badge" in current page administration
     And I set the following fields to these values:
@@ -201,25 +194,7 @@ Feature: Award badges
 
   @javascript
   Scenario: Award badge on activity completion
-    Given the following "courses" exist:
-      | fullname | shortname | category | enablecompletion |
-      | Course 1 | C1 | 0 | 1                              |
-    And the following "users" exist:
-      | username | firstname | lastname | email |
-      | teacher1 | Teacher | Frist | teacher1@example.com |
-      | student1 | Student | First | student1@example.com |
-    And the following "course enrolments" exist:
-      | user | course | role |
-      | teacher1 | C1 | editingteacher |
-      | student1 | C1 | student |
-    And the following "activity" exists:
-      | activity | assign |
-      | course   | C1     |
-      | section  | 1      |
-      | name     | Test assignment name |
-      | intro    | Submit your online text |
-      | completion | 1                     |
-    And I log in as "teacher1"
+    Given I log in as "teacher1"
     And I am on "Course 1" course homepage
     And I navigate to "Badges > Add a new badge" in current page administration
     And I set the following fields to these values:
@@ -245,26 +220,7 @@ Feature: Award badges
 
   @javascript
   Scenario: Award badge on course completion
-    Given the following "courses" exist:
-      | fullname | shortname | category | enablecompletion |
-      | Course 1 | C1 | 0 | 1                              |
-    And the following "users" exist:
-      | username | firstname | lastname | email |
-      | teacher1 | Teacher | Frist | teacher1@example.com |
-      | student1 | Student | First | student1@example.com |
-    And the following "course enrolments" exist:
-      | user | course | role |
-      | teacher1 | C1 | editingteacher |
-      | student1 | C1 | student |
-    And the following "activity" exists:
-      | activity | assign |
-      | course   | C1     |
-      | section  | 1      |
-      | name     | Test assignment name |
-      | intro    | Submit your online text |
-      | assignsubmission_onlinetext_enabled | 1 |
-      | completion | 1                          |
-    And I log in as "teacher1"
+    Given I log in as "teacher1"
     And I am on "Course 1" course homepage
     And I navigate to "Course completion" in current page administration
     And I set the field "id_overall_aggregation" to "2"
@@ -304,20 +260,7 @@ Feature: Award badges
 
   @javascript
   Scenario: All of the selected roles can award badges
-    Given the following "users" exist:
-      | username | firstname | lastname | email |
-      | teacher1 | Teacher | 1 | teacher1@example.com |
-      | student1 | Student | 1 | student1@example.com |
-      | student2 | Student | 2 | student2@example.com |
-    And the following "courses" exist:
-      | fullname | shortname | category | groupmode |
-      | Course 1 | C1 | 0 | 1 |
-    And the following "course enrolments" exist:
-      | user | course | role |
-      | teacher1 | C1 | editingteacher |
-      | student1 | C1 | student |
-      | student2 | C1 | student |
-    And I log in as "teacher1"
+    Given I log in as "teacher1"
     And I am on "Course 1" course homepage
     # Create course badge 1.
     And I navigate to "Badges > Add a new badge" in current page administration
@@ -386,20 +329,7 @@ Feature: Award badges
 
   @javascript
   Scenario: Revoke badge
-    Given the following "users" exist:
-      | username | firstname | lastname | email |
-      | teacher1 | Teacher | 1 | teacher1@example.com |
-      | student1 | Student | 1 | student1@example.com |
-      | student2 | Student | 2 | student2@example.com |
-    And the following "courses" exist:
-      | fullname | shortname | category | groupmode |
-      | Course 1 | C1 | 0 | 1 |
-    And the following "course enrolments" exist:
-      | user | course | role |
-      | teacher1 | C1 | editingteacher |
-      | student1 | C1 | student |
-      | student2 | C1 | student |
-    And I log in as "teacher1"
+    Given I log in as "teacher1"
     And I am on "Course 1" course homepage
     And I navigate to "Badges > Add a new badge" in current page administration
     And I set the following fields to these values:
