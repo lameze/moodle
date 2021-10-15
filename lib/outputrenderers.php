@@ -902,8 +902,7 @@ class core_renderer extends renderer_base {
             // $FULLME neither, it is not a bug if it fails. --skodak.
             $output .= '<div class="validators"><ul class="list-unstyled ml-1">
               <li><a href="http://validator.w3.org/check?verbose=1&amp;ss=1&amp;uri=' . urlencode(qualified_me()) . '">Validate HTML</a></li>
-              <li><a href="http://www.contentquality.com/mynewtester/cynthia.exe?rptmode=-1&amp;url1=' . urlencode(qualified_me()) . '">Section 508 Check</a></li>
-              <li><a href="http://www.contentquality.com/mynewtester/cynthia.exe?rptmode=0&amp;warnp2n3e=1&amp;url1=' . urlencode(qualified_me()) . '">WCAG 1 (2,3) Check</a></li>
+              <li><a href="https://wave.webaim.org/report#/' . urlencode(qualified_me()) . '">WCAG 2.x Check</a></li>
             </ul></div>';
         }
         return $output;
