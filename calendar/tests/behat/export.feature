@@ -61,7 +61,7 @@ Feature: Export calendar events
     When I click on "Get calendar URL" "button"
     Then the "value" attribute of "Calendar URL" "field" should contain "&preset_what=categories&"
 
-  Scenario: Generating calendar URL for user events
+  Scenario: Generating calendar URL for personal events
     Given I follow "Full calendar"
     And I click on "Import or export calendars" "link"
     And I click on "Export calendar" "button"

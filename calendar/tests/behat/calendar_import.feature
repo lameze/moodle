@@ -62,7 +62,7 @@ Feature: Import and edit calendar events
       | Type of event  | User |
     And I upload "calendar/tests/fixtures/import.ics" file to "Calendar file (.ics)" filemanager
     And I press "Import calendar"
-    And I should see "User events"
+    And I should see "Personal events"
     And I press "Import calendar"
     And I set the following fields to these values:
       | Calendar name  | Test Import |

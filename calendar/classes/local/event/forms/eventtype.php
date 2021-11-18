@@ -57,7 +57,8 @@ trait eventtype {
         $options = [];
 
         if (!empty($eventtypes['user'])) {
-            $options['user'] = get_string('user', 'calendar');
+            //$options['user'] = get_string('user', 'calendar');
+            $options['user'] = get_string('personal', 'calendar');
         }
         if (!empty($eventtypes['group'])) {
             $options['group'] = get_string('group', 'calendar');

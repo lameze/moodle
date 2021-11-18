@@ -2736,7 +2736,8 @@ function calendar_get_eventtype_choices($courseid) {
     calendar_get_allowed_types($allowed, $courseid);
 
     if ($allowed->user) {
-        $choices['user'] = get_string('userevents', 'calendar');
+        //$choices['user'] = get_string('userevents', 'calendar');
+        $choices['user'] = get_string('personal', 'calendar');
     }
     if ($allowed->site) {
         $choices['site'] = get_string('siteevents', 'calendar');

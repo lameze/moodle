@@ -86,7 +86,7 @@ Feature: Perform basic calendar functionality
     Then I follow "Really awesome event!"
 
   @javascript
-  Scenario: Create a user event
+  Scenario: Create a personal event
     Given I log in as "teacher1"
     And I create a calendar event with form data:
       | Type of event | user |
@@ -217,15 +217,15 @@ Feature: Perform basic calendar functionality
     And "Course 3" "autocomplete_suggestions" should exist
 
   @javascript
-  Scenario: Students can only see user event type by default.
+  Scenario: Students can only see personal event type by default.
     Given I log in as "student1"
     And I am viewing site calendar
     When I click on "New event" "button"
-    Then I should see "User" in the "div#fitem_id_staticeventtype" "css_element"
+    Then I should see "Personal" in the "div#fitem_id_staticeventtype" "css_element"
     And I am on "Course 1" course homepage
     And I follow "Full calendar"
     When I click on "New event" "button"
-    Then I should see "User" in the "div#fitem_id_staticeventtype" "css_element"
+    Then I should see "Personal" in the "div#fitem_id_staticeventtype" "css_element"
     And I click on "Close" "button"
     And I log out
     Given I log in as "admin"
@@ -237,7 +237,7 @@ Feature: Perform basic calendar functionality
     And I am on "Course 1" course homepage
     And I follow "Full calendar"
     When I click on "New event" "button"
-    Then I should see "User" in the "div#fitem_id_staticeventtype" "css_element"
+    Then I should see "Personal" in the "div#fitem_id_staticeventtype" "css_element"
 
   @javascript @accessibility
   Scenario: The calendar page must be accessible
