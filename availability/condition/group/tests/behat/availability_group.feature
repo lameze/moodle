@@ -16,6 +16,11 @@ Feature: availability_group
       | user     | course | role           |
       | teacher1 | C1     | editingteacher |
       | student1 | C1     | student        |
+    And the following "activities" exist:
+      | activity | course | section | name  |
+      | page     | C1     | 1       | P1    |
+      | page     | C1     | 2       | P2    |
+      | page     | C1     | 3       | P3    |
 
   @javascript
   Scenario: Test condition
@@ -24,7 +29,7 @@ Feature: availability_group
     And I am on "Course 1" course homepage with editing mode on
 
     # Start to add a Page. If there aren't any groups, there's no Group option.
-    And I add a "Page" to section "1"
+    And I am on the "P1" "page activity editing" page
     And I expand all fieldsets
     And I click on "Add restriction..." "button"
     Then "Group" "button" should not exist in the "Add restriction..." "dialogue"
@@ -38,7 +43,7 @@ Feature: availability_group
     # This step used to be 'And I follow "C1"', but Chrome thinks the breadcrumb
     # is not clickable, so we'll go via the home page instead.
     And I am on "Course 1" course homepage
-    And I add a "Page" to section "1"
+    And I am on the "P1" "page activity editing" page
     And I expand all fieldsets
     And I click on "Add restriction..." "button"
     Then "Group" "button" should exist in the "Add restriction..." "dialogue"
@@ -47,18 +52,10 @@ Feature: availability_group
     Given I click on "Group" "button" in the "Add restriction..." "dialogue"
     And I set the field "Group" to "(Any group)"
     And I click on ".availability-item .availability-eye img" "css_element"
-    And I set the following fields to these values:
-      | Name         | P1 |
-      | Description  | x  |
-      | Page content | x  |
     And I click on "Save and return to course" "button"
 
     # Page P2 with group G1.
-    And I add a "Page" to section "2"
-    And I set the following fields to these values:
-      | Name         | P2 |
-      | Description  | x  |
-      | Page content | x  |
+    And I am on the "P2" "page activity editing" page
     And I expand all fieldsets
     And I click on "Add restriction..." "button"
     And I click on "Group" "button" in the "Add restriction..." "dialogue"
@@ -67,11 +64,7 @@ Feature: availability_group
     And I click on "Save and return to course" "button"
 
     # Page P3 with group G2
-    And I add a "Page" to section "3"
-    And I set the following fields to these values:
-      | Name         | P3 |
-      | Description  | x  |
-      | Page content | x  |
+    And I am on the "P3" "page activity editing" page
     And I expand all fieldsets
     And I click on "Add restriction..." "button"
     And I click on "Group" "button" in the "Add restriction..." "dialogue"
@@ -115,12 +108,8 @@ Feature: availability_group
     And the "activitynames" filter applies to "content and headings"
     And I am on the "C1" "Course" page logged in as "teacher1"
     And I turn editing mode on
-    And I add a "Page" to section "1"
+    And I am on the "P1" "page activity editing" page
     And I expand all fieldsets
-    And I set the following fields to these values:
-      | Name         | P1 |
-      | Description  | x  |
-      | Page content | x  |
     And I click on "Add restriction..." "button"
     And I click on "Group" "button" in the "Add restriction..." "dialogue"
     And I set the field "Group" to "G-One"

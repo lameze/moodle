@@ -57,7 +57,6 @@ Feature: edit_availability
       | idnumber    | 0002                        |
       | section     | 1                           |
       | name        | Page2                       |
-      | intro       | pageintro                   |
     And I am on "Course 1" course homepage
     And I follow "Page2"
     And I navigate to "Settings" in current page administration
@@ -70,9 +69,14 @@ Feature: edit_availability
   @javascript
   Scenario: Edit availability using settings in activity form
     # Set up.
-    Given I log in as "teacher1"
+    Given the following "activity" exists:
+      | activity | page |
+      | course   | C1   |
+      | section  | 1    |
+      | name     | P1   |
+    And I log in as "teacher1"
     And I am on "Course 1" course homepage with editing mode on
-    And I add a "Page" to section "1"
+    And I am on the "P1" "page activity editing" page
     And I expand all fieldsets
     Then I should see "None" in the "Restrict access" "fieldset"
 

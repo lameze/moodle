@@ -17,13 +17,13 @@ Feature: availability_grade
       | teacher1 | C1     | editingteacher |
       | student1 | C1     | student        |
     # Add an assignment.
-    And the following "activity" exists:
-      | activity                            | assign |
-      | course                              | C1     |
-      | section                             | 1      |
-      | name                                | A1     |
-      | intro                               | x      |
-      | assignsubmission_onlinetext_enabled | 1      |
+    And the following "activities" exist:
+      | activity | course | section | name | assignsubmission_onlinetext_enabled |
+      | assign   | C1     | 1       | A1   | 1                                   |
+      | page     | C1     | 1       | P1   |                                     |
+      | page     | C1     | 2       | P2   |                                     |
+      | page     | C1     | 3       | P3   |                                     |
+      | page     | C1     | 4       | P4   |                                     |
 
   @javascript
   Scenario: Test condition
@@ -32,11 +32,7 @@ Feature: availability_grade
     And I am on "Course 1" course homepage with editing mode on
 
     # Add a Page with a grade condition for 'any grade'.
-    And I add a "Page" to section "2"
-    And I set the following fields to these values:
-      | Name         | P2 |
-      | Description  | x  |
-      | Page content | x  |
+    And I am on the "P2" "page activity editing" page
     And I expand all fieldsets
     And I click on "Add restriction..." "button"
     And I click on "Grade" "button" in the "Add restriction..." "dialogue"
@@ -45,11 +41,7 @@ Feature: availability_grade
     And I press "Save and return to course"
 
     # Add a Page with a grade condition for 50%.
-    And I add a "Page" to section "3"
-    And I set the following fields to these values:
-      | Name         | P3 |
-      | Description  | x  |
-      | Page content | x  |
+    And I am on the "P3" "page activity editing" page
     And I expand all fieldsets
     And I click on "Add restriction..." "button"
     And I click on "Grade" "button" in the "Add restriction..." "dialogue"
@@ -74,11 +66,7 @@ Feature: availability_grade
     And I am on "Course 1" course homepage
 
     # Add a Page with a grade condition for 10%.
-    And I add a "Page" to section "4"
-    And I set the following fields to these values:
-      | Name         | P4 |
-      | Description  | x  |
-      | Page content | x  |
+    And I am on the "P4" "page activity editing" page
     And I expand all fieldsets
     And I click on "Add restriction..." "button"
     And I click on "Grade" "button" in the "Add restriction..." "dialogue"
@@ -143,12 +131,8 @@ Feature: availability_grade
     And the "activitynames" filter applies to "content and headings"
     And I am on the "C1" "Course" page logged in as "teacher1"
     And I turn editing mode on
-    And I add a "Page" to section "1"
+    And I am on the "P1" "page activity editing" page
     And I expand all fieldsets
-    And I set the following fields to these values:
-      | Name         | P1 |
-      | Description  | x  |
-      | Page content | x  |
     And I click on "Add restriction..." "button"
     And I click on "Grade" "button" in the "Add restriction..." "dialogue"
     And I set the field "Grade" to "A-One"

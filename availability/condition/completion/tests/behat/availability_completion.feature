@@ -16,6 +16,10 @@ Feature: availability_completion
       | user     | course | role           |
       | teacher1 | C1     | editingteacher |
       | student1 | C1     | student        |
+    And the following "activities" exist:
+      | activity | course | section | name   | completion |
+      | page     | C1     | 1       | Page 1 | 1          |
+      | page     | C1     | 2       | Page 2 |            |
 
   @javascript
   Scenario: Test condition
@@ -23,19 +27,8 @@ Feature: availability_completion
     Given I log in as "teacher1"
     And I am on "Course 1" course homepage with editing mode on
 
-    # Add a Page with a completion tickbox.
-    And I add a "Page" to section "1" and I fill the form with:
-      | Name                | Page 1 |
-      | Description         | Test   |
-      | Page content        | Test   |
-      | Completion tracking | 1      |
-
     # And another one that depends on it (hidden otherwise).
-    And I add a "Page" to section "2"
-    And I set the following fields to these values:
-      | Name         | Page 2 |
-      | Description  | Test   |
-      | Page content | Test   |
+    And I am on the "Page 2" "page activity editing" page
     And I expand all fieldsets
     And I click on "Add restriction..." "button"
     And I click on "Activity completion" "button" in the "Add restriction..." "dialogue"
@@ -74,11 +67,7 @@ Feature: availability_completion
       | Subject | Forum post 1 |
       | Message | This is the body |
     And I am on "Course 1" course homepage with editing mode on
-    And I add a "Page" to section "2"
-    And I set the following fields to these values:
-      | Name         | Page 2 |
-      | Description  | Test   |
-      | Page content | Test   |
+    And I am on the "Page 2" "page activity editing" page
     And I expand all fieldsets
     And I press "Add restriction..."
     And I click on "Activity completion" "button" in the "Add restriction..." "dialogue"

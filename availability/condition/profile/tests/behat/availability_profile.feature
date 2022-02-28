@@ -16,6 +16,10 @@ Feature: availability_profile
       | user     | course | role           |
       | teacher1 | C1     | editingteacher |
       | student1 | C1     | student        |
+    And the following "activities" exist:
+      | activity | course | section | name |
+      | page     | C1     | 1       | P1   |
+      | page     | C1     | 2       | P2   |
 
   @javascript
   Scenario: Test condition
@@ -24,11 +28,7 @@ Feature: availability_profile
     And I am on "Course 1" course homepage with editing mode on
 
     # Add
-    And I add a "Page" to section "1"
-    And I set the following fields to these values:
-      | Name         | P1 |
-      | Description  | x  |
-      | Page content | x  |
+    And I am on the "P1" "page activity editing" page
     And I expand all fieldsets
     And I click on "Add restriction..." "button"
     And I click on "User profile" "button"
@@ -38,11 +38,7 @@ Feature: availability_profile
     And I click on "Save and return to course" "button"
 
     # Add
-    And I add a "Page" to section "2"
-    And I set the following fields to these values:
-      | Name         | P2 |
-      | Description  | x  |
-      | Page content | x  |
+    And I am on the "P2" "page activity editing" page
     And I expand all fieldsets
     And I click on "Add restriction..." "button"
     And I click on "User profile" "button"
@@ -81,11 +77,7 @@ Feature: availability_profile
 
     # Set Page activity which has requirement on this field.
     And I am on "Course 1" course homepage with editing mode on
-    And I add a "Page" to section "1"
-    And I set the following fields to these values:
-      | Name         | P1 |
-      | Description  | x  |
-      | Page content | x  |
+    And I am on the "P1" "page activity editing" page
     And I expand all fieldsets
     And I click on "Add restriction..." "button"
     And I click on "User profile" "button"
@@ -120,12 +112,8 @@ Feature: availability_profile
     And the "activitynames" filter applies to "content and headings"
     And I am on the "C1" "Course" page logged in as "teacher1"
     And I turn editing mode on
-    And I add a "Page" to section "1"
+    And I am on the "P1" "page activity editing" page
     And I expand all fieldsets
-    And I set the following fields to these values:
-      | Name         | P1 |
-      | Description  | x  |
-      | Page content | x  |
     And I click on "Add restriction..." "button"
     And I click on "User profile" "button" in the "Add restriction..." "dialogue"
     And I set the following fields to these values:

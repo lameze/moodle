@@ -25,14 +25,11 @@ Feature: Confirm that conditions on completion no longer cause a bug
     And I set the field "Enable completion tracking" to "Yes"
     And I press "Save and display"
     And I turn editing mode on
-
     # Add a couple of Pages with manual completion.
-    And I add a "Page" to section "1" and I fill the form with:
-      | Name         | Page1 |
-      | Page content | x     |
-    And I add a "Page" to section "1" and I fill the form with:
-      | Name         | Page2 |
-      | Page content | x     |
+    And the following "activities" exist:
+      | activity | course | section | name  | completion |
+      | page     | C1     | 1       | Page1 | 1          |
+      | page     | C1     | 1       | Page2 | 1          |
 
     # Add a Glossary.
     When I add a "Glossary" to section "1"

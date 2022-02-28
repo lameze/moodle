@@ -22,15 +22,19 @@ Feature: availability_grouping
     And the following "group members" exist:
       | user     | group |
       | student1 | GI1   |
+    # Basic setup.
+    And the following "activities" exist:
+      | activity | course | section | name  |
+      | page     | C1     | 1       | P1    |
+      | page     | C1     | 2       | P2    |
 
   @javascript
   Scenario: Test condition
-    # Basic setup.
     Given I log in as "teacher1"
     And I am on "Course 1" course homepage with editing mode on
 
     # Start to add a Page. If there aren't any groupings, there's no Grouping option.
-    And I add a "Page" to section "1"
+    And I am on the "P1" "page activity editing" page
     And I expand all fieldsets
     And I click on "Add restriction..." "button"
     Then "Grouping" "button" should not exist in the "Add restriction..." "dialogue"
@@ -44,7 +48,7 @@ Feature: availability_grouping
       | name | course | idnumber |
       | GX1  | C1     | GXI1     |
       | GX2  | C1     | GXI2     |
-    And I add a "Page" to section "1"
+    And I am on the "P1" "page activity editing" page
     And I expand all fieldsets
     And I click on "Add restriction..." "button"
     Then "Grouping" "button" should exist in the "Add restriction..." "dialogue"
@@ -53,18 +57,10 @@ Feature: availability_grouping
     Given I click on "Grouping" "button"
     And I set the field "Grouping" to "GX1"
     And I click on ".availability-item .availability-eye img" "css_element"
-    And I set the following fields to these values:
-      | Name         | P1 |
-      | Description  | x  |
-      | Page content | x  |
     And I click on "Save and return to course" "button"
 
     # Page P2 with grouping GX2.
-    And I add a "Page" to section "2"
-    And I set the following fields to these values:
-      | Name         | P2 |
-      | Description  | x  |
-      | Page content | x  |
+    And I am on the "P2" "page activity editing" page
     And I expand all fieldsets
     And I click on "Add restriction..." "button"
     And I click on "Grouping" "button"

@@ -16,15 +16,10 @@ Feature: Restrict sections availability through completion or grade conditions
       | user     | course | role           |
       | teacher1 | C1     | editingteacher |
       | student1 | C1     | student        |
-    And the following "activity" exists:
-      | activity                            | assign                                                               |
-      | course                              | C1                                                                   |
-      | section                             | 1                                                                    |
-      | name                                | Grade assignment                                                     |
-      | intro                               | Grade this assignment to revoke restriction on restricted assignment |
-      | assignsubmission_onlinetext_enabled | 1                                                                    |
-      | assignsubmission_file_enabled       | 0                                                                    |
-      | submissiondrafts                    | 0                                                                    |
+    And the following "activities" exist:
+      | activity | course | section | name             | intro                                                                             | assignsubmission_onlinetext_enabled | assignsubmission_file_enabled | submissiondrafts | content            |
+      | assign   | C1     | 1       | Grade assignment | Grade this assignment to revoke restriction on restricted assignment              | 1                                   | 0                             | 0                |                    |
+      | page     | C1     | 2       | Test page name   | Restricted section page resource, till grades in Grade assignment is at least 20% |                                     |                               |                  | Test page contents |
 
   @javascript
   Scenario: Show section greyed-out to student when completion condition is not satisfied
@@ -37,10 +32,6 @@ Feature: Restrict sections availability through completion or grade conditions
     And the following "activities" exist:
       | activity | course | section | intro      | completion | idnumber |
       | label    | C1     | 1       | Test label | 1          | 1        |
-    And I add a "Page" to section "2" and I fill the form with:
-      | Name | Test page name |
-      | Description | Test page description |
-      | Page content | Test page contents |
     When I edit the section "2"
     And I expand all fieldsets
     And I click on "Add restriction..." "button"
