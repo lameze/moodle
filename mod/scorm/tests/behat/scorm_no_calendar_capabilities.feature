@@ -23,23 +23,15 @@ Feature: Scorm with no calendar capabilites
 
   @javascript @_file_upload @_switch_iframe
   Scenario: Editing a scorm activity without calendar permission
-    Given I log in as "admin"
-    And I am on "Course 1" course homepage with editing mode on
-    When I add a "SCORM package" to section "1"
-    And I set the following fields to these values:
-      | Name | Test scorm name |
-      | Description | Test scorm description |
-      | id_timeopen_enabled | 1 |
-      | id_timeopen_day | 1 |
-      | id_timeopen_month | 1 |
-      | id_timeopen_year | 2017 |
-      | id_timeclose_enabled | 1 |
-      | id_timeclose_day | 1 |
-      | id_timeclose_month | 2 |
-      | id_timeclose_year | 2017 |
-    And I upload "mod/scorm/tests/packages/singlesco_scorm12.zip" file to "Package file" filemanager
-    And I click on "Save and display" "button"
-    And I log out
+    Given the following "activity" exists:
+      | activity        | scorm                                          |
+      | course          | C1                                             |
+      | section         | 1                                              |
+      | name            | Test scorm name                                |
+      | intro           | Test scorm description                         |
+      | timeopen        | ##first day of January 2017##                  |
+      | timeclose       | ##first day of February 2017##                 |
+      | packagefilepath | mod/scorm/tests/packages/singlesco_scorm12.zip |
     When I am on the "Test scorm name" "scorm activity editing" page logged in as teacher1
     And I set the following fields to these values:
       | id_timeopen_year | 2018 |

@@ -17,14 +17,16 @@ Feature: Add scorm activity
       | user | course | role |
       | teacher1 | C1 | editingteacher |
       | student1 | C1 | student |
+    And the following "activity" exists:
+      | activity        | scorm                                          |
+      | course          | C1                                             |
+      | section         | 1                                              |
+      | name            | Awesome SCORM package                          |
+      | intro           | Description                                    |
+      | packagefilepath | mod/scorm/tests/packages/singlesco_scorm12.zip |
     When I log in as "teacher1"
-    And I am on "Course 1" course homepage with editing mode on
-    And I add a "SCORM package" to section "1"
-    And I set the following fields to these values:
-      | Name | Awesome SCORM package |
-      | Description | Description |
-    And I upload "mod/scorm/tests/packages/singlesco_scorm12.zip" file to "Package file" filemanager
-    And I click on "Save and display" "button"
+    And I am on "Course 1" course homepage
+    And I am on the "Awesome SCORM package" "scorm activity" page
     Then I should see "Awesome SCORM package"
     And I should see "Enter"
     And I should see "Preview"
