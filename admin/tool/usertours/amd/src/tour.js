@@ -1251,7 +1251,7 @@ const Tour = class {
         let stepWidth = this.currentStepNode.width();
 
         return {
-            top: Math.ceil((viewportHeight - stepHeight) / 2),
+            top: Math.ceil((viewportHeight - stepHeight) / 7),
             left: Math.ceil((viewportWidth - stepWidth) / 2)
         };
     }
