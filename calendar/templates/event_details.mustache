@@ -56,51 +56,51 @@
         "subscriptionurl": "http://subscriptionurl"
     }
 }}
-<div class="row">
-    <div class="col-1">{{#pix}} i/calendareventtime, core, {{#str}} when, core_calendar {{/str}} {{/pix}}</div>
-    <div class="col-11">{{{formattedtime}}}</div>
+<div class="row" role="row">
+    <div class="col-1" role="rowheader">{{#pix}} i/calendareventtime, core, {{#str}} when, core_calendar {{/str}} {{/pix}}</div>
+    <div class="col-11" role="cell">{{{formattedtime}}}</div>
 </div>
 {{#normalisedeventtypetext}}
-    <div class="row mt-1">
-        <div class="col-1">{{#pix}} i/calendar, core, {{#str}} eventtype, core_calendar {{/str}} {{/pix}}</div>
-        <div class="col-11">{{normalisedeventtypetext}}</div>
+    <div class="row mt-1" role="row">
+        <div class="col-1" role="rowheader">{{#pix}} i/calendar, core, {{#str}} eventtype, core_calendar {{/str}} {{/pix}}</div>
+        <div class="col-11" role="cell">{{normalisedeventtypetext}}</div>
     </div>
 {{/normalisedeventtypetext}}
 {{#description}}
-    <div class="row mt-1">
-        <div class="col-1">{{#pix}} i/calendareventdescription, core, {{#str}} description {{/str}} {{/pix}}</div>
-        <div class="description-content col-11">{{{.}}}</div>
+    <div class="row mt-1" role="row">
+        <div class="col-1" role="rowheader">{{#pix}} i/calendareventdescription, core, {{#str}} description {{/str}} {{/pix}}</div>
+        <div class="description-content col-11" role="cell">{{{.}}}</div>
     </div>
 {{/description}}
 {{#formattedlocation}}
-    <div class="row mt-1">
-        <div class="col-1">{{#pix}} i/location, core, {{#str}} location {{/str}} {{/pix}}</div>
-        <div class="location-content col-11">{{{.}}}</div>
+    <div class="row mt-1" role="row">
+        <div class="col-1" role="rowheader">{{#pix}} i/location, core, {{#str}} location {{/str}} {{/pix}}</div>
+        <div class="location-content col-11" role="cell">{{{.}}}</div>
     </div>
 {{/formattedlocation}}
 {{#iscategoryevent}}
-    <div class="row mt-1">
-        <div class="col-1">{{#pix}} i/categoryevent, core, {{#str}} category {{/str}} {{/pix}}</div>
-        <div class="col-11">{{{category.nestedname}}}</div>
+    <div class="row mt-1" role="row">
+        <div class="col-1" role="rowheader">{{#pix}} i/categoryevent, core, {{#str}} category {{/str}} {{/pix}}</div>
+        <div class="col-11" role="cell">{{{category.nestedname}}}</div>
     </div>
 {{/iscategoryevent}}
 {{#course.viewurl}}
-    <div class="row mt-1">
-        <div class="col-1">{{#pix}} i/courseevent, core, {{#str}} course {{/str}} {{/pix}}</div>
-        <div class="col-11"><a href="{{course.viewurl}}">{{{course.fullname}}}</a></div>
+    <div class="row mt-1" role="row">
+        <div class="col-1" role="rowheader">{{#pix}} i/courseevent, core, {{#str}} course {{/str}} {{/pix}}</div>
+        <div class="col-11" role="cell"><a href="{{course.viewurl}}">{{{course.fullname}}}</a></div>
     </div>
 {{/course.viewurl}}
 {{#groupname}}
-    <div class="row mt-1">
-        <div class="col-1">{{#pix}} i/groupevent, core, {{#str}} group {{/str}} {{/pix}}</div>
-        <div class="col-11">{{{groupname}}}</div>
+    <div class="row mt-1" role="row">
+        <div class="col-1" role="rowheader">{{#pix}} i/groupevent, core, {{#str}} group {{/str}} {{/pix}}</div>
+        <div class="col-11" role="cell">{{{groupname}}}</div>
     </div>
 {{/groupname}}
 {{#subscription}}
     {{#displayeventsource}}
-        <div class="row mt-1">
-            <div class="col-1">{{#pix}} i/rss, core, {{#str}} eventsource, core_calendar {{/str}} {{/pix}}</div>
-            <div class="col-11">
+        <div class="row mt-1" role="row">
+            <div class="col-1" role="rowheader">{{#pix}} i/rss, core, {{#str}} eventsource, core_calendar {{/str}} {{/pix}}</div>
+            <div class="col-11" role="cell">
                 {{#subscriptionurl}}
                     <p><a href="{{subscriptionurl}}">{{#str}}subscriptionsource, core_calendar, {{{subscriptionname}}}{{/str}}</a></p>
                 {{/subscriptionurl}}
