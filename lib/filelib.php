@@ -4508,140 +4508,81 @@ function file_pluginfile($relativepath, $forcedownload, $preview = null, $offlin
         }
     // ========================================================================================================================
     } else if ($component === 'calendar') {
-        if ($filearea === 'event_description'  and $context->contextlevel == CONTEXT_SYSTEM) {
+        if ($filearea === 'event_description') {
 
             // All events here are public the one requirement is that we respect forcelogin
             if ($CFG->forcelogin) {
                 require_login();
             }
 
-            // Get the event if from the args array
+            // Get the event id
             $eventid = array_shift($args);
+
+            // By default the file should expire after 3600 secs.
+            $filelifetime = HOURSECS;
+
+            $params = [];
+            $params['id'] = $eventid;
+            if ($context->contextlevel == CONTEXT_SYSTEM) {
+                $params = array_merge(['eventtype' => 'site']);
+            } else if ($context->contextlevel == CONTEXT_USER) {
+                // Must be logged in, if they are not then they obviously can't be this user
+                require_login();
+
+                // Don't want guests here, potentially saves a DB call
+                if (isguestuser()) {
+                    send_file_not_found();
+                }
+
+                $filelifetime = 0;
+                $params = array_merge(['eventtype' => 'user', 'userid' => $USER->id]);
+            } else if ($context->contextlevel == CONTEXT_COURSECAT) {
+                // Get category, this will also validate access.
+                $category = core_course_category::get($context->instanceid);
+
+                $params = array_merge(['eventtype' => 'category', 'categoryid' => $category->id]);
+            } else if ($context->contextlevel == CONTEXT_COURSE) {
+                if ($course->id != SITEID) {
+                    require_login($course);
+                }
+
+                // Must be able to at least view the course. This does not apply to the front page.
+                if ($course->id != SITEID && (!is_enrolled($context)) && (!is_viewing($context))) {
+                    send_file_not_found();
+                }
+
+                $params = array_merge(['id' => (int)$eventid, 'courseid' => $course->id]);
+            }
 
             // Load the event from the database
-            if (!$event = $DB->get_record('event', array('id'=>(int)$eventid, 'eventtype'=>'site'))) {
+            if (!$event = $DB->get_record('event', $params)) {
                 send_file_not_found();
             }
 
-            // Get the file and serve if successful
+            // If it is a group event require either membership of view all groups capability.
+            if ($context->contextlevel == CONTEXT_COURSE){
+                if ($event->eventtype === 'group') {
+                    if (!has_capability('moodle/site:accessallgroups', $context) && !groups_is_member($event->groupid, $USER->id)) {
+                        send_file_not_found();
+                    }
+                } else if ($event->eventtype === 'course' || $event->eventtype === 'site') {
+                    // Ok. Please note that the event type 'site' still uses a course context.
+                } else {
+                    // Some other type.
+                    send_file_not_found();
+                }
+            }
+
+            // If we get this far we can serve the file.
             $filename = array_pop($args);
-            $filepath = $args ? '/'.implode('/', $args).'/' : '/';
+            $filepath = $args ? '/' . implode('/', $args) . '/' : '/';
             if (!$file = $fs->get_file($context->id, $component, $filearea, $eventid, $filepath, $filename) or $file->is_directory()) {
-                send_file_not_found();
-            }
-
-            \core\session\manager::write_close(); // Unlock session during file serving.
-            send_stored_file($file, 60*60, 0, $forcedownload, $sendfileoptions);
-
-        } else if ($filearea === 'event_description' and $context->contextlevel == CONTEXT_USER) {
-
-            // Must be logged in, if they are not then they obviously can't be this user
-            require_login();
-
-            // Don't want guests here, potentially saves a DB call
-            if (isguestuser()) {
-                send_file_not_found();
-            }
-
-            // Get the event if from the args array
-            $eventid = array_shift($args);
-
-            // Load the event from the database - user id must match
-            if (!$event = $DB->get_record('event', array('id'=>(int)$eventid, 'userid'=>$USER->id, 'eventtype'=>'user'))) {
-                send_file_not_found();
-            }
-
-            // Get the file and serve if successful
-            $filename = array_pop($args);
-            $filepath = $args ? '/'.implode('/', $args).'/' : '/';
-            if (!$file = $fs->get_file($context->id, $component, $filearea, $eventid, $filepath, $filename) or $file->is_directory()) {
-                send_file_not_found();
-            }
-
-            \core\session\manager::write_close(); // Unlock session during file serving.
-            send_stored_file($file, 0, 0, true, $sendfileoptions);
-
-        } else if ($filearea === 'event_description' and $context->contextlevel == CONTEXT_COURSECAT) {
-
-            if ($CFG->forcelogin) {
-                require_login();
-            }
-
-            // Get category, this will also validate access.
-            $category = core_course_category::get($context->instanceid);
-
-            // Get the event ID from the args array, load event.
-            $eventid = array_shift($args);
-            $event = $DB->get_record('event', [
-                'id' => (int) $eventid,
-                'eventtype' => 'category',
-                'categoryid' => $category->id,
-            ]);
-
-            if (!$event) {
-                send_file_not_found();
-            }
-
-            // Retrieve file from storage, and serve.
-            $filename = array_pop($args);
-            $filepath = $args ? '/' . implode('/', $args) .'/' : '/';
-            if (!$file = $fs->get_file($context->id, $component, $filearea, $eventid, $filepath, $filename) or
-                    $file->is_directory()) {
-
                 send_file_not_found();
             }
 
             // Unlock session during file serving.
             \core\session\manager::write_close();
-            send_stored_file($file, HOURSECS, 0, $forcedownload, $sendfileoptions);
-
-        } else if ($filearea === 'event_description' and $context->contextlevel == CONTEXT_COURSE) {
-
-            // Respect forcelogin and require login unless this is the site.... it probably
-            // should NEVER be the site
-            if ($CFG->forcelogin || $course->id != SITEID) {
-                require_login($course);
-            }
-
-            // Must be able to at least view the course. This does not apply to the front page.
-            if ($course->id != SITEID && (!is_enrolled($context)) && (!is_viewing($context))) {
-                //TODO: hmm, do we really want to block guests here?
-                send_file_not_found();
-            }
-
-            // Get the event id
-            $eventid = array_shift($args);
-
-            // Load the event from the database we need to check whether it is
-            // a) valid course event
-            // b) a group event
-            // Group events use the course context (there is no group context)
-            if (!$event = $DB->get_record('event', array('id'=>(int)$eventid, 'courseid'=>$course->id))) {
-                send_file_not_found();
-            }
-
-            // If its a group event require either membership of view all groups capability
-            if ($event->eventtype === 'group') {
-                if (!has_capability('moodle/site:accessallgroups', $context) && !groups_is_member($event->groupid, $USER->id)) {
-                    send_file_not_found();
-                }
-            } else if ($event->eventtype === 'course' || $event->eventtype === 'site') {
-                // Ok. Please note that the event type 'site' still uses a course context.
-            } else {
-                // Some other type.
-                send_file_not_found();
-            }
-
-            // If we get this far we can serve the file
-            $filename = array_pop($args);
-            $filepath = $args ? '/'.implode('/', $args).'/' : '/';
-            if (!$file = $fs->get_file($context->id, $component, $filearea, $eventid, $filepath, $filename) or $file->is_directory()) {
-                send_file_not_found();
-            }
-
-            \core\session\manager::write_close(); // Unlock session during file serving.
-            send_stored_file($file, 60*60, 0, $forcedownload, $sendfileoptions);
-
+            send_stored_file($file, $filelifetime, 0, $forcedownload, $sendfileoptions);
         } else {
             send_file_not_found();
         }
