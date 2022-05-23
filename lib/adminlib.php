@@ -10764,7 +10764,7 @@ class admin_setting_configstoredfile extends admin_setting {
     }
 
     public function output_html($data, $query = '') {
-        global $PAGE, $CFG;
+        global $PAGE, $CFG, $OUTPUT;
 
         $options = $this->get_options();
         $id = $this->get_id();
@@ -10789,21 +10789,10 @@ class admin_setting_configstoredfile extends admin_setting {
         $fmoptions->context        = $options['context'];
         $fmoptions->areamaxbytes   = $options['areamaxbytes'];
 
-        $fm = new form_filemanager($fmoptions);
-        $output = $PAGE->get_renderer('core', 'files');
-        $html = $output->render($fm);
-
-        $html .= '<input value="'.$draftitemid.'" name="'.$elname.'" type="hidden" />';
-        $html .= '<input value="" id="'.$id.'" type="hidden" />';
-
-        if (!empty($fmoptions->accepted_types) && $fmoptions->accepted_types != '*') {
-            $html .= html_writer::tag('p', get_string('filesofthesetypes', 'form'));
-            $html .= $output->render_from_template('core_form/filetypes-descriptions',
-                (new \core_form\filetypes_util())->describe_file_types($fmoptions->accepted_types));
-        }
+        $fm = new MoodleQuickForm_filemanager($elname, $this->visiblename, ['id' => $draftitemid], $fmoptions);
 
         return format_admin_setting($this, $this->visiblename,
-            '<div class="form-filemanager" data-fieldtype="filemanager">'.$html.'</div>',
+            '<div class="form-filemanager" data-fieldtype="filemanager">'.$fm->toHtml().'</div>',
             $this->description, true, '', '', $query);
     }
 }
