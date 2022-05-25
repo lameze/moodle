@@ -49,6 +49,11 @@ class mod_resource_generator extends testing_module_generator {
     public function create_instance($record = null, array $options = null) {
         global $CFG, $USER;
         require_once($CFG->dirroot . '/lib/resourcelib.php');
+
+        if (empty($USER->username) || $USER->username === 'guest') {
+            throw new coding_exception('resource generator requires a current user');
+        }
+
         // Ensure the record can be modified without affecting calling code.
         $record = (object)(array)$record;
 
@@ -66,25 +71,18 @@ class mod_resource_generator extends testing_module_generator {
             $record->showtype = 0;
         }
 
-        // The 'files' value corresponds to the draft file area ID. If not
-        // specified, create a default file.
         if (!isset($record->files)) {
-            if (empty($USER->username) || $USER->username === 'guest') {
-                throw new coding_exception('resource generator requires a current user');
-            }
-            $usercontext = context_user::instance($USER->id);
-            $filename = $record->defaultfilename ?? 'resource' . ($this->instancecount + 1) . '.txt';
-
-            // Pick a random context id for specified user.
             $record->files = file_get_unused_draft_itemid();
-
-            // Add actual file there.
-            $filerecord = array('component' => 'user', 'filearea' => 'draft',
-                    'contextid' => $usercontext->id, 'itemid' => $record->files,
-                    'filename' => $filename, 'filepath' => '/');
-            $fs = get_file_storage();
-            $fs->create_file_from_string($filerecord, 'Test resource ' . $filename . ' file');
         }
+
+        $usercontext = context_user::instance($USER->id);
+        $filename = $record->defaultfilename ?? 'resource' . ($this->instancecount + 1) . '.txt';
+
+        // Add actual file there.
+        $filerecord = ['component' => 'user', 'filearea' => 'draft', 'contextid' => $usercontext->id,
+            'itemid' => $record->files, 'filename' => $filename, 'filepath' => '/'];
+        $fs = get_file_storage();
+        $fs->create_file_from_string($filerecord, 'Test resource ' . $filename . ' file');
 
         // Do work to actually add the instance.
         return parent::create_instance($record, (array)$options);
