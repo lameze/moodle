@@ -347,6 +347,10 @@ function groups_get_user_groups($courseid, $userid=0) {
         $userid = $USER->id;
     }
 
+    if (empty($courseid)) {
+        $courseid = null;
+    }
+
     $cache = cache::make('core', 'user_group_groupings');
 
     // Try to retrieve group ids from the cache.
@@ -390,8 +394,11 @@ function groups_get_user_groups($courseid, $userid=0) {
         $cache->set($userid, $usergroups);
     }
 
-    if (array_key_exists($courseid, $usergroups)) {
+    if (!empty($courseid) && array_key_exists($courseid, $usergroups)) {
         return $usergroups[$courseid];
+    } else if (is_null($courseid)) {
+       // If the course id is null, return the user groups from all courses.
+       return $usergroups;
     } else {
         return array('0' => array());
     }
