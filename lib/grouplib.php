@@ -340,15 +340,11 @@ function groups_get_my_groups() {
  * @param int $userid $USER if not specified
  * @return array Array[groupingid][groupid] including grouping id 0 which means all groups
  */
-function groups_get_user_groups($courseid, $userid=0) {
+function groups_get_user_groups(?int $courseid, int $userid = 0) {
     global $USER, $DB;
 
     if (empty($userid)) {
         $userid = $USER->id;
-    }
-
-    if (empty($courseid)) {
-        $courseid = null;
     }
 
     $cache = cache::make('core', 'user_group_groupings');
@@ -394,11 +390,16 @@ function groups_get_user_groups($courseid, $userid=0) {
         $cache->set($userid, $usergroups);
     }
 
-    if (!empty($courseid) && array_key_exists($courseid, $usergroups)) {
-        return $usergroups[$courseid];
-    } else if (is_null($courseid)) {
-       // If the course id is null, return the user groups from all courses.
-       return $usergroups;
+    if (!empty($usergroups)) {
+        if (array_key_exists($courseid, $usergroups)) {
+            // Returns user groups from a specific course.
+            return $usergroups[$courseid];
+        } else if (is_null($courseid)) {
+            // If the course id is null, return the user groups from all courses.
+            return $usergroups;
+        } else {
+            return array('0' => array());
+        }
     } else {
         return array('0' => array());
     }

@@ -4883,13 +4883,15 @@ function get_complete_user_data($field, $value, $mnethostid = null, $throwexcept
         }
     }
 
+    // This is a special hack to speedup calendar display.
     $user->groupmember = [];
     if (!isguestuser($user)) {
-        $groups = groups_get_user_groups(null, $user->id);
-        foreach ($groups as $courseid => $group) {
-            $groupdata = $group[0];
-            foreach ($groupdata as $groupid) {
-                $user->groupmember[$courseid][$groupid] = $groupid;
+        if ($groups = groups_get_user_groups(null, $user->id)) {
+            foreach ($groups as $courseid => $group) {
+                $groupdata = $group[0];
+                foreach ($groupdata as $groupid) {
+                    $user->groupmember[$courseid][$groupid] = $groupid;
+                }
             }
         }
     }
