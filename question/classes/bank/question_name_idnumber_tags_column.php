@@ -40,18 +40,16 @@ class question_name_idnumber_tags_column extends question_name_column {
     protected function display_content($question, $rowclasses) {
         global $OUTPUT;
 
-        $layoutclasses = 'd-inline-flex flex-nowrap overflow-hidden w-100';
+        echo \html_writer::start_tag('div', ['class' => 'd-inline-flex flex-nowrap overflow-hidden w-100']);
+
+        $questionname = format_string($question->name);
         $labelfor = $this->label_for($question);
         if ($labelfor) {
-            echo '<label for="' . $labelfor . '" class="' . $layoutclasses . '">';
-            $closetag = '</label>';
+            echo \html_writer::label($questionname, $labelfor);
         } else {
-            echo '<span class="' . $layoutclasses . '">';
-            $closetag = '</span>';
+            // Question name.
+            echo \html_writer::span($questionname, 'questionname flex-grow-1 flex-shrink-1 text-truncate');
         }
-
-        // Question name.
-        echo \html_writer::span(format_string($question->name), 'questionname flex-grow-1 flex-shrink-1 text-truncate');
 
         // Question idnumber.
         if ($question->idnumber !== null && $question->idnumber !== '') {
@@ -66,7 +64,7 @@ class question_name_idnumber_tags_column extends question_name_column {
             echo $OUTPUT->tag_list($tags, null, 'd-inline flex-shrink-1 text-truncate ml-1', 0, null, true);
         }
 
-        echo $closetag; // Computed above to ensure it matches.
+        echo \html_writer::end_tag('div');
     }
 
     public function get_required_fields() {
