@@ -14292,6 +14292,8 @@ span.editinstructions {
   .coursebox .info {
     display: flex;
     align-items: center; }
+  .coursebox .moreinfo .icon {
+    margin-right: 0; }
 
 #frontpage-available-course-list,
 #frontpage-course-list,
@@ -14309,7 +14311,6 @@ span.editinstructions {
 #frontpage-category-names .coursebox > .info > .coursename a,
 #frontpage-category-combo .coursebox > .info > .coursename a {
   display: block;
-  background-image: url([[pix:moodle|i/course]]);
   background-repeat: no-repeat;
   padding-left: 21px;
   background-position: left 0.2em; }
@@ -14368,19 +14369,6 @@ span.editinstructions {
   font-weight: normal;
   padding: 2px 18px; }
 
-.course_category_tree .category.with_children > .info > .categoryname {
-  background-image: url([[pix:moodle|t/expanded]]);
-  background-repeat: no-repeat;
-  background-position: center left; }
-
-.course_category_tree .category.with_children.collapsed > .info > .categoryname {
-  background-image: url([[pix:moodle|t/collapsed]]); }
-
-/* rtl:raw:
-.course_category_tree .category.with_children.collapsed > .info > .categoryname {
-    background-image:url([[pix:moodle|t/collapsed_rtl]]);
-}
-*/
 .course_category_tree .category.collapsed > .content {
   display: none; }
 

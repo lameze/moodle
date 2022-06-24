@@ -1074,6 +1074,7 @@ class core_course_renderer extends plugin_renderer_base {
             $nametag = 'div';
         }
         $coursename = $chelper->get_course_formatted_name($course);
+        $coursename = $this->output->pix_icon('i/course', '') . " " . $coursename;
         $coursenamelink = html_writer::link(new moodle_url('/course/view.php', ['id' => $course->id]),
             $coursename, ['class' => $course->visible ? 'aalink' : 'aalink dimmed']);
         $content .= html_writer::tag($nametag, $coursenamelink, ['class' => 'coursename']);
@@ -1576,11 +1577,24 @@ class core_course_renderer extends plugin_renderer_base {
             'data-type' => self::COURSECAT_TYPE_CATEGORY,
         ));
 
+        // Set expanded/collapsed icon based on the rtl status.
+        $iscollapsed = in_array('collapsed', $classes);
+        $rtlstatus = right_to_left();
+        if($rtlstatus && $iscollapsed) {
+            $iconclassname = "t/collapsed_rtl";
+        } else if (!$rtlstatus && $iscollapsed) {
+            $iconclassname = "t/collapsed";
+        } else {
+            $iconclassname = "t/expanded";
+        }
+        $icon = $this->output->pix_icon($iconclassname, '');
+        $categoryname = html_writer::tag('span', $icon, ['id' => "expand-collapse-$coursecat->id"]);
+
         // category name
-        $categoryname = $coursecat->get_formatted_name();
-        $categoryname = html_writer::link(new moodle_url('/course/index.php',
+        $categoryname .= html_writer::link(new moodle_url('/course/index.php',
                 array('categoryid' => $coursecat->id)),
-                $categoryname);
+                $coursecat->get_formatted_name());
+
         if ($chelper->get_show_courses() == self::COURSECAT_SHOW_COURSES_COUNT
                 && ($coursescount = $coursecat->get_courses_count())) {
             $categoryname .= html_writer::tag('span', ' ('. $coursescount.')',

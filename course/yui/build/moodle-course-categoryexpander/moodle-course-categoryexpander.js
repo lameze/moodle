@@ -195,6 +195,21 @@ NS._toggle_coursebox_expansion = function(e) {
     });
 };
 
+NS._set_expand_collapse_icon = function(categorynode) {
+    var categoryid = categorynode.getData('categoryid'),
+        icon = (right_to_left() == true) ? 't/collapsed_rtl' : 't/collapsed',
+        iconwrapper = document.getElementById("expand-collapse-" + categoryid);
+    if (categorynode.hasClass('collapsed')) {
+        icon = 't/expanded';
+    }
+
+    window.require(['core/templates'], function(Templates) {
+        Templates.renderPix(icon, 'core').then(function(html) {
+            iconwrapper.innerHTML = html;
+        });
+    });
+};
+
 NS._toggle_category_expansion = function(e) {
     var categorynode,
         categoryid,
@@ -212,6 +227,8 @@ NS._toggle_category_expansion = function(e) {
         // Nothing to do here - this category has no children.
         return;
     }
+
+    this._set_expand_collapse_icon(categorynode);
 
     if (categorynode.hasClass(CSS.LOADED)) {
         // We've already loaded this content so we just need to toggle the view of it.
@@ -365,6 +382,8 @@ NS.expand_all = function(ancestor) {
 
     ancestor.all(SELECTORS.CATEGORYWITHCOLLAPSEDCHILDREN)
         .each(function(c) {
+        this._set_expand_collapse_icon(c);
+
         if (c.ancestor(SELECTORS.CATEGORYWITHCOLLAPSEDCHILDREN)) {
             // Expand the hidden children first without animation.
             c.removeClass(CSS.SECTIONCOLLAPSED);
@@ -386,6 +405,8 @@ NS.collapse_all = function(ancestor) {
 
     ancestor.all(SELECTORS.CATEGORYWITHMAXIMISEDLOADEDCHILDREN)
         .each(function(c) {
+        this._set_expand_collapse_icon(c);
+
         if (c.ancestor(SELECTORS.CATEGORYWITHMAXIMISEDLOADEDCHILDREN)) {
             finalcollapses.push(c);
         } else {
