@@ -20,9 +20,7 @@ Feature: Add scorm activity
     And the following "activity" exists:
       | activity        | scorm                                          |
       | course          | C1                                             |
-      | section         | 1                                              |
       | name            | Awesome SCORM package                          |
-      | intro           | Description                                    |
       | packagefilepath | mod/scorm/tests/packages/singlesco_scorm12.zip |
     When I log in as "teacher1"
     And I am on "Course 1" course homepage

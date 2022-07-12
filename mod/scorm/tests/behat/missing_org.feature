@@ -17,9 +17,7 @@ Feature: Check a SCORM package with missing Organisational structure.
     And the following "activity" exists:
       | activity        | scorm                                                  |
       | course          | C1                                                     |
-      | section         | 1                                                      |
       | name            | MissingOrg SCORM package                               |
-      | intro           | Description                                            |
       | idnumber        | Missingorg                                             |
       | packagefilepath | mod/scorm/tests/packages/singlescobasic_missingorg.zip |
     When I log in as "teacher1"

@@ -14,13 +14,13 @@ Feature: Scorm multi-sco review mode.
       | teacher1 | C1 | editingteacher |
       | student1 | C1 | student |
     And the following "activities" exist:
-      | activity | course | section | name                           | intro       | packagefilepath                                               | forcenewattempt | skipview |
-      | scorm    | C1     | 1       | Basic Multi-sco SCORM package  | Description | mod/scorm/tests/packages/RuntimeMinimumCalls_SCORM12.zip      | 0               |          |
-      | scorm    | C1     | 1       | ADV Multi-sco SCORM package    | Description | mod/scorm/tests/packages/RuntimeMinimumCalls_SCORM12.zip      | 0               |          |
-      | scorm    | C1     | 1       | Basic Multi-sco SCORM package2 | Description | mod/scorm/tests/packages/RuntimeMinimumCalls_SCORM12-mini.zip | 2               |          |
-      | scorm    | C1     | 1       | Basic Multi-sco SCORM package3 | Description | mod/scorm/tests/packages/RuntimeMinimumCalls_SCORM12-mini.zip | 1               |          |
-      | scorm    | C1     | 1       | Basic Multi-sco SCORM package4 | Description | mod/scorm/tests/packages/RuntimeMinimumCalls_SCORM12-mini.zip | 2               | 2        |
-      | scorm    | C1     | 1       | Basic Multi-sco SCORM package5 | Description | mod/scorm/tests/packages/RuntimeMinimumCalls_SCORM12-mini.zip | 1               | 2        |
+      | activity | course | name                           | packagefilepath                                               | forcenewattempt | skipview |
+      | scorm    | C1     | Basic Multi-sco SCORM package  | mod/scorm/tests/packages/RuntimeMinimumCalls_SCORM12.zip      | 0               |          |
+      | scorm    | C1     | ADV Multi-sco SCORM package    | mod/scorm/tests/packages/RuntimeMinimumCalls_SCORM12.zip      | 0               |          |
+      | scorm    | C1     | Basic Multi-sco SCORM package2 | mod/scorm/tests/packages/RuntimeMinimumCalls_SCORM12-mini.zip | 2               |          |
+      | scorm    | C1     | Basic Multi-sco SCORM package3 | mod/scorm/tests/packages/RuntimeMinimumCalls_SCORM12-mini.zip | 1               |          |
+      | scorm    | C1     | Basic Multi-sco SCORM package4 | mod/scorm/tests/packages/RuntimeMinimumCalls_SCORM12-mini.zip | 2               | 2        |
+      | scorm    | C1     | Basic Multi-sco SCORM package5 | mod/scorm/tests/packages/RuntimeMinimumCalls_SCORM12-mini.zip | 1               | 2        |
 
   @javascript
   Scenario: Test review mode with a single sco completion.
