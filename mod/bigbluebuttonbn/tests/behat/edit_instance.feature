@@ -1,6 +1,8 @@
 @mod @mod_bigbluebuttonbn @javascript
 Feature: I can edit a bigbluebutton instance
-When a bibluebutton instance has been created I can edit it
+  In order to edit a room activity with recordings
+  As a user
+  I need to add three room activities to an existent course
 
   Background:  Make sure that a course is created
     Given a BigBlueButton mock server is configured
