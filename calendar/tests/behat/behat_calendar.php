@@ -160,4 +160,19 @@ class behat_calendar extends behat_base {
         $url = new moodle_url('/calendar/view.php', ['view' => 'month']);
         $this->execute('behat_general::i_visit', [$url]);
     }
+
+    /**
+     * Navigate to a course calendar.
+     *
+     * @Given /^I am viewing "(?P<calendarview_string>(?:[^"]|\\")*)" view on "(?P<coursefullname_string>(?:[^"]|\\")*)" course calendar$/
+     * @throws coding_exception
+     * @return void
+     */
+    public function i_am_viewing_view_on_course_calendar(string $calendarview, string $coursefullname): void {
+        global $DB;
+
+        $course = $DB->get_record('course', ['fullname' => $coursefullname], 'id', MUST_EXIST);
+        $url = new moodle_url('/calendar/view.php', ['view' => $calendarview, 'course' => $course->id]);
+        $this->execute('behat_general::i_visit', [$url]);
+    }
 }
