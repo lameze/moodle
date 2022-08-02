@@ -283,9 +283,7 @@ Feature: Perform basic calendar functionality
     Given I log in as "admin"
     And the following config values are set as admin:
       | calendar_adminseesall | 0 |
-    And I am on "Course 4" course homepage with editing mode on
-    And I add the "Upcoming events" block
-    And I click on "Go to calendar..." "link" in the "Upcoming events" "block"
+    And I am viewing "upcoming" view on "Course 4" course calendar
     And I click on "New event" "button"
     And I should see "Course" in the "Type of event" "select"
     And "Course 4" "autocomplete_selection" should exist
