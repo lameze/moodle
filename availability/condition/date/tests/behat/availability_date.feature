@@ -17,18 +17,14 @@ Feature: availability_date
       | teacher1 | C1     | editingteacher |
       | student1 | C1     | student        |
     And the following "activities" exist:
-      | activity | course | section | name   |
-      | page     | C1     | 1       | Page 1 |
-      | page     | C1     | 2       | Page 2 |
+      | activity | course | name   |
+      | page     | C1     | Page 1 |
+      | page     | C1     | Page 2 |
 
   @javascript
   Scenario: Test condition
-    # Basic setup.
-    Given I log in as "teacher1"
-    And I am on "Course 1" course homepage with editing mode on
-
     # Add a Page with a date condition that does match (from the past).
-    And I am on the "Page 1" "page activity editing" page
+    Given I am on the "Page 1" "page activity editing" page logged in as "teacher1"
     And I expand all fieldsets
     And I click on "Add restriction..." "button"
     And I click on "Date" "button" in the "Add restriction..." "dialogue"
@@ -47,10 +43,8 @@ Feature: availability_date
     And I press "Save and return to course"
 
     # Log back in as student.
-    When I log out
-    And I log in as "student1"
-    And I am on "Course 1" course homepage
+    When I am on the "Course 1" "course" page logged in as "student1"
 
-    # Page 1 should appear, but page 2 does not.
+      # Page 1 should appear, but page 2 does not.
     Then I should see "Page 1" in the "region-main" "region"
     And I should not see "Page 2" in the "region-main" "region"

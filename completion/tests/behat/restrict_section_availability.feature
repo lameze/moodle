@@ -40,9 +40,7 @@ Feature: Restrict sections availability through completion or grade conditions
       | cm | Test label |
       | Required completion status | must be marked complete |
     And I press "Save changes"
-    And I log out
-    And I log in as "student1"
-    And I am on "Course 1" course homepage
+    And I am on the "Course 1" course page logged in as "student1"
     Then I should see "Not available unless: The activity Test label is marked complete"
     And I should not see "Test page name"
     And I toggle the manual completion state of "Test label"
@@ -66,9 +64,7 @@ Feature: Restrict sections availability through completion or grade conditions
       | min    | 1                |
       | minval | 20               |
     And I press "Save changes"
-    And I log out
-    When I log in as "student1"
-    And I am on "Course 1" course homepage
+    When I am on the "Course 1" course page logged in as "student1"
     Then I should see "Not available unless: You achieve a required score in Grade assignment"
     And "Test page name" activity should be hidden
     And I am on the "Grade assignment" "assign activity" page
@@ -85,7 +81,6 @@ Feature: Restrict sections availability through completion or grade conditions
       | Grade | 21 |
     And I press "Save changes"
     And I follow "Edit settings"
-    And I log out
     And I am on the "Course 1" Course page logged in as student1
     And "Test page name" activity should be visible
     And I should not see "Not available unless: You achieve a required score in Grade assignment"

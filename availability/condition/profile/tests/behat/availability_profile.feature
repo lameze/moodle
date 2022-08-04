@@ -17,18 +17,14 @@ Feature: availability_profile
       | teacher1 | C1     | editingteacher |
       | student1 | C1     | student        |
     And the following "activities" exist:
-      | activity | course | section | name |
-      | page     | C1     | 1       | P1   |
-      | page     | C1     | 2       | P2   |
+      | activity | course | name |
+      | page     | C1     | P1   |
+      | page     | C1     | P2   |
 
   @javascript
   Scenario: Test condition
     # Basic setup.
-    Given I log in as "teacher1"
-    And I am on "Course 1" course homepage with editing mode on
-
-    # Add
-    And I am on the "P1" "page activity editing" page
+    Given I am on the "P1" "page activity editing" page logged in as "teacher1"
     And I expand all fieldsets
     And I click on "Add restriction..." "button"
     And I click on "User profile" "button"
@@ -48,9 +44,7 @@ Feature: availability_profile
     And I click on "Save and return to course" "button"
 
     # Log back in as student.
-    When I log out
-    And I log in as "student1"
-    And I am on "Course 1" course homepage
+    When I am on the "Course 1" "course" page logged in as "student1"
 
     # I see P1 but not P2.
     Then I should see "P1" in the "region-main" "region"
@@ -76,7 +70,6 @@ Feature: availability_profile
     And I click on "Update profile" "button"
 
     # Set Page activity which has requirement on this field.
-    And I am on "Course 1" course homepage with editing mode on
     And I am on the "P1" "page activity editing" page
     And I expand all fieldsets
     And I click on "Add restriction..." "button"
@@ -94,9 +87,7 @@ Feature: availability_profile
     And the field "Value to compare against" matches value "Bananaman"
 
     # Log out and back in as student. Should be able to see activity.
-    And I log out
-    And I log in as "student1"
-    And I am on "Course 1" course homepage
+    And I am on the "Course 1" "course" page logged in as "student1"
     Then I should see "P1" in the "region-main" "region"
 
   @javascript
@@ -110,9 +101,7 @@ Feature: availability_profile
     # The activity names filter is enabled because it triggered a bug in older versions.
     And the "activitynames" filter is "on"
     And the "activitynames" filter applies to "content and headings"
-    And I am on the "C1" "Course" page logged in as "teacher1"
-    And I turn editing mode on
-    And I am on the "P1" "page activity editing" page
+    And I am on the "P1" "page activity editing" page logged in as "teacher1"
     And I expand all fieldsets
     And I click on "Add restriction..." "button"
     And I click on "User profile" "button" in the "Add restriction..." "dialogue"

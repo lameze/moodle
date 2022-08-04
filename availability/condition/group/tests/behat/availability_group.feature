@@ -17,19 +17,15 @@ Feature: availability_group
       | teacher1 | C1     | editingteacher |
       | student1 | C1     | student        |
     And the following "activities" exist:
-      | activity | course | section | name  |
-      | page     | C1     | 1       | P1    |
-      | page     | C1     | 2       | P2    |
-      | page     | C1     | 3       | P3    |
+      | activity | course | name  |
+      | page     | C1     | P1    |
+      | page     | C1     | P2    |
+      | page     | C1     | P3    |
 
   @javascript
   Scenario: Test condition
     # Basic setup.
-    Given I log in as "teacher1"
-    And I am on "Course 1" course homepage with editing mode on
-
-    # Start to add a Page. If there aren't any groups, there's no Group option.
-    And I am on the "P1" "page activity editing" page
+    Given I am on the "P1" "page activity editing" page logged in as "teacher1"
     And I expand all fieldsets
     And I click on "Add restriction..." "button"
     Then "Group" "button" should not exist in the "Add restriction..." "dialogue"
@@ -42,7 +38,6 @@ Feature: availability_group
       | G2       | C1     | GI2      |
     # This step used to be 'And I follow "C1"', but Chrome thinks the breadcrumb
     # is not clickable, so we'll go via the home page instead.
-    And I am on "Course 1" course homepage
     And I am on the "P1" "page activity editing" page
     And I expand all fieldsets
     And I click on "Add restriction..." "button"
@@ -73,9 +68,7 @@ Feature: availability_group
     And I click on "Save and return to course" "button"
 
     # Log back in as student.
-    When I log out
-    And I log in as "student1"
-    And I am on "Course 1" course homepage
+    When I am on the "Course 1" "course" page logged in as "student1"
 
     # No pages should appear yet.
     Then I should not see "P1" in the "region-main" "region"
@@ -86,8 +79,6 @@ Feature: availability_group
     Given the following "group members" exist:
       | user     | group |
       | student1 | GI1   |
-    And I log out
-    And I log in as "student1"
     And I am on "Course 1" course homepage
 
     # P1 (any groups) and P2 should show but not P3.
@@ -106,15 +97,12 @@ Feature: availability_group
     # The activity names filter is enabled because it triggered a bug in older versions.
     And the "activitynames" filter is "on"
     And the "activitynames" filter applies to "content and headings"
-    And I am on the "C1" "Course" page logged in as "teacher1"
-    And I turn editing mode on
-    And I am on the "P1" "page activity editing" page
+    And I am on the "P1" "page activity editing" page logged in as "teacher1"
     And I expand all fieldsets
     And I click on "Add restriction..." "button"
     And I click on "Group" "button" in the "Add restriction..." "dialogue"
     And I set the field "Group" to "G-One"
     And I click on "Save and return to course" "button"
-    And I log out
 
     # Student sees information about no access to group, with group name in correct language.
     When I am on the "C1" "Course" page logged in as "student1"

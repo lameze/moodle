@@ -37,10 +37,8 @@ Feature: Manage availability conditions
     And the following "activity" exists:
       | activity | page |
       | course   | C1   |
-      | section  | 1    |
       | name     | P1   |
     And I log in as "admin"
-    And I am on site homepage
     When I navigate to "Plugins > Availability restrictions > Manage restrictions" in site administration
 
     # Check the icon is there (it should be a Hide icon, meaning is currently visible).
@@ -56,7 +54,6 @@ Feature: Manage availability conditions
 
     # OK, toggling works. Set the grade one to Hide and we'll go see if it actually worked.
     And I click on "Hide" "icon" in the "Restriction by grade" "table_row"
-    And I am on "Course 1" course homepage with editing mode on
     And I am on the "P1" "page activity editing" page
     And I expand all fieldsets
     And I click on "Add restriction..." "button"

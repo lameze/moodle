@@ -18,13 +18,11 @@ Feature: Restrict activity availability through grade conditions
       | teacher1 | C1 | editingteacher |
       | student1 | C1 | student |
     And the following "activities" exist:
-      | course | activity | section | idnumber         | name             | assignsubmission_onlinetext_enabled | assignsubmission_file_enabled | submissiondrafts |
-      | C1     | assign   | 1       | Grade assignment | Grade assignment | 1                                   | 0                             | 0                |
-      | C1     | page     | 2       | Grade page       | Test page name   |                                     |                               |                  |
-    And I am on the "Course 1" course page logged in as teacher1
-    And I am on "Course 1" course homepage with editing mode on
+      | course | activity | idnumber         | name             | assignsubmission_onlinetext_enabled | assignsubmission_file_enabled | submissiondrafts |
+      | C1     | assign   | Grade assignment | Grade assignment | 1                                   | 0                             | 0                |
+      | C1     | page     | Grade page       | Test page name   |                                     |                               |                  |
     # Adding the page like this because id_availableform_enabled needs to be clicked to trigger the action.
-    And I am on the "Test page name" "page activity editing" page
+    And I am on the "Test page name" "page activity editing" page logged in as "teacher1"
     And I expand all fieldsets
     And I click on "Add restriction..." "button"
     And I click on "Grade" "button" in the "Add restriction..." "dialogue"
@@ -33,7 +31,6 @@ Feature: Restrict activity availability through grade conditions
       | id     | Grade assignment |
       | minval | 20               |
     And I press "Save and return to course"
-    And I log out
 
     When I am on the "Course 1" course page logged in as student1
     Then I should see "Not available unless: You achieve a required score in Grade assignment"
@@ -45,7 +42,6 @@ Feature: Restrict activity availability through grade conditions
       | Online text | I'm the student submission |
     And I press "Save changes"
     And I should see "Submitted for grading"
-    And I log out
 
     And I am on the "Grade assignment" "assign activity" page logged in as teacher1
     And I follow "View all submissions"
@@ -53,8 +49,6 @@ Feature: Restrict activity availability through grade conditions
     And I set the following fields to these values:
       | Grade | 21 |
     And I press "Save changes"
-    And I follow "Edit settings"
-    And I log out
 
     And I am on the "Course 1" course page logged in as student1
     And "Test page name" activity should be visible

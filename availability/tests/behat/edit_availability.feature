@@ -55,11 +55,8 @@ Feature: edit_availability
       | activity    | page                        |
       | course      | C1                          |
       | idnumber    | 0002                        |
-      | section     | 1                           |
       | name        | Page2                       |
-    And I am on "Course 1" course homepage
-    And I follow "Page2"
-    And I navigate to "Settings" in current page administration
+    And I am on the "Page2" "page activity editing" page
     Then "Restrict access" "fieldset" should exist
 
     Given I am on "Course 1" course homepage
@@ -74,9 +71,7 @@ Feature: edit_availability
       | course   | C1   |
       | section  | 1    |
       | name     | P1   |
-    And I log in as "teacher1"
-    And I am on "Course 1" course homepage with editing mode on
-    And I am on the "P1" "page activity editing" page
+    And I am on the "P1" "page activity editing" page logged in as "teacher1"
     And I expand all fieldsets
     Then I should see "None" in the "Restrict access" "fieldset"
 

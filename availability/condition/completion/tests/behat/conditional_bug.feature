@@ -18,8 +18,7 @@ Feature: Confirm that conditions on completion no longer cause a bug
   @javascript
   Scenario: Multiple completion conditions on glossary
     # Set up course.
-    Given I log in as "teacher1"
-    And I am on "Course 1" course homepage
+    Given I am on the "Course 1" "course" page logged in as "teacher1"
     And I navigate to "Settings" in current page administration
     And I expand all fieldsets
     And I set the field "Enable completion tracking" to "Yes"
@@ -27,9 +26,9 @@ Feature: Confirm that conditions on completion no longer cause a bug
     And I turn editing mode on
     # Add a couple of Pages with manual completion.
     And the following "activities" exist:
-      | activity | course | section | name  | completion |
-      | page     | C1     | 1       | Page1 | 1          |
-      | page     | C1     | 1       | Page2 | 1          |
+      | activity | course | name  | completion |
+      | page     | C1     | Page1 | 1          |
+      | page     | C1     | Page2 | 1          |
 
     # Add a Glossary.
     When I add a "Glossary" to section "1"
