@@ -22,9 +22,7 @@ Feature: Do a H5P attempt
     And the following "activity" exists:
       | activity        | h5pactivity                                |
       | course          | C1                                         |
-      | section         | 1                                          |
       | name            | Awesome H5P package                        |
-      | intro           | Description                                |
       | packagefilepath | h5p/tests/fixtures/multiple-choice-2-6.h5p |
 
   Scenario: View an H5P as a teacher
