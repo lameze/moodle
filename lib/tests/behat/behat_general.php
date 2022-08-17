@@ -2201,14 +2201,18 @@ EOF;
     public function the_default_editor_is_set_to(string $editor): void {
         global $CFG;
 
-        $available = editors_get_available();
-        if (!array_key_exists($editor, $available)) {
+        // Check if the provided editor is available.
+        if (!array_key_exists($editor, editors_get_available())) {
             throw new \Moodle\BehatExtension\Exception\SkippedException();
         }
 
+        // Make the provided editor the default one in $CFG->texteditors by
+        // moving it to the first [editor],atto,tiny,tinymce,textarea on the list.
         $list = explode(',', $CFG->texteditors);
-        $list[0] = $editor;
+        array_unshift($list, $editor);
+        $list = array_unique($list);
 
+        // Set the list new list of editors.
         set_config('texteditors', implode(',', $list));
     }
 }
