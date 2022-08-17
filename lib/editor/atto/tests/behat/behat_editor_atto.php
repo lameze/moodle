@@ -27,6 +27,9 @@
 
 require_once(__DIR__ . '/../../../../behat/behat_base.php');
 
+
+use Behat\Behat\Hook\Scope\BeforeScenarioScope;
+
 /**
  * Steps definitions to deal with the atto text editor
  *
@@ -59,6 +62,13 @@ class behat_editor_atto extends behat_base {
         $field->select_text();
     }
 
-
+    /**
+     * Set atto as default editor before executing atto tests.
+     *
+     * @BeforeScenario @editor_atto
+     */
+    public function set_default_editor_flag(): void {
+        $this->execute('behat_general::the_default_editor_is_set_to', ['atto']);
+    }
 }
 
