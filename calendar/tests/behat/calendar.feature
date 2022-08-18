@@ -37,20 +37,25 @@ Feature: Perform basic calendar functionality
 
   @javascript
   Scenario: Create a site event
-    Given I log in as "admin"
-    And I create a calendar event with form data:
-      | Type of event | site |
-      | Event title | Really awesome event! |
-      | Description | Come join this awesome event, sucka! |
-    And I log out
-    And I log in as "student1"
-    And I am on "Course 1" course homepage
-    And I follow "Full calendar"
-    And I should see "Really awesome event!"
-    And I log out
-    And I log in as "student2"
-    And I follow "Full calendar"
-    And I should see "Really awesome event!"
+#    Given I log in as "admin"
+#    And I create a calendar event with form data:
+#      | Type of event | site |
+#      | Event title | Really awesome event! |
+#      | Description | Come join this awesome event, sucka! |
+    Given the following "calendar > event" exists:
+      | eventtype   | site                                  |
+      | title       | Really awesome event!                 |
+      | description | Come join this awesome event, sucka!  |
+#    And I log out
+#    And I log in as "student1"
+    When I am on "Month view" "calendar page" logged in as "student1"
+#    And I am on "Course 1" course homepage
+#    And I follow "Full calendar"
+#    Then I should see "Really awesome event!"
+    Then I should see "Really awesome event!" "site" event
+    And I am on "Month view" "calendar page" logged in as "student1"
+#    And I follow "Full calendar"
+    Then I should see "Really awesome event!" "site" event
 
   @javascript
   Scenario: Create a course event
@@ -257,6 +262,7 @@ Feature: Perform basic calendar functionality
     Given I log in as "student1"
     And I am on "Course 1" course homepage
     When I follow "Full calendar"
+    # investigate
     Then the page should meet accessibility standards
     And the page should meet "wcag131, wcag143, wcag412" accessibility standards
     And the page should meet accessibility standards with "wcag131, wcag143, wcag412" extra tests
