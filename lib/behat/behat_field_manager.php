@@ -146,7 +146,8 @@ class behat_field_manager {
             $xpath = new \DOMXPath($document);
 
             // If there is an iframe with $id + _ifr there a TinyMCE editor loaded.
-            if ($xpath->query('//div[@id="' . $node->getAttribute('id') . 'editable"]')->count() !== 0) {
+            $nodeid = $node->getAttribute('id');
+            if ($xpath->query('//div[@id="' . $nodeid . 'editable"]|//*[@id="' . $nodeid . '"]')->count() !== 0) {
                 return 'editor';
             }
             return 'textarea';
