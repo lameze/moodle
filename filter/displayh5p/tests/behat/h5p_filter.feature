@@ -69,7 +69,7 @@ Feature: Render H5P content using filters
     And I click on "ipsums.h5p" "link"
     And I click on "Select this file" "button"
     And I click on "Insert H5P" "button" in the "Insert H5P content" "dialogue"
-    And I wait until the page is ready
+    And I expand all fieldsets
     When I click on "Save and display" "button"
 #   Switch to iframe created by filter
     And I switch to "h5p-iframe" class iframe
@@ -150,7 +150,7 @@ Feature: Render H5P content using filters
     And I click on "ipsums.h5p" "link"
     And I click on "Select this file" "button"
     And I click on "Insert H5P" "button" in the "Insert H5P content" "dialogue"
-    And I wait until the page is ready
+    And I expand all fieldsets
     And I click on "Save and display" "button"
 #   Switch to iframe created by filter
     And I switch to "h5p-iframe" class iframe
@@ -189,6 +189,7 @@ Feature: Render H5P content using filters
     And I click on "ipsums.h5p" "link"
     And I click on "Select this file" "button"
     And I click on "Insert H5P" "button" in the "Insert H5P content" "dialogue"
+    And I expand all fieldsets
     And I click on "Save and display" "button"
     And I switch to "h5p-iframe" class iframe
 #   Library is disabled, so an error should be displayed.

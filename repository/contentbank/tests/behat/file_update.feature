@@ -27,6 +27,7 @@ Feature: Updating a file in the content bank after using in a course
     And I click on "Select this file" "button"
     And I click on "Insert H5P" "button" in the "Insert H5P content" "dialogue"
     And I wait until the page is ready
+    And I expand all fieldsets
     And I click on "Save and display" "button"
     And I switch to "h5p-iframe" class iframe
     And I switch to "h5p-iframe" class iframe
@@ -68,6 +69,7 @@ Feature: Updating a file in the content bank after using in a course
     And I click on "Select this file" "button"
     And I click on "Insert H5P" "button" in the "Insert H5P content" "dialogue"
     And I wait until the page is ready
+    And I expand all fieldsets
     And I click on "Save and display" "button"
     And I switch to "h5p-iframe" class iframe
     And I switch to "h5p-iframe" class iframe
