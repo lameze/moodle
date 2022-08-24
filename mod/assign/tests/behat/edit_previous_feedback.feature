@@ -1,4 +1,4 @@
-@mod @mod_assign
+@mod @mod_assign @editor_atto
 Feature: In an assignment, teachers can edit feedback for a students previous submission attempt
   In order to correct feedback for a previous submission attempt
   As a teacher

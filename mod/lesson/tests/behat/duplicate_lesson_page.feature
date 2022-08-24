@@ -1,4 +1,4 @@
-@mod @mod_lesson
+@mod @mod_lesson @editor_atto
 Feature: In a lesson activity, a teacher can duplicate a lesson page
   In order to duplicate a lesson page
   As a teacher

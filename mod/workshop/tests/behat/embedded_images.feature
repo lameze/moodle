@@ -1,4 +1,4 @@
-@mod @mod_workshop @javascript @_file_upload
+@mod @mod_workshop @javascript @_file_upload @editor_atto
 Feature: Teachers can embed images into instructions and conclusion fields
   In order to display images as a part of instructions or conclusions in the workshop
   As a teacher

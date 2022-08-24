@@ -1,4 +1,4 @@
-@core @core_course @core_customfield @javascript
+@core @core_course @core_customfield @javascript @editor_atto
 Feature: Teachers can edit course custom fields
   In order to have additional data on the course
   As a teacher
