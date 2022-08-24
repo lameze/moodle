@@ -3,7 +3,7 @@ Feature: In a lesson activity, teacher can add embedded images in questions answ
   As a teacher
   I need to add questions with images in answers and responses
 
-  @javascript @_file_upload
+  @javascript @_file_upload @editor_atto
   Scenario: questions with images in answers and responses
     Given the following "users" exist:
       | username | firstname | lastname | email |
