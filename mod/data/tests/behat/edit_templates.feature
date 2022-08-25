@@ -78,7 +78,7 @@ Feature: Users can edit the database templates
 
   @javascript
   Scenario: Edit without the wysiwyg editor
-    Given I click on "Enable editor" "checkbox"
+    Given I set the field "Enable editor" to "0"
     And I set the following fields to these values:
       | Repeated entry | <span class="d-none">Nope</span>Yep! |
     And I click on "Save template" "button"
@@ -88,7 +88,7 @@ Feature: Users can edit the database templates
 
   @javascript
   Scenario: Edit CSS teamplate
-    Given I click on "Enable editor" "checkbox"
+    Given I set the field "Enable editor" to "0"
     And I set the following fields to these values:
       | Repeated entry | <span class="hideme">Nope</span>Yep! |
     And I click on "Save template" "button"
@@ -102,7 +102,7 @@ Feature: Users can edit the database templates
 
   @javascript
   Scenario: Edit Javascript template
-    Given I click on "Enable editor" "checkbox"
+    Given I set the field "Enable editor" to "0"
     And I set the following fields to these values:
       | Repeated entry | <span id="hideme">Nope</span>Yep! |
     And I click on "Save template" "button"
