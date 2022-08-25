@@ -41,6 +41,24 @@ use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 class behat_editor_atto extends behat_base {
 
     /**
+     * @param $params
+     * @param $editorid
+     * @param $value
+     * @return void
+     */
+    public function set_editor_value($params, $editorid, $value) {
+        $js = <<<EOF
+            (function() {
+                const editor = document.getElementById("${editorid}editable");
+                if (editor && editor.classList.contains('editor_atto_content')) {
+                    editor.innerHTML = "${value}";
+                }
+            })();
+        EOF;
+        behat_base::execute_script_in_session($params->getSession(), $js);
+    }
+
+    /**
      * Select the text in an Atto field.
      *
      * @Given /^I select the text in the "([^"]*)" Atto editor$/
