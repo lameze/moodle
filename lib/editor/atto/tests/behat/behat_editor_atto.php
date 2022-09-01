@@ -48,9 +48,13 @@ class behat_editor_atto extends behat_base {
     public function set_editor_value($params, $editorid, $value) {
         $js = <<<EOF
             (function() {
-                const editor = document.getElementById("${editorid}editable");
-                if (editor && editor.classList.contains('editor_atto_content')) {
-                    editor.innerHTML = "${value}";
+                const editableEditor = document.getElementById("${editorid}editable");
+                if (editableEditor && editableEditor.classList.contains('editor_atto_content')) {
+                    editableEditor.innerHTML = "${value}";
+                }
+                const editor = document.getElementById("${editorid}");
+                if (editor) {
+                    editor.value = "${value}";
                 }
             })();
         EOF;
