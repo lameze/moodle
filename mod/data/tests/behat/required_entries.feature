@@ -21,7 +21,7 @@ Feature: Users can be required to specify certain fields when adding entries to 
       | data     | Test database name | n     | C1     | data1    |
     And I log in as "teacher1"
     And I am on "Course 1" course homepage
-    And I add a "Text input" field to "Test database name" database and I fill the form with:
+    And I add a "Short text" field to "Test database name" database and I fill the form with:
       | Field name | Base Text input |
       | Required | yes |
       | Field description | Base Text input |
@@ -60,7 +60,7 @@ Feature: Users can be required to specify certain fields when adding entries to 
       | Field description | Required Radio |
       | Required | yes |
       | Options | Required Radio Option 1 |
-    And I add a "Text input" field to "Test database name" database and I fill the form with:
+    And I add a "Short text" field to "Test database name" database and I fill the form with:
       | Field name | Required Text input |
       | Field description | Required Text input |
       | Required | yes |
@@ -107,7 +107,7 @@ Feature: Users can be required to specify certain fields when adding entries to 
       | Field name | Not required Radio |
       | Field description | Not required Radio |
       | Options | Not required Radio Option 1 |
-    And I add a "Text input" field to "Test database name" database and I fill the form with:
+    And I add a "Short text" field to "Test database name" database and I fill the form with:
       | Field name | Not required Text input |
       | Field description | Not required Text input |
     And I add a "Text area" field to "Test database name" database and I fill the form with:
