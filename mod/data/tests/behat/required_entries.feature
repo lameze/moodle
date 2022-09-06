@@ -43,10 +43,10 @@ Feature: Users can be required to specify certain fields when adding entries to 
     """
     And I press "Add"
     And I add a "Coordinates" field to "Test database name" database and I fill the form with:
-      | Field name | Required Coordinates |
-      | Field description | Required Coordinates |
+      | Field name | Required Latlong |
+      | Field description | Required Latlong |
       | Required | yes |
-    And I add a "Menu" field to "Test database name" database and I fill the form with:
+    And I add a "Dropdown list" field to "Test database name" database and I fill the form with:
       | Field name | Required Menu |
       | Field description | Required Menu |
       | Required | yes |
@@ -72,13 +72,13 @@ Feature: Users can be required to specify certain fields when adding entries to 
       | Field name | Required URL |
       | Field description | Required URL |
       | Required | yes |
-    And I add a "Multimenu" field to "Test database name" database and I fill the form with:
+    And I add a "Multi-select list" field to "Test database name" database and I fill the form with:
       | Field name | Required Multimenu |
       | Field description | Required Multimenu |
       | Required | yes |
       | Options | Option 1 |
     And I follow "Fields"
-    And I select "Multimenu" from the "newtype" singleselect
+    And I select "Multi-select list" from the "newtype" singleselect
     And I set the following fields to these values:
       | Field name | Required Two-Option Multimenu |
       | Field description | Required Two-Option Multimenu |
@@ -94,9 +94,9 @@ Feature: Users can be required to specify certain fields when adding entries to 
       | Field description | Not required Checkbox |
       | Options | Not required Checkbox Option 1 |
     And I add a "Coordinates" field to "Test database name" database and I fill the form with:
-      | Field name | Not required Coordinates |
-      | Field description | Not required Coordinates |
-    And I add a "Menu" field to "Test database name" database and I fill the form with:
+      | Field name | Not required Latlong |
+      | Field description | Not required Latlong |
+    And I add a "Dropdown list" field to "Test database name" database and I fill the form with:
       | Field name | Not required Menu |
       | Field description | Not required Menu |
       | Options | Option 1 |
@@ -116,7 +116,7 @@ Feature: Users can be required to specify certain fields when adding entries to 
     And I add a "URL" field to "Test database name" database and I fill the form with:
       | Field name | Not required URL |
       | Field description | Not required URL |
-    And I add a "Multimenu" field to "Test database name" database and I fill the form with:
+    And I add a "Multi-select list" field to "Test database name" database and I fill the form with:
       | Field name | Not required Multimenu |
       | Field description | Not required Multimenu |
       | Options | Option 1 |
@@ -131,7 +131,7 @@ Feature: Users can be required to specify certain fields when adding entries to 
     And I press "Save"
     Then ".alert" "css_element" should exist in the "Required Checkbox" "table_row"
     And ".alert" "css_element" should exist in the "Required Two-Option Checkbox" "table_row"
-    And ".alert" "css_element" should exist in the "Required Coordinates" "table_row"
+    And ".alert" "css_element" should exist in the "Required Latlong" "table_row"
     And ".alert" "css_element" should exist in the "Required Menu" "table_row"
     And ".alert" "css_element" should exist in the "Required Number" "table_row"
     And ".alert" "css_element" should exist in the "Required Radio" "table_row"
@@ -141,7 +141,7 @@ Feature: Users can be required to specify certain fields when adding entries to 
     And ".alert" "css_element" should exist in the "Required Multimenu" "table_row"
     And ".alert" "css_element" should exist in the "Required Two-Option Multimenu" "table_row"
     And ".alert" "css_element" should not exist in the "Not required Checkbox" "table_row"
-    And ".alert" "css_element" should not exist in the "Not required Coordinates" "table_row"
+    And ".alert" "css_element" should not exist in the "Not required Latlong" "table_row"
     And ".alert" "css_element" should not exist in the "Not required Menu" "table_row"
     And ".alert" "css_element" should not exist in the "Not required Number" "table_row"
     And ".alert" "css_element" should not exist in the "Not required Radio" "table_row"
@@ -220,10 +220,10 @@ Feature: Users can be required to specify certain fields when adding entries to 
        | Required URL                  | http://example.com/                                       |
        | Required Multimenu            | 1                                                         |
        | Required Two-Option Multimenu | 1                                                         |
-    And I set the field with xpath "//div[@title='Not required Coordinates']//tr[td/label[normalize-space(.)='Latitude']]/td/input" to "20"
+    And I set the field with xpath "//div[@title='Not required Latlong']//tr[td/label[normalize-space(.)='Latitude']]/td/input" to "20"
     And I press "Save"
-    Then ".alert" "css_element" should exist in the "Required Coordinates" "table_row"
-    And ".alert" "css_element" should exist in the "Not required Coordinates" "table_row"
+    Then ".alert" "css_element" should exist in the "Required Latlong" "table_row"
+    And ".alert" "css_element" should exist in the "Not required Latlong" "table_row"
 
   Scenario: A student filling in number and text fields with zero will not see an error.
     Given I log in as "student1"
