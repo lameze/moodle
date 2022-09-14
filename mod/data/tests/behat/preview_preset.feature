@@ -20,16 +20,19 @@ Feature: Users can preview presets
     And the following "activities" exist:
       | activity | name               | intro          | course | idnumber |
       | data     | Test database name | Database intro | C1     | data1    |
+    And the following "mod_data > presets" exist:
+      | database | name                      | description                          | user      | file                                      |
+      | data1    | Saved preset 1            | The preset1 has description          | admin     | mod/data/tests/fixtures/behat_preset.zip  |
     And I am on the "Test database name" "data activity" page logged in as teacher1
 
   @javascript @_file_upload
   Scenario: Preview a user preset as list view template in database
-    Given I follow "Presets"
-    And I click on "Import" "button"
-    And I upload "mod/data/tests/fixtures/behat_preset.zip" file to "Choose file" filemanager
-    And I click on "Save" "button"
-    And I click on "Continue" "button"
-    And I follow "Templates"
+#    Given I follow "Presets"
+#    And I click on "Import" "button"
+#    And I upload "mod/data/tests/fixtures/behat_preset.zip" file to "Choose file" filemanager
+#    And I click on "Save" "button"
+#    And I click on "Continue" "button"
+    Given I follow "Templates"
     And I click on "Save as preset" "button"
     And I set the field "Name" to "Saved preset by teacher1"
     And I set the field "Description" to "Behat test preset"

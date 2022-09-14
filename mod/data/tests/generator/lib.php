@@ -385,7 +385,7 @@ class mod_data_generator extends testing_module_generator {
      * @return preset The preset that has been created.
      */
     public function create_preset(stdClass $instance, stdClass $record = null): preset {
-        global $USER;
+        global $CFG, $USER;
 
         if (is_null($record)) {
             $record = new stdClass();
@@ -409,7 +409,36 @@ class mod_data_generator extends testing_module_generator {
         }
 
         $manager = manager::create_from_instance($instance);
-        $preset = preset::create_from_instance($manager, $presetname, $presetdescription);
+        if (isset($record->file)) {
+            $context = $manager->get_context();
+            $cm = get_coursemodule_from_instance('data', $instance->id);
+            $course = get_course($cm->course);
+
+            $filename = 'behat_preset.zip';
+            $path = $CFG->dirroot . "/" . $record->file;
+            $filerecord = [
+                'contextid' => $context->id,
+                'component' => DATA_PRESET_COMPONENT,
+                'filearea' => 'unittest',
+                'itemid' => 0,
+                'filepath' => '/',
+                'filename' => $filename,
+            ];
+            $fs = get_file_storage();
+            $file = $fs->create_file_from_pathname($filerecord, $path);
+
+
+            $success = $file->extract_to_storage(new zip_packer(), $context->id, DATA_PRESET_COMPONENT, 'content', 0, '/', $USER->id);
+            print_object($success);
+           $importer = new data_preset_upload_importer($course, $cm, $instance, $file);
+           $importer->import(false);
+
+            $preset = preset::create_from_storedfile($manager, $file);
+            print_object($preset);
+        } else {
+            $preset = preset::create_from_instance($manager, $presetname, $presetdescription);
+        }
+
         $preset->save();
 
         if (isset($currentuser)) {
