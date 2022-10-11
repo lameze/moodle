@@ -1,4 +1,4 @@
-@block @block_activity_results @javascript @skip_interim
+@block @block_activity_results @javascript
 Feature: The activity results block displays student scores
   In order to be display student scores
   As a user
@@ -41,7 +41,7 @@ Feature: The activity results block displays student scores
     And I give the grade "70.00" to the user "Student 3" for the grade item "Test assignment 1"
     And I give the grade "60.00" to the user "Student 4" for the grade item "Test assignment 1"
     And I give the grade "50.00" to the user "Student 5" for the grade item "Test assignment 1"
-    And I press "Save changes"
+    And I click on "Save changes" "button"
     And I am on "Course 1" course homepage
 
   Scenario: Configure the block on a non-graded activity to show 3 high scores
