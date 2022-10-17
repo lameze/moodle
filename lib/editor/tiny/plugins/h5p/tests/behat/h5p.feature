@@ -55,3 +55,14 @@ Feature: Use the TinyMCE editor to upload an h5p package
     And I wait until the page is ready
     When I click on "Save and display" "button"
     Then ".h5p-placeholder" "css_element" should exist
+
+  @javascript
+  Scenario: Test an invalid url
+    Given I change window size to "large"
+    And I am on the PageName1 "page activity editing" page logged in as admin
+    And I click on the "Configure H5P content" button for the "Page content" TinyMCE editor
+#   This is not a real external URL, so this scenario shouldn't be labeled as external.
+    And I set the field "H5P URL or file upload" to "ftp://moodle.h5p.com/content/1290772960722742119"
+    When I click on "Insert H5P content" "button"
+    And I wait until the page is ready
+    Then I should see "Invalid URL" in the "Insert H5P" "dialogue"
