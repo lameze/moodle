@@ -63,7 +63,8 @@ Feature: View competencies
 
   Scenario: Student view
     # Course competencies
-    Given I am on the "C1" "tool_lp > course competencies" page logged in as "student1"
+    Given I mark this test as slow setting a timeout factor of 4
+    And I am on the "C1" "tool_lp > course competencies" page logged in as "student1"
     Then I should see "You are proficient in 3 out of 5 competencies in this course"
 
     And "Salads are important" "tool_lp > competency description" should exist in the "Salads" "tool_lp > competency"
