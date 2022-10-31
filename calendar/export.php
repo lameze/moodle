@@ -165,6 +165,7 @@ if ($data = $exportform->get_data()) {
     $params['authtoken']   = calendar_get_export_token($USER);
     $params['preset_what'] = $data->events['exportevents'];
     $params['preset_time'] = $data->period['timeperiod'];
+    $params['includelink'] = $data->includelink;
 
     $link = new moodle_url('/calendar/export_execute.php', $params);
     if (!empty($data->generateurl)) {

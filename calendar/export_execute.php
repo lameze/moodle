@@ -197,6 +197,7 @@ $events = calendar_get_legacy_events($timestart, $timeend, $users, $groups, arra
 $ical = new iCalendar;
 $ical->add_property('method', 'PUBLISH');
 $ical->add_property('prodid', '-//Moodle Pty Ltd//NONSGML Moodle Version ' . $CFG->version . '//EN');
+$dolinks = optional_param('includelink', 1, PARAM_INT);
 foreach($events as $event) {
     if (!empty($event->modulename)) {
         $instances = get_fast_modinfo($event->courseid, $userid)->get_instances_of($event->modulename);
@@ -211,14 +212,23 @@ foreach($events as $event) {
     $ev = new iCalendar_event; // To export in ical format.
     $ev->add_property('uid', $event->id.'@'.$hostaddress);
 
+    $coursesummary     = '';
+    $coursedescription = '';
+    if ($event->courseid != 0 && $event->eventtype != 'site') {
+        $coursesummary     = ' (' . $courses[$event->courseid]->shortname . ')';
+        $courseurl         = new moodle_url('/course/view.php', array('id' => $event->courseid));
+        $coursedescription = html_writer::link($courseurl, $courses[$event->courseid]->shortname);
+    }
+
     // Set iCal event summary from event name.
-    $ev->add_property('summary', format_string($event->name, true, ['context' => $me->context]));
+    $ev->add_property('summary', format_string($event->name . $coursesummary, true,
+        ['context' => $me->context]));
 
     // Format the description text.
-    $description = format_text($me->description, $me->format, ['context' => $me->context]);
+    $description = format_text($me->description . $coursedescription, $me->format, ['context' => $me->context]);
     // Then convert it to plain text, since it's the only format allowed for the event description property.
     // We use html_to_text in order to convert <br> and <p> tags to new line characters for descriptions in HTML format.
-    $description = html_to_text($description, 0);
+    $description = html_to_text($description, 0, $dolinks);
     $ev->add_property('description', $description);
 
     $ev->add_property('class', 'PUBLIC'); // PUBLIC / PRIVATE / CONFIDENTIAL

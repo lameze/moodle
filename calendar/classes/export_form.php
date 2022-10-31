@@ -85,6 +85,12 @@ class core_calendar_export_form extends moodleform {
         $mform->addGroupRule('period', get_string('required'), 'required');
         $mform->setDefault('period', 'recentupcoming');
 
+        $options = array(
+            1 => get_string('includelink', 'calendar'),
+            0 => get_string('notincludelink', 'calendar'),
+        );
+        $mform->addElement('select', 'includelink', get_string('includelink', 'calendar'), $options);
+
         $buttons = array();
         $buttons[] = $mform->createElement('submit', 'generateurl', get_string('generateurlbutton', 'calendar'));
         $buttons[] = $mform->createElement('submit', 'export', get_string('exportbutton', 'calendar'));
