@@ -66,6 +66,16 @@ class mod_resource_generator extends testing_module_generator {
             $record->showtype = 0;
         }
 
+        if (empty($record['packagefilepath'])) {
+            $record['packagefilepath'] = 'resource' . ($this->instancecount + 1) . '.txt';
+        }
+        if (strpos($record['packagefilepath'], $CFG->dirroot) !== 0) {
+            $record['packagefilepath' ] = "{$CFG->dirroot}/{$record['packagefilepath']}";
+        }
+
+        // TODO: remove - test to see values passed to $record object
+        print_object($record);
+
         // The 'files' value corresponds to the draft file area ID. If not
         // specified, create a default file.
         if (!isset($record->files)) {
@@ -73,7 +83,7 @@ class mod_resource_generator extends testing_module_generator {
                 throw new coding_exception('resource generator requires a current user');
             }
             $usercontext = context_user::instance($USER->id);
-            $filename = $record->defaultfilename ?? 'resource' . ($this->instancecount + 1) . '.txt';
+            //$filename = "{$CFG->dirroot}/{$record['packagefilepath']}" ?? 'resource' . ($this->instancecount + 1) . '.txt';
 
             // Pick a random context id for specified user.
             $record->files = file_get_unused_draft_itemid();
@@ -81,9 +91,10 @@ class mod_resource_generator extends testing_module_generator {
             // Add actual file there.
             $filerecord = ['component' => 'user', 'filearea' => 'draft',
                     'contextid' => $usercontext->id, 'itemid' => $record->files,
-                    'filename' => $filename, 'filepath' => '/'];
+                    'filename' => basename($record['packagefilepath']), 'filepath' => '/'];
             $fs = get_file_storage();
-            $fs->create_file_from_string($filerecord, 'Test resource ' . $filename . ' file');
+            //$fs->create_file_from_string($filerecord, 'Test resource ' . $filename . ' file');
+            $fs->create_file_from_pathname($filerecord, $record['packagefilepath']);
         }
 
         // Do work to actually add the instance.
