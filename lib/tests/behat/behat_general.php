@@ -2185,6 +2185,17 @@ EOF;
     }
 
     /**
+     * Visit an external URL relative to the behat root.
+     *
+     * @When I visit the external url
+     *
+     */
+    public function i_visit_the_external_url(): void {
+        global $CFG;
+        $this->getSession()->visit($CFG->secondarywwwroot);
+    }
+
+    /**
      * Increase the webdriver timeouts.
      *
      * This should be reset between scenarios, or can be called again to decrease the timeouts.
