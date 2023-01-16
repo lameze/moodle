@@ -136,3 +136,105 @@ Feature: Workshop submission and assessment
 
   @javascript
   Scenario: Add and assess submissions in workshop with javascript enabled
+
+  @javascript
+  Scenario: Choose accumulative grading as grading strategy
+    Given the following "activities" exist:
+      | activity | course | name       | strategy     |
+      | workshop | c1     | Workshop 1 | accumulative |
+    And I am on the "Workshop 1" "workshop activity" page logged in as teacher1
+    When I click on "Assessment form" "link"
+    And I should see "Accumulative grading"
+    And I set the following fields to these values:
+      | id_description__idx_0_editor | Aspect1 |
+      | id_description__idx_1_editor | Aspect2 |
+    And I press "Save and preview"
+    Then I should see "Assessment form"
+    And I should see "Aspect 1"
+    And I should see "Aspect1"
+    And I should see "Grade for Aspect 1"
+    And I should see "Comment for Aspect 1"
+    And I should see "Aspect 2"
+    And I should see "Aspect2"
+    And I should see "Grade for Aspect 2"
+    And I should see "Comment for Aspect 2"
+    And I should see "Overall feedback"
+    And I should see "Feedback for the author"
+    And I press "Back to editing form"
+    And I should see "Accumulative grading"
+
+  @javascript
+  Scenario: Choose comments as grading strategy
+    Given the following "activities" exist:
+      | activity | course | name       | strategy |
+      | workshop | c1     | Workshop 1 | comments |
+    And I am on the "Workshop 1" "workshop activity" page logged in as teacher1
+    When I click on "Assessment form" "link"
+    And I should see "Comments"
+    And I set the following fields to these values:
+      | id_description__idx_0_editor | Aspect1 |
+      | id_description__idx_1_editor | Aspect2 |
+    And I press "Save and preview"
+    Then I should see "Assessment form"
+    And I should see "Aspect 1"
+    And I should see "Aspect1"
+    And I should see "Comment for Aspect 1"
+    And I should see "Aspect 2"
+    And I should see "Aspect2"
+    And I should see "Comment for Aspect 2"
+    And I should see "Overall feedback"
+    And I should see "Feedback for the author"
+    And I press "Back to editing form"
+    And I should see "Comments"
+
+  @javascript
+  Scenario: Choose number of errors as grading strategy
+    Given the following "activities" exist:
+      | activity | course | name       | strategy  |
+      | workshop | c1     | Workshop 1 | numerrors |
+    And I am on the "Workshop 1" "workshop activity" page logged in as teacher1
+    When I click on "Assessment form" "link"
+    And I should see "Number of errors"
+    And I set the following fields to these values:
+      | id_description__idx_0_editor | Assertion1 |
+      | id_description__idx_1_editor | Assertion2 |
+    And I press "Save and preview"
+    Then I should see "Assessment form"
+    And I should see "Assertion 1"
+    And I should see "Assertion1"
+    And I should see "Your assessment for Assertion 1"
+    And I should see "Comment for Assertion 1"
+    And I should see "Assertion 2"
+    And I should see "Assertion2"
+    And I should see "Your assessment for Assertion 2"
+    And I should see "Comment for Assertion 2"
+    And I should see "Overall feedback"
+    And I should see "Feedback for the author"
+    And I press "Back to editing form"
+    And I should see "Number of errors"
+
+  @javascript
+  Scenario: Choose rubric as grading strategy
+    Given the following "activities" exist:
+      | activity | course | name       | strategy |
+      | workshop | c1     | Workshop 1 | rubric   |
+    And I am on the "Workshop 1" "workshop activity" page logged in as teacher1
+    When I click on "Assessment form" "link"
+    And I should see "Rubric"
+    And I set the following fields to these values:
+      | id_description__idx_0_editor | Criterion1 |
+      | definition__idx_0__idy_0     | One zero   |
+      | id_description__idx_1_editor | Criterion2 |
+      | definition__idx_1__idy_0     | Two zero   |
+    And I press "Save and preview"
+    Then I should see "Assessment form"
+    And I should see "Criterion 1"
+    And I should see "Criterion1"
+    And I should see "One zero"
+    And I should see "Criterion 2"
+    And I should see "Criterion2"
+    And I should see "Two zero"
+    And I should see "Overall feedback"
+    And I should see "Feedback for the author"
+    And I press "Back to editing form"
+    And I should see "Rubric"
