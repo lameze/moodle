@@ -19,78 +19,34 @@ Feature: Workshop grading strategy selection
       | workshop | C1     | Workshop 1 |
     And I am on the "Workshop 1" "workshop activity editing" page logged in as teacher1
 
-  @javascript
-  Scenario: Choose accumulative grading as grading strategy
+    @javascript
+  Scenario Outline: Teachers can use different grading strategies
     Given I set the following fields to these values:
-      | strategy | accumulative |
+      | strategy | <strategy> |
     And I press "Save and display"
     When I click on "Assessment form" "link"
-    And I should see "Accumulative grading"
+    And I should see "<label>"
+      And I pause
     And I set the following fields to these values:
-      | id_description__idx_0_editor | Aspect1 |
-      | id_description__idx_1_editor | Aspect2 |
+      | id_description__idx_0_editor | <description 0> |
+      | id_description__idx_1_editor | <description 1> |
     And I press "Save and preview"
     Then I should see "Assessment form"
-    And I should see "Aspect 1"
-    And I should see "Aspect1"
-    And I should see "Grade for Aspect 1"
-    And I should see "Comment for Aspect 1"
-    And I should see "Aspect 2"
-    And I should see "Aspect2"
-    And I should see "Grade for Aspect 2"
-    And I should see "Comment for Aspect 2"
+    And I should see "<description 0>"
+    And I should <seegrade> "Grade for <description 0>"
+    And I should see "Comment for <description 0>"
+    And I should see "<description 1>"
+    And I should <seegrade> "Grade for <description 1>"
+    And I should see "Comment for <description 1>"
     And I should see "Overall feedback"
     And I should see "Feedback for the author"
     And I press "Back to editing form"
-    And I should see "Accumulative grading"
 
-  @javascript
-  Scenario: Choose comments as grading strategy
-    Given I set the following fields to these values:
-      | strategy | comments |
-    And I press "Save and display"
-    When I click on "Assessment form" "link"
-    And I should see "Comments"
-    And I set the following fields to these values:
-      | id_description__idx_0_editor | Aspect1 |
-      | id_description__idx_1_editor | Aspect2 |
-    And I press "Save and preview"
-    Then I should see "Assessment form"
-    And I should see "Aspect 1"
-    And I should see "Aspect1"
-    And I should see "Comment for Aspect 1"
-    And I should see "Aspect 2"
-    And I should see "Aspect2"
-    And I should see "Comment for Aspect 2"
-    And I should see "Overall feedback"
-    And I should see "Feedback for the author"
-    And I press "Back to editing form"
-    And I should see "Comments"
-
-  @javascript
-  Scenario: Choose number of errors as grading strategy
-    Given I set the following fields to these values:
-      | strategy | numerrors |
-    And I press "Save and display"
-    When I click on "Assessment form" "link"
-    And I should see "Number of errors"
-    And I set the following fields to these values:
-      | id_description__idx_0_editor | Assertion1 |
-      | id_description__idx_1_editor | Assertion2 |
-    And I press "Save and preview"
-    Then I should see "Assessment form"
-    And I should see "Assertion 1"
-    And I should see "Assertion1"
-    And I should see "Your assessment for Assertion 1"
-    And I should see "Comment for Assertion 1"
-    And I should see "Assertion 2"
-    And I should see "Assertion2"
-    And I should see "Your assessment for Assertion 2"
-    And I should see "Comment for Assertion 2"
-    And I should see "Overall feedback"
-    And I should see "Feedback for the author"
-    And I press "Back to editing form"
-    And I should see "Number of errors"
+    Examples:
+      | strategy      | label                | description 0 | description 1 | seegrade |
+      | accumulative  | Accumulative grading | Aspect 1      | Aspect 2      | see      |
+      | comments      | Comments             | Aspect 1      | Aspect 2      | not see  |
+      | numerrors     | Number of errors     | Assertion 1   | Assertion 2   | not see  |
 
   @javascript
   Scenario: Choose rubric as grading strategy
