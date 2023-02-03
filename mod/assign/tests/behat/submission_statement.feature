@@ -1,4 +1,4 @@
-@mod @mod_assign @javascript @_file_upload
+@mod @mod_assign
 Feature: In an assignment, teacher can require submission statements
   In order to require students to accept an assignment submission statement
   As a teacher
@@ -22,22 +22,19 @@ Feature: In an assignment, teacher can require submission statements
       | name                               | Test assign 1 |
       | submissiondrafts                   | 1             |
       | requiresubmissionstatement         | 1             |
-      | assignsubmission_file_enabled      | 1             |
-      | assignsubmission_file_maxfiles     | 2             |
-      | assignsubmission_file_maxsizebytes | 1000000       |
+      | assignsubmission_onlinetext_enabled| 1             |
 
   Scenario: Student is required to accept assignment submission statement
     Given I am on the "Test assign 1" "assign activity" page logged in as student1
     And I press "Add submission"
-    And I upload "lib/tests/fixtures/empty.txt" file to "File submissions" filemanager
+    And I set the field "Online text" to "History of playing with drumsticks reversed"
     And I press "Save changes"
     And I should see "Draft (not submitted)" in the "Submission status" "table_row"
     When I press "Submit assignment"
     Then I should see "This submission is my own work, except where I have acknowledged the use of the works of other people."
-    And I press "Continue"
     And I should see "Confirm submission"
-    And I should see "- Required"
-    And I click on "submissionstatement" "checkbox"
+    And I should see "Required"
+    And I set the field "submissionstatement" to "1"
     And I press "Continue"
     And I should see "Submitted for grading" in the "Submission status" "table_row"
 
@@ -48,7 +45,7 @@ Feature: In an assignment, teacher can require submission statements
     And I press "Save and display"
     And I am on the "Test assign 1" "assign activity" page logged in as student1
     And I press "Add submission"
-    And I upload "lib/tests/fixtures/empty.txt" file to "File submissions" filemanager
+    And I set the field "Online text" to "History of playing with drumsticks reversed"
     And I press "Save changes"
     And I should see "Draft (not submitted)" in the "Submission status" "table_row"
     When I press "Submit assignment"
