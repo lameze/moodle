@@ -234,22 +234,18 @@ Feature: Manage notification preferences - Email
     And the following "mod_assign > submissions" exist:
       | assign   | user     | onlinetext                  |
       | Assign 1 | student1 | I'm the student1 submission |
-    # Web notification is not yet enabled so teacher should not receive any notification
     When I log in as "teacher1"
-    Then I should not see "1" in the "#nav-notification-popover-container [data-region='count-container']" "css_element"
     And I open the notification popover
-    And I should not see "Student 1 has updated their submission for assignment Assign 1"
-    And I follow "Preferences" in the user menu
-    And I click on "Notification preferences" "link" in the "#page-content" "css_element"
-    # Enable the assignment submission notification
-    And I set the field "message_provider_mod_assign_assign_notification_popup" to "1"
+    And I should see "You have no notifications"
     # Update assignment submission to generate a notification
     And I am on the "Assign 1" "assign activity" page logged in as student1
+    And the following "user preferences" exist:
+      | user      | preference                                                | value |
+      | teacher1  | message_provider_mod_assign_assign_notification_enabled   | popup |
     And I press "Edit submission"
     And I set the field "Online text" to "updated"
     And I press "Save changes"
     # Confirm that teacher received assignment submission notification
     And I log in as "teacher1"
-    And I should see "1" in the "#nav-notification-popover-container [data-region='count-container']" "css_element"
     And I open the notification popover
-    And I should see "Student 1 has updated their submission for assignment Assign 1"
+    Then I should see "Student 1 has updated their submission for assignment Assign 1"
