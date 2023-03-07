@@ -9,6 +9,7 @@ Feature: Manage notification preferences - Email
       | username | firstname | lastname | email                |
       | student1 | Student   | 1        | student1@example.com |
       | student2 | Student   | 2        | student2@example.com |
+      | teacher1 | Teacher   | 1        | teacher1@example.com |
     And the following config values are set as admin:
       | messaging | 1 |
 
@@ -213,3 +214,42 @@ Feature: Manage notification preferences - Email
     And I open the notification popover
     # Confirm the submission notification is NOT visible.
     And I should not see "You have submitted your assignment submission for Test assignment name" in the "#nav-notification-popover-container" "css_element"
+
+  Scenario: Teacher can choose to receive assignment notification submissions
+    Given the following "courses" exist:
+      | fullname | shortname | category |
+      | Course 1 | C1        | 0        |
+    And the following "course enrolments" exist:
+      | user     | course | role           |
+      | teacher1 | C1     | editingteacher |
+      | student1 | C1     | student        |
+    And the following "activity" exists:
+      | activity                            | assign   |
+      | course                              | C1       |
+      | name                                | Assign 1 |
+      | assignsubmission_onlinetext_enabled | 1        |
+      | assignsubmission_file_enabled       | 0        |
+      | submissiondrafts                    | 0        |
+      | sendnotifications                   | 1        |
+    And the following "mod_assign > submissions" exist:
+      | assign   | user     | onlinetext                  |
+      | Assign 1 | student1 | I'm the student1 submission |
+    # Web notification is not yet enabled so teacher should not receive any notification
+    When I log in as "teacher1"
+    Then I should not see "1" in the "#nav-notification-popover-container [data-region='count-container']" "css_element"
+    And I open the notification popover
+    And I should not see "Student 1 has updated their submission for assignment Assign 1"
+    And I follow "Preferences" in the user menu
+    And I click on "Notification preferences" "link" in the "#page-content" "css_element"
+    # Enable the assignment submission notification
+    And I set the field "message_provider_mod_assign_assign_notification_popup" to "1"
+    # Update assignment submission to generate a notification
+    And I am on the "Assign 1" "assign activity" page logged in as student1
+    And I press "Edit submission"
+    And I set the field "Online text" to "updated"
+    And I press "Save changes"
+    # Confirm that teacher received assignment submission notification
+    And I log in as "teacher1"
+    And I should see "1" in the "#nav-notification-popover-container [data-region='count-container']" "css_element"
+    And I open the notification popover
+    And I should see "Student 1 has updated their submission for assignment Assign 1"
