@@ -81,8 +81,7 @@ Feature: Manage and list recordings
     And I should see "Recording 1"
 
   @javascript  @runonly
-  Scenario: I check that I can import recordings from a deleted instance into the Recording activity and then if I delete them
-  they are back into the pool to be imported again
+  Scenario: Recordings of a deleted instance can be imported into the activity, be deleted and imported back again
     Given I log in as "admin"
     When I am on "Test Course 1" course homepage with editing mode on
     And I delete "RoomRecordings" activity
