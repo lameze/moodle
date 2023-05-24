@@ -34,8 +34,8 @@ class behat_mod_feedback_generator extends behat_generator_base {
             'questions' => [
                 'singular' => 'question',
                 'datagenerator' => 'question',
-                'required' => ['activity'],
-                'switchids' => ['activity' => 'cmid'],
+                'required' => ['feedback'],
+                'switchids' => ['feedback' => 'feedbackid'],
             ],
             'responses' => [
                 'singular' => 'response',
@@ -46,4 +46,13 @@ class behat_mod_feedback_generator extends behat_generator_base {
         ];
     }
 
+    /**
+     * Look up the id of a feedback from its idnumber.
+     *
+     * @param string $idnumber the feedback idnumber 'feedback0, feedback1'.
+     * @return int corresponding cmid.
+     */
+    protected function get_feedback_id(string $idnumber) {
+        return $this->get_activity_id($idnumber);
+    }
 }

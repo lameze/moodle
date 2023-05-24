@@ -71,12 +71,13 @@ Feature: Exporting and importing feedbacks
 
   @javascript @_file_upload
   Scenario: Import feedback deleting old items
+    Given the following "mod_feedback > question" exists:
+      | activity      | feedback0          |
+      | name          | Existing question |
+      | questiontype  | numeric           |
+      | itemmaxlength | 100               |
     When I am on the "Learning experience" "feedback activity" page logged in as teacher
     And I click on "Edit questions" "link" in the "[role=main]" "css_element"
-    And I add a "Numeric answer" question to the feedback with:
-      | Question               | Existing question |
-      | Label                  | numeric           |
-      | Range to               | 100               |
     And I select "Import questions" from the "jump" singleselect
     And I upload "mod/feedback/tests/fixtures/testexport.xml" file to "File" filemanager
     And I press "Save"
@@ -94,12 +95,13 @@ Feature: Exporting and importing feedbacks
 
   @javascript @_file_upload
   Scenario: Import feedback appending new items
+    Given the following "mod_feedback > question" exists:
+      | activity      | feedback0          |
+      | name          | Existing question |
+      | questiontype  | numeric           |
+      | itemmaxlength | 100               |
     When I am on the "Learning experience" "feedback activity" page logged in as teacher
     And I click on "Edit questions" "link" in the "[role=main]" "css_element"
-    And I add a "Numeric answer" question to the feedback with:
-      | Question               | Existing question |
-      | Label                  | numeric           |
-      | Range to               | 100               |
     And I select "Import questions" from the "jump" singleselect
     And I set the field "Append new items" to "1"
     And I upload "mod/feedback/tests/fixtures/testexport.xml" file to "File" filemanager

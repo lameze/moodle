@@ -93,11 +93,10 @@ class mod_feedback_generator extends testing_module_generator {
         global $DB;
 
         $questiontype = $data['questiontype'] ?? 'textfield';
-        $cm = get_coursemodule_from_id('feedback', $data['cmid']);
+        $cm = get_coursemodule_from_id('feedback', $data['feedbackid']);
         $feedback = $DB->get_record('feedback', ['id' => $cm->instance]);
 
         unset($data['questiontype']);
-        unset($data['cmid']);
 
         if (isset($data['values'])) {
             $data['values'] = $this->format_item_values($questiontype, $data['values']);
@@ -105,7 +104,30 @@ class mod_feedback_generator extends testing_module_generator {
 
         return call_user_func([$this, "create_item_{$questiontype}"], $feedback, $data);
     }
+    /**
+     * Get the activity id from its name
+     *
+     * @param string $activityname
+     * @return int
+     * @throws Exception
+     */
+    protected function get_activity_id(string $activityname): int {
+        global $DB;
+        error_log("lalala");
+        $sql = <<<EOF
+            SELECT cm.instance
+              FROM {course_modules} cm
+        INNER JOIN {modules} m ON m.id = cm.module
+        INNER JOIN {feedback} f ON f.id = cm.instance
+             WHERE cm.idnumber = :idnumber or f.name = :name
+EOF;
+        $id = $DB->get_field_sql($sql, ['idnumber' => $activityname, 'name' => $activityname]);
+        if (empty($id)) {
+            throw new Exception("There is no feedback with name '{$activityname}' does not exist");
+        }
 
+        return $id;
+    }
     /**
      * Create response.
      *
@@ -343,7 +365,7 @@ class mod_feedback_generator extends testing_module_generator {
             $presentation .= FEEDBACK_MULTICHOICERATED_ADJUST_SEP.'1';
         }
         $record['presentation'] = $record['subtype'].FEEDBACK_MULTICHOICERATED_TYPE_SEP.$presentation;
-
+//print_object($record);
         $itemobj->set_data((object) $record);
         return $itemobj->save_item();
     }

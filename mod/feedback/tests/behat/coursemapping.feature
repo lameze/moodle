@@ -35,32 +35,34 @@ Feature: Mapping courses in a feedback
       | feedback   | Course feedback  | Acceptance test site | feedback0 | 1         | 1             | 1       |
       | feedback   | Another feedback | C1                   | feedback1 | 1         | 1             | 0       |
     And I enable "feedback" "block" plugin
-    When I log in as "manager"
-    And I am on site homepage
-    And I follow "Course feedback"
-    And I click on "Edit questions" "link" in the "[role=main]" "css_element"
-    And I add a "Information" question to the feedback with:
-      | Question         | this is an information question |
-      | Label            | info                            |
-      | Information type | Course                          |
-    And I add a "Multiple choice (rated)" question to the feedback with:
-      | Question               | this is a multiple choice rated    |
-      | Label                  | multichoicerated                   |
-      | Multiple choice type   | Multiple choice - single answer    |
-      | Multiple choice values | 0/option a\n1/option b\n5/option c |
-    And I add a "Multiple choice" question to the feedback with:
-      | Question               | this is a simple multiple choice    |
-      | Label                  | multichoicesimple                   |
-      | Multiple choice type   | Multiple choice - single answer allowed (drop-down menu) |
-      | Multiple choice values | option d\noption e\noption f                           |
-    And I log out
-    And I log in as "teacher"
-    And I am on "Course 1" course homepage with editing mode on
-    And I add the "Feedback" block
-    And I am on "Course 2" course homepage
-    And I add the "Feedback" block
-    And I am on "Course 3" course homepage
-    And I add the "Feedback" block
+    And the following "blocks" exist:
+      | blockname      | contextlevel | reference | pagetypepattern | defaultregion |
+      | block_feedback | Course       | C1        | my-index        | side-pre     |
+      | block_feedback | Course       | C2        | my-index        | side-pre     |
+      | block_feedback | Course       | C3        | my-index        | side-pre     |
+    And the following "mod_feedback > questions" exist:
+      | feedback  | name                              | questiontype     | label             | subtype | values |
+      | feedback0 | this is an information question   | info             | info              |         |                              |
+      | feedback0 | this is a multiple choice rated   | multichoicerated | multichoicerated  | r       | option a\noption b\noption c |
+      | feedback0 | this is a simple multiple choice  | multichoice      | multichoicesimple | d       | option d\noption e\noption f |
+#    When I log in as "manager"
+#    And I am on site homepage
+#    And I follow "Course feedback"
+#    And I click on "Edit questions" "link" in the "[role=main]" "css_element"
+##    And I add a "Information" question to the feedback with:
+##      | Question         | this is an information question |
+##      | Label            | info                            |
+##      | Information type | Course                          |
+#    And I add a "Multiple choice (rated)" question to the feedback with:
+#      | Question               | this is a multiple choice rated    |
+#      | Label                  | multichoicerated                   |
+#      | Multiple choice type   | Multiple choice - single answer    |
+#      | Multiple choice values | 0/option a\n1/option b\n5/option c |
+#    And I add a "Multiple choice" question to the feedback with:
+#      | Question               | this is a simple multiple choice    |
+#      | Label                  | multichoicesimple                   |
+#      | Multiple choice type   | Multiple choice - single answer allowed (drop-down menu) |
+#      | Multiple choice values | option d\noption e\noption f                           |
     And I log out
 
   Scenario: Course feedback can not be mapped
@@ -74,6 +76,7 @@ Feature: Mapping courses in a feedback
     And I log in as "user1"
     And I am on site homepage
     And I follow "Course feedback"
+#    And I pause
     And I follow "Answer the questions"
     And I should see "Acceptance test site" in the ".feedback_form" "css_element"
     And I set the following fields to these values:
