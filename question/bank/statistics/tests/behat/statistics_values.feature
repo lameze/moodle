@@ -203,6 +203,7 @@ Feature: Show statistics in question bank
       | 3    | Two      |
       | 4    | Two      |
       | 5    | One      |
+    And I run the scheduled task "\quiz_statistics\task\recalculate"
     # Confirm the "Needs checking?" column matches the expected values based on students' answers
     When I am on the "Quiz 3" "mod_quiz > question bank" page logged in as "admin"
     Then I should see "Likely" in the "MCA" "table_row"
