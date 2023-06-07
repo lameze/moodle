@@ -197,12 +197,10 @@ M.core_comment = {
                             time: list[i].time
                         };
                         var deleteStr = Y.Escape.html(M.util.get_string('deletecommentbyon', 'moodle', tokens));
+                        var img = '<i class="icon fa fa-trash fa-fw " title="' + deleteStr + '" role="img" aria-label="' + deleteStr + '"></i>';
                         list[i].content = '<div class="comment-delete">' +
                             '<a href="#" role="button" id ="comment-delete-' + this.client_id + '-' + list[i].id + '"' +
-                            '   title="' + deleteStr + '">' +
-                            '<span></span>' +
-                            '</a>' +
-                            '</div>' + list[i].content;
+                            '   title="' + deleteStr + '">' + img + '</a>' + '</div>' + list[i].content;
                     }
                     val = val.replace('___time___', list[i].time);
                     val = val.replace('___picture___', list[i].avatar);
@@ -333,12 +331,6 @@ M.core_comment = {
                         }, '13,32');
                         // 13 and 32 are the keycodes for space and enter.
 
-                        require(['core/templates', 'core/notification'], function(Templates, Notification) {
-                            var title = node.getAttribute('title');
-                            Templates.renderPix('t/delete', 'core', title).then(function(html) {
-                                node.set('innerHTML', html);
-                            }).catch(Notification.exception);
-                        });
                     }
                 );
             },
