@@ -306,41 +306,38 @@ M.core_comment = {
             },
             register_delete_buttons: function() {
                 var scope = this;
-                // page buttons
-                Y.all('div.comment-delete a').each(
-                    function(node, id) {
-                        var theid = node.get('id');
-                        var parseid = new RegExp("comment-delete-"+scope.client_id+"-(\\d+)", "i");
-                        var commentid = theid.match(parseid);
-                        if (!commentid) {
-                            return;
-                        }
-                        if (commentid[1]) {
-                            Y.Event.purgeElement('#'+theid, false, 'click');
-                        }
-                        node.on('click', function(e) {
-                            e.preventDefault();
-                            if (commentid[1]) {
-                                scope.dodelete(commentid[1]);
-                            }
-                        });
-                        // Also handle space/enter key.
-                        node.on('key', function(e) {
-                            e.preventDefault();
-                            if (commentid[1]) {
-                                scope.dodelete(commentid[1]);
-                            }
-                        }, '13,32');
-                        // 13 and 32 are the keycodes for space and enter.
 
-                        require(['core/templates', 'core/notification'], function(Templates, Notification) {
-                            var title = node.getAttribute('title');
-                            Templates.renderPix('t/delete', 'core', title).then(function(html) {
-                                node.set('innerHTML', html);
-                            }).catch(Notification.exception);
-                        });
-                    }
-                );
+                window.require(['core/templates'], function(Templates) {
+                    Templates.renderPix('t/delete', 'core', {pix: 't/delete'}).then(function(html) {
+                        return Y.all('div.comment-delete a').each(
+                            function(node, id) {
+                                var theid = node.get('id');
+                                var parseid = new RegExp("comment-delete-"+scope.client_id+"-(\\d+)", "i");
+                                var commentid = theid.match(parseid);
+                                if (!commentid) {
+                                    return;
+                                }
+                                if (commentid[1]) {
+                                    Y.Event.purgeElement('#'+theid, false, 'click');
+                                }
+                                node.setHTML(html);
+                                node.on('click', function(e) {
+                                    e.preventDefault();
+                                    if (commentid[1]) {
+                                        scope.dodelete(commentid[1]);
+                                    }
+                                });
+                                // Also handle space/enter key.
+                                node.on('key', function(e) {
+                                    e.preventDefault();
+                                    if (commentid[1]) {
+                                        scope.dodelete(commentid[1]);
+                                    }
+                                }, 'enter,space');
+                            }
+                        );
+                    });
+                });
             },
             register_pagination: function() {
                 var scope = this;
