@@ -183,24 +183,47 @@ M.core_comment = {
                 ret.ids = [];
                 var template = Y.one('#cmt-tmpl');
                 var html = '';
-                for(var i in list) {
-                    var htmlid = 'comment-'+list[i].id+'-'+this.client_id;
+
+                // Define a helper function to fetch the delete icon asynchronously
+                function fetchDeleteIcon(node, title) {
+                    return new Promise(function(resolve, reject) {
+                        require(['core/templates', 'core/notification'], function(Templates) {
+                            Templates.renderPix('t/delete', 'core', title).then(function(html) {
+                                resolve(html);
+                            }).catch(function(error) {
+                                reject(error);
+                            });
+                        });
+                    });
+                }
+
+                for (var i in list) {
+                    var htmlid = 'comment-' + list[i].id + '-' + this.client_id;
                     var val = template.get('innerHTML');
                     if (list[i].profileurl) {
                         val = val.replace('___name___', '<a href="'+list[i].profileurl+'">'+list[i].fullname+'</a>');
                     } else {
                         val = val.replace('___name___', list[i].fullname);
                     }
-                    if (list[i]['delete']||newcmt) {
+                    if (list[i]['delete'] || newcmt) {
                         var tokens = {
                             user: list[i].fullname,
                             time: list[i].time
                         };
+
                         var deleteStr = Y.Escape.html(M.util.get_string('deletecommentbyon', 'moodle', tokens));
-                        var img = '<i class="icon fa fa-trash fa-fw " title="' + deleteStr + '" role="img" aria-label="' + deleteStr + '"></i>';
-                        list[i].content = '<div class="comment-delete">' +
-                            '<a href="#" role="button" id ="comment-delete-' + this.client_id + '-' + list[i].id + '"' +
-                            '   title="' + deleteStr + '">' + img + '</a>' + '</div>' + list[i].content;
+                        var deleteId = 'comment-delete-' + this.client_id + '-' + list[i].id;
+
+                        // Fetch the delete icon asynchronously
+                        var deleteIconPromise = fetchDeleteIcon(Y.one('#' + deleteId), deleteStr);
+
+                        if (deleteIconPromise) {
+                            deleteIconPromise.then(function(iconHtml) {
+                                var deleteIcon = '<a href="#" role="button" id ="' + deleteId + '">' + iconHtml + '</a>';
+                                list[i].content = '<div class="comment-delete">' + deleteIcon + '</div>' + list[i].content;
+                                window.console.log(list[i].content);
+                            });
+                        }
                     }
                     val = val.replace('___time___', list[i].time);
                     val = val.replace('___picture___', list[i].avatar);
