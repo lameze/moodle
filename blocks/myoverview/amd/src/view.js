@@ -224,43 +224,63 @@ const getRemoveFavouriteMenuItem = (root, courseId) => {
  * @param {Number} courseId Course id number
  */
 const addToFavourites = (root, courseId) => {
-    const removeAction = getRemoveFavouriteMenuItem(root, courseId);
-    const addAction = getAddFavouriteMenuItem(root, courseId);
-
-    setCourseFavouriteState(courseId, true).then(success => {
-        if (success) {
-            PubSub.publish(CourseEvents.favourited, courseId);
-            removeAction.removeClass('hidden');
-            addAction.addClass('hidden');
-            showFavouriteIcon(root, courseId);
-        } else {
-            Notification.alert('Starring course failed', 'Could not change favourite state');
-        }
-        return;
-    }).catch(Notification.exception);
+    updateFavouriteState(root, courseId, true);
 };
 
 /**
- * Remove course from favourites
+ * Remove course from favourites.
  *
  * @param {Object} root The course overview container
- * @param {Number} courseId Course id number
+ * @param {Number} courseId Course id number.
  */
 const removeFromFavourites = (root, courseId) => {
+    updateFavouriteState(root, courseId, false);
+};
+
+/**
+ * Update the favourite state of a course.
+ *
+ * @param {Object} root The course overview container
+ * @param {Number} courseId Course id number.
+ * @param {boolean} isFavourite Whether the course is a favourite or not.
+ * @return {Promise}
+ */
+const updateFavouriteState = async (root, courseId, isFavourite) => {
     const removeAction = getRemoveFavouriteMenuItem(root, courseId);
     const addAction = getAddFavouriteMenuItem(root, courseId);
 
-    setCourseFavouriteState(courseId, false).then(success => {
-        if (success) {
-            PubSub.publish(CourseEvents.unfavorited, courseId);
-            removeAction.addClass('hidden');
-            addAction.removeClass('hidden');
-            hideFavouriteIcon(root, courseId);
+    return Repository.setFavouriteCourses({
+        courses: [{
+            'id': courseId,
+            'favourite': isFavourite
+        }]
+    }).then(result => {
+        if (result.warnings.length === 0) {
+            loadedPages.forEach(courseList => {
+                courseList.courses.forEach((course, index) => {
+                    if (course.id == courseId) {
+                        courseList.courses[index].isfavourite = status;
+                    }
+                });
+            });
+
+            if (isFavourite) {
+                PubSub.publish(CourseEvents.favourited, courseId);
+                removeAction.classList.remove('hidden');
+                addAction.classList.add('hidden');
+                showFavouriteIcon(root, courseId);
+            } else {
+                PubSub.publish(CourseEvents.unfavorited, courseId);
+                removeAction.classList.add('hidden');
+                addAction.classList.remove('hidden');
+                hideFavouriteIcon(root, courseId);
+            }
+
+            return true;
         } else {
-            Notification.alert('Starring course failed', 'Could not change favourite state');
+            return false;
         }
-        return;
-    }).catch(Notification.exception);
+    });
 };
 
 /**
@@ -410,38 +430,6 @@ const hideElement = (root, id) => {
             page.remove();
         }
     });
-};
-
-/**
- * Set the courses favourite status and push to repository
- *
- * @param {Number} courseId Course id to favourite.
- * @param {boolean} status new favourite status.
- * @return {Promise} Repository promise.
- */
-const setCourseFavouriteState = (courseId, status) => {
-
-    return Repository.setFavouriteCourses({
-        courses: [
-            {
-                'id': courseId,
-                'favourite': status
-            }
-        ]
-    }).then(result => {
-        if (result.warnings.length === 0) {
-            loadedPages.forEach(courseList => {
-                courseList.courses.forEach((course, index) => {
-                    if (course.id == courseId) {
-                        courseList.courses[index].isfavourite = status;
-                    }
-                });
-            });
-            return true;
-        } else {
-            return false;
-        }
-    }).catch(Notification.exception);
 };
 
 /**
