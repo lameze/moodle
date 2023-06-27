@@ -60,7 +60,7 @@ Feature: The recording can be managed through the room page
     And I should see "This is a new recording description 1" in the "Recording 1" "table_row"
     And I should see "Description 2" in the "Recording 2" "table_row"
 
-  @javascript
+  @javascript @bbbrandom
   Scenario: I can delete a recording
     Given I am on the "RoomRecordings" "bigbluebuttonbn activity" page logged in as admin
     And I change window size to "large"

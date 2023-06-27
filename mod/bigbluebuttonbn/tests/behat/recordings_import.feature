@@ -35,7 +35,7 @@ Feature: Manage and list recordings
     And I should not see "Meeting" in the ".mod_bigbluebuttonbn_recordings_table thead" "css_element"
     And I should see "Name" in the ".mod_bigbluebuttonbn_recordings_table thead" "css_element"
 
-  @javascript
+  @javascript @bbbrandom
   Scenario Outline: I check that I can import recordings into the Recording activity from other activities
     When I am on the "<instancename>" "bigbluebuttonbn activity" page logged in as "admin"
     And I click on "Import recording links" "button"
@@ -53,7 +53,7 @@ Feature: Manage and list recordings
       | RecordingOnly   | should exist |
       | RoomRecordings1 | should exist |
 
-  @javascript
+  @javascript @bbbrandom
   Scenario: I check that I can import recordings into the Recording activity and then if I delete them
   they are back into the pool to be imported again
     When I am on the "RoomRecordings1" "bigbluebuttonbn activity" page logged in as "admin"
@@ -80,10 +80,11 @@ Feature: Manage and list recordings
     And I select "RoomRecordings" from the "sourcebn" singleselect
     And I should see "Recording 1"
 
-  @javascript  @runonly
+  @javascript  @runonly @bbbrandom
   Scenario: I check that I can import recordings from a deleted instance into the Recording activity and then if I delete them
   they are back into the pool to be imported again
     Given I log in as "admin"
+    And I change window size to "large"
     When I am on "Test Course 1" course homepage with editing mode on
     And I delete "RoomRecordings" activity
     # The activity is deleted asynchroneously.
@@ -103,9 +104,11 @@ Feature: Manage and list recordings
     # We use javascript here to create the table so we don't get the same structure.
     Then "Recording 1" "table_row" should exist
     And I click on "a[data-action='delete']" "css_element" in the "Recording 1" "table_row"
+    And I pause
     And I click on "OK" "button" in the "Confirm" "dialogue"
     # There is no confirmation dialog when deleting an imported record.
-    And I wait until the page is ready
+    And I pause
+    And I am on the "RoomRecordings1" "bigbluebuttonbn activity" page
     Then I should not see "Recording 1"
     # Change window size to large to avoid the "Import recording links" button being hidden (random failure).
     And I change window size to "large"

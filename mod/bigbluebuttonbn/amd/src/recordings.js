@@ -172,6 +172,7 @@ const getDataTableFunctions = (tableId, searchFormId, dataTable) => {
     };
 
     const requestAction = (element) => {
+        window.console.log('requestAction');
         const getDataFromAction = (element, dataType) => {
             const dataElement = element.closest(`[data-${dataType}]`);
             if (dataElement) {
@@ -204,36 +205,50 @@ const getDataTableFunctions = (tableId, searchFormId, dataTable) => {
         // Now additional options should be a json string.
         payload.additionaloptions = JSON.stringify(payload.additionaloptions);
         if (element.dataset.requireConfirmation === "1") {
-            // Create the confirmation dialogue.
-            return new Promise((resolve) =>
-                ModalFactory.create({
-                    title: getString('confirm'),
-                    body: recordingConfirmationMessage(payload),
-                    type: ModalFactory.types.SAVE_CANCEL
-                }).then(async(modal) => {
-                    modal.setSaveButtonText(await getString('ok', 'moodle'));
+            var stringkeys = [
+                {
+                    key: 'confirm',
+                },
+                {
+                    key: 'ok',
+                    component: 'moodle'
+                }];
 
-                    // Handle save event.
-                    modal.getRoot().on(ModalEvents.save, () => {
-                        resolve(true);
-                    });
+            getStrings(stringkeys).then(langstrings => {
+                debugger;
 
-                    // Handle hidden event.
+                // return new Promise((resolve) =>
+
+                // ModalFactory.create({
+                //     title: getString('confirm'),
+                //     body: recordingConfirmationMessage(payload),
+                //     type: ModalFactory.types.SAVE_CANCEL
+                // }).then(async(modal) => {
+                //     modal.setSaveButtonText(await getString('ok', 'moodle'));
+        //
+        //             // Handle save event.
+        //             modal.getRoot().on(ModalEvents.save, () => {
+        //                 window.console.log('save is delete :P');
+        //                 resolve(true);
+        //             });
+        //
+        //             // Handle hidden event.
                     modal.getRoot().on(ModalEvents.hidden, () => {
                         // Destroy when hidden.
                         modal.destroy();
                         resolve(false);
                     });
-
-                    modal.show();
-
-                    return modal;
-                }).catch(displayException)
-            ).then((proceed) =>
-                proceed ? repository.updateRecording(payload) : () => null
-            );
+        //
+        //             modal.show();
+        //
+        //             return modal;
+        //         }).catch(displayException)
+        //     ).then((proceed) =>
+                 proceed ? repository.updateRecording(payload) : () => null
+        //     );
         } else {
-            return repository.updateRecording(payload);
+            //return repository.updateRecording(payload);
+                window.console.log('nah');
         }
     };
 
@@ -274,6 +289,8 @@ const getDataTableFunctions = (tableId, searchFormId, dataTable) => {
      * @param   {Event} e
      */
     const processAction = e => {
+        window.console.log(e);
+        window.console.log('processAction');
         const popoutLink = e.target.closest('[data-action="play"]');
         if (popoutLink) {
             e.preventDefault();
@@ -287,6 +304,7 @@ const getDataTableFunctions = (tableId, searchFormId, dataTable) => {
 
         // Fetch any clicked anchor.
         const clickedLink = e.target.closest('a[data-action]');
+        window.console.log(clickedLink);
         if (clickedLink && !clickedLink.classList.contains('disabled')) {
             e.preventDefault();
 
@@ -337,6 +355,7 @@ const getDataTableFunctions = (tableId, searchFormId, dataTable) => {
  * @returns {Promise}
  */
 const setupDatatable = (tableId, searchFormId, response) => {
+    window.console.log('setupDatatable ');
     if (!response) {
         return Promise.resolve();
     }
