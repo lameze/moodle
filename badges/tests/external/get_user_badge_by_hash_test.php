@@ -93,16 +93,13 @@ class get_user_badge_by_hash_test extends externallib_advanced_testcase {
         $badge->nextcron   = $sitebadge->nextcron;
         $badge->issuedid   = (int) $siteissuedbadge->id;
         $badge->uniquehash = $siteissuedbadge->uniquehash;
-        $badge->dateissued = (int) $siteissuedbadge->dateissued;
+        $badge->dateissued = $now;
         $badge->dateexpire = $siteissuedbadge->dateexpire;
         $badge->visible    = (int) $siteissuedbadge->visible;
         $badge->email      = $student1->email;
         $context           = \context_system::instance();
         $badge->badgeurl   = \moodle_url::make_webservice_pluginfile_url($context->id, 'badges', 'badgeimage', $badge->id, '/',
                                                                             'f3')->out(false);
-
-        // Hack the database to adjust the time each badge was issued.
-        $DB->set_field('badge_issued', 'dateissued', $now, ['userid' => $student1->id, 'badgeid' => $badgeid]);
         $badge->status = BADGE_STATUS_ACTIVE_LOCKED;
 
         // Add an endorsement for the badge.
@@ -146,17 +143,13 @@ class get_user_badge_by_hash_test extends externallib_advanced_testcase {
         $badge->nextcron   = $coursebadge->nextcron;
         $badge->issuedid   = (int) $courseissuedbadge->id;
         $badge->uniquehash = $courseissuedbadge->uniquehash;
-        $badge->dateissued = (int) $courseissuedbadge->dateissued;
+        $badge->dateissued = $now;
         $badge->dateexpire = $courseissuedbadge->dateexpire;
         $badge->visible    = (int) $courseissuedbadge->visible;
         $badge->email      = $student1->email;
         $context           = \context_course::instance($badge->courseid);
         $badge->badgeurl   = \moodle_url::make_webservice_pluginfile_url($context->id, 'badges', 'badgeimage', $badge->id , '/',
                                                                             'f3')->out(false);
-
-        // Hack the database to adjust the time each badge was issued.
-        $DB->set_field('badge_issued', 'dateissued', $now, ['userid' => $student1->id, 'badgeid' => $badge->id]);
-
         unset($badge->endorsement);
         $badge->alignment    = [];
         $usercoursebadge[] = (array) $badge;
