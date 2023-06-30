@@ -42,6 +42,7 @@ Feature: Perform basic calendar functionality
       | Type of event | site |
       | Event title | Really awesome event! |
       | Description | Come join this awesome event, sucka! |
+    And I log out
     When I am on the "Course 1" course page logged in as student1
     And I follow "Full calendar"
     And I should see "Really awesome event!"
