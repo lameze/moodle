@@ -17,4 +17,6 @@ Feature: I can download a preset
     Given I log in as "admin"
     And I navigate to "Site admin presets" in site administration
     When I open the action menu in "Starter" "table_row"
-    Then following "Download" "link" in the "Starter" "table_row" should download between "0" and "5000" bytes
+    Then following "Download" "link" should download a file that:
+        | Has size at least | 1000 |
+        | Has size at most  | 2000 |
