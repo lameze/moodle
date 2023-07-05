@@ -1570,11 +1570,20 @@ EOF;
      * and {@link following_should_download_between_and_bytes()}
      *
      * @param string $link the text of the link.
+     * @param string $nodeselectortype the type of the node where the link is.
+     * @param string $nodeelement the element of the node where the link is.
+     *
      * @return string the content of the downloaded file.
      */
-    public function download_file_from_link($link) {
+    public function download_file_from_link(string $link, string $nodeselectortype = '', string $nodeelement = ''): string {
+
         // Find the link.
-        $linknode = $this->find_link($link);
+        if (!empty($nodeselectortype) && !empty($nodeelement)) {
+            $linknode = $this->get_node_in_container('link', $link, $nodeselectortype, $nodeelement);
+        } else {
+            $linknode = $this->find_link($link);
+        }
+
         $this->ensure_node_is_visible($linknode);
 
         // Get the href and check it.
