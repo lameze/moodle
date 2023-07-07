@@ -47,9 +47,11 @@ Feature: Average grades are displayed in the gradebook
     And I set the following fields to these values:
       | Status | Suspended |
     And I press "Save changes"
+    And I log out
 
   Scenario: Grade a grade item and ensure the results display correctly in the gradebook
     # Check the admin grade table
+    Given I am on the "C1" "Course" page logged in as "teacher1"
     And I navigate to "View > Grader report" in the course gradebook
     Then I should see "50.00" in the ".avg.r0.lastrow .c1" "css_element"
     Then I should see "50.00" in the ".avg.r0.lastrow .c2" "css_element"
