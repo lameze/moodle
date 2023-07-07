@@ -50,12 +50,9 @@ Feature: Outcome grading
       | assignsubmission_onlinetext_enabled | 1                           |
       | Outcome Test                        | 1                           |
     And I log out
-    And I am on the "Test assignment name" "assign activity" page logged in as student1
-    And I press "Add submission"
-    And I set the following fields to these values:
-      | Online text | My online text |
-    And I press "Save changes"
-    And I log out
+    And the following "mod_assign > submissions" exist:
+      | assign                | user      | onlinetext                          |
+      | Test assignment name  | student1  | I'm the student's first submission  |
     When I am on the "Test assignment name" "assign activity" page logged in as teacher1
     And I navigate to "View all submissions" in current page administration
     And I click on "Grade" "link" in the "Student 0" "table_row"
