@@ -86,6 +86,7 @@ Feature: Mute and unmute conversations
     And I should see "Student 2"
     And "muted" "icon_container" in the "Student 2" "core_message > Message" should be visible
     And I select "Student 2" conversation in messaging
+    And I should see "Hi!" in the "Student 2" "core_message > Message conversation"
     And "muted" "icon_container" in the "[data-action='view-contact']" "css_element" should be visible
     And I open contact menu
     And I click on "Unmute" "link" in the "conversation-actions-menu" "region"
