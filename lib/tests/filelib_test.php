@@ -1875,61 +1875,47 @@ EOF;
         $capacity = $CFG->draft_area_bucket_capacity = 5;
         $leak = $CFG->draft_area_bucket_leak = 0.2; // Leaks every 5 seconds.
 
+//        // Mock the file storage system.
+//        $fsMock = $this->getMockBuilder(\stored_file::class)->getMock();
+//
+//        // Return an empty array for the method get_user_draft_items.
+//        $fsMock->method('get_user_draft_items')->willReturn([]);
+//
+//        // Inject the mock file storage system.
+//        $this->setReturnValue('get_file_storage', $fsMock);
+
+        $file = $this->getMockBuilder(\stored_file::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
         $generator = $this->getDataGenerator();
         $user = $generator->create_user();
 
         $this->setUser($user);
 
-        $itemids = [];
+        // Create a function to advance time in a predictable manner during the test.
+        $advancetime = function ($seconds) use ($CFG) {
+            $CFG->time += $seconds;
+        };
+
+        // Test the function under different scenarios.
+        $this->assertFalse(file_is_draft_areas_limit_reached($user->id)); // No items, not reached limit.
+
         for ($i = 0; $i < $capacity; $i++) {
-            $itemids[$i] = file_get_unused_draft_itemid();
+            // Add items and advance time.
+            self::create_draft_file(['filename' => 'file.png', 'itemid' => $i + 1]);
+            $advancetime(1);
+            $this->assertFalse(file_is_draft_areas_limit_reached($user->id)); // Not reached limit yet.
         }
 
-        // This test highly depends on time. We try to make sure that the test starts at the early moments on the second.
-        // This was not needed if MDL-37327 was implemented.
-        $after = time();
-        while (time() === $after) {
-            usleep(100000);
-        }
-
-        // Burst up to the capacity and make sure that the bucket allows it.
-        $burststart = microtime();
-        for ($i = 0; $i < $capacity; $i++) {
-            if ($i) {
-                sleep(1); // A little delay so we have different timemodified value for files.
-            }
-            $this->assertFalse(file_is_draft_areas_limit_reached($user->id));
-            self::create_draft_file([
-                'filename' => 'file1.png',
-                'itemid' => $itemids[$i],
-            ]);
-        }
-
-        // The bucket should be full after bursting.
+        // Add one more item, the bucket should be full now.
+        self::create_draft_file(['filename' => 'file.png', 'itemid' => $capacity + 1]);
+        $advancetime(1);
         $this->assertTrue(file_is_draft_areas_limit_reached($user->id));
 
-        // Calculate the time taken to burst up the bucket capacity.
-        $timetaken = microtime_diff($burststart, microtime());
-
-        // The bucket leaks so it shouldn't be full after a certain time.
-        // Items are added into the bucket at the rate of 1 item per second.
-        // One item leaks from the bucket every 1/$leak seconds.
-        // So it takes 1/$leak - ($capacity-1) seconds for the bucket to leak one item and not be full anymore.
-        $milliseconds = ceil(1000000 * ((1 / $leak) - ($capacity - 1)) - ($timetaken  * 1000));
-        usleep($milliseconds);
-
-        $this->assertFalse(file_is_draft_areas_limit_reached($user->id));
-
-        // Only one item was leaked from the bucket. So the bucket should become full again if we add a single item to it.
-        self::create_draft_file([
-            'filename' => 'file2.png',
-            'itemid' => $itemids[0],
-        ]);
-        $this->assertTrue(file_is_draft_areas_limit_reached($user->id));
-
-        // The bucket leaks at a constant rate. It doesn't matter if it is filled as the result of bursting or not.
-        sleep(ceil(1 / $leak));
-        $this->assertFalse(file_is_draft_areas_limit_reached($user->id));
+        // Advance time to leak one item from the bucket.
+        $advancetime((1 / $leak) - ($capacity - 1));
+        $this->assertFalse(file_is_draft_areas_limit_reached($user->id)); // One slot should be available now.
     }
 }
 

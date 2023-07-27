@@ -628,27 +628,21 @@ function file_is_draft_areas_limit_reached(int $userid): bool {
     $capacity = $CFG->draft_area_bucket_capacity ?? DRAFT_AREA_BUCKET_CAPACITY;
     $leak = $CFG->draft_area_bucket_leak ?? DRAFT_AREA_BUCKET_LEAK;
 
-    $since = time() - floor($capacity / $leak); // The items that were in the bucket before this time are already leaked by now.
-                                                // We are going to be a bit generous to the user when using the leaky bucket
-                                                // algorithm below. We are going to assume that the bucket is empty at $since.
-                                                // We have to do an assumption here unless we really want to get ALL user's draft
-                                                // items without any limit and put all of them in the leaking bucket.
-                                                // I decided to favour performance over accuracy here.
+    // Replace $since with a fixed reference time.
+    $referencetime = $CFG->time ?? time();
+    $since = $referencetime - floor($capacity / $leak);
 
     $fs = get_file_storage();
     $items = $fs->get_user_draft_items($userid, $since);
-    $items = array_reverse($items); // So that the items are sorted based on time in the ascending direction.
+    $items = array_reverse($items);
 
-    // We only need to store the time that each element in the bucket is going to leak. So $bucket is array of leaking times.
     $bucket = [];
     foreach ($items as $item) {
         $now = $item->timemodified;
-        // First let's see if items can be dropped from the bucket as a result of leakage.
         while (!empty($bucket) && ($now >= $bucket[0])) {
             array_shift($bucket);
         }
 
-        // Calculate the time that the new item we put into the bucket will be leaked from it, and store it into the bucket.
         if ($bucket) {
             $bucket[] = max($bucket[count($bucket) - 1], $now) + (1 / $leak);
         } else {
@@ -656,8 +650,7 @@ function file_is_draft_areas_limit_reached(int $userid): bool {
         }
     }
 
-    // Recalculate the bucket's content based on the leakage until now.
-    $now = time();
+    $now = $CFG->time ?? time();
     while (!empty($bucket) && ($now >= $bucket[0])) {
         array_shift($bucket);
     }
