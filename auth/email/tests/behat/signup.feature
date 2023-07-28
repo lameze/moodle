@@ -6,8 +6,9 @@ Feature: User must accept policy when logging in and signing up
 
   Scenario: Accept policy on sign up, no site policy
     Given the following config values are set as admin:
-      | registerauth    | email |
-      | passwordpolicy  | 0     |
+      | smtphosts       | 0.0.0.0:1025 |
+      | registerauth    | email        |
+      | passwordpolicy  | 0            |
     And I am on site homepage
     And I follow "Log in"
     When I click on "Create new account" "link"
@@ -15,13 +16,13 @@ Feature: User must accept policy when logging in and signing up
     And I set the following fields to these values:
       | Username      | user1                 |
       | Password      | user1                 |
-      | Email address | user1@address.invalid |
-      | Email (again) | user1@address.invalid |
+      | Email address | student1@example.com |
+      | Email (again) | student1@example.com |
       | First name    | User1                 |
       | Last name     | L1                    |
     And I press "Create my new account"
     And I should see "Confirm your account"
-    And I should see "An email should have been sent to your address at user1@address.invalid"
+    And I should see "An email should have been sent to your address at student1@example.com"
     And I confirm email for "user1"
     And I should see "Thanks, User1 L1"
     And I should see "Your registration has been confirmed"
@@ -38,6 +39,7 @@ Feature: User must accept policy when logging in and signing up
       | registerauth    | email              |
       | passwordpolicy  | 0                  |
       | sitepolicy      | https://moodle.org |
+      | smtphosts       | 0.0.0.0:1025       |
     And I am on site homepage
     And I follow "Log in"
     When I click on "Create new account" "link"
@@ -45,14 +47,14 @@ Feature: User must accept policy when logging in and signing up
     And I set the following fields to these values:
       | Username      | user1                 |
       | Password      | user1                 |
-      | Email address | user1@address.invalid |
-      | Email (again) | user1@address.invalid |
+      | Email address | user1@example.com     |
+      | Email (again) | user1@example.com     |
       | First name    | User1                 |
       | Last name     | L1                    |
       | I understand and agree | 1            |
     And I press "Create my new account"
     And I should see "Confirm your account"
-    And I should see "An email should have been sent to your address at user1@address.invalid"
+    And I should see "An email should have been sent to your address at user1@example.com"
     And I confirm email for "user1"
     And I should see "Thanks, User1 L1"
     And I should see "Your registration has been confirmed"
@@ -69,6 +71,7 @@ Feature: User must accept policy when logging in and signing up
       | allowaccountssameemail | <allowsameemail> |
       | registerauth           | email              |
       | passwordpolicy         | 0                  |
+      | smtphosts              | 0.0.0.0:1025       |
     And the following "users" exist:
       | username | firstname | lastname | email          |
       | s1       | John      | Doe      | s1@example.com |
