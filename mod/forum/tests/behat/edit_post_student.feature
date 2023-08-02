@@ -16,12 +16,11 @@ Feature: Students can edit or delete their forum posts within a set time limit
       | student1 | C1 | student |
     And the following "activities" exist:
       | activity   | name                   | course  | idnumber  |
-      | forum      | Test forum name        | C1      | forum     |
-    And I am on the "Course 1" course page logged in as student1
+      | forum      | Test forum name        | C1      | forum1     |
     And the following "mod_forum > discussions" exist:
-      | user     | forum | name               | message          |
-      | student1 | forum | Forum post subject | This is the body |
-    And I am on the "Test forum name" "forum activity" page
+      | user     | forum  | name               | message          |
+      | student1 | forum1  | Forum post subject | This is the body |
+
 
   Scenario: Edit forum post
     Given I follow "Forum post subject"
