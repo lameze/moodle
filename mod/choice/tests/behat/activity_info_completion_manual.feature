@@ -78,4 +78,5 @@ Feature: Manual completion in the choice activity
     Given I am on the "What to drink?" "choice activity" page logged in as student1
     Then the manual completion button of "What to drink?" overridden by "Teacher 1" is displayed as "Mark as done"
     And I toggle the manual completion state of "What to drink?"
+    Given I am on the "What to drink?" "choice activity" page logged in as student1
     And the manual completion button of "What to drink?" is displayed as "Done"

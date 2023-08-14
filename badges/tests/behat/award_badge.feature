@@ -265,6 +265,7 @@ Feature: Award badges
     # The student should now see their badge.
     And I log in as "student1"
     And I follow "Profile" in the user menu
+    When I click on "Course 1" "link" in the "region-main" "region"
     Then I should see "Course Badge"
 
   @javascript
