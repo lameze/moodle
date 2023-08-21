@@ -65,6 +65,7 @@ Feature: The recording can be managed through the room page
     Given I am on the "RoomRecordings" "bigbluebuttonbn activity" page logged in as admin
     When I click on "a[data-action='delete']" "css_element" in the "Recording 1" "table_row"
     And I click on "OK" "button" in the "Confirm" "dialogue"
+    And I wait "1" seconds
     Then I should not see "Recording 1"
     And I should see "Recording 2"
     And I reload the page
