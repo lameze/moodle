@@ -208,13 +208,17 @@ const getDataTableFunctions = (tableId, searchFormId, dataTable) => {
             return new Promise((resolve) =>
                 ModalFactory.create({
                     title: getString('confirm'),
-                    body: recordingConfirmationMessage(payload),
                     type: ModalFactory.types.SAVE_CANCEL
                 }).then(async(modal) => {
+                    const confirmationMessage = await recordingConfirmationMessage(payload);
+                    modal.setBody(confirmationMessage);
                     modal.setSaveButtonText(await getString('ok', 'moodle'));
 
                     // Handle save event.
-                    modal.getRoot().on(ModalEvents.save, () => {
+                    modal.getRoot().on(ModalEvents.save, async () => {
+                        // Make sure the update is completed before resolving the promise.
+                        await repository.updateRecording(payload);
+                        modal.destroy(); // Destroy the modal after updatde.
                         resolve(true);
                     });
 
@@ -226,11 +230,7 @@ const getDataTableFunctions = (tableId, searchFormId, dataTable) => {
                     });
 
                     modal.show();
-
-                    return modal;
                 }).catch(displayException)
-            ).then((proceed) =>
-                proceed ? repository.updateRecording(payload) : () => null
             );
         } else {
             return repository.updateRecording(payload);
