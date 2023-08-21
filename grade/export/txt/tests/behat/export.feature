@@ -24,6 +24,7 @@ Feature: I need to export grades as text
       | gradeitem            | user     | grade |
       | Test assignment name | student1 | 80.00 |
     And I am on the "Course 1" "grades > Grader report > View" page logged in as "teacher1"
+    And I turn editing mode on
 
   @javascript
   Scenario: Export grades as text
