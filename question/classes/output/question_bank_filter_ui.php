@@ -62,6 +62,11 @@ class question_bank_filter_ui extends datafilter {
     protected $pagevars;
 
     /**
+     * @var array Additional display parameters.
+     */
+    protected $additionalparams;
+
+    /**
      * @var array Additional parameters used by view classes.
      */
     protected $extraparams;
