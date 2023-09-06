@@ -98,6 +98,7 @@ Feature: The timeline block allows users to see upcoming courses
     And I click on "All" "link" in the "Timeline" "block"
     When I reload the page
     And I click on "More courses" "button" in the "Timeline" "block"
+    And I change window size to "large"
     Then I should see "Course 3" in the "Timeline" "block"
     And I should see "Course 2" in the "Timeline" "block"
     And I should see "Course 1" in the "Timeline" "block"

@@ -29,7 +29,8 @@ define(
     'core/paged_content_factory',
     'core/str',
     'core/user_date',
-    'block_timeline/calendar_events_repository'
+    'block_timeline/calendar_events_repository',
+    'core/pending'
 ],
 function(
     $,
@@ -38,7 +39,8 @@ function(
     PagedContentFactory,
     Str,
     UserDate,
-    CalendarEventsRepository
+    CalendarEventsRepository,
+    Pending
 ) {
 
     var SECONDS_IN_DAY = 60 * 60 * 24;
@@ -406,6 +408,7 @@ function(
      * @param {object} additionalConfig Additional config options to pass to pagedContentFactory
      */
     var init = function(root, pageLimit, preloadedPages, paginationAriaLabel, additionalConfig) {
+        const pendingPromise = new Pending('block/timeline:event-init');
         root = $(root);
 
         // Create a promise that will be resolved once the first set of page
@@ -463,6 +466,8 @@ function(
                 });
 
                 return html;
+            }).then(() => {
+                return pendingPromise.resolve();
             })
             .catch(Notification.exception);
     };
