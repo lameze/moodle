@@ -23,8 +23,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use Behat\Mink\Exception\ExpectationException;
 use Behat\Gherkin\Node\TableNode as TableNode;
+use Behat\Mink\Exception\ExpectationException;
 use Moodle\BehatExtension\Exception\SkippedException;
 
 require_once(__DIR__ . '/../../behat/behat_base.php');
@@ -39,23 +39,20 @@ require_once(__DIR__ . '/../../behat/behat_base.php');
  */
 class behat_email extends behat_base {
 
-    /** @var \core\mailpit The email catcher object */
-    private $emailcatcher;
-
     /**
-     * Check if a email catcher is configured.
+     * Get the email catcher object or thrown a SkippedException if TEST_EMAILCATCHER_SERVER is not defined.
      *
-     * @Given /^a email catcher server is configured$/
+     * @return \core\test\email_catcher
+     * @throws SkippedException
      */
-    public function emailcatcher_is_configured(): void {
+    private function get_catcher(): \core\test\email_catcher {
         if (!defined('TEST_EMAILCATCHER_SERVER')) {
             throw new SkippedException(
-                'The TEST_EMAILCATCHER_SERVER constant must be defined in config.php to use the mailcatcher steps.'
+                'The TEST_EMAILCATCHER_SERVER constant must be defined in config.php to use the mailcatcher steps.',
             );
         }
 
-        // Initialise the email catcher.
-        $this->emailcatcher = new \core\mailpit(TEST_EMAILCATCHER_SERVER);
+        return new \core\test\mailpit_email_catcher(TEST_EMAILCATCHER_SERVER);
     }
 
     /**
@@ -63,12 +60,8 @@ class behat_email extends behat_base {
      *
      * @AfterScenario
      */
-    public function clean_up_email_inbox() {
-        if (empty($this->emailcatcher)) {
-            return;
-        }
-
-        $this->emailcatcher->delete_all();
+    public function reset_after_test(): void {
+        $this->get_catcher()->delete_all();
     }
 
     /**
@@ -80,19 +73,20 @@ class behat_email extends behat_base {
      * @param string $subject The subject to check for.
      * @param string $content The content to check for.
      */
-    public function verify_email_content(string $user, string $subject, string $content) {
-        $list = $this->emailcatcher->list();
-        $id = $list->messages[0]->ID;
-        $summary = $this->emailcatcher->get_message_summary($id);
+    public function verify_email_content(string $user, string $subject, string $content): void {
+        foreach ($this->get_catcher()->list() as $message) {
+            if (!$message->has_recipient($user)) {
+                continue;
+            }
 
-        $this->validate([
-            'expecteduser' => $user,
-            'actualuser' => $summary->To[0]->Address,
-            'expectedsubject' => $subject,
-            'actualsubject' => $summary->Subject,
-            'expectedcontent' => $content,
-            'actualcontent' => $summary->Text,
-        ]);
+            if (!$message->matches_subject($subject)) {
+                continue;
+            }
+
+            $this->validate_data('content', $message->get_content(), $content);
+        }
+
+        throw new ExpectationException("No messages found with subject containing {$subject}", $this->getSession()->getDriver());
     }
 
     /**
@@ -100,18 +94,27 @@ class behat_email extends behat_base {
      *
      * @Then user :user should have :count emails
      *
-     * @param int $count The number of emails to check for.
+     * @param string $user The user to check for.
+     * @param int $expected The number of emails to check for.
      */
-    public function verify_email_count(string $user, int $count) {
-        $emails = $this->emailcatcher->list();
+    public function verify_email_count(string $user, int $expected): void {
 
-        $emailcount = 0;
-        foreach ($emails->messages as $message) {
-            $this->validate(['expecteduser' => $user, 'actualuser' => $message->To[0]->Address]);
-            $emailcount++;
+        $messages = new \CallbackFilterIterator(
+            iterator: $this->get_catcher()->list(),
+            callback: fn($message) => $message->has_recipient($user),
+        );
+
+        $count = iterator_count($messages);
+        if ($count !== $expected) {
+            throw new ExpectationException(
+                sprintf(
+                    'Expected %d messages, but found %d',
+                    $expected,
+                    $count,
+                ),
+                $this->getSession(),
+            );
         }
-
-        $this->validate(['expectedcount' => $count, 'actualcount' => $emailcount]);
     }
 
     /**
@@ -120,7 +123,7 @@ class behat_email extends behat_base {
      * @When I empty the email inbox
      */
     public function empty_email_inbox() {
-        $this->emailcatcher->delete_all();
+        $this->get_catcher()->delete_all();
     }
 
     /**
@@ -130,19 +133,24 @@ class behat_email extends behat_base {
      * @param string $user The user to check for.
      * @param string $subject The subject to check for.
      */
-    public function delete_email(string $user, string $subject) {
-        $list = $this->emailcatcher->search($subject);
+    public function delete_email(string $user, string $subject): void {
+        $list = $this->get_catcher()->search($subject);
         $id = $list->messages[0]->ID;
-        $summary = $this->emailcatcher->get_message_summary($id);
+        $summary = $this->get_catcher()->get_message_summary($id);
 
-        $this->validate([
-            'expecteduser' => $user,
-            'actualuser' => $summary->To[0]->Address,
-            'expectedsubject' => $subject,
-            'actualsubject' => $summary->Subject,
-        ]);
+        $this->validate_data(
+            'user',
+            $user,
+            $summary->get_first_recipient(),
+        );
 
-        $this->emailcatcher->delete([$id]);
+        $this->validate_data(
+            'subject',
+            $subject,
+            $summary->get_subject(),
+        );
+
+        $this->get_catcher()->delete([$id]);
     }
 
     /**
@@ -153,24 +161,29 @@ class behat_email extends behat_base {
      * @param string $user The user to check for.
      * @param string $subject The subject to check for.
      */
-    public function mark_as_read(string $user, string $subject) {
-        $list = $this->emailcatcher->search($subject);
+    public function mark_as_read(string $user, string $subject): void {
+        $list = $this->get_catcher()->search($subject);
 
         if (empty($list->messages)) {
             throw new ExpectationException("No messages found with subject containing {$subject}", $this->getSession()->getDriver());
         }
 
         $id = $list->messages[0]->ID;
-        $summary = $this->emailcatcher->get_message_summary($id);
+        $summary = $this->get_catcher()->get_message_summary($id);
 
-        $this->validate([
-            'expecteduser' => $user,
-            'actualuser' => $summary->To[0]->Address,
-            'expectedsubject' => $subject,
-            'actualsubject' => $summary->Subject,
-        ]);
+        $this->validate_data(
+            'user',
+            $user,
+            $summary->get_first_recipient(),
+        );
 
-        $this->emailcatcher->update_status([$id], true);
+        $this->validate_data(
+            'subject',
+            $subject,
+            $summary->get_subject(),
+        );
+
+        $this->get_catcher()->set_read_status([$id], true);
     }
 
     /**
@@ -181,19 +194,24 @@ class behat_email extends behat_base {
      * @param string $user The user to check for.
      * @param string $subject The subject to check for.
      */
-    public function mark_as_unread(string $user, string $subject) {
-        $list = $this->emailcatcher->list();
+    public function mark_as_unread(string $user, string $subject): void {
+        $list = $this->get_catcher()->list();
         $id = $list->messages[0]->ID;
-        $summary = $this->emailcatcher->get_message_summary($id);
+        $summary = $this->get_catcher()->get_message_summary($id);
 
-        $this->validate([
-            'expecteduser' => $user,
-            'actualuser' => $summary->To[0]->Address,
-            'expectedsubject' => $subject,
-            'actualsubject' => $summary->Subject,
-        ]);
+        $this->validate_data(
+            'user',
+            $user,
+            $summary->get_first_recipient(),
+        );
 
-        $this->emailcatcher->update_status([$id], false);
+        $this->validate_data(
+            'subject',
+            $subject,
+            $summary->get_subject(),
+        );
+
+        $this->get_catcher()->set_read_status([$id], false);
     }
 
     /**
@@ -203,10 +221,10 @@ class behat_email extends behat_base {
      *
      * @param string $status The status to mark all messages as.
      */
-    public function mark_all_messages_as(string $status) {
+    public function mark_all_messages_as(string $status): void {
         $status = ($status === 'read') ? true : false;
 
-        $this->emailcatcher->update_status([], $status);
+        $this->get_catcher()->set_read_status([], $status);
     }
 
     /**
@@ -218,20 +236,29 @@ class behat_email extends behat_base {
      * @param string $subject The subject to check for.
      * @param string $status The status to check for.
      */
-    public function verify_email_status(string $user, string $subject, string $status) {
-        $list = $this->emailcatcher->search($subject);
+    public function verify_email_status(string $user, string $subject, string $status): void {
+        $list = $this->get_catcher()->search($subject);
 
         $id = $list->messages[0]->ID;
-        $summary = $this->emailcatcher->get_message_summary($id);
+        $summary = $this->get_catcher()->get_message_summary($id);
 
-        $this->validate([
-            'expecteduser' => $user,
-            'actualuser' => $summary->To[0]->Address,
-            'expectedsubject' => $subject,
-            'actualsubject' => $summary->Subject,
-            'expectedstatus' => $status == 'read' ? 1 : 0,
-            'actualstatus' => (int) $list->messages[0]->Read,
-        ]);
+        $this->validate_data(
+            'user',
+            $user,
+            $summary->get_first_recipient(),
+        );
+
+        $this->validate_data(
+            'subject',
+            $subject,
+            $summary->get_subject(),
+        );
+
+        $this->validate_data(
+            'status',
+            $subject,
+            $status == 'read' ? 1 : 0,
+        );
     }
 
     /**
@@ -241,7 +268,7 @@ class behat_email extends behat_base {
      *
      * @param TableNode $table The table of emails to send.
      */
-    public function the_following_emails_have_been_sent(TableNode $table) {
+    public function the_following_emails_have_been_sent(TableNode $table): void {
         if (!$rows = $table->getRows()) {
             return;
         }
@@ -285,24 +312,38 @@ class behat_email extends behat_base {
     /**
      * Validate the emails expected and actual values.
      *
-     * @param array $data The data to validate.
+     * @param string $field The field to validate.
+     * @param string $expected The expected value.
+     * @param string $actual The actual value.
      */
-    protected function validate(array $data) {
+    private function validate_data(string $field, string $expected, string $actual): void {
 
-        $validations = ['user', 'subject', 'status', 'count', 'content'];
-
-        foreach ($validations as $key) {
-            if (array_key_exists('expected' . $key, $data) && array_key_exists('actual' . $key, $data)) {
-
-                $expected = $data['expected' . $key];
-                $actual = $data['actual' . $key];
-
-                if (($key === 'subject' || $key === 'content') && !str_contains($actual, $expected)) {
-                    throw new ExpectationException(sprintf('Expected %s %s to contain %s, but it does not', $key, $actual, $expected), $this->getSession());
-                } elseif ($key !== 'subject' && $key !== 'content' && $expected != $actual) {
-                    throw new ExpectationException(sprintf('Expected %s %s, but found %s', $expected, $key, $actual), $this->getSession());
+        switch ($field) {
+            case 'subject':
+            case 'content':
+                if (!str_contains($actual, $expected)) {
+                    throw new ExpectationException(
+                        sprintf(
+                            'Expected %s %s to contain %s, but it does not',
+                            $field,
+                            $actual,
+                            $expected,
+                        ),
+                        $this->getSession(),
+                    );
                 }
-            }
+                break;
+            default:
+                throw new ExpectationException(
+                    sprintf(
+                        'Expected %s %s, but found %s',
+                        $expected,
+                        $field,
+                        $actual,
+                    ),
+                    $this->getSession(),
+                );
         }
     }
+
 }

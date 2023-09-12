@@ -22,7 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @copyright Simey Lameze <simey@moodle.com>
  */
-namespace core;
+namespace core\test;
+
+use core\http_client;
 
 /**
  * Mailpit email handling class.
@@ -31,7 +33,7 @@ namespace core;
  * @category   test
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class mailpit implements email_catcher {
+class mailpit_email_catcher implements email_catcher {
 
     /** @var http_client The http client object */
     protected $httpclient;
@@ -45,16 +47,12 @@ class mailpit implements email_catcher {
         $this->httpclient = new http_client(['base_uri' => $baseuri]);
     }
 
-    /**
-     * Get the message summary for a specific message.
-     *
-     * @param string $id The message id.
-     * @return mixed
-     */
-    public function get_message_summary(string $id) {
-        $response = $this->httpclient->get("api/v1/message/{$id}");
 
-        return json_decode($response->getBody());
+    /**
+     * Reset the mailpit server after a test.
+     */
+    public function reset_after_test(): void {
+        $this->httpclient->delete_all();
     }
 
     /**
@@ -63,7 +61,7 @@ class mailpit implements email_catcher {
      * @param array|null $ids The message ids.
      * @return void
      */
-    public function delete(?array $ids = null) {
+    public function delete(?array $ids = null): bool {
         $response = $this->httpclient->delete('api/v1/messages', [
             'json' => ['ids' => $ids]
         ]);
@@ -81,20 +79,15 @@ class mailpit implements email_catcher {
     }
 
     /**
-     * Update the status (read, unread) of a message.
+     * Get the message summary for a specific message.
      *
-     * @param array $ids The message ids.
-     * @param bool $status The status to set.
-     * @return void
+     * @param string $id The message id.
+     * @return mixed
      */
-    public function update_status(array $ids, bool $status) {
+    public function get_message_summary(string $id): stdClass {
+        $response = $this->httpclient->get("api/v1/message/{$id}");
 
-        $params = [
-            'ids' => $ids,
-            'read' => $status
-        ];
-
-        $this->httpclient->put('api/v1/messages', ['json' => $params]);
+        return json_decode($response->getBody());
     }
 
     /**
@@ -102,10 +95,18 @@ class mailpit implements email_catcher {
      *
      * @return mixed
      */
-    public function list() {
-        $response = $this->httpclient->get('api/v1/messages');
+    public function list(): \Generator {
+        $uri = 'api/v1/messages';
 
-        return json_decode($response->getBody());
+        while ($uri !== null) {
+            $response = $this->httpclient->get($uri);
+
+            $data = json_decode($response->getBody());
+
+            yield mailpit_message::create_from_api_response($data);
+            $uri = $data->next_page ?: null;
+
+        }
     }
 
     /**
@@ -114,9 +115,32 @@ class mailpit implements email_catcher {
      * @param string $query The search query.
      * @return mixed
      */
-    public function search(string $query) {
-        $response = $this->httpclient->get("api/v1/search?query={$query}");
+    public function search(string $query): \Iterator {
+        $uri = "api/v1/search?query={$query}";
 
-        return json_decode($response->getBody());
+        while ($uri !== null) {
+            $response = $this->httpclient->get($uri);
+
+            $data = json_decode($response->getBody());
+
+            yield mailpit_message::create_from_api_response($data);
+            $uri = $data->next_page ?: null;
+
+        }
+    }
+
+    /**
+     * Set the read status of a message (read, unread).
+     *
+     * @param array $ids The message ids.
+     * @param bool $status The status to set.
+     */
+    public function set_read_status(array $ids, bool $status): void {
+        $params = [
+            'ids' => $ids,
+            'read' => $status
+        ];
+
+        $this->httpclient->put('api/v1/messages', ['json' => $params]);
     }
 }
