@@ -2,8 +2,7 @@
 Feature: Testing Email Functionality
 
   Background:
-    Given a email catcher server is configured
-    And the following config values are set as admin:
+    Given the following config values are set as admin:
       | smtphosts       | 0.0.0.0:1025 |
 
   Scenario: Verifying email content to user

@@ -14,16 +14,57 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace core;
+namespace core\test;
 
 /**
- * Generic email catcher interface.
+ * Generic message interface.
  *
  * @package    core
  * @category   test
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @copyright Simey Lameze <simey@moodle.com>
  */
-interface email_catcher {
+interface message {
 
+    /**
+     * Get the message body.
+     *
+     * @return string
+     */
+    public function get_body(): string;
+
+    /**
+     * Get the message attachments.
+     *
+     * @return array
+     */
+    public function get_attachments(): array;
+
+    /**
+     * Get the message recipients.
+     *
+     * @return array
+     */
+    public function get_recipients(): array;
+
+    /**
+     * Get the message cc recipients.
+     *
+     * @return array
+     */
+    public function get_cc_recipients(): array;
+
+    /**
+     * Get the message title.
+     *
+     * @return array
+     */
+    public function get_title(): string;
+
+    /**
+     * Get the message sender.
+     *
+     * @return array
+     */
+    public function get_sender(): string;
 }
