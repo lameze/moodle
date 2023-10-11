@@ -586,7 +586,9 @@ define(
          */
         var defaultEditSectionHandler = function(sectionElement, actionItem, data, courseformat, sectionid) {
             var action = actionItem.attr('data-action');
+            // This section looks suspicious.
             if (action === 'hide' || action === 'show') {
+
                 if (action === 'hide') {
                     sectionElement.addClass('hidden');
                     setSectionBadge(sectionElement[0], 'hiddenfromstudents', true, false);
@@ -687,7 +689,7 @@ define(
          * Performs an action on a module (moving, deleting, duplicating, hiding, etc.)
          *
          * @param {JQuery} sectionElement section element we perform action on
-         * @param {Nunmber} sectionid
+         * @param {Number} sectionid
          * @param {JQuery} target the element (menu item) that was clicked
          * @param {String} courseformat
          * @return {boolean} true the action call is sent to the server or false if it is ignored.
@@ -700,7 +702,7 @@ define(
             if (courseeditor.supportComponents && componentActions.includes(action)) {
                 return false;
             }
-
+            // the code below also looks suspicious.
             var spinner = addSectionSpinner(sectionElement);
             var promises = ajax.call([{
                 methodname: 'core_course_edit_section',

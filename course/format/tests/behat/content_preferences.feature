@@ -20,8 +20,8 @@ Feature: Course content collapsed user preferences
       | assign   | Activity sample 1 | Test assignment description | C1     | sample1  | 1       |
       | book     | Activity sample 2 |                             | C1     | sample2  | 2       |
       | choice   | Activity sample 3 | Test choice description     | C1     | sample3  | 3       |
-      | assign   | Activity sample 4 | Test assignment description | C1     | sample1  | 4       |
-      | assign   | Activity sample 5 | Test assignment description | C1     | sample1  | 5       |
+      | assign   | Activity sample 4 | Test assignment description | C1     | sample4  | 4       |
+      | assign   | Activity sample 5 | Test assignment description | C1     | sample5  | 5       |
     And the following "course enrolments" exist:
       | user     | course | role           |
       | student1 | C1     | student        |
@@ -36,8 +36,9 @@ Feature: Course content collapsed user preferences
     And I should see "Activity sample 2" in the "region-main" "region"
     And I should see "Topic 3" in the "region-main" "region"
     And I should see "Activity sample 3" in the "region-main" "region"
+    # hide section 1.
     And I click on "#collapssesection1" "css_element"
-    When I reload the page
+    And I wait until the page is ready
     Then I should see "Topic 1" in the "region-main" "region"
     And I should not see "Activity sample 1" in the "region-main" "region"
     And I should see "Topic 2" in the "region-main" "region"
@@ -47,6 +48,7 @@ Feature: Course content collapsed user preferences
     And I click on "#collapssesection2" "css_element"
     And I reload the page
     And I should see "Topic 1" in the "region-main" "region"
+    #    Then I should not see "Activity sample 1" in the "Topic 1" "section"
     And I should not see "Activity sample 1" in the "region-main" "region"
     And I should see "Topic 2" in the "region-main" "region"
     And I should not see "Activity sample 2" in the "region-main" "region"
