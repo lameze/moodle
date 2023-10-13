@@ -55,7 +55,6 @@ Feature: In a participation report, admin can filter student actions
   @javascript
   Scenario: Filter participation report when only standard log reader is enabled by default
     Given I am on the "Test book name" "book activity" page logged in as student1
-
     And I am on the "Course 1" course page logged in as admin
     And I navigate to "Reports" in current page administration
     And I click on "Course participation" "link"

@@ -128,6 +128,7 @@ $groupmode = groups_get_course_groupmode($course);
 $currentgroup = $SESSION->activegroup[$course->id][$groupmode][$course->defaultgroupingid];
 
 if (!empty($instanceid) && !empty($roleid)) {
+    //here
     $uselegacyreader = $DB->record_exists('log', ['course' => $course->id]);
 
     // Trigger a report viewed event.
@@ -234,8 +235,25 @@ if (!empty($instanceid) && !empty($roleid)) {
     $userfieldsapi = \core_user\fields::for_name();
     $usernamefields = $userfieldsapi->get_sql('u', false, '', '', false)->selects;
     $users = array();
-    // If using legacy log then get users from old table.
+//    // If using legacy log then get users from old table.
+//    $readers = get_log_manager()->get_readers('core\log\sql_reader');
+//    foreach ($readers as $reader) {
+//
+//        // If reader is not a sql_internal_table_reader and not legacy store then return.
+//        if (!($reader instanceof \core\log\sql_internal_table_reader)) {
+//            continue;
+//        }
+//        $logreader = $reader;
+//    }
+//
+//    if (empty($logreader)) {
+//        return null;
+//    }
+//
+//    print_object($logreader); die;
+
     if ($uselegacyreader || $onlyuselegacyreader) {
+        echo '<h2> USING LEGACY LOG READER</h2><br />';
         $sql = "SELECT ra.userid, $usernamefields, u.idnumber, l.actioncount AS count
                   FROM (SELECT DISTINCT userid FROM {role_assignments} WHERE contextid $relatedctxsql AND roleid = :roleid ) ra
                   JOIN {user} u ON u.id = ra.userid
@@ -256,10 +274,12 @@ if (!empty($instanceid) && !empty($roleid)) {
         if (!$users = $DB->get_records_sql($sql, $params, $table->get_page_start(), $table->get_page_size())) {
             $users = array(); // Tablelib will handle saying 'Nothing to display' for us.
         }
+        print_object($users);
     }
 
     // Get record from sql_internal_table_reader and merge with records got from legacy log (if needed).
     if (!$onlyuselegacyreader) {
+        echo '<h2>NOT USING LEGACY LOG READER</h2><br />';
         $sql = "SELECT ra.userid, $usernamefields, u.idnumber, COUNT(DISTINCT l.timecreated) AS count
                   FROM {user} u
                   JOIN {role_assignments} ra ON u.id = ra.userid AND ra.contextid $relatedctxsql AND ra.roleid = :roleid
@@ -286,6 +306,7 @@ if (!empty($instanceid) && !empty($roleid)) {
             $sql .= ' ORDER BY '.$table->get_sql_sort();
         }
         if ($u = $DB->get_records_sql($sql, $params, $table->get_page_start(), $table->get_page_size())) {
+            print_object($u);
             if (empty($users)) {
                 $users = $u;
             } else {
@@ -299,7 +320,9 @@ if (!empty($instanceid) && !empty($roleid)) {
                         $users[$key] = $value;
                     }
                 }
+                print_object($u);
             }
+
             unset($u);
             $u = null;
         }
@@ -329,6 +352,7 @@ if (!empty($instanceid) && !empty($roleid)) {
         $data = array();
         $data[] = html_writer::link(new moodle_url('/user/view.php', array('id' => $u->userid, 'course' => $course->id)),
             fullname($u, true));
+        // Print Yes(2)
         $data[] = !empty($u->count) ? get_string('yes').' ('.$u->count.') ' : get_string('no');
 
         if (!empty($CFG->messaging)) {
