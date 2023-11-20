@@ -56,6 +56,7 @@ Feature: In a lesson activity, students can review the answers they gave to ques
     And I press "Submit"
     And I should see "You have answered 2 correctly out of 3 attempts."
     And I press "Continue"
+    And I wait "5" seconds
     When I follow "Review lesson"
     Then I should see "You have answered 2 correctly out of 3 attempts."
     And I press "Next page"

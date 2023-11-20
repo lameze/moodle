@@ -31,6 +31,8 @@ require_once($CFG->libdir . '/grade/constants.php');
 
 $id      = required_param('id', PARAM_INT);             // Course Module ID
 $pageid  = optional_param('pageid', null, PARAM_INT);   // Lesson Page ID
+echo 'BEGIN 34';
+print_object($pageid);
 $edit    = optional_param('edit', -1, PARAM_BOOL);
 $userpassword = optional_param('userpassword','',PARAM_RAW);
 $backtocourse = optional_param('backtocourse', false, PARAM_RAW);
@@ -95,7 +97,8 @@ if ($timerestriction = $lesson->get_time_restriction_status()) {  // Deadline re
 if ($pageid == LESSON_UNSEENBRANCHPAGE) {
     $pageid = lesson_unseen_question_jump($lesson, $USER->id, $pageid);
 }
-
+echo 'UNSEEN 100';
+print_object($pageid);
 // To avoid multiple calls, store the magic property firstpage.
 $lessonfirstpage = $lesson->firstpage;
 $lessonfirstpageid = $lessonfirstpage ? $lessonfirstpage->id : false;
@@ -104,6 +107,8 @@ $lessonfirstpageid = $lessonfirstpage ? $lessonfirstpage->id : false;
 // if pageid is EOL then the end of the lesson has been reached
 // for flow, changed to simple echo for flow styles, michaelp, moved lesson name and page title down
 $attemptflag = false;
+echo 'EMPTY 110';
+print_object($pageid);
 if (empty($pageid)) {
     // make sure there are pages to view
     if (!$lessonfirstpageid) {
@@ -200,8 +205,9 @@ $currenttab = 'view';
 $extraeditbuttons = false;
 $lessonpageid = null;
 $timer = null;
-
-if ($pageid != LESSON_EOL) {
+echo 'LESSON_EOL 208';
+print_object($pageid);
+if ($pageid !== LESSON_EOL) {
 
     $lesson->set_module_viewed();
 
@@ -257,11 +263,13 @@ if ($pageid != LESSON_EOL) {
     echo $lessonoutput->footer();
 
 } else {
-
+    echo 'END 266';
+    print_object($pageid);
     // End of lesson reached work out grade.
     // Used to check to see if the student ran out of time.
     $outoftime = optional_param('outoftime', '', PARAM_ALPHA);
-
+    echo 'OUTOFTIME';
+    print_object($outoftime);
     $data = $lesson->process_eol_page($outoftime);
     $lessoncontent = $lessonoutput->display_eol_page($lesson, $data);
 

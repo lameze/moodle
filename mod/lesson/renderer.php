@@ -616,6 +616,7 @@ class mod_lesson_renderer extends plugin_renderer_base {
         $output .= $this->box_end(); // End of Lesson button to Continue.
 
         if ($data->reviewlesson !== false) {
+            print_object($data->reviewlesson);
             $output .= html_writer::link($data->reviewlesson, get_string('reviewlesson', 'lesson'),
                 array('class' => 'centerpadded lessonbutton standardbutton pr-3'));
         }
