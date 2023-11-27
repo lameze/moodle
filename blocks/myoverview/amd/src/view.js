@@ -33,6 +33,7 @@ import * as PagedContentEvents from 'core/paged_content_events';
 import * as Aria from 'core/aria';
 import {debounce} from 'core/utils';
 import {setUserPreference} from 'core_user/repository';
+import Pending from 'core/pending';
 
 const TEMPLATES = {
     COURSES_CARDS: 'block_myoverview/view-cards',
@@ -295,7 +296,7 @@ const hideCourse = (root, courseId) => {
     const hideAction = getHideCourseMenuItem(root, courseId);
     const showAction = getShowCourseMenuItem(root, courseId);
     const filters = getFilterValues(root);
-
+    const pendingPromise = new Pending('core/hide_course');
     setCourseHiddenState(courseId, true);
 
     // Remove the course from this view as it is now hidden and thus not covered by this view anymore.
@@ -306,6 +307,7 @@ const hideCourse = (root, courseId) => {
 
     hideAction.addClass('hidden');
     showAction.removeClass('hidden');
+    pendingPromise.resolve();
 };
 
 /**
@@ -318,7 +320,7 @@ const showCourse = (root, courseId) => {
     const hideAction = getHideCourseMenuItem(root, courseId);
     const showAction = getShowCourseMenuItem(root, courseId);
     const filters = getFilterValues(root);
-
+    const pendingPromise = new Pending('core/show_course');
     setCourseHiddenState(courseId, null);
 
     // Remove the course from this view as it is now shown again and thus not covered by this view anymore.
@@ -329,6 +331,7 @@ const showCourse = (root, courseId) => {
 
     hideAction.removeClass('hidden');
     showAction.addClass('hidden');
+    pendingPromise.resolve();
 };
 
 /**

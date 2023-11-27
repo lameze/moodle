@@ -88,7 +88,7 @@ Feature: The my overview block allows users to hide their courses
     And I click on "Starred" "link" in the "Course overview" "block"
     And I should see "Course 2" in the "Course overview" "block"
 
-  Scenario: Test a course is hidden directly with "All" courses
+  Scenario: Test a course is hidden directly with All courses
     Given I am on the "My courses" page logged in as "student1"
     And I click on "All" "button" in the "Course overview" "block"
     When I click on "All" "link" in the "Course overview" "block"
