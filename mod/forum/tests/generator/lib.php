@@ -315,14 +315,26 @@ class mod_forum_generator extends testing_module_generator {
             $record['privatereplyto'] = 0;
         }
 
+        if (!isset($record['discussionsubscribe'])) {
+            $record['discussionsubscribe'] = 0;
+        }
+
         $record = (object) $record;
+        $discussion = $DB->get_record('forum_discussions', ['id' => $record->discussion]);
+
+        if ($record->discussionsubscribe == 1) {
+            \mod_forum\subscriptions::subscribe_user_to_discussion($record->userid, $discussion);
+        } else {
+            \mod_forum\subscriptions::unsubscribe_user_from_discussion($record->userid, $discussion);
+        }
+
         \mod_forum\local\entities\post::add_message_counts($record);
 
         // Add the post.
         $record->id = $DB->insert_record('forum_posts', $record);
 
         if (property_exists($record, 'tags')) {
-            $discussion = $DB->get_record('forum_discussions', ['id' => $record->discussion]);
+
             $cm = get_coursemodule_from_instance('forum', $discussion->forum);
             $tags = is_array($record->tags) ? $record->tags : preg_split('/,/', $record->tags);
 

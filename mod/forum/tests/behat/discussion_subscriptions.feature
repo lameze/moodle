@@ -142,17 +142,12 @@ Feature: A user can control their own subscription preferences for a discussion
       | user  | forum  | name                  | message               |
       | admin | forum1 | Test post subject one | Test post message one |
       | admin | forum1 | Test post subject two | Test post message two |
+    And the following "mod_forum > replies" exist:
+      | user     | forum  | discussion            | subject                 | message                               | discussionsubscribe |
+      | student1 | forum1 | Test post subject one | Reply 1 to discussion 1 | Discussion contents 1, second message | 1                   |
+      | student1 | forum1 | Test post subject two | Reply 1 to discussion 1 | Discussion contents 1, second message | 0                   |
     When I am on the "Test forum name" "forum activity" page logged in as student1
     And I should see "Subscribe to forum"
-    And I reply "Test post subject one" post from "Test forum name" forum with:
-      | Subject | Reply 1 to discussion 1 |
-      | Message | Discussion contents 1, second message |
-      | Discussion subscription | 1 |
-    And I reply "Test post subject two" post from "Test forum name" forum with:
-      | Subject | Reply 1 to discussion 1 |
-      | Message | Discussion contents 1, second message |
-      | Discussion subscription | 0 |
-    And I am on the "Test forum name" "forum activity" page
     Then "Unsubscribe from this discussion" "checkbox" should exist in the "Test post subject one" "table_row"
     And "Subscribe to this discussion" "checkbox" should exist in the "Test post subject two" "table_row"
     And I follow "Test post subject one"

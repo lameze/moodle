@@ -43,6 +43,12 @@ class behat_mod_forum_generator extends behat_generator_base {
                 'required' => [],
                 'switchids' => ['forum' => 'forumid', 'user' => 'userid'],
             ],
+            'replies' => [
+                'singular' => 'reply',
+                'datagenerator' => 'post',
+                'required' => [],
+                'switchids' => ['forum' => 'forumid', 'user' => 'userid'],
+            ],
         ];
     }
 
