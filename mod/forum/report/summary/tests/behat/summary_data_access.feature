@@ -21,15 +21,15 @@ Feature: Report relevant content availability
     And the following "activities" exist:
       | activity | name   | course | idnumber |
       | forum    | forum1 | C1     | forum1   |
-    And the following forum discussions exist in course "Course 1":
+    And the following "mod_forum > discussions" exist:
       | user     | forum  | name        | message   | attachments | inlineattachments |
       | teacher1 | forum1 | discussion1 | message 1 |             |                   |
       | student1 | forum1 | discussion2 | message 3 | att1.jpg    | in1.jpg           |
       | student2 | forum1 | discussion3 | message 4 | att3.jpg    |                   |
-    And the following forum replies exist in course "Course 1":
-      | user     | forum  | discussion  | message | attachments        | inlineattachments |
-      | student1 | forum1 | discussion1 | reply1  | att4.jpg, att5.jpg | in2.jpg           |
-      | student2 | forum1 | discussion2 | reply2  |                    |                   |
+    And the following "mod_forum > replies" exist:
+      | user     | forum  | parentsubject | message | attachments        | inlineattachments |
+      | student1 | forum1 | discussion1   | reply1  | att4.jpg, att5.jpg | in2.jpg           |
+      | student2 | forum1 | discussion2   | reply2  |                    |                   |
 
   @javascript
   Scenario: Teachers can access report data about other users by default

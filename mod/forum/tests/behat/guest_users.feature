@@ -1,4 +1,5 @@
 @mod @mod_forum @javascript
+@mod @mod_forum @javascript
 Feature: Guest and not logged users could see the option to add new post or reply
   In order to guide users to create an account
   As a guest or not logged user

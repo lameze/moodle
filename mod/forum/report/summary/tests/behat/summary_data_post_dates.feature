@@ -25,24 +25,22 @@ Feature: Post date columns data available
       | forum    | forum1 | C1     | forum1C1   |
       | forum    | forum2 | C1     | forum2C1   |
       | forum    | forum1 | C2     | forum1C2   |
-    And the following forum discussions exist in course "Course 1":
-      | user     | forum  | name        | message         | created                 |
-      | teacher1 | forum1 | discussion1 | t1 earliest     | ##2018-01-02 09:00:00## |
-      | teacher1 | forum1 | discussion2 | t1 between      | ##2018-03-27 10:00:00## |
-      | teacher1 | forum2 | discussion3 | t1 other forum  | ##2018-01-01 11:00:00## |
-      | student1 | forum1 | discussion4 | s1 latest       | ##2019-03-27 13:00:00## |
-      | student2 | forum2 | discussion5 | s2 other forum  | ##2018-03-27 09:00:00## |
-    And the following forum replies exist in course "Course 1":
-      | user     | forum  | discussion  | message         | created                 |
-      | teacher1 | forum1 | discussion1 | t1 between      | ##2018-01-02 10:30:00## |
-      | teacher1 | forum1 | discussion2 | t1 latest       | ##2019-09-01 07:00:00## |
-      | teacher1 | forum2 | discussion3 | t1 other forum  | ##2019-09-12 08:00:00## |
-      | student1 | forum1 | discussion1 | s1 earliest     | ##2019-03-27 04:00:00## |
-      | student2 | forum2 | discussion3 | s2 other forum  | ##2018-03-27 10:00:00## |
-    And the following forum discussions exist in course "Course 2":
-      | user     | forum  | name        | message         | created                 |
-      | teacher1 | forum1 | discussion1 | t1 other course | ##2017-01-01 03:00:00## |
-      | teacher1 | forum1 | discussion2 | t1 other course | ##2019-09-13 23:59:00## |
+    And the following "mod_forum > discussions" exist:
+      | user     | forum  | name        | message         | timemodified            | course |
+      | teacher1 | forum1 | discussion1 | t1 earliest     | ##2018-01-02 09:00:00## | C1     |
+      | teacher1 | forum1 | discussion2 | t1 between      | ##2018-03-27 10:00:00## | C1     |
+      | teacher1 | forum2 | discussion3 | t1 other forum  | ##2018-01-01 11:00:00## | C1     |
+      | student1 | forum1 | discussion4 | s1 latest       | ##2019-03-27 13:00:00## | C1     |
+      | student2 | forum2 | discussion5 | s2 other forum  | ##2018-03-27 09:00:00## | C1     |
+      | teacher1 | forum1 | discussion1 | t1 other course | ##2017-01-01 03:00:00## | C2     |
+      | teacher1 | forum1 | discussion2 | t1 other course | ##2019-09-13 23:59:00## | C2     |
+    And the following "mod_forum > replies" exist:
+      | user     | forum  | parentsubject | message         | created                 | course |
+      | teacher1 | forum1 | discussion1   | t1 between      | ##2018-01-02 10:30:00## | C1     |
+      | teacher1 | forum1 | discussion2   | t1 latest       | ##2019-09-01 07:00:00## | C1     |
+      | teacher1 | forum2 | discussion3   | t1 other forum  | ##2019-09-12 08:00:00## | C1     |
+      | student1 | forum1 | discussion1   | s1 earliest     | ##2019-03-27 04:00:00## | C1     |
+      | student2 | forum2 | discussion3   | s2 other forum  | ##2018-03-27 10:00:00## | C1     |
     When I am on the forum1C1 "forum activity" page logged in as teacher1
     And I navigate to "Reports" in current page administration
     Then "Teacher 1" row "Earliest post" column of "forumreport_summary_table" table should contain "Tuesday, 2 January 2018, 9:00"

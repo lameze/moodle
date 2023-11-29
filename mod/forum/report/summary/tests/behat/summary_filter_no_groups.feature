@@ -31,24 +31,22 @@ Feature: Groups report filter is not available if no groups exist
       | forum    | forum1 | C1     | forum1C1   | 0         |
       | forum    | forum2 | C1     | forum2C1   | 0         |
       | forum    | forum1 | C2     | forum1C2   | 2         |
-    And the following forum discussions exist in course "Course 1":
-      | user     | forum  | name        | message    | created           |
-      | teacher1 | forum1 | discussion1 | D1 message | ## 1 month ago ## |
-      | teacher1 | forum1 | discussion2 | D2 message | ## 1 week ago ##  |
-      | teacher1 | forum2 | discussion3 | D3 message | ## 4 days ago ##  |
-      | student1 | forum1 | discussion4 | D4 message | ## 3 days ago ##  |
-      | student2 | forum2 | discussion5 | D5 message | ## 2 days ago##   |
-    And the following forum replies exist in course "Course 1":
-      | user     | forum  | discussion  | message    | created           |
-      | teacher1 | forum1 | discussion1 | D1 reply   | ## 3 weeks ago ## |
-      | teacher1 | forum1 | discussion2 | D2 reply   | ## 6 days ago ##  |
-      | teacher1 | forum2 | discussion3 | D3 reply   | ## 3 days ago ##  |
-      | student1 | forum1 | discussion1 | D1 reply 2 | ## 2 weeks ago ## |
-      | student2 | forum2 | discussion3 | D3 reply   | ## 2 days ago ##  |
-    And the following forum discussions exist in course "Course 2":
-      | user     | forum  | name        | message         | created          |
-      | teacher1 | forum1 | discussion1 | D1 other course | ## 1 week ago ## |
-      | teacher1 | forum1 | discussion2 | D2 other course | ## 4 days ago ## |
+    And the following "mod_forum > discussions" exist:
+      | user     | forum  | name        | message         | timemodified      | course |
+      | teacher1 | forum1 | discussion1 | D1 message      | ## 1 month ago ## | C1     |
+      | teacher1 | forum1 | discussion2 | D2 message      | ## 1 week ago ##  | C1     |
+      | teacher1 | forum2 | discussion3 | D3 message      | ## 4 days ago ##  | C1     |
+      | student1 | forum1 | discussion4 | D4 message      | ## 3 days ago ##  | C1     |
+      | student2 | forum2 | discussion5 | D5 message      | ## 2 days ago##   | C1     |
+      | teacher1 | forum1 | discussion1 | D1 other course | ## 1 week ago ##  | C2     |
+      | teacher1 | forum1 | discussion2 | D2 other course | ## 4 days ago ##  | C2     |
+    And the following "mod_forum > replies" exist:
+      | user     | forum  | parentsubject | message    | created           | course |
+      | teacher1 | forum1 | discussion1   | D1 reply   | ## 3 weeks ago ## | C1     |
+      | teacher1 | forum1 | discussion2   | D2 reply   | ## 6 days ago ##  | C1     |
+      | teacher1 | forum2 | discussion3   | D3 reply   | ## 3 days ago ##  | C1     |
+      | student1 | forum1 | discussion1   | D1 reply 2 | ## 2 weeks ago ## | C1     |
+      | student2 | forum2 | discussion3   | D3 reply   | ## 2 days ago ##  | C1     |
     When I am on the forum1C1 "forum activity" page logged in as teacher1
     And I navigate to "Reports" in current page administration
     Then "Groups" "button" should not exist

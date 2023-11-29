@@ -27,11 +27,11 @@ Feature: Edited forum posts handle tags correctly
 
   @javascript
   Scenario: Forum post edition of custom tags works as expected
-    Given I am on the "Course 1" Course page logged in as student1
-    And I reply "Teacher post subject" post from "Test forum name" forum with:
-      | Subject | Student post subject |
-      | Message | Student post message |
-      | Tags    | Tag1                 |
+    Given the following "mod_forum > replies" exist:
+      | user     | forum  | parentsubject        | subject              | message              | tags       |
+      | student1 | forum1 | Teacher post subject | Student post subject | Student post message | Tag1       |
+    When I am on the "Test forum name" "forum activity" page logged in as student1
+    And I follow "Teacher post subject"
     Then I should see "Tag1" in the ".tag_list" "css_element"
     And I click on "Edit" "link" in the "//div[@aria-label='Student post subject by Student 1']" "xpath_element"
     Then I should see "Tag1" in the ".form-autocomplete-selection" "css_element"

@@ -16,7 +16,7 @@ Feature: Forum posts can be replied to in private
       | Science 101 | C1 | 0 |
     And the following "activities" exist:
       | activity   | name                   | course  | idnumber  |
-      | forum      | Study discussions      | C1      | forum     |
+      | forum      | Study discussions      | C1      | forum1    |
     And the following "course enrolments" exist:
       | user | course | role |
       | teacher1 | C1 | editingteacher |
@@ -25,10 +25,10 @@ Feature: Forum posts can be replied to in private
       | student2 | C1 | student |
     And the following "mod_forum > discussions" exist:
       | user     | forum  | name                    | message                                        |
-      | student1 | forum  | Answers to the homework | Here are the answers to last night's homework. |
-    And the following forum replies exist in course "Science 101":
-      | user     | forum             | discussion              | message                                                        | privatereplyto |
-      | teacher1 | Study discussions | Answers to the homework |How about you and I have a meeting after class about plagiarism?| student1       |
+      | student1 | forum1 | Answers to the homework | Here are the answers to last night's homework. |
+    And the following "mod_forum > replies" exist:
+      | user     | forum  | parentsubject           | subject                  | message                                                          | privatereplyto |
+      | teacher1 | forum1 | Answers to the homework | Discussion reply subject | How about you and I have a meeting after class about plagiarism? | 1              |
 
   Scenario: As a teacher I can see my own response
     Given I am on the "Study discussions" "forum activity" page logged in as teacher1

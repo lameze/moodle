@@ -26,10 +26,10 @@ Feature: Single simple forum discussion type
     And I should not see "Add a new discussion topic"
 
   Scenario: Student can not add more discussions
-    Given I am on the "Course 1" course page logged in as student1
-    When I reply "Single discussion forum name" post from "Single discussion forum name" forum with:
-      | Subject | Reply to single discussion subject |
-      | Message | Reply to single discussion message |
+    Given the following "mod_forum > replies" exist:
+      | user     | forum | parentsubject                | subject                            | message                            |
+      | student1 | forum | Single discussion forum name | Reply to single discussion subject | Reply to single discussion message |
+    When I am on the "Single discussion forum name" "forum activity" page logged in as student1
     Then I should not see "Add a new discussion topic"
     And I should see "Reply" in the "div.firstpost.starter" "css_element"
     And I should see "Reply to single discussion message"

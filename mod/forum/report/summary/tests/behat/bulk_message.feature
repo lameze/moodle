@@ -1,4 +1,4 @@
-@mod @mod_forum @forumreport @forumreport_summary
+@mod @mod_forum @forumreport @forumreport_summary @javascript
 Feature: Message users in the summary report
   In order to encourage users to participate
   As a teacher
@@ -21,18 +21,17 @@ Feature: Message users in the summary report
     And the following "activities" exist:
       | activity | name   | course | idnumber |
       | forum    | forum1 | C1     | forum1   |
-    And the following forum discussions exist in course "Course 1":
-      | user     | forum  | name        | message         |
-      | teacher1 | forum1 | discussion1 | t1 earliest     |
-      | teacher1 | forum1 | discussion2 | t1 between      |
-      | student1 | forum1 | discussion3 | s1 latest       |
-    And the following forum replies exist in course "Course 1":
-      | user     | forum  | discussion  | message         |
-      | teacher1 | forum1 | discussion1 | t1 between      |
-      | teacher1 | forum1 | discussion2 | t1 latest       |
-      | student1 | forum1 | discussion1 | s1 earliest     |
+    And the following "mod_forum > discussions" exist:
+      | user     | forum  | name        | message     |
+      | teacher1 | forum1 | discussion1 | t1 earliest |
+      | teacher1 | forum1 | discussion2 | t1 between  |
+      | student1 | forum1 | discussion3 | s1 latest   |
+    And the following "mod_forum > replies" exist:
+      | user     | forum  | parentsubject | message     |
+      | teacher1 | forum1 | discussion1   | t1 between  |
+      | teacher1 | forum1 | discussion2   | t1 latest   |
+      | student1 | forum1 | discussion1   | s1 earliest |
 
-  @javascript
   Scenario: Message some users
     Given the following "users" exist:
       | username | firstname | lastname | email                |
@@ -58,7 +57,6 @@ Feature: Message users in the summary report
     And I log in as "student2"
     And I should not see "1" in the "//*[@title='Toggle messaging drawer']/../*[@data-region='count-container']" "xpath_element"
 
-  @javascript
   Scenario: Message all users
     When I am on the forum1 "forum activity" page logged in as teacher1
     And I navigate to "Reports" in current page administration
@@ -66,7 +64,6 @@ Feature: Message users in the summary report
     And I set the field "With selected users..." to "Send a message"
     Then I should see "Send message to 3 people"
 
-  @javascript
   Scenario: Ensure no message options when messaging is disabled
     Given the following config values are set as admin:
       | messaging | 0 |

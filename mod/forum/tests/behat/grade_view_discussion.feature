@@ -26,14 +26,14 @@ Feature: View discussion while grading in a forum
       | idnumber    | forum1                     |
       | grade_forum | 100                        |
       | scale       | 100                        |
-    # If there is more than one pots for Student 1 the test will not be able to select the
+    # If there is more than one posts for Student 1 the test will not be able to select the
     # correct View discussion link, as there is no selector for thier container.
-    And the following forum discussions exist in course "Course 1":
+    And the following "mod_forum > discussions" exist:
       | forum          | user     | name     | message                          |
       | Gradable forum | student1 | My topic | This is the thing I posted about |
-    And the following forum replies exist in course "Course 1":
-      | forum          | user     | discussion | message    |
-      | Gradable forum | student2 | My topic   | I disagree |
+    And the following "mod_forum > replies" exist:
+      | forum  | user     | parentsubject | message    |
+      | forum1 | student2 | My topic      | I disagree |
 
   Scenario: Viewing a discussion
     Given I am on the "Gradable forum" "forum activity" page logged in as teacher

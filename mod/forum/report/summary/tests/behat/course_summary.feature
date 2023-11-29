@@ -29,30 +29,26 @@ Feature: Course level forum summary report
       | forum    | forum2 | C1     | forum2   |
       | forum    | forum3 | C1     | forum3   |
       | forum    | forum4 | C2     | forum4   |
-    And the following forum discussions exist in course "Course 1":
-      | user     | forum  | name        | message      | created                 |
-      | teacher1 | forum1 | discussion1 | Discussion 1 | ##2018-01-14 09:00:00## |
-      | teacher1 | forum2 | discussion2 | Discussion 2 | ##2019-03-27 12:10:00## |
-      | teacher1 | forum3 | discussion3 | Discussion 3 | ##2019-12-25 15:20:00## |
-      | teacher1 | forum3 | discussion4 | Discussion 4 | ##2019-12-26 09:30:00## |
-      | student1 | forum2 | discussion5 | Discussion 5 | ##2019-06-06 18:40:00## |
-      | student1 | forum3 | discussion6 | Discussion 6 | ##2020-01-25 11:50:00## |
-    And the following forum replies exist in course "Course 1":
-      | user     | forum  | discussion  | subject | message | created                 |
-      | teacher1 | forum1 | discussion1 | Re d1   | Reply 1 | ##2018-02-15 11:10:00## |
-      | teacher1 | forum2 | discussion5 | Re d5   | Reply 2 | ##2019-06-09 18:20:00## |
-      | teacher1 | forum2 | discussion5 | Re d5   | Reply 3 | ##2019-07-10 09:30:00## |
-      | student1 | forum1 | discussion1 | Re d1   | Reply 4 | ##2018-01-25 16:40:00## |
-      | student1 | forum2 | discussion2 | Re d6   | Reply 5 | ##2019-03-28 11:50:00## |
-      | student1 | forum3 | discussion4 | Re d4   | Reply 6 | ##2019-12-30 20:00:00## |
-    And the following forum discussions exist in course "Course 2":
-      | user     | forum  | name        | message      | created                 |
-      | teacher1 | forum4 | discussion7 | Discussion 7 | ##2020-01-29 15:00:00## |
-      | student2 | forum4 | discussion8 | Discussion 8 | ##2020-02-02 16:00:00## |
-    And the following forum replies exist in course "Course 2":
-      | user     | forum  | discussion  | subject | message | created                 |
-      | teacher1 | forum4 | discussion8 | Re d8   | Reply 7 | ##2020-02-03 09:45:00## |
-      | student2 | forum4 | discussion7 | Re d7   | Reply 8 | ##2020-02-04 13:50:00## |
+    And the following "mod_forum > discussions" exist:
+      | user     | forum  | name        | message      | timemodified            | course |
+      | teacher1 | forum1 | discussion1 | Discussion 1 | ##2018-01-14 09:00:00## | C1     |
+      | teacher1 | forum2 | discussion2 | Discussion 2 | ##2019-03-27 12:10:00## | C1     |
+      | teacher1 | forum3 | discussion3 | Discussion 3 | ##2019-12-25 15:20:00## | C1     |
+      | teacher1 | forum3 | discussion4 | Discussion 4 | ##2019-12-26 09:30:00## | C1     |
+      | student1 | forum2 | discussion5 | Discussion 5 | ##2019-06-06 18:40:00## | C1     |
+      | student1 | forum3 | discussion6 | Discussion 6 | ##2020-01-25 11:50:00## | C1     |
+      | teacher1 | forum4 | discussion7 | Discussion 7 | ##2020-01-29 15:00:00## | C2     |
+      | student2 | forum4 | discussion8 | Discussion 8 | ##2020-02-02 16:00:00## | C2     |
+    And the following "mod_forum > replies" exist:
+      | user     | forum  | parentsubject | subject | message | created                 | course |
+      | teacher1 | forum1 | discussion1   | Re d1   | Reply 1 | ##2018-02-15 11:10:00## | C1     |
+      | teacher1 | forum2 | discussion5   | Re d5   | Reply 2 | ##2019-06-09 18:20:00## | C1     |
+      | teacher1 | forum2 | discussion5   | Re d5   | Reply 3 | ##2019-07-10 09:30:00## | C1     |
+      | student1 | forum1 | discussion1   | Re d1   | Reply 4 | ##2018-01-25 16:40:00## | C1     |
+      | student1 | forum2 | discussion2   | Re d6   | Reply 5 | ##2019-03-28 11:50:00## | C1     |
+      | student1 | forum3 | discussion4   | Re d4   | Reply 6 | ##2019-12-30 20:00:00## | C1     |
+      | teacher1 | forum4 | discussion8   | Re d8   | Reply 7 | ##2020-02-03 09:45:00## | C2     |
+      | student2 | forum4 | discussion7   | Re d7   | Reply 8 | ##2020-02-04 13:50:00## | C2     |
 
   Scenario: Course forum summary report can be viewed by teacher and contains accurate data
     When I am on the forum2 "forum activity" page logged in as teacher1

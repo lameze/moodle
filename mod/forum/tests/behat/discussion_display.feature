@@ -29,10 +29,11 @@ Feature: Students can choose from 4 discussion display options and their choice 
       | Discussion 2 | Reply 1 to discussion 2 | Discussion contents 2, second message |
 
   Scenario: Display replies flat, with oldest first
-    Given I am on the "Course 1" course page logged in as student1
-    And I reply "Discussion 1" post from "Test forum name" forum with:
-      | Subject | Reply 2 to discussion 1 |
-      | Message | Discussion contents 1, third message |
+    Given the following "mod_forum > replies" exist:
+      | user     | forum | parentsubject | subject                 | message                              |
+      | student1 | forum | Discussion 1  | Reply 2 to discussion 1 | Discussion contents 1, third message |
+    And I am on the "Test forum name" "forum activity" page logged in as student1
+    And I follow "Discussion 1"
     When I select "Display replies flat, with oldest first" from the "mode" singleselect
     Then I should see "Discussion contents 1, first message" in the "div.firstpost.starter" "css_element"
     And I should see "Discussion contents 1, second message" in the "//div[contains(concat(' ', normalize-space(@class), ' '), ' forumpost ') and not(contains(@class, 'starter'))]" "xpath_element"
@@ -44,10 +45,11 @@ Feature: Students can choose from 4 discussion display options and their choice 
     And I should see "Discussion contents 2, second message" in the "//div[contains(concat(' ', normalize-space(@class), ' '), ' forumpost ') and not(contains(@class, 'starter'))]" "xpath_element"
 
   Scenario: Display replies flat, with newest first
-    Given I am on the "Course 1" course page logged in as student1
-    And I reply "Discussion 1" post from "Test forum name" forum with:
-      | Subject | Reply 2 to discussion 1 |
-      | Message | Discussion contents 1, third message |
+    Given the following "mod_forum > replies" exist:
+      | user     | forum | parentsubject | subject                 | message                              |
+      | student1 | forum | Discussion 1  | Reply 2 to discussion 1 | Discussion contents 1, third message |
+    And I am on the "Test forum name" "forum activity" page logged in as student1
+    And I follow "Discussion 1"
     When I select "Display replies flat, with newest first" from the "mode" singleselect
     Then I should see "Discussion contents 1, first message" in the "div.firstpost.starter" "css_element"
     And I should see "Discussion contents 1, third message" in the "//div[contains(concat(' ', normalize-space(@class), ' '), ' forumpost ') and not(contains(@class, 'starter'))]" "xpath_element"
