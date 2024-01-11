@@ -441,6 +441,11 @@ class subscriptions {
         $context = forum_get_context($forum->id, $context);
         if (self::is_forcesubscribed($forum)) {
             $results = self::get_potential_subscribers($context, $groupid, $fields);
+            echo 'ABC';
+//print_object($results);
+            echo "<!--\n";
+            echo sprintf("RESULTS BEGINING: \n\n%s\n\n", var_export($results, true));
+            echo "\n-->";
 
         } else {
             // Only active enrolled users or everybody on the frontpage.
@@ -454,6 +459,10 @@ class subscriptions {
                 $params['sforumid'] = $forum->id;
                 $params['dsforumid'] = $forum->id;
                 $params['unsubscribed'] = self::FORUM_DISCUSSION_UNSUBSCRIBED;
+                echo 'CDE';
+                echo "<!--\n";
+                echo sprintf("CDE: %s\n", time());
+                echo "\n-->";
 
                 $sql = "SELECT $fields
                         FROM (
@@ -471,6 +480,9 @@ class subscriptions {
                         ORDER BY $sort";
 
             } else {
+                echo "<!--\n";
+                echo sprintf("FGH: %s\n", time());
+                echo "\n-->";
                 $sql = "SELECT $fields
                         FROM {user} u
                         JOIN ($esql) je ON je.id = u.id
@@ -480,6 +492,10 @@ class subscriptions {
                         ORDER BY $sort";
             }
             $results = $DB->get_records_sql($sql, $params);
+            echo "<!--\n";
+            echo sprintf("RESULTS FINAL: \n\n%s\n\n", var_export($results, true));
+            echo "\n-->";
+//            print_object($results);
         }
 
         // Guest user should never be subscribed to a forum.
