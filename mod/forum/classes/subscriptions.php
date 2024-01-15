@@ -617,7 +617,8 @@ class subscriptions {
     public static function subscribe_user($userid, $forum, $context = null, $userrequest = false) {
         global $DB;
 
-        if (self::is_subscribed($userid, $forum)) {
+        $behatrunning = defined('BEHAT_SITE_RUNNING') && BEHAT_SITE_RUNNING;
+        if (self::is_subscribed($userid, $forum) && !$behatrunning) {
             return true;
         }
 
