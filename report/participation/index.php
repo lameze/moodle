@@ -266,7 +266,7 @@ if (!empty($instanceid) && !empty($roleid)) {
              $groupsql
                   LEFT JOIN {" . $logtable . "} l
                      ON l.contextinstanceid = :instanceid
-                       AND l.timecreated > :timefrom" . $crudsql ."
+                       AND l.timecreated >= :timefrom" . $crudsql ."
                        AND l.edulevel = :edulevel
                        AND l.anonymous = 0
                        AND l.contextlevel = :contextlevel
