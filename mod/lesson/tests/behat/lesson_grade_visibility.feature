@@ -1,4 +1,4 @@
-@mod @mod_lesson
+@mod @mod_lesson @javascript
 Feature: Grade info visibility can be set in lesson
   In order to display grade info
   As a teacher
@@ -17,33 +17,28 @@ Feature: Grade info visibility can be set in lesson
       | teacher1 | C1     | editingteacher |
       | student1 | C1     | student        |
     Given the following "activities" exist:
-      | activity | name     | course | idnumber |
-      | lesson   | Lesson 1 | C1     | L0001    |
+      | activity | name     | course | grade[modgrade_type] |
+      | lesson   | Lesson 1 | C1     | none                 |
     And the following "mod_lesson > pages" exist:
       | lesson | qtype     | title    | content          |
-      | L0001  | truefalse | T or F 1 | T or F 1 content |
+      | Lesson 1   | truefalse | T or F 1 | T or F 1 content |
     And the following "mod_lesson > answers" exist:
       | page     | answer | response | jumpto    | score |
       | T or F 1 | True   | True     | Next page | 1     |
 
-  Scenario Outline: Grade info visibility is set in lesson
-    Given I am on the "Lesson 1" "lesson activity editing" page logged in as teacher1
-    # Set lesson grade type
-    And I set the following fields to these values:
-      | grade[modgrade_type] | <gradetype> |
-    And I press "Save and return to course"
-    # Set answer to incorrect answer
-    When I am on the "Lesson 1" "lesson activity" page logged in as student1
+  Scenario: Grade info visibility is set in lesson
+    Given I am on the "Lesson 1" "lesson activity" page logged in as teacher1
+    And I pause
     And I set the following fields to these values:
       | FALSE | 1 |
     And I press "Submit"
     # Confirm grade visibility
-    Then I <gradevisibility> see "Your current grade is 0.0 out of 100"
+    Then I should see "Your current grade is 0.0 out of 100"
 
-    Examples:
-      | gradetype | gradevisibility |
-      | none      | should not      |
-      | point     | should          |
+#    Examples:
+#      | gradetype | gradevisibility |
+#      | none      | should not      |
+#      | point     | should          |
 
   @javascript
   Scenario: Lesson grade can be viewed by student

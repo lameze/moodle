@@ -18,8 +18,8 @@ Feature: In a lesson activity, if custom scoring is not enabled, student should 
       | teacher1 | C1 | editingteacher |
       | student1 | C1 | student |
     And the following "activities" exist:
-      | activity   | name             | course | idnumber  |
-      | lesson     | Test lesson name | C1     | lesson1   |
+      | activity   | name             | course | idnumber  | grade[modgrade_type] | grade[modgrade_point] | custom |
+      | lesson     | Test lesson name | C1     | lesson1   | scale                | 75                    | 0      |
     And the following "mod_lesson > pages" exist:
       | lesson           | qtype   | title                 | content             |
       | Test lesson name | content | First page name       | First page contents |
@@ -29,22 +29,26 @@ Feature: In a lesson activity, if custom scoring is not enabled, student should 
       | First page name       | Next page |                  | Next page | 0     |
       | Hardest question ever | 2         | Correct answer   | Next page | 1     |
       | Hardest question ever | 1         | Incorrect answer | This page | 0     |
-    And I am on the "Test lesson name" "lesson activity editing" page logged in as teacher1
-    And I set the following fields to these values:
-      | Maximum grade  | 75 |
-      | Custom scoring | No    |
-    And I press "Save and display"
-    And I am on "Course 1" course homepage with editing mode on
-    And I duplicate "Test lesson name" activity
-    And I wait until section "1" is available
-    And I am on the "Test lesson name (copy)" "lesson activity editing" page
-    And I set the field "Name" to "Test lesson name 2"
-    And I set the field "grade[modgrade_type]" to "Scale"
-    And I set the field "Scale" to "Test Scale"
-    And I press "Save and return to course"
-    And I log out
+
+#    And I am on the "Test lesson name" "lesson activity editing" page logged in as teacher1
+#    And I set the following fields to these values:
+#      | Maximum grade  | 75 |
+#      | Custom scoring | No    |
+#    And I press "Save and display"
+
+
+#    And I am on "Course 1" course homepage with editing mode on
+#    And I duplicate "Test lesson name" activity
+#    And I wait until section "1" is available
+#    And I am on the "Test lesson name (copy)" "lesson activity editing" page
+#    And I set the field "Name" to "Test lesson name 2"
+#    And I set the field "grade[modgrade_type]" to "Scale"
+#    And I set the field "Scale" to "Test Scale"
+#    And I press "Save and return to course"
+#    And I log out
     And I log in as "student1"
 
+  @javascript
   Scenario: Informations at end of lesson if custom scoring not enabled
     Given I am on the "Test lesson name" "lesson activity" page
     And I should see "First page contents"
@@ -59,6 +63,7 @@ Feature: In a lesson activity, if custom scoring is not enabled, student should 
     And I should see "Number of questions answered: 1"
     And I should see "Number of correct answers: 0"
     And I should see "Your score is 0 (out of 1)."
+    And I pause
     And I should see "Your current grade is 0.0 out of 75"
 
   Scenario: Informations at end of lesson if custom scoring not enabled with custom decimal separator
@@ -79,9 +84,13 @@ Feature: In a lesson activity, if custom scoring is not enabled, student should 
     And I should see "Number of correct answers: 0"
     And I should see "Your score is 0 (out of 1)."
     And I should see "Your current grade is 0#0 out of 75"
-
+@javascript
   Scenario: Current grade is displayed at end of lesson when grade type is set to scale
-    Given I am on the "Test lesson name 2" "lesson activity" page
+    Given I am on the "Test lesson name" "lesson activity editing" page logged in as teacher1
+    And I set the field "grade[modgrade_type]" to "Scale"
+    And I set the field "Scale" to "Test Scale"
+    And I press "Save and display"
+    And I am on the "Test lesson name" "lesson activity" page logged in as student1
     When I press "Next page"
     And I should see "1 + 1?"
     And I set the following fields to these values:
