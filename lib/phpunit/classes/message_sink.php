@@ -69,6 +69,55 @@ class phpunit_message_sink {
     }
 
     /**
+     * Return all redirected messages for a given component.
+     *
+     * @param string $component Component name.
+     * @return array List of messages.
+     */
+    public function get_messages_by_component(
+        string $component,
+    ): array {
+        [$plugintype, $pluginname] = core_component::normalize_component($component);
+        if ($plugintype === 'core' && is_null($pluginname)) {
+            $component = 'core';
+        } else {
+            $component = $plugintype . '_' . $pluginname;
+        }
+
+        $processedmessages = [];
+        foreach ($this->get_messages() as $message) {
+            if ($component == 'core') {
+                if ($message->component == 'core' || $message->component == 'moodle') {
+                    $processedmessages[] = $message;
+                }
+            } else {
+                if ($message->component == $component) {
+                    $processedmessages[] = $message;
+                }
+            }
+        }
+        return $processedmessages;
+    }
+
+    /**
+     * Return all redirected messages for a given component and type.
+     *
+     * @param string $component Component name.
+     * @param string $type Message type.
+     * @return array List of messages.
+     */
+    public function get_messages_by_component_and_type(
+        string $component,
+        string $type,
+    ): array {
+        $processed = array_filter($this->get_messages_by_component($component), function($message) use ($type) {
+            return $message->eventtype == $type;
+        });
+
+        return $processed;
+    }
+
+    /**
      * Return number of messages redirected to this sink.
      * @return int
      */
