@@ -472,6 +472,7 @@ if ($config->stage == INSTALL_DATABASE) {
         echo '<div class="col-md-3 text-md-right pt-1"><label for="id_dbsocket">'.$strdbsocket.'</label></div>';
         echo '<div class="col-md-9" data-fieldtype="text">';
         echo '<input id="id_dbsocket" name="dbsocket" type="text" class="form-control text-ltr" value="'.s($config->dbsocket).'" size="50" /></div>';
+        install_print_footer($config);
         echo '</div>';
     }
 
@@ -479,7 +480,6 @@ if ($config->stage == INSTALL_DATABASE) {
         echo '<div class="alert alert-danger">'.$hint_database.'</div>';
     }
     echo '</div>';
-    install_print_footer($config);
     die;
 }
 
@@ -595,6 +595,7 @@ if ($config->stage == INSTALL_PATHS) {
     echo '<div class="col-md-3 text-md-right pt-1"><label for="id_dataroot">'.$paths['dataroot'].'</label></div>';
     echo '<div class="col-md-9" data-fieldtype="text">';
     echo '<input id="id_dataroot" name="dataroot" type="text" class="form-control text-ltr" value="'.s($config->dataroot).'" size="70" /></div>';
+    install_print_footer($config);
     echo '</div>';
     if ($hint_dataroot !== '') {
         echo '<div class="alert alert-danger">'.$hint_dataroot.'</div>';
@@ -615,7 +616,6 @@ if ($config->stage == INSTALL_PATHS) {
 
     echo '</div>';
 
-    install_print_footer($config);
     die;
 }
 
