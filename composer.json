@@ -15,11 +15,12 @@
         "symfony/mime": "^4.4 || ^5.0 || ^6.0",
         "behat/behat": "3.13.*",
         "oleg-andreyev/mink-phpwebdriver": "1.3.*",
-        "filp/whoops": "^2.15"
+        "filp/whoops": "^2.15",
+        "behat/mink-goutte-driver": "^2.0"
     },
-    "autoload-dev": {
-        "psr-0": {
-            "Moodle\\BehatExtension": "lib/behat/extension/"
+    "autoload": {
+        "psr-4": {
+            "Context\\": "install/tests/behat/Context/"
         }
     },
     "minimum-stability": "dev",

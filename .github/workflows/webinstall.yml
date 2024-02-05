@@ -1,0 +1,60 @@
+name: Moodle web installation testing
+
+on:
+  push:
+    branches-ignore:
+      - master
+      - main
+      - MOODLE_[0-9]+_STABLE
+    tags-ignore:
+      - v[0-9]+.[0-9]+.[0-9]+*
+
+env:
+  php: 8.2
+
+jobs:
+  behat:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setting up DB pgsql
+        uses: m4nu56/postgresql-action@v1
+        with:
+          postgresql version: 13
+          postgresql db: test
+          postgresql user: test
+          postgresql password: test
+
+      - name: Setting up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.3
+          ini-values: max_input_vars=5000
+          coverage: none
+
+      - name: Checking out code
+        uses: actions/checkout@v4
+
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: |
+          echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+#      - name: Cache Composer Dependencies
+#        uses: actions/cache@v2
+#        with:
+#          path: ${{ steps.composer-cache.outputs.dir }}
+#          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+#          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install Composer Dependencies
+        run: composer install
+
+      - name: Run Behat Tests
+        env:
+          BEHAT_PARAMS: '{"extensions":{"Behat\\MinkExtension":{"base_url":"http://localhost"}}}'
+          DB_HOST: 127.0.0.1
+          DB_NAME: test
+          DB_USER: test
+          DB_PASS: test
+        run: vendor/bin/behat install/tests/behat/install.feature
