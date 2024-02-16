@@ -436,6 +436,9 @@ class behat_util extends testing_util {
         // $CFG values from the old run. @see set_config.
         self::remove_added_config();
         initialise_cfg();
+
+        // Reset Adhoc task caches.
+        \core\task\manager::$miniqueue = \core\task\manager::$numtasks = \core\task\manager::$mode = null;
     }
 
     /**
