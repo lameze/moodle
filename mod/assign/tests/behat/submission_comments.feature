@@ -30,6 +30,7 @@ Feature: In an assignment, students can comment in their submissions
     And I press "Save changes"
     And I click on ".comment-link" "css_element"
     And I set the field "content" to "First student comment"
+    And I change window size to "large"
     And I follow "Save comment"
     Then I should see "First student comment"
     And the field "content" matches value "Add a comment..."
