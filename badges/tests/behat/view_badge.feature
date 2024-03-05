@@ -9,26 +9,17 @@ Feature: Display badges
       | username | firstname | lastname | email |
       | student1 | Student | 1 | student1@example.com |
     # Create system badge and define a criterion.
+    And the following "core_badges > Badges" exist:
+      | name                 | version | language | description                      | image                        | imageauthorurl            | imagecaption       |
+      | Testing system badge | 1.1     | ca       | Testing system badge description | badges/tests/behat/badge.png | http://author.example.com | Test caption image |
+    And the following "core_badges > Criteria" exists:
+      | badge | Testing system badge |
+      | role  | editingteacher       |
     And I log in as "admin"
-    And I navigate to "Badges > Add a new badge" in site administration
-    And I set the following fields to these values:
-      | Name | Testing system badge |
-      | Version | 1.1 |
-      | Language | Catalan |
-      | Description | Testing system badge description |
-      | Image author | http://author.example.com |
-      | Image caption | Test caption image |
-    And I upload "badges/tests/behat/badge.png" file to "Image" filemanager
-    And I press "Create badge"
-    And I set the field "type" to "Manual issue by role"
-    And I expand all fieldsets
-    And I set the field "Teacher" to "1"
-    And I press "Save"
+    And I navigate to "Badges > Manage badges" in site administration
+    And I click on "Testing system badge" "link"
 
   Scenario: Display badge without expired date
-    # Enable the badge.
-    Given I press "Enable access"
-    And I press "Continue"
     # Award badge to student1.
     And I select "Recipients (0)" from the "jump" singleselect
     And I press "Award badge"
@@ -50,7 +41,9 @@ Feature: Display badges
 
   Scenario: Display badge with ALL criteria
     # Add another criterion and enable the badge.
-    Given I set the field "type" to "Profile completion"
+    Given I press "Disable access"
+    And I select "Criteria" from the "jump" singleselect
+    And I set the field "type" to "Profile completion"
     And I set the field "id_field_firstname" to "1"
     And I press "Save"
     And I press "Enable access"
@@ -78,7 +71,9 @@ Feature: Display badges
 
   Scenario: Display badge with ANY criteria
     # Add another criterion and enable the badge.
-    Given I set the field "type" to "Profile completion"
+    Given I press "Disable access"
+    And I select "Criteria" from the "jump" singleselect
+    And I set the field "type" to "Profile completion"
     And I set the field "id_field_firstname" to "1"
     And I press "Save"
     And I set the field "update" to "2"
@@ -100,7 +95,8 @@ Feature: Display badges
 
   Scenario: Display badge with expiration date but not expired yet
     # Set expired date to badge (future date).
-    Given I select "Edit details" from the "jump" singleselect
+    Given I press "Disable access"
+    And I select "Edit details" from the "jump" singleselect
     When I click on "Relative date" "radio"
     And I set the field "expireperiod[number]" to "1"
     And I press "Save changes"
@@ -122,7 +118,8 @@ Feature: Display badges
 
   Scenario: Display expired badge
     # Set expired date to badge (relative date 1 seconds after the date of issue it).
-    Given I select "Edit details" from the "jump" singleselect
+    Given I press "Disable access"
+    And I select "Edit details" from the "jump" singleselect
     When I click on "Relative date" "radio"
     And I set the field "expireperiod[timeunit]" to "1"
     And I set the field "expireperiod[number]" to "1"

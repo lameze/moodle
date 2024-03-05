@@ -30,19 +30,25 @@ Feature: Award badges with separate groups
       | teacher1 | CB |
       | student2 | CA |
       | teacher2 | CA |
+    And the following "core_badges > Badge" exists:
+      | name        | Course Badge                 |
+      | course      | C1                           |
+      | description | Course badge description     |
+      | image       | badges/tests/behat/badge.png |
+      | type        | 2                            |
+    And the following "core_badges > Criteria" exists:
+      | badge | Course Badge   |
+      | role  | editingteacher |
     And I am on the "Course 1" "course editing" page logged in as "teacher1"
     And I expand all fieldsets
     And I set the field "Group mode" to "Separate groups"
     And I press "Save and display"
-    And I navigate to "Badges > Add a new badge" in current page administration
-    And I set the following fields to these values:
-      | Name | Course Badge |
-      | Description | Course badge description |
-    And I upload "badges/tests/behat/badge.png" file to "Image" filemanager
-    And I press "Create badge"
-    And I set the field "type" to "Manual issue by role"
+    And I navigate to "Badges > Manage badges" in current page administration
+    And I click on "Course Badge" "link"
+    And I press "Disable access"
+    And I select "Criteria" from the "jump" singleselect
+    And I click on "Edit" "link"
     And I expand all fieldsets
-    And I set the field "Teacher" to "1"
     And I set the field "Non-editing teacher" to "1"
     # Set to ANY of the roles awards badge.
     And I set the field "Any of the selected roles awards the badge" to "1"

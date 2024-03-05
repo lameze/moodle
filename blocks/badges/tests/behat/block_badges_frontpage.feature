@@ -17,22 +17,25 @@ Feature: Enable Block Badges on the frontpage and view awarded badges
     And the following "blocks" exist:
       | blockname | contextlevel | reference | pagetypepattern | defaultregion |
       | badges    | System       | 1         | site-index      | side-pre      |
+    # Create badge 1.
+    And the following "core_badges > Badge" exists:
+      | name        | Badge 1                                |
+      | course      | C1                                     |
+      | description | Badge 1                                |
+      | image       | blocks/badges/tests/fixtures/badge.png |
+      | type        | 2                                      |
+    # Assign editingteacher role as criteria.
+    And the following "core_badges > Criteria" exists:
+      | badge | Badge 1        |
+      | role  | editingteacher |
+    # Award badge.
     And I am on the "Course 1" course page logged in as teacher1
-    # Issue badge 1 of 2
-    And I navigate to "Badges > Add a new badge" in current page administration
-    And I set the following fields to these values:
-      | id_name | Badge 1 |
-      | id_description | Badge 1 |
-    And I upload "blocks/badges/tests/fixtures/badge.png" file to "Image" filemanager
-    And I press "Create badge"
-    And I select "Manual issue by role" from the "Add badge criteria" singleselect
-    And I set the field "Teacher" to "1"
-    And I press "Save"
-    And I press "Enable access"
-    And I press "Continue"
+    And I navigate to "Badges > Manage badges" in current page administration
+    And I click on "Badge 1" "link"
     And I select "Recipients (0)" from the "jump" singleselect
     And I press "Award badge"
     And I set the field "potentialrecipients[]" to "Teacher 1 (teacher1@example.com)"
     And I press "Award badge"
+    # Confirm Badge 1 appears on the latest badges block.
     When I am on site homepage
     Then I should see "Badge 1" in the "Latest badges" "block"
