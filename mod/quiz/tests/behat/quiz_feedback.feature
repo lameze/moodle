@@ -1,4 +1,4 @@
-@mod @mod_quiz @javascript
+@mod @mod_quiz
 Feature: Enable deferred or immediate feedback for quiz
   As a teacher
   I should be able to set how questions behave to deferred or immediate feedback
@@ -21,18 +21,13 @@ Feature: Enable deferred or immediate feedback for quiz
     And the following "questions" exist:
       | questioncategory | qtype       | name  | questiontext    |
       | Test questions   | truefalse   | TF1   | First question  |
-    And the following "activity" exists:
+
+  @javascript
+  Scenario: Attempt quiz with How questions behave set to Deferred Feedback
+    Given the following "activity" exists:
       | activity                    | quiz             |
       | name                        | Quiz 1           |
       | course                      | C1               |
-    And quiz "Quiz 1" contains the following questions:
-      | question | page |
-      | TF1      | 1    |
-
-  Scenario: Attempt quiz with How questions behave set to Deferred Feedback
-    Given I am on the "Quiz 1" "quiz activity editing" page logged in as teacher1
-    # Update quiz settings and set how questions behave to deferred feedback
-    And I set the following fields to these values:
       | preferredbehaviour          | deferredfeedback |
       | attemptimmediately          | 1                |
       | correctnessimmediately      | 1                |
@@ -42,7 +37,9 @@ Feature: Enable deferred or immediate feedback for quiz
       | generalfeedbackimmediately  | 1                |
       | rightanswerimmediately      | 1                |
       | overallfeedbackimmediately  | 1                |
-    And I press "Save and return to course"
+    And quiz "Quiz 1" contains the following questions:
+      | question | page |
+      | TF1      | 1    |
     And I am on the "Quiz 1" "quiz activity" page logged in as student1
     When I press "Attempt quiz"
     # Confirm that check button does not exist when attempting quiz
@@ -60,16 +57,19 @@ Feature: Enable deferred or immediate feedback for quiz
     And I should see "The correct answer is 'True'."
 
   Scenario: Attempt quiz with How questions behave set to Immediate Feedback
-    Given I am on the "Quiz 1" "quiz activity editing" page logged in as teacher1
-    # Update quiz settings and set how questions behave to immediate feedback
-    And I set the following fields to these values:
+    Given the following "activity" exists:
+      | activity                    | quiz             |
+      | name                        | Quiz 1           |
+      | course                      | C1               |
       | preferredbehaviour          | immediatefeedback |
       | correctnessduring           | 1                 |
       | marksduring                 | 1                 |
       | specificfeedbackduring      | 1                 |
       | generalfeedbackduring       | 1                 |
       | rightanswerduring           | 1                 |
-    And I press "Save and return to course"
+    And quiz "Quiz 1" contains the following questions:
+      | question | page |
+      | TF1      | 1    |
     And I am on the "Quiz 1" "quiz activity" page logged in as student1
     When I press "Attempt quiz"
     Then "Check Question 1" "button" should exist
