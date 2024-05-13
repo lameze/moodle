@@ -108,16 +108,17 @@ class mod_workshop_generator extends testing_module_generator {
      * @param stdClass|array $options Optional explicit properties.
      * @return int The new submission id.
      */
-    public function create_submission($workshopid, $authorid, $options = null) {
+    public function create_submission(array $record = null, $options = null) {
         global $DB;
 
         $timenow = time();
         $options = (array)$options;
+        $submission = (array)$record;
+//        $submission['workshopid'] = $record['workshopid'];
+//        $submission['authorid'] = $record['authorid'];
 
         $record = $options + array(
-            'workshopid' => $workshopid,
             'example' => 0,
-            'authorid' => $authorid,
             'timecreated' => $timenow,
             'timemodified' => $timenow,
             'title' => 'Generated submission',
@@ -126,7 +127,7 @@ class mod_workshop_generator extends testing_module_generator {
             'contenttrust' => 0,
         );
 
-        $id = $DB->insert_record('workshop_submissions', $record);
+        $id = $DB->insert_record('workshop_submissions', array_merge($submission, $record));
 
         return $id;
     }

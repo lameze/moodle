@@ -27,18 +27,11 @@ Feature: Workshop self-assessment
     And I edit assessment form in workshop "TestWorkshop" as:
       | id_description__idx_0_editor | Aspect1 |
     And I change phase in workshop "TestWorkshop" to "Submission phase"
-    And I am on the "TestWorkshop" "workshop activity" page logged in as student1
-    And I add a submission in workshop "TestWorkshop" as:"
-      | Title              | Submission1  |
-      | Submission content | Some content |
-    And I am on the "TestWorkshop" "workshop activity" page logged in as student2
-    And I add a submission in workshop "TestWorkshop" as:"
-      | Title              | Submission2  |
-      | Submission content | Some content |
-    And I am on the "TestWorkshop" "workshop activity" page logged in as student3
-    And I add a submission in workshop "TestWorkshop" as:"
-      | Title              | Submission3  |
-      | Submission content | Some content |
+    And the following "mod_workshop > submissions" exist:
+      | workshop  | user     |
+      | workshop1 | student1 |
+      | workshop1 | student2 |
+      | workshop1 | student3 |
     And I am on the "TestWorkshop" "workshop activity" page logged in as teacher1
     And I click on "Submissions allocation" "link"
     And I select "Random allocation" from the "jump" singleselect
