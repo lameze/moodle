@@ -482,8 +482,8 @@ if ($config->stage == INSTALL_DATABASE) {
     if ($hint_database !== '') {
         echo '<div class="alert alert-danger">'.$hint_database.'</div>';
     }
-    echo '</div>';
     install_print_footer($config);
+    echo '</div>';
     die;
 }
 
@@ -617,9 +617,9 @@ if ($config->stage == INSTALL_PATHS) {
         echo '</div>';
     }
 
+    install_print_footer($config);
     echo '</div>';
 
-    install_print_footer($config);
     die;
 }
 
