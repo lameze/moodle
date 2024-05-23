@@ -83,6 +83,12 @@ class behat_core_competency_generator extends behat_generator_base {
                 'required' => ['plan', 'competency', 'user'],
                 'switchids' => ['plan' => 'planid', 'competency' => 'competencyid', 'user' => 'userid'],
             ],
+            'course_module_competencies' => [
+                'singular' => 'course_module_competency',
+                'datagenerator' => 'course_module_competency',
+                'required' => ['activity', 'competency'],
+                'switchids' => ['activity' => 'cmid', 'competency' => 'competencyid'],
+            ],
         ];
     }
 

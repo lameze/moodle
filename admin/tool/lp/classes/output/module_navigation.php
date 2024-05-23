@@ -79,15 +79,15 @@ class module_navigation implements renderable, templatable {
         $data->baseurl = $this->baseurl;
         $data->hasmodules = false;
         $data->modules = array();
-
-        $data->hasmodules = true;
-        $data->modules = array();
         $empty = (object)['id' => 0, 'name' => get_string('nofiltersapplied')];
         $data->modules[] = $empty;
-
-        $modinfo = get_fast_modinfo($this->courseid);
+//print_object('COURSE ID:'.$data->courseid);
+        $modinfo = get_fast_modinfo($data->courseid);
+//        print_object(array_keys($modinfo->get_cms()));
         foreach ($modinfo->get_cms() as $cm) {
+//            print_object('IS USER VISIBLE?'.$cm->uservisible);
             if ($cm->uservisible) {
+//                print_object('IT IS USER VISIBLE!');
                 $exporter = new course_module_summary_exporter(null, ['cm' => $cm]);
                 $module = $exporter->export($output);
                 if ($module->id == $this->moduleid) {
@@ -97,7 +97,9 @@ class module_navigation implements renderable, templatable {
                 $data->hasmodules = true;
             }
         }
-
+//        $data->hasmodules = false;
+//print_object($data);
+//        var_dump($data->hasmodules);
         return $data;
     }
 }
