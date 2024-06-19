@@ -147,7 +147,7 @@ Feature: Manage analytics models
     When I open the action menu in "Students at risk of not meeting the course completion conditions" "table_row"
     And I choose "Export" in the open action menu
     And I click on "Actions" "link" in the "Students at risk of not meeting the course completion conditions" "table_row"
-    And following "Download" should download a "zip" file that:
+    And following "Export" should download a "zip" archive that:
        | Contains | model-config.json |
 
   Scenario: Check invalid site elements

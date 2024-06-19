@@ -299,11 +299,11 @@ Feature: Users can view and manage data presets
     # The teacher should be able to export any saved preset.
     And I open the action menu in "Saved preset by teacher1" "table_row"
     Then I should see "Export"
-    And following "Export" in the "Saved preset by teacher1" "table_row" should download a "zip" file that:
+    And following "Export" in the "Saved preset by teacher1" "table_row" should download a "zip" archive that:
       | Contains | preset.xml |
     And I open the action menu in "Saved preset 1" "table_row"
     And I should see "Export"
-    And following "Export" in the "Saved preset 1" "table_row" should download a "zip" file that:
+    And following "Export" in the "Saved preset 1" "table_row" should download a "zip" archive that:
       | Contains | preset.xml |
 
   @javascript @_file_upload

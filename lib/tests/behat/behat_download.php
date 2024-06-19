@@ -39,37 +39,75 @@ require_once(__DIR__ . '/../../behat/behat_base.php');
 class behat_download extends behat_base {
 
     /**
-     * Downloads the file from a link on the page and checks the size is in a given range.
+     * Downloads the file from a link on a specific element in the page and verify the content.
      *
      * @Then /^following "(?P<link_string>[^"]*)" in the "(?P<element_container_string>(?:[^"]|\\")*)" "(?P<text_selector_string>[^"]*)" should download a "(?P<format_string>[^"]*)" file that:$/
+     * @Then /^following "(?P<link_string>[^"]*)" in the "(?P<element_container_string>(?:[^"]|\\")*)" "(?P<text_selector_string>[^"]*)" should download a "(?P<format_string>[^"]*)" archive that:$/
      *
      * @param string $link the text of the link.
      * @param string $elementcontainer the container element.
      * @param string $textselector the text selector.
      * @param string $format the expected file format.
-     * @param TableNode|null $table the table of assertions to check.
+     * @param TableNode $table the table of assertions to check.
      * @throws ExpectationException
      */
     public function following_in_element_should_download_a_file_that(string $link, string $elementcontainer,
-            string $textselector, string $format, ?TableNode $table = null): void {
+            string $textselector, string $format, TableNode $table): void {
 
-        $this->following_should_download_a_file_that($link, $format, $elementcontainer, $textselector, $table);
+        $this->download_and_validate_file($link, $format, $elementcontainer, $textselector, $table);
     }
 
     /**
-     * Downloads the file from a link on the page and checks the size is in a given range.
+     * Downloads an image file from a link on the page and checks it is valid.
      *
-     * @Then /^following "(?P<link_string>[^"]*)" should download a "(?P<format_string>[^"]*)" file$/
+     * @Then /^following "(?P<link_string>[^"]*)" should download a "(?P<format_string>[^"]*)" image file$/
+     *
+     * @param string $link the text of the link.
+     * @param string $format the expected file format.
+     * @return void
+     */
+    public function following_should_download_a_image_file(string $link, string $format): void {
+        $this->download_and_validate_file($link, $format);
+    }
+
+    /**
+     * Downloads a zip file from a link on the page and checks it contains a specific file.
+     *
+     * @Then /^following "(?P<link_string>[^"]*)" should download a "(?P<format_string>[^"]*)" archive that:$/
+     *
+     * @param string $link the text of the link.
+     * @param string $format the expected file format.
+     * @param TableNode $table the table of assertions to check.
+     * @return void
+     */
+    public function following_should_download_a_archive_that(string $link, string $format, TableNode $table): void {
+        $this->download_and_validate_file($link, $format, null, null, $table);
+    }
+
+    /**
+     * Downloads the file from a link on the page and verify the content.
+
      * @Then /^following "(?P<link_string>[^"]*)" should download a "(?P<format_string>[^"]*)" file that:$/
      *
      * @param string $link the text of the link.
      * @param string $format the expected file format.
-     * @param string|null $nodeelement the element to look in.
-     * @param string|null $nodeselectortype the type of selector to look in.
+     * @param TableNode $table the table of assertions to check.
+     */
+    public function following_should_download_a_file_that(string $link, string $format, TableNode $table): void {
+        $this->download_and_validate_file($link, $format, null, null, $table);
+    }
+
+    /**
+     * Downloads the file from a link on the page and validate the content.
+     *
+     * @param string $link the text of the link.
+     * @param string $format the expected file format.
+     * @param string|null $nodeelement the container element.
+     * @param string|null $nodeselectortype the text selector.
      * @param TableNode|null $table the table of assertions to check.
      * @throws ExpectationException
      */
-    public function following_should_download_a_file_that(string $link, string $format, ?string $nodeelement = null,
+    protected function download_and_validate_file(string $link, string $format, ?string $nodeelement = null,
             ?string $nodeselectortype = null, ?TableNode $table = null): void {
 
         $behatgeneralcontext = behat_context_helper::get('behat_general');
@@ -100,7 +138,15 @@ class behat_download extends behat_base {
         $this->assert_file_content($filecontent, $format, $table);
     }
 
-    private function assert_file_content(string $filecontent, string $format, ?TableNode $table): void {
+    /**
+     * Asserts the content of the downloaded file.
+     *
+     * @param string $filecontent the content of the file.
+     * @param string $format the expected file format.
+     * @param TableNode $table the table of assertions to check.
+     * @throws ExpectationException
+     */
+    private function assert_file_content(string $filecontent, string $format, TableNode $table): void {
         if (!$rows = $table->getRows()) {
             return;
         }
@@ -121,6 +167,13 @@ class behat_download extends behat_base {
         }
     }
 
+    /**
+     * Validates the MIME type of the downloaded file.
+     *
+     * @param string $filecontent the content of the file.
+     * @param string $format the expected file format.
+     * @throws ExpectationException
+     */
     protected function validate_mime_type(string $filecontent, string $format): void {
 
         $finfo = new \finfo(FILEINFO_MIME_TYPE);
@@ -144,6 +197,13 @@ class behat_download extends behat_base {
         }
     }
 
+    /**
+     * Asserts that the given XML file is valid and contains the expected string.
+     *
+     * @param string $filecontent the content of the file.
+     * @param string $contains the string to search for.
+     * @throws ExpectationException
+     */
     protected function assert_file_type_xml(string $filecontent, string $contains): void {
 
         // Load the XML content into a SimpleXMLElement object
@@ -161,11 +221,18 @@ class behat_download extends behat_base {
         }
     }
 
+    /**
+     * Assert that the given image file is valid.
+     *
+     * @param string $filecontent the content of the file.
+     * @param string $format the expected file format.
+     * @throws ExpectationException
+     */
     protected function assert_file_type_image(string $filecontent, string $format): void {
-        // First validate the MIME type
+        // First validate the MIME type.
         $this->validate_mime_type($filecontent, $format);
 
-        // Then perform additional image-specific validations
+        // Then perform additional image-specific validations.
         $tempdir = make_request_directory();
         $filepath = $tempdir . '/downloaded.' . $format;
         file_put_contents($filepath, $filecontent);
@@ -178,6 +245,13 @@ class behat_download extends behat_base {
         }
     }
 
+    /**
+     * Asserts that the given zip archive contains the expected file.
+     *
+     * @param string $filecontent the content of the file.
+     * @param string $expectedfile the name of the file to search for in the zip archive.
+     * @throws ExpectationException
+     */
     protected function assert_file_type_zip(string $filecontent, string $expectedfile): void {
 
         // Save the file to disk.
@@ -204,6 +278,13 @@ class behat_download extends behat_base {
         }
     }
 
+    /**
+     * Asserts that the given string is present in the file content.
+     *
+     * @param string $filecontent the content of the file.
+     * @param string $contains the string to search for.
+     * @throws ExpectationException
+     */
     protected function assert_file_type_text(string $filecontent, string $contains): void {
 
         // Check if the string is present in the file content.

@@ -38,4 +38,4 @@ Feature: Files added in folder activity are visible in the recent activity block
     # Confirm files are downloadable
     Then following "empty.txt" should download a "text" file that:
       | Contains | empty file for testing purposes |
-    And following "gd-logo.png" should download a "png" file
+    And following "gd-logo.png" should download a "png" image file
