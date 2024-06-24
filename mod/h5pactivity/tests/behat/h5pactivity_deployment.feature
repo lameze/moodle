@@ -20,6 +20,7 @@ Feature: Undeployed H5P activities packages should be available only to any user
       | capability                 | permission | role           | contextlevel | reference |
       | moodle/h5p:updatelibraries | Allow      | editingteacher | System       |           |
     # Now create the activity as teacher1.
+    And I log in as "teacher1"
     And the following "activities" exist:
       | activity    | course | name          | username | packagefilepath                      |
       | h5pactivity | C1     | Music history | teacher1 | h5p/tests/fixtures/filltheblanks.h5p |
@@ -33,6 +34,7 @@ Feature: Undeployed H5P activities packages should be available only to any user
   Scenario: In an H5P activity, as student I should not be able to deploy the package if not deployed by the teacher
   beforehand. Then if a second teacher deploys the package, I can see it.
     Given I am on the "Music history" "h5pactivity activity" page logged in as student1
+    And I wait "1" seconds
     And I switch to "h5p-player" class iframe
     And I should see "This file can't be displayed"
     And I switch to the main frame
