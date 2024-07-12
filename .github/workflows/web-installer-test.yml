@@ -1,0 +1,116 @@
+name: Web Installer Testing
+
+# This workflow is designed to automate the testing of Moodle's web installation.
+#
+# It's triggered manually (workflow_dispatch) and helps to ensure that the web installation process works as
+# expected and helps to detect any issues early.
+#
+# The workflow sets up a PostgreSQL database, PHP, clone moodle-webinstall repository and run the install Behat test.
+# It also takes a screenshot of the Moodle installation page and uploads it as an artifact so it can be verified in
+# case of failures.
+#
+# For more information about the web install testing, see https://github.com/moodlehq/moodle-webinstaller-test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  behat:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        php: [8.1, 8.3]
+    env:
+      MOODLE_SITE_URL: http://localhost:8080/moodle
+      DB_TYPE: pgsql
+      DB_HOST: localhost
+      DB_NAME: test
+      DB_USER: test
+      DB_PASS: test
+    steps:
+      - name: Setting up DB PostgreSQL
+        uses: m4nu56/postgresql-action@v1
+        with:
+          postgresql version: 13
+          postgresql db: test
+          postgresql user: test
+          postgresql password: test
+
+      - name: Wait for PostgreSQL to be ready
+        run: |
+          for i in {1..30}; do
+          if pg_isready -h localhost -p 5432 -U test; then
+           echo "PostgreSQL is ready"
+           break
+          else
+           echo "Waiting for PostgreSQL to be ready..."
+           sleep 2
+          fi
+          done
+
+      - name: Setting up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          ini-values: max_input_vars=5000
+          coverage: none
+
+      - name: Configuring git vars
+        uses: rlespinasse/github-slug-action@v4
+
+      - name: Checking out code from ${{ env.GITHUB_REF_SLUG }}
+        uses: actions/checkout@v4
+        with:
+          path: moodle
+
+      - name: Clone Plugin repository
+        uses: actions/checkout@v4
+        with:
+          repository: moodlehq/moodle-webinstaller-test
+          ref: main
+          path: webinstall
+
+      - name: Install Plugin Composer Dependencies
+        run: composer install
+        working-directory: webinstall
+
+      - name: Start PHP built-in server
+        run: |
+          nohup php -S localhost:8080 -t . > server.log 2>&1 &
+          echo "Waiting for PHP built-in server to be ready..."
+          for i in {1..5}; do
+            if nc -z localhost 8080; then
+              echo "PHP built-in server is ready"
+              break
+            else
+              echo "Waiting for PHP built-in server to be ready..."
+              sleep 2
+            fi
+          done
+        working-directory: moodle
+
+      - name: Install Puppeteer
+        run: npm install puppeteer
+        working-directory: webinstall
+
+      - name: Take screenshot of Moodle installation page
+        run: node screenshot.js ${{ matrix.php }}
+        working-directory: webinstall
+
+      - name: Run Behat tests
+        run: vendor/bin/behat tests/behat/install.feature
+        working-directory: webinstall
+
+      - name: Print PHP built-in server logs
+        if: ${{ !cancelled() }}
+        run: cat server.log
+        working-directory: moodle
+
+      - name: Upload screenshot
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshot-${{ matrix.php }}
+          path: webinstall/moodle${{ matrix.php }}.png
