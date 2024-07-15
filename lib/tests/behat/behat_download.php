@@ -55,7 +55,7 @@ class behat_download extends behat_base {
     /**
      * Downloads the file from a link on the page and verify the type and content.
      *
-     * @Then following :link_text in the :element_container_string> :text_selector_string should download a/an :file_extension file that:
+     * @Then following :link_text in the :element_container_string :text_selector_string should download a/an :file_extension file that:
      *
      * @param string $linktext the text of the link.
      * @param string $containerlocator the container element.
@@ -106,7 +106,6 @@ class behat_download extends behat_base {
             );
         }
         $expectedmimetype = $filetypeinfo[$fileextension]['type'];
-
         if ($actualmimetype !== $expectedmimetype) {
             throw new ExpectationException(
                 "The file downloaded should have been a $fileextension ($expectedmimetype) file, " .
@@ -192,7 +191,7 @@ class behat_download extends behat_base {
     /**
      * Downloads an image file from a link on the page and checks it is valid.
      *
-     * @Then following :link_text should download a/an :file_extension image file
+     * @Then following :link_text in element should download a/an :file_extension image file
      *
      * @param string $linktext the text of the link.
      * @param string $containerlocator the container element.
@@ -259,13 +258,13 @@ class behat_download extends behat_base {
     /**
      * Downloads the file from a link on the page and verify the type and content.
      *
-     * @Then following :link_text in the :element_container_string> :text_selector_string should download a/an :file_extension file that:
-     *
+     * @Then following :link_text in the :element_container_string> :text_selector_string should download a/an :file_extension archive that:
+     *a
      * @param string $linktext the text of the link.
      * @param string $containerlocator the container element.
      * @param string $containertype the container selector type.
      * @param string $fileextension the expected file type, given as a file extension, e.g. 'txt', 'xml'.
-     * @param TableNode $table the table of assertions - | contains | path/in/zip/to/expecte/file.ext |
+     * @param TableNode $table the table of assertions - | contains | path/in/zip/to/expected/file.ext |
      * @throws ExpectationException if the file cannot be downloaded, or if the download does not pass all the checks.
      */
     public function following_in_element_should_download_an_archive_that(string $linktext,
@@ -277,7 +276,7 @@ class behat_download extends behat_base {
 
         switch ($fileextension) {
             case 'zip':
-                $this->verify_zip_file_content($zipcontent, $table);
+                $this->verify_zip_file_content($zipcontent, $table, $fileextension);
                 break;
 
             default:
@@ -290,10 +289,11 @@ class behat_download extends behat_base {
      * Asserts that the given zip archive contains the expected file(s).
      *
      * @param string $filecontent the content of the file.
-     * @param TableNode $table the table of assertions - | contains | path/in/zip/to/expecte/file.ext |
+     * @param TableNode $table the table of assertions - | contains | path/in/zip/to/expected/file.txt |
+     * @param string $fileextension the expected file type, given as a file extension, e.g. 'zip'.
      * @throws ExpectationException if the zip file does not contain the expected files.
      */
-    protected function verify_zip_file_content(string $filecontent, TableNode $table): void {
+    protected function verify_zip_file_content(string $filecontent, TableNode $table, string $fileextension): void {
 
         $zip = new ZipArchive();
         $res = $zip->open($this->save_to_temp_file($filecontent, $fileextension));
