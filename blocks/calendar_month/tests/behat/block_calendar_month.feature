@@ -106,6 +106,7 @@ Feature: Enable the calendar block in a course and test it's functionality
     And I press "Save changes"
     When I am on "Course 1" course homepage
     And I follow "Course calendar"
+    And I change window size to "large"
     And I click on today in the mini-calendar block
     Then I should see "Site Event" in the "Calendar" "block"
     And ".popover" "css_element" should not exist
