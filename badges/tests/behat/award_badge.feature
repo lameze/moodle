@@ -109,7 +109,7 @@ Feature: Award badges
     And I set the field "type" to "Profile completion"
     And I expand all fieldsets
     And I set the field "First name" to "1"
-    And I set the field "Email address" to "1"
+    And I set the field "Email address" .to "1"
     And I set the field "Phone" to "1"
     And I set the field "id_description" to "Criterion description"
     When I press "Save"

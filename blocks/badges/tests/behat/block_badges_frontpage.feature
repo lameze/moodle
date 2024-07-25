@@ -34,5 +34,6 @@ Feature: Enable Block Badges on the frontpage and view awarded badges
     And I press "Award badge"
     And I set the field "potentialrecipients[]" to "Teacher 1 (teacher1@example.com)"
     And I press "Award badge"
+    # Confirm Badge 1 appears on the latest badges block.
     When I am on site homepage
     Then I should see "Badge 1" in the "Latest badges" "block"

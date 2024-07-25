@@ -43,7 +43,6 @@ Feature: Award badges with separate groups
     And I select "Criteria" from the "jump" singleselect
     And I set the field "type" to "Manual issue by role"
     And I expand all fieldsets
-    And I set the field "Teacher" to "1"
     And I set the field "Non-editing teacher" to "1"
     # Set to ANY of the roles awards badge.
     And I set the field "Any of the selected roles awards the badge" to "1"

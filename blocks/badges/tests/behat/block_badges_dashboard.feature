@@ -34,6 +34,6 @@ Feature: Enable Block Badges on the dashboard and view awarded badges
     And I press "Award badge"
     And I set the field "potentialrecipients[]" to "Teacher 1 (teacher1@example.com)"
     And I press "Award badge"
-    And I log out
+    # Confirm Badge 1 appears on the latest badges block.
     When I log in as "teacher1"
     Then I should see "Badge 1" in the "Latest badges" "block"
