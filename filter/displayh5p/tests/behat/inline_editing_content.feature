@@ -223,7 +223,6 @@ Feature: Inline editing H5P content anywhere
     And I click on "Greeting card" "file" in repository content area
     And I click on "Make a copy of the file" "radio"
     And I click on "Select this file" "button"
-
     And I click on "Insert H5P" "button" in the "Insert H5P" "dialogue"
     And I press "Save changes"
     And I switch to "h5p-iframe" class iframe
