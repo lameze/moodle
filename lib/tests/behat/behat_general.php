@@ -1335,8 +1335,8 @@ EOF;
      * browser window has same viewport size even when you run Behat on multiple operating systems.
      *
      * @throws ExpectationException
-     * @Then /^I change (window|viewport) size to "(mobile|tablet|small|medium|large|\d+x\d+)"$/
-     * @Then /^I change the (window|viewport) size to "(mobile|tablet|small|medium|large|\d+x\d+)"$/
+     * @Then /^I change (window|viewport) size to "(mobile|tablet|small|medium|large|extralarge|\d+x\d+)"$/
+     * @Then /^I change the (window|viewport) size to "(mobile|tablet|small|medium|large|extralarge|\d+x\d+)"$/
      * @param string $windowsize size of the window (mobile|tablet|small|medium|large|wxh).
      */
     public function i_change_window_size_to($windowviewport, $windowsize) {

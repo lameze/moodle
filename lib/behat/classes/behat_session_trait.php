@@ -758,6 +758,7 @@ trait behat_session_trait {
      *   - small: 1024x768
      *   - medium: 1366x768
      *   - large: 2560x1600
+     *   - extralarge: 3840x2160
      *
      * @param string $windowsize size of window.
      * @param bool $viewport If true, changes viewport rather than window size
@@ -791,6 +792,10 @@ trait behat_session_trait {
             case "large":
                 $width = 2560;
                 $height = 1600;
+                break;
+            case "extralarge":
+                $width = 3840;
+                $height = 2160;
                 break;
             default:
                 preg_match('/^(\d+x\d+)$/', $windowsize, $matches);
