@@ -66,6 +66,7 @@ Feature: Grant an extension to an offline student
     And I am on the "Test assignment name" Activity page logged in as teacher1
     When I navigate to "Submissions" in current page administration
     And I set the field "selectall" to "1"
+    And I wait "1" seconds
     And I click on "Extend" "button" in the "sticky-footer" "region"
     And I click on "Extend" "button" in the "Grant extension" "dialogue"
     And I should see "Student 1 (student1@example.com)"
@@ -117,6 +118,7 @@ Feature: Grant an extension to an offline student
     And I am on the "Test assignment name" Activity page logged in as teacher1
     When I navigate to "Submissions" in current page administration
     And I set the field "selectall" to "1"
+    And I wait until "Extend" "button" exists
     And I click on "Extend" "button" in the "sticky-footer" "region"
     And I click on "Extend" "button" in the "Grant extension" "dialogue"
     And I should see "Student 1 (student1@example.com)"
