@@ -110,7 +110,7 @@ Feature: Grant an extension to an offline student
     Then I should see "Extension date must be after the allow submissions from date"
 
   @javascript
-  Scenario: Granting extensions to an offline assignment (batch action)
+  Scenario: Validating that extension date is after due date (batch action)
     Given the following "activities" exist:
       | activity | course | name                 | intro                       | assignsubmission_onlinetext_enabled | assignsubmission_file_enabled | allowsubmissionsfromdate | duedate          |
       | assign   | C1     | Test assignment name | Test assignment description | 0                                   | 0                             | ## 2034-01-01 ##         | ## 2034-01-02 ## |
