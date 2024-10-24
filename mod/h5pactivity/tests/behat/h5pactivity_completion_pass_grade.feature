@@ -1,5 +1,8 @@
-@mod @mod_h5pactivity @core_h5p @_file_upload @_switch_iframe @javascript @core_completion
-Feature: Pass grade activity completion information in the h5p activity
+@mod @mod_h5pactivity @core_h5p @_switch_iframe @core_completion
+Feature: Completion of H5P activity by achieving a passing grade
+  In order to complete an H5P activity
+  As a student
+  I need to be able to complete the h5p activity to receive a grade
 
   Background:
     Given the following "users" exist:
@@ -28,16 +31,16 @@ Feature: Pass grade activity completion information in the h5p activity
       | gradepass           | 25                                   |
       | packagefilepath     | h5p/tests/fixtures/filltheblanks.h5p |
 
-  Scenario: View automatic completion items
-    # Teacher view.
+  Scenario: Verify that the h5p completion conditions are displayed to teachers
     Given I change window size to "large"
     And I am on the "Music history" "h5pactivity activity" page logged in as teacher1
-    And "Music history" should have the "View" completion condition
+    Then "Music history" should have the "View" completion condition
     And "Music history" should have the "Receive a grade" completion condition
     And "Music history" should have the "Receive a passing grade" completion condition
-    And I log out
-    # Student view.
-    When I am on the "Music history" "h5pactivity activity" page logged in as student1
+
+  @javascript
+  Scenario: Verify that students can complete an H5P activity by achieving a passing grade
+    Given I am on the "Music history" "h5pactivity activity" page logged in as student1
     And I switch to "h5p-player" class iframe
     And I switch to "h5p-iframe" class iframe
     And I click on "Check" "button" in the ".h5p-question-buttons" "css_element"
@@ -55,7 +58,6 @@ Feature: Pass grade activity completion information in the h5p activity
     Then the "View" completion condition of "Music history" is displayed as "done"
     And the "Receive a grade" completion condition of "Music history" is displayed as "done"
     And the "Receive a passing grade" completion condition of "Music history" is displayed as "done"
-    And I log out
     And I am on the "Music history" "h5pactivity activity" page logged in as student1
     And the "View" completion condition of "Music history" is displayed as "done"
     And the "Receive a grade" completion condition of "Music history" is displayed as "done"
