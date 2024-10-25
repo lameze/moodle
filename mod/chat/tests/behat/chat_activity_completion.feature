@@ -18,22 +18,19 @@ Feature: View activity completion information in the chat activity
       | teacher1 | C1 | editingteacher |
     And I enable "chat" "mod" plugin
 
-  Scenario: View automatic completion items
-    Given I log in as "teacher1"
-    And the following "activity" exists:
+  Scenario: Chat module displays automatic completion items to teachers
+    Given the following "activity" exists:
       | activity       | chat          |
       | course         | C1            |
       | name           | Music history |
       | section        | 1             |
       | completion     | 2             |
       | completionview | 1             |
-    And I am on "Course 1" course homepage
-    # Teacher view.
-    And I am on the "Music history" Activity page
-    And "Music history" should have the "View" completion condition
-    And I log out
-    # Student view.
-    And I am on the "Music history" Activity page logged in as student1
+    When I am on the "Music history" Activity page logged in as teacher1
+    Then "Music history" should have the "View" completion condition
+
+  Scenario: Verify that students can complete a chat activity by viewing it
+    Given I am on the "Music history" Activity page logged in as student1
     Then the "View" completion condition of "Music history" is displayed as "done"
 
   @javascript

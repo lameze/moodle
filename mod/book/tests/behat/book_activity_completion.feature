@@ -24,18 +24,19 @@ Feature: View activity completion information in the book activity
       | completion     | 2             |
       | completionview | 1             |
 
-  Scenario: View automatic completion items
+  Scenario: A book activity display completion conditions to teachers
     Given the following "mod_book > chapter" exists:
       | book    | Music history           |
       | title   | Drum theory             |
       | content | Rudiments are important |
     And I am on the "Music history" "book activity" page logged in as teacher1
     And "Music history" should have the "View" completion condition
-    # Student view.
+
+  Scenario: Students can complete a book activity by viewing it
     When I am on the "Music history" "book activity" page logged in as student1
     Then the "View" completion condition of "Music history" is displayed as "done"
 
-  Scenario: View automatic completion items with last section hidden
+  Scenario: Confirm students view book activity automatic completion items with last section hidden
     Given the following "activity" exists:
       | activity       | book        |
       | course         | C1          |
