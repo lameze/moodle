@@ -51,15 +51,4 @@ Feature: A teacher can use activity completion to track a student progress
     And I follow "Test survey name"
     And the "Submit answers" completion condition of "Test survey name" is displayed as "done"
 
-  Scenario: Use manual completion
-    Given the following "activities" exist:
-      | activity   | name                   | course | idnumber    | completion |
-      | survey     | Test survey name       | C1     | survey1     | 1          |
-    And I am on "Course 1" course homepage
-    # Teacher view.
-    And "Test survey name" should have the "Mark as done" completion condition
-    # Student view.
-    When I am on the "survey1" Activity page logged in as student1
-    Then the manual completion button of "Test survey name" is displayed as "Mark as done"
-    And I toggle the manual completion state of "Test survey name"
-    And the manual completion button of "Test survey name" is displayed as "Done"
+

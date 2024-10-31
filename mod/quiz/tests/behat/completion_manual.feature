@@ -29,13 +29,13 @@ Feature: Manually complete a quiz
       | question       | page |
       | First question | 1    |
 
+  Scenario: Verify that a teacher cannot manually mark the quiz as done
+    When I am on the "Test quiz name" "quiz activity" page logged in as teacher1
+    Then the manual completion button for "Test quiz name" should be disabled
+
   @javascript
-  Scenario: Use manual completion
-    Given I am on the "Test quiz name" "quiz activity" page logged in as teacher1
-    And the manual completion button for "Test quiz name" should be disabled
-    And I log out
-    # Student view.
-    When I am on the "Test quiz name" "quiz activity" page logged in as student1
-    Then the manual completion button of "Test quiz name" is displayed as "Mark as done"
-    And I toggle the manual completion state of "Test quiz name"
-    And the manual completion button of "Test quiz name" is displayed as "Done"
+  Scenario: Verify that a student can manually mark the quiz as done
+    Given I am on the "Test quiz name" "quiz activity" page logged in as student1
+    And the manual completion button of "Test quiz name" is displayed as "Mark as done"
+    When I toggle the manual completion state of "Test quiz name"
+    Then the manual completion button of "Test quiz name" is displayed as "Done"

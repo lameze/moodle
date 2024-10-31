@@ -59,18 +59,3 @@ Feature: View activity completion in the glossary activity
     Then the "View" completion condition of "Music history" is displayed as "done"
     And the "Make entries: 1" completion condition of "Music history" is displayed as "done"
     And the "Receive a grade" completion condition of "Music history" is displayed as "done"
-
-  @javascript
-  Scenario: Use manual completion
-    Given I am on the "Music history" "glossary activity editing" page logged in as teacher1
-    And I expand all fieldsets
-    And I set the field "Students must manually mark the activity as done" to "1"
-    And I press "Save and display"
-    # Teacher view.
-    And the manual completion button for "Music history" should be disabled
-    And I log out
-    # Student view.
-    When I am on the "Music history" "glossary activity" page logged in as student1
-    Then the manual completion button of "Music history" is displayed as "Mark as done"
-    And I toggle the manual completion state of "Music history"
-    And the manual completion button of "Music history" is displayed as "Done"

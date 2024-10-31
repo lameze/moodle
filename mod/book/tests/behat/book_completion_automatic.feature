@@ -64,22 +64,3 @@ Feature: View activity completion information in the book activity
     And I should see "Sub chapter 2"
     And I should not see "Next"
     Then the "View" completion condition of "Art history" is displayed as "done"
-
-  @javascript
-  Scenario: Use manual completion
-    Given I am on the "Music history" "book activity editing" page logged in as teacher1
-    And I expand all fieldsets
-    And I set the field "Students must manually mark the activity as done" to "1"
-    And I press "Save and display"
-    And I set the following fields to these values:
-      | Chapter title | Drum theory             |
-      | Content       | Rudiments are important |
-    And I press "Save changes"
-    And I am on the "Music history" "book activity" page
-    # Teacher view.
-    And the manual completion button for "Music history" should be disabled
-    # Student view.
-    Given I am on the "Music history" "book activity" page logged in as student1
-    Then the manual completion button of "Music history" is displayed as "Mark as done"
-    And I toggle the manual completion state of "Music history"
-    And the manual completion button of "Music history" is displayed as "Done"

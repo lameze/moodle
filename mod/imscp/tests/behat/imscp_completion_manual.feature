@@ -1,8 +1,8 @@
-@mod @mod_lti @core_completion
-Feature: View activity completion information in the LTI activity
-  In order to have visibility of LTI completion requirements
+@mod @mod_imscp @core_completion
+Feature: View activity completion information in the IMS content package activity
+  In order to have visibility of IMS content package completion requirements
   As a student
-  I need to be able to view my LTI completion progress
+  I need to be able to view my IMS content package completion progress
 
   Background:
     Given the following "users" exist:
@@ -17,20 +17,16 @@ Feature: View activity completion information in the LTI activity
       | student1 | C1 | student        |
       | teacher1 | C1 | editingteacher |
     And the following "activities" exist:
-      | activity | name          | course | idnumber | completion | completionview | completionusegrade |
-      | lti      | Music history | C1     | lti1     | 2          | 1              | 1                  |
+      | activity | course | name          | completion | packagefilepath                            |
+      | imscp    | C1     | Music history | 1          | mod/imscp/tests/packages/singescobasic.zip |
 
+  Scenario: Verify that a teacher cannot mark a IMSCP activity as completed
+    When I am on the "Music history" "imscp activity" page logged in as teacher1
+    Then the manual completion button for "Music history" should be disabled
 
   @javascript
-  Scenario: Use manual completion
-    Given I am on the "Music history" "lti activity editing" page logged in as teacher1
-    And I expand all fieldsets
-    And I set the field "Students must manually mark the activity as done" to "1"
-    And I press "Save and display"
-    # Teacher view.
-    And the manual completion button for "Music history" should be disabled
-    # Student view.
-    When I am on the "Music history" "lti activity" page logged in as student1
+  Scenario: A student can manually complete a IMSCP activity
+    When I am on the "Music history" "imscp activity" page logged in as student1
     Then the manual completion button of "Music history" is displayed as "Mark as done"
     And I toggle the manual completion state of "Music history"
     And the manual completion button of "Music history" is displayed as "Done"
