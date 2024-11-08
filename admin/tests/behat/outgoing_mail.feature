@@ -28,6 +28,7 @@ Feature: Outgoing mail configuration
     And I should see "PLAIN" in the "SMTP Auth Type" "select"
     And I should see "Testing service" in the "OAuth 2 service" "select"
 
+
   Scenario: Test outgoing mail configuration page
     Given I navigate to "Server > Email > Outgoing mail configuration" in site administration
     And I follow "Test outgoing mail configuration"

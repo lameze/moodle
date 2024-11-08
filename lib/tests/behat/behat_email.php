@@ -19,7 +19,7 @@
  *
  * @package    core
  * @category   test
- * @copyright  2023 Simey Lameze <simey@moodle.com>
+ * @copyright  2024 Simey Lameze <simey@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -46,14 +46,14 @@ class behat_email extends behat_base {
      * @throws SkippedException
      */
     private function get_catcher(): \core\test\email_catcher {
-        if (!defined('TEST_MAILPIT_SERVER')) {
+        if (!defined('TEST_EMAILCATCHER_SERVER')) {
             throw new SkippedException(
-                'The TEST_MAILPIT_SERVER constant must be defined in config.php to use the mailcatcher steps.',
+                'The TEST_EMAILCATCHER_SERVER constant must be defined in config.php to use the mailcatcher steps.',
             );
         }
 
-        [$hostname, , $apiport] = explode(':', TEST_MAILPIT_SERVER);
-        $apiserver = "http://{$hostname}:{$apiport}";
+        [$hostname, $apiport] = explode(':', TEST_EMAILCATCHER_SERVER);
+        $apiserver = "http://{$hostname}:8025"; // The API uses port 8025 not 1025
 
         return new \core\test\mailpit_email_catcher($apiserver);
     }
@@ -127,7 +127,7 @@ class behat_email extends behat_base {
      */
     public function verify_email_content(string $user, string $subject, string $content): void {
         $messages = $this->get_messages_matching_address_and_subject($user, $subject);
-
+print_object($messages);
         $count = 0;
         foreach ($messages as $message) {
             $count++;
@@ -221,6 +221,9 @@ class behat_email extends behat_base {
             $emailuserto->email = $to;
             $emailuserto->firstname = 'Test';
             $emailuserto->lastname = 'User';
+            error_log("Sending email to: $emailuserto->email");
+            error_log("Subject: $subject");
+            error_log("Message: $message");
 
             // Send test email.
             email_to_user($emailuserto, $noreplyuser, $subject, $message);

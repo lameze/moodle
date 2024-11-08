@@ -35,6 +35,7 @@ use stdClass;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class mailpit_email_catcher implements email_catcher {
+
     /** @var http_client The http client object */
     protected $httpclient;
 
@@ -94,8 +95,8 @@ class mailpit_email_catcher implements email_catcher {
                 uri: $uri,
                 options: $options,
             );
-            $data = json_decode($response->getBody());
 
+            $data = json_decode($response->getBody());
             foreach ($data->messages as $messagedata) {
                 yield mailpit_message::create_from_api_response($this, $messagedata);
             }

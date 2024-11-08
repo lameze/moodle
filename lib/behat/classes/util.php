@@ -114,7 +114,7 @@ class behat_util extends testing_util {
         set_config('debugdisplay', 1);
 
         // Disable some settings that are not wanted on test sites.
-        set_config('noemailever', 1);
+        //set_config('noemailever', 1);
 
         // Enable web cron.
         set_config('cronclionly', 0);

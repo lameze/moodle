@@ -235,11 +235,11 @@ function behat_clean_init_config() {
     }
 
     // Allow email catcher settings.
-    if (defined('TEST_MAILPIT_SERVER')) {
-        [$hostname, $smtpport, $apiport] = explode(':', TEST_MAILPIT_SERVER);
+    if (defined('TEST_EMAILCATCHER_SERVER')) {
+        [$hostname, $apiport] = explode(':', TEST_EMAILCATCHER_SERVER);
 
-        $CFG->noemailever = false;
-        $CFG->smtphosts = implode(':', [$hostname, $smtpport]);
+        //$CFG->noemailever = false;
+        $CFG->smtphosts = implode(':', [$hostname, $apiport]);
     }
 }
 

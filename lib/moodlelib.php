@@ -5561,6 +5561,7 @@ function email_to_user($user, $from, $subject, $messagetext, $messagehtml = '', 
 
     global $CFG, $PAGE, $SITE;
 
+
     if (empty($user) or empty($user->id)) {
         debugging('Can not send email to null user', DEBUG_DEVELOPER);
         return false;
@@ -5576,14 +5577,13 @@ function email_to_user($user, $from, $subject, $messagetext, $messagehtml = '', 
         return false;
     }
 
-    if (property_exists($CFG, 'noemailever') && $CFG->noemailever) {
-        // Hidden setting for development sites, set in config.php if needed.
-        if (defined('BEHAT_SITE_RUNNING')) {
-            debugging('Not sending email due to $CFG->noemailever config setting');
-        }
-        return true;
-    }
-
+//    if (property_exists($CFG, 'noemailever') && $CFG->noemailever) {
+//        // Hidden setting for development sites, set in config.php if needed.
+//        if (defined('BEHAT_SITE_RUNNING')) {
+//            debugging('Not sending email due to $CFG->noemailever config setting');
+//        }
+//        return true;
+//    }
     if (email_should_be_diverted($user->email)) {
         $subject = "[DIVERTED {$user->email}] $subject";
         $user = clone($user);
