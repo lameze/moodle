@@ -20,11 +20,10 @@ Feature: In a activity page, navigate through the More / Logs menu, test for rep
       | admin    | C1     | editingteacher |
       | student1 | C1     | student        |
 
-  @javascript
+
   Scenario: Report selectors should be targeted toward course module
     Given I am on the "Test page 1" Activity page logged in as "admin"
     When I navigate to "Logs" in current page administration
-    And I click on "Logs" "link"
     Then "menuid" "select" should not exist
     And "modid" "select" should not exist
     And I should see "All participants" in the "user" "select"
@@ -33,10 +32,8 @@ Feature: In a activity page, navigate through the More / Logs menu, test for rep
     And I should see "All events" in the "edulevel" "select"
     And "Page" "link" should exist in current page administration
 
-  @javascript
   Scenario: Report submission stays in the same course module page
     Given I am on the "Test page 1" Activity page logged in as "admin"
     When I navigate to "Logs" in current page administration
-    And I click on "Logs" "link"
     And I click on "Get these logs" "button"
     Then "Page" "link" should exist in current page administration
