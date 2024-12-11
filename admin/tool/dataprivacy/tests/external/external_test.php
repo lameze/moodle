@@ -1082,7 +1082,7 @@ final class external_test extends externallib_advanced_testcase {
      * @throws required_capability_exception
      * @throws restricted_context_exception
      */
-    public function test_get_users(): void {
+    public function test_get_users_privacy(): void {
         global $CFG;
         $this->resetAfterTest();
         $CFG->showuseridentity = 'institution';
