@@ -90,33 +90,15 @@ Feature: Edited glossary entries handle tags correctly
     And I should see "OT2" in the ".glossary-tags" "css_element"
     And I should see "OT3" in the ".glossary-tags" "css_element"
 
-  Scenario: Student glossary entry tags cannot be viewed by others while unapproved
-    # Create a glossary activity that requires approval for entries.
-    Given the following "activities" exist:
-      | activity | course | name       | defaultapproval |
-      | glossary | C1     | glossary 1 | 0               |
-    And the following "mod_glossary > entries" exist:
-      | glossary   | concept | definition         | tags          | user     |
-      | glossary 1 | Entry 1 | Entry 1 definition | OT1, OT2, OT3 | student1 |
-    # Log in as another student enrolled to the course.
+  Scenario Outline: Student glossary entry tags can be viewed depending on approval
+    Given the following "mod_glossary > entries" exist:
+      | glossary      | concept | definition         | tags          | user     | approved   |
+      | Test glossary | Entry 1 | Entry 1 definition | OT1, OT2, OT3 | student1 | <approved> |
     When I log in as "student2"
-    # Confirm that without approval, student2 can't see the glossary entry made by student1.
     And I click on "OT1" "link" in the "Tags" "block"
-    Then I should not see "Dummy first entry"
+    Then I <visibility> see "Entry 1"
 
-  Scenario: Student glossary entry tags can be viewed by others after entry is approved
-    # Create a glossary activity that requires approval for entries.
-    Given the following "activities" exist:
-      | activity | course | name       | defaultapproval |
-      | glossary | C1     | glossary 1 | 0               |
-    And the following "mod_glossary > entries" exist:
-      | glossary   | concept | definition         | tags          | user     |
-      | glossary 1 | Entry 1 | Entry 1 definition | OT1, OT2, OT3 | student1 |
-    # As a teacher, approve the glossary entry with tags.
-    When I am on the "glossary 1" "glossary activity" page logged in as teacher1
-    And I follow "Pending approval (1)"
-    And I follow "Approve"
-    # Log in as student2 again and confirm that the glossary entry with tags is now visible.
-    And I log in as "student2"
-    And I click on "OT1" "link" in the "Tags" "block"
-    Then I should see "Dummy first entry"
+    Examples:
+    | approved | visibility |
+    | 0        | should not |
+    | 1        | should     |
