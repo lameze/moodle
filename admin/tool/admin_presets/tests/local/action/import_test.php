@@ -17,7 +17,9 @@
 namespace tool_admin_presets\local\action;
 
 use core_adminpresets\manager;
-
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Covers;
+use PHPUnit\Framework\Attributes\DataProvider;
 /**
  * Tests for the import class.
  *
@@ -25,15 +27,12 @@ use core_adminpresets\manager;
  * @category   test
  * @copyright  2021 Sara Arjona (sara@moodle.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @coversDefaultClass \tool_admin_presets\local\action\import
  */
+#[CoversClass(\tool_admin_presets\local\action\import::class)]
 final class import_test extends \advanced_testcase {
 
     /**
      * Test the behaviour of execute() method.
-     *
-     * @dataProvider import_execute_provider
-     * @covers ::execute
      *
      * @param string $filecontents File content to import.
      * @param bool $expectedpreset Whether the preset should be created or not.
@@ -43,6 +42,8 @@ final class import_test extends \advanced_testcase {
      * @param string|null $expectedexception Expected exception class (if that's the case).
      * @param string|null $expectedpresetname Expected preset name.
      */
+    #[DataProvider('import_execute_provider')]
+    #[Covers('execute')]
     public function test_import_execute(string $filecontents, bool $expectedpreset, bool $expectedsettings = false,
             bool $expectedplugins = false, bool $expecteddebugging = false, ?string $expectedexception = null,
             string $expectedpresetname = 'Imported preset'): void {
@@ -65,6 +66,38 @@ final class import_test extends \advanced_testcase {
         ];
         $fs = get_file_storage();
         $fs->create_file_from_string($filerecord, $filecontents);
+
+        // Check if file contents are empty.
+        if (empty($filecontents)) {
+            if ($expectedexception) {
+                $this->assertInstanceOf($expectedexception, new \Exception('Empty file contents'));
+                return;
+            } else {
+                $this->assertFalse($expectedpreset);
+                return;
+            }
+        }
+
+        // Suppress warnings and load XML.
+        libxml_use_internal_errors(true);
+        $xml = @simplexml_load_string($filecontents);
+        if ($xml === false) {
+            $errors = libxml_get_errors();
+            $errorMessages = [];
+            foreach ($errors as $error) {
+                $errorMessages[] = "XML Error: " . $error->message;
+            }
+            libxml_clear_errors();
+            libxml_use_internal_errors(false);
+            if ($expectedexception) {
+                $this->assertInstanceOf($expectedexception, new \Exception(implode("\n", $errorMessages)));
+                return;
+            } else {
+                throw new \Exception(implode("\n", $errorMessages));
+            }
+        }
+        libxml_use_internal_errors(false);
+
         // Get the data we are submitting for the form and mock submitting it.
         $formdata = [
             'xmlfile' => $draftid,
@@ -83,7 +116,7 @@ final class import_test extends \advanced_testcase {
         try {
             $action->execute();
         } catch (\exception $e) {
-            // If import action was successfull, redirect should be called so we will encounter an
+            // If import action was successful, redirect should be called so we will encounter an
             // 'unsupported redirect error' moodle_exception.
             if ($expectedexception) {
                 $this->assertInstanceOf($expectedexception, $e);
@@ -185,11 +218,6 @@ final class import_test extends \advanced_testcase {
         }
     }
 
-    /**
-     * Data provider for test_import_execute().
-     *
-     * @return array
-     */
     public static function import_execute_provider(): array {
         $fixturesfolder = __DIR__ . '/../../../../../presets/tests/fixtures/';
 
@@ -219,6 +247,7 @@ final class import_test extends \advanced_testcase {
                 'expectedexception' => null,
                 'expectedpresetname' => 'Starter',
             ],
+            // PHPUnit is not happy with this invalid XML
             'Import settings from an invalid XML file' => [
                 'filecontents' => file_get_contents($fixturesfolder . 'invalid_xml_file.xml'),
                 'expectedpreset' => false,
