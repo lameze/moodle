@@ -1137,7 +1137,6 @@ final class messagelib_test extends \advanced_testcase {
         $message->notification      = '0';
 
         message_send($message);
-        $this->assertDebuggingCalled('Not sending email due to $CFG->noemailever config setting');
 
         $transaction1 = $DB->start_delegated_transaction();
 
@@ -1154,7 +1153,6 @@ final class messagelib_test extends \advanced_testcase {
         $this->assertDebuggingNotCalled();
 
         message_send($message);
-        $this->assertDebuggingCalled('Not sending email due to $CFG->noemailever config setting');
     }
 
     public function test_message_attachment_send(): void {
