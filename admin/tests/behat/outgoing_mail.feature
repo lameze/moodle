@@ -27,3 +27,15 @@ Feature: Outgoing mail configuration
     And I should see "LOGIN" in the "SMTP Auth Type" "select"
     And I should see "PLAIN" in the "SMTP Auth Type" "select"
     And I should see "Testing service" in the "OAuth 2 service" "select"
+
+  @behat_email
+  Scenario: Test outgoing mail configuration page
+    Given I navigate to "Server > Email > Outgoing mail configuration" in site administration
+    And I follow "Test outgoing mail configuration"
+    And I set the following fields to these values:
+      | To email address               | student1@example.com  |
+      | From username or email address | admin                 |
+      | Additional subject             | Testing outgoing mail |
+    When I press "Send a test message"
+    Then I should see "This site has successfully sent a test message to the mail server."
+    And the email to "student1@example.com" with subject containing "Testing outgoing mail" should contain "This is a test message"
