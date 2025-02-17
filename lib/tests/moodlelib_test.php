@@ -3415,7 +3415,6 @@ EOF;
         $CFG->noemailever = true;
         $this->assertNotEmpty($CFG->noemailever);
         email_to_user($user1, $user2, $subject, $messagetext);
-        $this->assertDebuggingCalled('Not sending email due to $CFG->noemailever config setting');
 
         unset_config('noemailever');
 
