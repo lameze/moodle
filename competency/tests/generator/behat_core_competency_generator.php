@@ -83,6 +83,12 @@ class behat_core_competency_generator extends behat_generator_base {
                 'required' => ['plan', 'competency', 'user'],
                 'switchids' => ['plan' => 'planid', 'competency' => 'competencyid', 'user' => 'userid'],
             ],
+            'template_competencies' => [
+                'singular' => 'template_competency',
+                'datagenerator' => 'template_competency',
+                'required' => ['template', 'competency'],
+                'switchids' => ['template' => 'templateid', 'competency' => 'competencyid'],
+            ],
         ];
     }
 
@@ -142,6 +148,22 @@ class behat_core_competency_generator extends behat_generator_base {
      */
     protected function get_relatedcompetency_id(string $idnumber): int {
         return $this->get_competency_id($idnumber);
+    }
+
+    /**
+     * Get the template id by shortname.
+     *
+     * @param string $shortname The template name.
+     * @return int
+     */
+    protected function get_template_id(string $shortname): int {
+        global $DB;
+
+        if (!$id = $DB->get_field('competency_template', 'id', ['shortname' => $shortname])) {
+            throw new Exception('The specified template with name "' . $shortname . '" could not be found.');
+        }
+
+        return $id;
     }
 
     /**
