@@ -23,6 +23,7 @@ use stdClass;
  *
  * @package    core
  * @category   test
+ * @copyright  Simey Lameze <simey@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class mailpit_message implements message {
@@ -30,26 +31,52 @@ class mailpit_message implements message {
     /** @var bool Whether the message has been loaded. */
     protected bool $messageloaded = false;
 
+    /**
+     * Constructor.
+     *
+     * @param email_catcher $client The email catcher client.
+     * @param string $id The message ID.
+     * @param stdClass $sender The sender.
+     * @param string $subject The subject.
+     * @param array $recipients The recipients.
+     * @param array $cc The cc recipients.
+     * @param array $bcc The bcc recipients.
+     * @param int $attachmentcount The number of attachments.
+     * @param string|null $text The text body.
+     * @param string|null $html The HTML body.
+     * @param array $attachments The attachments.
+     * @param array $inline The inline attachments.
+     */
     protected function __construct(
-        protected email_catcher $client,
-        protected string $id,
-        protected stdClass $sender,
-        protected string $subject,
-        protected array $recipients,
-        protected array $cc = [],
-        protected array $bcc = [],
-        protected int $attachmentcount = 0,
-        protected ?string $text = null,
-        protected ?string $html = null,
-        protected array $attachments = [],
-        protected array $inline = [],
+        /** @var email_catcher $client The email catcher client used for message operations.*/
+        private readonly email_catcher $client,
+        /** @var string $id The unique identifier for the message. */
+        private readonly string $id,
+        /** @var stdClass $sender The sender of the message, represented as an object with email details. */
+        private readonly stdClass $sender,
+        /** @var string $subject The subject line of the message. */
+        private readonly string $subject,
+        /** @var array $recipients List of primary recipients for the message. */
+        private readonly array $recipients,
+        /** @var array $cc List of carbon copy recipients (optional, defaults to an empty array). */
+        private readonly array $cc = [],
+        /** @var array $bcc List of blind carbon copy recipients (optional, defaults to an empty array). */
+        private readonly array $bcc = [],
+        /** @var int $attachmentcount The number of attachments in the message (default is 0). */
+        private readonly int $attachmentcount = 0,
+        /** @var ?string $text The plain text body of the message (nullable, might be loaded later). */
+        private ?string $text = null,
+        /** @var ?string $html The HTML body of the message (nullable, might be loaded later). */
+        private ?string $html = null,
+        /** @var array $attachments An array of attachment details (defaults to empty array). */
+        private array $attachments = [],
+        /** @var array $inline An array of inline elements like images or styles (defaults to empty array). */
+        private array $inline = [],
     ) {
     }
 
     /**
      * Load the message content.
-     *
-     * @return void
      */
     protected function load_message_content(): void {
         if (!$this->messageloaded) {
@@ -65,14 +92,17 @@ class mailpit_message implements message {
     /**
      * Create a message from an api response.
      *
-     * @param \stdClass $message The api response.
-     * @return mailpit_message
+     * @param email_catcher $client The email catcher client.
+     * @param stdClass $message The api response.
+     * @param bool $showdetails Optional. Whether to include detailed information in the messages. Default is false.
+     * @return mailpit_message The created mailpit message instance.
      */
     public static function create_from_api_response(
         email_catcher $client,
-        \stdClass $message,
+        stdClass $message,
+        bool $showdetails = false,
     ): self {
-        return new self(
+        $message = new self(
             client: $client,
             id: $message->ID,
             sender: $message->From,
@@ -81,32 +111,36 @@ class mailpit_message implements message {
             cc: $message->Cc,
             attachmentcount: $message->Attachments,
         );
+
+        if ($showdetails) {
+            $message->load_message_content();
+        }
+
+        return $message;
     }
 
     /**
      * Get the text representation of the body, if one was provided.
      *
-     * @return null|string
+     * @return null|string The text body.
      */
     public function get_body_text(): ?string {
-        $this->load_message_content();
         return $this->text;
     }
 
     /**
      * Get the HTML representation of the body, if one was provided.
      *
-     * @return null|string
+     * @return null|string The HTML body.
      */
     public function get_body_html(): ?string {
-        $this->load_message_content();
         return $this->html;
     }
 
     /**
      * Get the message ID.
      *
-     * @return string
+     * @return string The ID.
      */
     public function get_id(): string {
         return $this->id;
@@ -115,7 +149,7 @@ class mailpit_message implements message {
     /**
      * Get the message recipients.
      *
-     * @return array
+     * @return iterable The recipients.
      */
     public function get_recipients(): iterable {
         foreach ($this->recipients as $user) {
@@ -126,7 +160,7 @@ class mailpit_message implements message {
     /**
      * Get the first recipient of the message.
      *
-     * @return string
+     * @return string The email address of the first recipient.
      */
     public function get_first_recipient(): string {
         $recipients = $this->get_recipients();
@@ -140,7 +174,7 @@ class mailpit_message implements message {
      * Whether the message has the specified recipient.
      *
      * @param string $email The email address.
-     * @return bool
+     * @return bool Whether the message has the recipient.
      */
     public function has_recipient(string $email): bool {
         foreach ($this->get_recipients() as $recipient) {
@@ -154,7 +188,7 @@ class mailpit_message implements message {
     /**
      * Get the message cc recipients.
      *
-     * @return array
+     * @return iterable The cc recipients.
      */
     public function get_cc(): iterable {
         foreach ($this->cc as $user) {
@@ -165,7 +199,7 @@ class mailpit_message implements message {
     /**
      * Get the message bcc recipients.
      *
-     * @return array
+     * @return iterable The bcc recipients.
      */
     public function get_bcc(): iterable {
         foreach ($this->bcc as $user) {
@@ -176,7 +210,7 @@ class mailpit_message implements message {
     /**
      * Get the message subject.
      *
-     * @return string
+     * @return string The subject.
      */
     public function get_subject(): string {
         return $this->subject;
@@ -185,7 +219,7 @@ class mailpit_message implements message {
     /**
      * Get the message sender.
      *
-     * @return string
+     * @return message_user The sender.
      */
     public function get_sender(): message_user {
         return mailpit_message_user::from_sender($this->sender);

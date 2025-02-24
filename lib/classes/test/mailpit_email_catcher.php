@@ -36,8 +36,8 @@ use stdClass;
  */
 class mailpit_email_catcher implements email_catcher {
 
-    /** @var http_client The http client object */
-    protected $httpclient;
+    /** @var http_client The http client object. */
+    protected http_client $httpclient;
 
     /**
      * Constructor.
@@ -57,8 +57,6 @@ class mailpit_email_catcher implements email_catcher {
 
     /**
      * Delete all messages from the mailpit server.
-     *
-     * @return void
      */
     public function delete_all() {
         $this->httpclient->delete('api/v1/messages');
@@ -67,9 +65,10 @@ class mailpit_email_catcher implements email_catcher {
     /**
      * Get a list of messages from the mailpit server.
      *
+     * @param bool $showdetails Optional. Whether to include detailed information in the messages. Default is false.
      * @return iterable<message>
      */
-    public function get_messages(): iterable {
+    public function get_messages(bool $showdetails = false): iterable {
         $uri = 'api/v1/messages';
         $options = [
             'query' => [
@@ -85,7 +84,7 @@ class mailpit_email_catcher implements email_catcher {
 
             $data = json_decode($response->getBody());
             foreach ($data->messages as $messagedata) {
-                yield mailpit_message::create_from_api_response($this, $messagedata);
+                yield mailpit_message::create_from_api_response($this, $messagedata, $showdetails);
             }
 
             $options['query']['start'] = $data->start + $data->count;
@@ -96,7 +95,7 @@ class mailpit_email_catcher implements email_catcher {
      * Get the message summary for a specific message.
      *
      * @param string $id The message id.
-     * @return mixed
+     * @return stdClass
      */
     public function get_message_data(string $id): stdClass {
         $response = $this->httpclient->get("api/v1/message/{$id}");
@@ -110,7 +109,7 @@ class mailpit_email_catcher implements email_catcher {
      * @param string $query The search query.
      * @return mixed
      */
-    public function search(string $query): \Iterator {
+    public function search(string $query): iterable {
         $uri = "api/v1/search?query={$query}";
 
         $response = $this->httpclient->get($uri);

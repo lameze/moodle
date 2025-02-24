@@ -29,9 +29,10 @@ interface email_catcher {
     /**
      * Get a list of messages from the mailpit server.
      *
+     * @param bool $showdetails Optional. Whether to include detailed information in the messages. Default is false.
      * @return iterable<message>
      */
-    public function get_messages(): iterable;
+    public function get_messages(bool $showdetails = false): iterable;
 
     /**
      * Delete all messages from the mailpit server.
@@ -44,5 +45,5 @@ interface email_catcher {
      * @param string $query The search query.
      * @return \Iterator
      */
-    public function search(string $query): \Iterator;
+    public function search(string $query): iterable;
 }

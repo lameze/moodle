@@ -1720,7 +1720,7 @@ EOF;
     }
 
     /**
-     * Get the user id from an identifier.
+     * Get the user object from an identifier.
      *
      * The user username and email fields are checked.
      *

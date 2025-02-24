@@ -14,15 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * Steps definitions to verify sent emails.
- *
- * @package    core
- * @category   test
- * @copyright  2024 Simey Lameze <simey@moodle.com>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
 use core\test\message;
 use Behat\Gherkin\Node\TableNode;
 use Behat\Mink\Exception\ExpectationException;
@@ -70,7 +61,7 @@ class behat_email extends behat_base {
      *
      * This could be an e-mail address, or a username.
      *
-     * @param string $input The input from the step
+     * @param string $input The input from the step.
      * @return string
      */
     private function get_email_address_from_input(string $input): string {
@@ -89,8 +80,8 @@ class behat_email extends behat_base {
     /**
      * Get any message matching the supplied user and subject.
      *
-     * @param string $user The user to check for
-     * @param string $subject The subject to check for
+     * @param string $user The user to check for.
+     * @param string $subject The subject to check for.
      * @return iterable<message>
      */
     private function get_messages_matching_address_and_subject(
@@ -99,7 +90,7 @@ class behat_email extends behat_base {
     ): iterable {
         $address = $this->get_email_address_from_input($user);
         return new \CallbackFilterIterator(
-            iterator: $this->get_catcher()->get_messages(),
+            iterator: $this->get_catcher()->get_messages(showdetails: true),
             callback: function (message $message) use ($address, $subject): bool {
                 if (!$message->has_recipient($address)) {
                     return false;
@@ -115,7 +106,7 @@ class behat_email extends behat_base {
     }
 
     /**
-     * Custom Behat test to verify an email with a specific subject for a user.
+     * Verifies the content of an email sent to a specific user and subject.
      *
      * @Given the email to :user with subject containing :subject should contain :content
      *
