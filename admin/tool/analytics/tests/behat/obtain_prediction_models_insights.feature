@@ -58,13 +58,18 @@ Feature: Manager can obtain prediction models insights
     # Course 1, previously marked as Not applicable by manager 1, is still listed for manager 2.
     And "Course 1" "text" should exist
     And I click on "View details" "link" in the "Course 1" "table_row"
+    And I pause
     # Prediction details and indicators are displayed for the selected course.
     # And "Prediction details" "text" should exist
     # And "Indicators" "text" should exist
     # generaltable contents should contain Course 1
-    And the following should exist in the "generaltable" table:
+    And the following should exist in the "insights-list" table:
       | Description |
       | Course 1    |
+    And the following should exist in the "prediction-calculations" table:
+      |            -1-                 | -2- |
+      |  Teacher availability          | No  |
+      |  Student enrolments            | Yes |
     # Date of prediction analysis execution.
     And "##today##%A, %d %B %Y##" "text" should exist in the "Time predicted" "table_row"
     And "No" "text" should exist in the "Teacher availability" "table_row"
@@ -76,8 +81,13 @@ Feature: Manager can obtain prediction models insights
     And "Courses at risk of not starting" "text" should exist
     And "The following courses due to start in the upcoming days are at risk of not starting because they don't have teachers or students enrolled." "text" should exist
     # generaltable contents at this point should be empty
-    And the following should exist in the "generaltable" table:
+#    And I pause
+    And the following should exist in the "insights-list" table:
       | Description |
-      |             |
+      | Course 2    |
+#    And the following should exist in the "prediction-calculations" table:
+#      | -1-  | -2- |
+#      |    Teacher availability          | No |
+#      |  Student enrolments            | Yes|
     # And "Prediction details" "text" should not exist
     # And "Indicators" "text" should not exist
