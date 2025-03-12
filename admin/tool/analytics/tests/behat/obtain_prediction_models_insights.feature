@@ -65,16 +65,18 @@ Feature: Manager can obtain prediction models insights
     And the following should exist in the "insights-list" table:
       | Description |
       | Course 1    |
+    And the following should exist in the "prediction-calculations" table:
+      |            -1-                 | -2- |
+      |  Teacher availability          | No  |
+      |  Student enrolments            | Yes |
     # Date of prediction analysis execution.
     And "##today##%A, %d %B %Y##" "text" should exist in the "Time predicted" "table_row"
-    And "No" "text" should exist in the "Teacher availability" "table_row"
-    And "Yes" "text" should exist in the "Student enrolments" "table_row"
     And I click on "Select Course 1 for bulk action" "checkbox"
     And I press "Accept"
     And I press "Confirm"
     # Verify that you end up on the page listing predictions for 'No teaching'.
     And "Courses at risk of not starting" "text" should exist
     And "The following courses due to start in the upcoming days are at risk of not starting because they don't have teachers or students enrolled." "text" should exist
-    And the following should exist in the "insights-list" table:
+    And the following should not exist in the "insights-list" table:
       | Description |
-      | Course 2    |
+      | Course 1    |
