@@ -785,7 +785,11 @@ class question_type {
 
             $hint->hint = $this->import_or_save_files($formdata->hint[$i],
                     $context, 'question', 'hint', $hint->id);
-            $hint->hintformat = $formdata->hint[$i]['format'];
+
+            if (array_key_exists('format', $formdata->hint[$i])) {
+                $hint->hintformat = $formdata->hint[$i]['format'];
+            }
+
             if ($withparts) {
                 $hint->clearwrong = $clearwrong;
                 $hint->shownumcorrect = $shownumcorrect;
