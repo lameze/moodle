@@ -57,15 +57,16 @@ Feature: Marking guide details can be updated for activity with graded submissio
     And I press "Save changes"
     When I am on "Course 1" course homepage
     And I go to "Assign 1" advanced grading definition page
-#    And I set the field "Grade criterion A" to "Criteria 1"
-#    And I set the field "guide[criteria][477000][shortname]" to "Criteria 1"
-#    And I set the following fields to these values:
-#      | Criterion name | Description for students | Description for markers | Maximum score |
-#      | Criteria 1     | Criteria 1 student       | Criteria 1 marker       | 40            |
-#      | Criteria 2     | Criteria 2 student       | Criteria 2 marker       | 70            |
+    When I edit the marking guide criterion "Grade criterion A" with the following values:
+      | Field name          | New value                        |
+      | shortname           | Updated Grade criterion A        |
+      | description         | Updated description for students |
+      | descriptionmarkers  | Updated description for markers  |
+      | maxscore            | 80                               |
     And I click on "Move down" "button" in the "Comment 1" "table_row"
     And I click on "Move up" "button" in the "Comment 3" "table_row"
     And I press "Save"
+    And I pause
     # Remove after testing
     Then the following should exist in the "guide-comments" table:
       | Comment 2 |

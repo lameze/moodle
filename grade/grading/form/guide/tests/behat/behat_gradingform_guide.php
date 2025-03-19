@@ -98,6 +98,56 @@ class behat_gradingform_guide extends behat_base {
     }
 
     /**
+     * Edits an existing marking guide with the provided data.
+     *
+     * This method edits the marking guide of the marking guide definition
+     * form; the provided TableNode should contain one row for
+     * each field and each cell of the row should contain:
+     * # Field name
+     * # New value
+     *
+     * Works with both JS and non-JS.
+     *
+     * @When /^I edit the marking guide criterion "([^"]*)" with the following values:$/
+     * @throws ExpectationException
+     * @param string $criterionname
+     * @param TableNode $fields
+     */
+    public function i_edit_the_marking_guide_criterion_with_the_following_values($criterionname, TableNode $fields) {
+        if ($fieldvalues = $fields->getHash()) {
+            $criterionid = 0;
+            if ($criterionrow = $this->find('xpath', "//tr[contains(@class, 'criterion')]//div[@class='criterionname']//span[@class='textvalue'][text()='$criterionname']/ancestor::tr")) {
+                $criterionid = str_replace('guide-criteria-', '', $criterionrow->getAttribute('id'));
+            }
+
+            if ($criterionid) {
+                $criterionroot = 'guide[criteria]' . '[' . $criterionid . ']';
+
+                foreach ($fieldvalues as $fieldvalue) {
+                    // Make sure the fieldvalue array has 2 elements.
+                    if (count($fieldvalue) != 2) {
+                        throw new ExpectationException(
+                            'The field definition should contain field name and new value. ' .
+                            'Please follow this format: | Field name | New value |',
+                            $this->getSession()
+                        );
+                    }
+
+                    $fieldname = $fieldvalue['Field name'];
+                    $newvalue = $fieldvalue['New value'];
+
+                    $this->set_guide_field_value($criterionroot . "[$fieldname]", $newvalue);
+                }
+            } else {
+                throw new ExpectationException(
+                    'Criterion with name "' . $criterionname . '" not found.',
+                    $this->getSession()
+                );
+            }
+        }
+    }
+
+    /**
      * Defines the marking guide with the provided data, following marking guide's definition grid cells.
      *
      * This method fills the table of frequently used comments of the marking guide definition form.
