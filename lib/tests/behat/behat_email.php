@@ -32,18 +32,28 @@ require_once(__DIR__ . '/../../behat/behat_base.php');
 class behat_email extends behat_base {
 
     /**
+     * Check if email catcher is configured.
+     *
+     * @Given /^an email catcher server is configured$/
+     */
+    public function email_catcher_is_configured(): void {
+        if (!defined('TEST_EMAILCATCHER_MAIL_SERVER') && !defined('TEST_EMAILCATCHER_API_SERVER')) {
+            throw new SkippedException(
+                'The TEST_EMAILCATCHER_MAIL_SERVER and TEST_EMAILCATCHER_API_SERVER constants must be ' .
+                'defined in config.php to use the mailcatcher steps.'
+            );
+        }
+
+    }
+
+    /**
      * Get the email catcher object or thrown a SkippedException if TEST_MAILPIT_SERVER is not defined.
      *
      * @return \core\test\email_catcher
      * @throws SkippedException
      */
     private function get_catcher(): \core\test\email_catcher {
-        if (!defined('TEST_EMAILCATCHER_MAIL_SERVER') && !defined('TEST_EMAILCATCHER_API_SERVER')) {
-            throw new SkippedException(
-                'The TEST_EMAILCATCHER_MAIL_SERVER and TEST_EMAILCATCHER_API_SERVER constants must be ' .
-                'defined in config.php to use the mailcatcher steps.',
-            );
-        }
+        $this->email_catcher_is_configured();
 
         return new \core\test\mailpit_email_catcher(TEST_EMAILCATCHER_API_SERVER);
     }
@@ -51,7 +61,7 @@ class behat_email extends behat_base {
     /**
      * Clean up the email inbox after each scenario.
      *
-     * @AfterScenario
+     * @AfterScenario @behat_email
      */
     public function reset_after_test(): void {
         $this->get_catcher()->delete_all();

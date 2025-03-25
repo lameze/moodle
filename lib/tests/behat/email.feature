@@ -1,6 +1,9 @@
 @behat_test @behat_email
 Feature: Testing Email Functionality
 
+  Background:
+    Given an email catcher server is configured
+
   Scenario: Verifying email content to user
     When the following emails have been sent:
       | to                   | subject           | message                |

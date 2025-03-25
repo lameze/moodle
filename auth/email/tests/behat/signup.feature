@@ -1,4 +1,4 @@
-@auth @auth_email @behat_email
+@auth @auth_email
 Feature: User must accept policy when logging in and signing up
   In order to record user agreement to use the site
   As a user
@@ -15,8 +15,8 @@ Feature: User must accept policy when logging in and signing up
     And I set the following fields to these values:
       | Username      | user1                 |
       | Password      | user1                 |
-      | Email address | student1@example.com |
-      | Email (again) | student1@example.com |
+      | Email address | student1@example.com  |
+      | Email (again) | student1@example.com  |
       | First name    | User1                 |
       | Last name     | L1                    |
     And I press "Create my new account"

@@ -5579,11 +5579,16 @@ function email_to_user($user, $from, $subject, $messagetext, $messagehtml = '', 
         debugging('Can not send email to deleted user: '.$user->id, DEBUG_DEVELOPER);
         return false;
     }
-    if (property_exists($CFG, 'noemailever') && $CFG->noemailever) {
+
+    if (defined('BEHAT_SITE_RUNNING') && !defined('TEST_EMAILCATCHER_MAIL_SERVER') &&
+            !defined('TEST_EMAILCATCHER_API_SERVER')) {
+
+        return true;
+    }
+
+    if (!empty($CFG->noemailever)) {
         // Hidden setting for development sites, set in config.php if needed.
-        if (defined('BEHAT_SITE_RUNNING')) {
-            debugging('Not sending email due to $CFG->noemailever config setting');
-        }
+        debugging('Not sending email due to $CFG->noemailever config setting', DEBUG_NORMAL);
         return true;
     }
 
