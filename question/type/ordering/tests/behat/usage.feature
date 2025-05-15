@@ -39,6 +39,7 @@ Feature: Complete an Ordering question attempt
     Given quiz "Quiz 1" contains the following questions:
       | question   | page | maxmark |
       | <question> | 1    | 2.00    |
+    And I change viewport size to "2600x1800"
     And I am on the "Quiz 1" "quiz activity" page logged in as "student1"
     When I click on "Attempt quiz" "button"
     And I wait until the page is ready
