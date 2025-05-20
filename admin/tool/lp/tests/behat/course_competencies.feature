@@ -46,12 +46,12 @@ Feature: See the competencies for an activity on the course competencies page.
     When I follow "Competencies"
     Then I should see "Test-Comp1"
     And I should see "Test-Comp2"
-    And I set the field "Filter competencies by resource or activity" to "PageName1"
-    And I press the enter key
+    And I open the autocomplete suggestions list
+    And I click on "PageName1" item in the autocomplete list
     And I should see "Test-Comp1"
     And I should not see "Test-Comp2"
-    And I set the field "Filter competencies by resource or activity" to "PageName2"
-    And I press the enter key
+    And I open the autocomplete suggestions list
+    And I click on "PageName2" item in the autocomplete list
     And I should not see "Test-Comp1"
     And I should not see "Test-Comp2"
     And I should see "No competencies have been linked to this activity or resource."
