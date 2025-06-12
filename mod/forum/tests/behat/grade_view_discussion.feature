@@ -49,6 +49,7 @@ Feature: View discussion while grading in a forum
     # Uses the aria-label for the menu in in the grading interface.
     And I press "Actions for the grader interface"
     And I press "Toggle full screen"
+    And I wait until ".modal-backdrop" "css_element" does not exist
     When I press "View discussion"
     Then I should see "I disagree" in the "My topic" "dialogue"
     And I click on "Cancel" "button" in the "My topic" "dialogue"
