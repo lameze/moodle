@@ -245,4 +245,104 @@ class mod_quiz_generator extends testing_module_generator {
         $gradeitem->id = $DB->insert_record('quiz_grade_items', $gradeitem);
         return $gradeitem;
     }
+
+    /**
+     * Create a course with an empty quiz.
+     * @return array with three elements quiz, cm and course.
+     */
+    public function prepare_quiz_data() {
+
+        // Create a course.
+        $course = $this->datagenerator->create_course();
+
+        // Make a quiz.
+        $quizgenerator = $this->datagenerator->get_plugin_generator('mod_quiz');
+
+        $quiz = $quizgenerator->create_instance(['course' => $course->id, 'questionsperpage' => 0,
+            'grade' => 100.0, 'sumgrades' => 2, 'preferredbehaviour' => 'immediatefeedback']);
+
+        $cm = get_coursemodule_from_instance('quiz', $quiz->id, $course->id);
+
+        return [$quiz, $cm, $course];
+    }
+
+    /**
+     * Creat a test quiz.
+     *
+     * $layout looks like this:
+     * $layout = array(
+     *     'Heading 1'
+     *     array('TF1', 1, 'truefalse'),
+     *     'Heading 2*'
+     *     array('TF2', 2, 'truefalse'),
+     * );
+     * That is, either a string, which represents a section heading,
+     * or an array that represents a question.
+     *
+     * If the section heading ends with *, that section is shuffled.
+     *
+     * The elements in the question array are name, page number, and question type.
+     *
+     * @param array $layout as above.
+     * @return quiz_settings the created quiz.
+     */
+    public function create_test_quiz($layout) {
+        [$quiz, $cm, $course] = $this->prepare_quiz_data();
+        $questiongenerator = $this->datagenerator->get_plugin_generator('core_question');
+        $cat = $questiongenerator->create_question_category();
+
+        $headings = [];
+        $slot = 1;
+        $lastpage = 0;
+        foreach ($layout as $item) {
+            if (is_string($item)) {
+                if (isset($headings[$lastpage + 1])) {
+                    throw new \coding_exception('Sections cannot be empty.');
+                }
+                $headings[$lastpage + 1] = $item;
+            } else {
+                [$name, $page, $qtype] = $item;
+                if ($page < 1 || !($page == $lastpage + 1 || (!isset($headings[$lastpage + 1]) && $page == $lastpage))) {
+                    throw new \coding_exception('Page numbers wrong.');
+                }
+                $q = $questiongenerator->create_question($qtype, null, ['name' => $name, 'category' => $cat->id]);
+
+                quiz_add_quiz_question($q->id, $quiz, $page);
+                $lastpage = $page;
+            }
+        }
+
+        $quizobj = new quiz_settings($quiz, $cm, $course);
+        $structure = \mod_quiz\structure::create_for_quiz($quizobj);
+        if (isset($headings[1])) {
+            [$heading, $shuffle] = $this->parse_section_name($headings[1]);
+            $sections = $structure->get_sections();
+            $firstsection = reset($sections);
+            $structure->set_section_heading($firstsection->id, $heading);
+            $structure->set_section_shuffle($firstsection->id, $shuffle);
+            unset($headings[1]);
+        }
+
+        foreach ($headings as $startpage => $heading) {
+            [$heading, $shuffle] = $this->parse_section_name($heading);
+            $id = $structure->add_section_heading($startpage, $heading);
+            $structure->set_section_shuffle($id, $shuffle);
+        }
+
+        return $quizobj;
+    }
+
+    /**
+     * Parse the section name, optionally followed by a * to mean shuffle, as
+     * used by create_test_quiz as assert_quiz_layout.
+     * @param string $heading the heading.
+     * @return array with two elements, the heading and the shuffle setting.
+     */
+    public function parse_section_name($heading) {
+        if (substr($heading, -1) == '*') {
+            return [substr($heading, 0, -1), 1];
+        } else {
+            return [$heading, 0];
+        }
+    }
 }
