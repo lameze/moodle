@@ -110,3 +110,38 @@ Feature: Enable deferred or immediate feedback for quiz
       | timefinish         | visibility |
       | ## 1 minute ago ## | should not |
       | ## 2 minute ago ## | should     |
+
+  Scenario Outline: Responses, answers and feedback cannot be reviewed after attempting a quiz as long as quiz is open
+    Given the following "activity" exists:
+      | activity                    | quiz            |
+      | name                        | Quiz 1          |
+      | course                      | C1              |
+      | idnumber                    | quiz1           |
+      | timeclose                   | <quizclosedate> |
+      | generalfeedbackimmediately  | 0               |
+      | attemptimmediately          | 0               |
+      | overallfeedbackopen         | 0               |
+      | rightansweropen             | 0               |
+      | generalfeedbackopen         | 0               |
+      | specificfeedbackopen        | 0               |
+      | marksopen                   | 0               |
+      | maxmarksopen                | 0               |
+      | correctnessopen             | 0               |
+      | attemptopen                 | 0               |
+    And quiz "Quiz 1" contains the following questions:
+      | question | page |
+      | TF1      | 1    |
+    And user "student1" has attempted "Quiz 1" with responses:
+      | slot | response | timefinish         |
+      |   1  | True     | ## 2 minute ago ## |
+    When I am on the "Quiz 1" "quiz activity" page logged in as student1
+    # Confirm the Review link visibility. Should exist if quiz is closed, otherwise, it shouldn't exist.
+    Then "Review" "link" <reviewlinkvisibility> exist
+    # Confirm the `Available` text and close date visibility. Should only be visible while quiz is open.
+    And I <availabilityvisibility> see "Available"
+    And I <availabilityvisibility> see "##tomorrow##%d/%m/%y##"
+
+    Examples:
+      | quizclosedate   | reviewlinkvisibility | availabilityvisibility |
+      | ## tomorrow ##  | should not           | should                 |
+      | ## yesterday ## | should               | should not             |
