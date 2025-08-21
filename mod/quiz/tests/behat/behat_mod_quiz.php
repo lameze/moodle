@@ -770,6 +770,21 @@ class behat_mod_quiz extends behat_question_base {
     }
 
     /**
+     * Extract the timefinish value from attempt info.
+     *
+     * @param TableNode $attemptinfo data table from the Behat step
+     * @return int|null The timefinish value if present, otherwise null.
+     */
+    protected function extract_timefinish_from_attempt_info(TableNode $attemptinfo) {
+        foreach ($attemptinfo->getHash() as $slotinfo) {
+            if (array_key_exists('timefinish', $slotinfo) && is_numeric($slotinfo['timefinish'])) {
+                return (int)$slotinfo['timefinish'];
+            }
+        }
+        return null;
+    }
+
+    /**
      * Attempt a quiz.
      *
      * The first row should be column names:
@@ -814,13 +829,14 @@ class behat_mod_quiz extends behat_question_base {
         list($forcedrandomquestions, $forcedvariants) =
                 $this->extract_forced_randomisation_from_attempt_info($attemptinfo);
         $responses = $this->extract_responses_from_attempt_info($attemptinfo);
+        $timefinish = $this->extract_timefinish_from_attempt_info($attemptinfo);
 
         $this->set_user($user);
 
         $attempt = $quizgenerator->create_attempt($quizid, $user->id,
                 $forcedrandomquestions, $forcedvariants);
 
-        $quizgenerator->submit_responses($attempt->id, $responses, false, true);
+        $quizgenerator->submit_responses($attempt->id, $responses, false, true, $timefinish);
 
         $this->set_user();
     }

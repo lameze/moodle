@@ -80,3 +80,33 @@ Feature: Enable deferred or immediate feedback for quiz
     And the "True" "field" should be disabled
     And the "False" "field" should be disabled
     And "Check Question 1" "button" should not exist
+
+  Scenario Outline: Responses, answers and feedback are displayed after attempting a quiz depending on time finished
+    Given the following "activity" exists:
+      | activity                    | quiz           |
+      | name                        | Quiz 1         |
+      | course                      | C1             |
+      | idnumber                    | quiz1          |
+      | maxmarksimmediately         | 0              |
+      | specificfeedbackimmediately | 0              |
+      | rightanswerimmediately      | 0              |
+    And quiz "Quiz 1" contains the following questions:
+      | question | page |
+      | TF1      | 1    |
+    And user "student1" has attempted "Quiz 1" with responses:
+      | slot | response | timefinish   |
+      |   1  | True     | <timefinish> |
+    When I am on the "Quiz 1" "quiz activity" page logged in as student1
+    And I click on "Review" "link"
+    Then I should see "You should have selected true."
+    And I <visibility> see "This is the right answer."
+    And I <visibility> see "The correct answer is 'True'."
+    And the following <visibility> exist in the "quizreviewsummary" table:
+      |  -1-  |         -2-          |
+      | Marks | 1.00/1.00            |
+      | Grade | 100.00 out of 100.00 |
+
+    Examples:
+      | timefinish         | visibility |
+      | ## 1 minute ago ## | should not |
+      | ## 2 minute ago ## | should     |
