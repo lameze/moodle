@@ -592,60 +592,52 @@ final class attempt_test extends \advanced_testcase {
     /**
      * Test that enabling shuffle on the first quiz section randomizes question order between attempts.
      *
-     * This test creates a quiz with multiple questions, sets the first section to shuffle,
-     * and verifies that two separate attempts by the same user result in different question orders.
-     *
      * @return void
      * @covers ::quiz_start_new_attempt
      */
     public function test_question_shuffle(): void {
-        $this->resetAfterTest(true);
+        $this->resetAfterTest();
 
-        // Create user and course.
         $user = $this->getDataGenerator()->create_user();
-        $course = $this->getDataGenerator()->create_course();
+        $this->setUser($user);
 
-        // Create a quiz.
+        // Create quiz with two sections using create_test_quiz.
         $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_quiz');
-        $quiz = $quizgenerator->create_instance([
-            'course' => $course->id,
-            'grade' => 100.0,
-            'sumgrades' => 3,
+        $quizobj = $quizgenerator->create_test_quiz([
+            'Shuffled section*',
+            ['Q1', 1, 'shortanswer'],
+            ['Q2', 1, 'shortanswer'],
+            ['Q3', 1, 'shortanswer'],
+            ['Q4', 1, 'shortanswer'],
+            ['Q5', 1, 'shortanswer'],
+            'Non-shuffled section',
+            ['Q6', 2, 'shortanswer'],
+            ['Q7', 2, 'shortanswer'],
+            ['Q8', 2, 'shortanswer'],
+            ['Q9', 2, 'shortanswer'],
+            ['Q10', 2, 'shortanswer'],
         ]);
-        $quizobj = \mod_quiz\quiz_settings::create($quiz->id, $user->id);
-
-        // Create ten questions, each on a separate page.
-        $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
-        $cat = $questiongenerator->create_question_category();
-        for ($i = 0; $i < 10; $i++) {
-            $question = $questiongenerator->create_question('shortanswer', null, ['category' => $cat->id]);
-            quiz_add_quiz_question($question->id, $quiz, $i + 1);
-        }
-
-        // Update the section to be shuffled and set heading.
-        $structure = $quizobj->get_structure();
-        $sections = $structure->get_sections();
-        $firstsection = reset($sections);
-        $structure->set_section_heading($firstsection->id, 'Shuffled section');
-        $structure->set_section_shuffle($firstsection->id, 1);
 
         // Start two attempts.
-        $this->setUser($user);
         $attempt1 = quiz_prepare_and_start_new_attempt($quizobj, 1, null, false, [], [], $user->id);
-        $this->setUser($user);
         $attempt2 = quiz_prepare_and_start_new_attempt($quizobj, 2, null, false, [], [], $user->id);
+        $attemptobj1 = quiz_attempt::create($attempt1->id);
+        $attemptobj2 = quiz_attempt::create($attempt2->id);
 
-        $attemptobj1 = \mod_quiz\quiz_attempt::create($attempt1->id);
-        $attemptobj2 = \mod_quiz\quiz_attempt::create($attempt2->id);
+        // Get slot numbers for each section in both attempts.
+        $slots1a = $attemptobj1->get_slots(0);
+        $slots1b = $attemptobj2->get_slots(0);
+        $slots2a = $attemptobj1->get_slots(1);
+        $slots2b = $attemptobj2->get_slots(1);
 
-        $order1 = array_map(function ($slot) use ($attemptobj1) {
-            return $attemptobj1->get_question_attempt($slot)->get_question()->id;
-        }, $attemptobj1->get_slots());
+        // Get question order for each section in both attempts.
+        $order1a = array_map(fn($slot) => $attemptobj1->get_question_attempt($slot)->get_question()->id, $slots1a);
+        $order1b = array_map(fn($slot) => $attemptobj2->get_question_attempt($slot)->get_question()->id, $slots1b);
+        $order2a = array_map(fn($slot) => $attemptobj1->get_question_attempt($slot)->get_question()->id, $slots2a);
+        $order2b = array_map(fn($slot) => $attemptobj2->get_question_attempt($slot)->get_question()->id, $slots2b);
 
-        $order2 = array_map(function ($slot) use ($attemptobj2) {
-            return $attemptobj2->get_question_attempt($slot)->get_question()->id;
-        }, $attemptobj2->get_slots());
-
-        $this->assertNotEquals($order1, $order2, 'Question order should be shuffled between attempts.');
+        // Assert shuffled section is different, non-shuffled is the same.
+        $this->assertNotEquals($order1a, $order1b, 'Shuffled section should have different order between attempts.');
+        $this->assertEquals($order2a, $order2b, 'Non-shuffled section should have same order between attempts.');
     }
 }
