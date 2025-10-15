@@ -188,6 +188,20 @@ $legacyclasses = [
         'form/cachestore_addinstance_form.php',
     ],
 
+    // Navigation API.
+    \breadcrumb_navigation_node::class => 'navigation/breadcrumb_navigation_node.php',
+    \flat_navigation::class => 'navigation/flat_navigation.php',
+    \flat_navigation_node::class => 'navigation/flat_navigation_node.php',
+    \global_navigation::class => 'navigation/global_navigation.php',
+    \global_navigation_for_ajax::class => 'navigation/global_navigation_for_ajax.php',
+    \navbar::class => 'navigation/navbar.php',
+    \navigation_cache::class => 'navigation/navigation_cache.php',
+    \navigation_json::class => 'navigation/navigation_json.php',
+    \navigation_node::class => 'navigation/navigation_node.php',
+    \navigation_node_collection::class => 'navigation/navigation_node_collection.php',
+    \settings_navigation::class => 'navigation/settings_navigation.php',
+    \settings_navigation_ajax::class => 'navigation/settings_navigation_ajax.php',
+
     // Output API.
     \theme_config::class => 'output/theme_config.php',
     \xhtml_container_stack::class => 'output/xhtml_container_stack.php',
@@ -287,6 +301,16 @@ $legacyclasses = [
         'dataformat_export_format.php',
     ],
 
+    // Course drag-and-drop upload system.
+    \dndupload_handler::class => [
+        'core_course',
+        'dndupload_handler.php',
+    ],
+    \dndupload_ajax_processor::class => [
+        'core_course',
+        'dndupload_ajax_processor.php',
+    ],
+
     // The progress_trace classes.
     \combined_progress_trace::class => 'output/progress_trace/combined_progress_trace.php',
     \error_log_progress_trace::class => 'output/progress_trace/error_log_progress_trace.php',
@@ -321,5 +345,37 @@ $legacyclasses = [
     \filter_local_settings_form::class => [
         'core_filters',
         'form/local_settings_form.php',
+    ],
+    \course_modinfo::class => [
+        'core_course',
+        'modinfo.php',
+    ],
+    \cm_info::class => [
+        'core_course',
+        'cm_info.php',
+    ],
+    \cached_cm_info::class => [
+        'core_course',
+        'cached_cm_info.php',
+    ],
+    \section_info::class => [
+        'core_course',
+        'section_info.php',
+    ],
+    \comment::class => [
+        'core_comment',
+        'manager.php',
+    ],
+    \comment_exception::class => [
+        'core_comment',
+        'comment_exception.php',
+    ],
+    \course_request::class => [
+        'core_course',
+        'course_request.php',
+    ],
+    \core_course\output\activitychooserbutton::class => [
+        'core_courseformat',
+        'output/local/content/activitychooserbutton.php',
     ],
 ];

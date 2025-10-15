@@ -79,12 +79,12 @@ $string['assignmentduesoonhtml'] = '<p>Hi {$a->firstname},</p>
 <p>The assignment <strong>{$a->assignmentname}</strong> in course {$a->coursename} is due soon.</p>
 <p><strong>Due: {$a->duedate}</strong></p>
 <p><a href="{$a->url}">Go to activity</a></p>';
-$string['assignmentduesoonsms'] = 'Your assignment {$a->assignmentname} is due on {$a->duedate}: {$a->url}';
+$string['assignmentduesoonsms'] = 'Your assignment {$a->assignmentname} is due on {$a->duedate}: {$a->shortlink}';
 $string['assignmentoverduehtml'] = '<p>Hi {$a->firstname},</p>
 <p><strong>{$a->assignmentname}</strong> in course {$a->coursename} was due on <strong>{$a->duedate}</strong>.</p>
 <p>You might still be able to submit your assignment{$a->cutoffsnippet}, but your submission will be marked as late.</p>
 <p><a href="{$a->url}">Go to activity</a></p>';
-$string['assignmentoverduesms'] = 'Your assignment {$a->assignmentname} is overdue on {$a->duedate}: {$a->url}';
+$string['assignmentoverduesms'] = 'Your assignment {$a->assignmentname} is overdue on {$a->duedate}: {$a->shortlink}';
 $string['assignmentoverduehtmlcutoffsnippet'] = ' <strong>by {$a->cutoffdate}</strong>';
 $string['assignmentduesoonsubject'] = 'Due on {$a->duedate}: {$a->assignmentname}';
 $string['assignmentoverduesubject'] = 'Overdue: {$a->assignmentname}';
@@ -111,16 +111,16 @@ $string['attemptnumber'] = 'Attempt number';
 $string['attemptsettings'] = 'Attempt settings';
 $string['attemptreopenmethod'] = 'Grant attempts';
 $string['attemptreopenmethod_automatic'] = 'Automatically';
-$string['attemptreopenmethod_automatic_help'] = 'After each attempt, the next is granted automatically.';
-$string['attemptreopenmethod_help'] = 'This setting controls how students are granted attempts for this assignment. For each attempt, the grade and feedback are saved, and can be viewed by the teacher and the student. The available options are:
+$string['attemptreopenmethod_automatic_help'] = 'After each attempt, the next is granted automatically after grading.';
+$string['attemptreopenmethod_help'] = 'This setting controls how students are granted attempts for this assignment. For each attempt, the grade and feedback are saved, and can be viewed by the teacher and the student. Options are:
 
 * Manually - After each attempt, you can grant the next one through the Submissions page or the Grader page.
-* Automatically - After each attempt, the next is granted automatically.
-* Automatically until pass - After each attempt, the next will be granted automatically, until the student achieves the passing grade.';
+* Automatically - After each attempt, the next is granted automatically after grading.
+* Automatically until pass - After each attempt, the next will be granted automatically after grading, until the student achieves the passing grade.';
 $string['attemptreopenmethod_manual'] = 'Manually';
 $string['attemptreopenmethod_manual_help'] = 'After each attempt, you can grant the next one through the Submissions page or the Grader page.';
 $string['attemptreopenmethod_untilpass'] = 'Automatically until pass';
-$string['attemptreopenmethod_untilpass_help'] = 'After each attempt, the next will be granted automatically, until the student achieves the passing grade.';
+$string['attemptreopenmethod_untilpass_help'] = 'After each attempt, the next will be granted automatically after grading, until the student achieves the passing grade.';
 $string['availability'] = 'Availability';
 $string['back'] = 'Back';
 $string['backtoassignment'] = 'Back to assignment';
@@ -150,6 +150,7 @@ $string['blindmarking'] = 'Anonymous submissions';
 $string['blindmarkingenabledwarning'] = 'Anonymous submissions are enabled for this activity.';
 $string['blindmarkingnogradewarning'] = 'Anonymous submissions are enabled for this activity. Grades will not be added to the gradebook until student identities are revealed via the "Actions" menu.';
 $string['blindmarking_help'] = 'Anonymous submissions hide the identity of students from markers. Anonymous submission settings will be locked once a submission or grade has been made in relation to this assignment.';
+$string['bulkactionsselection'] = 'Bulk actions selection';
 $string['cachedef_overrides'] = 'User and group override information';
 $string['calendardue'] = '{$a} is due';
 $string['calendarextension'] = '{$a} is due (extension)';
@@ -330,7 +331,7 @@ $string['gradeoutof'] = 'Grade out of {$a}';
 $string['gradeoutofhelp'] = 'Grade';
 $string['gradeoutofhelp_help'] = 'Enter the grade for the student\'s submission here. You may include decimals.';
 $string['gradepenalty'] = 'Grade penalties';
-$string['gradepenalty_help'] = 'If enabled, penalties will be applied to submissions';
+$string['gradepenalty_help'] = 'If enabled, penalties will be applied to assignments submitted after the due date.';
 $string['gradestudent'] = 'Grade student: (id={$a->id}, fullname={$a->fullname}). ';
 $string['grading'] = 'Grading';
 $string['gradingchangessaved'] = 'The grade changes were saved';
@@ -532,6 +533,7 @@ $string['removesubmissionconfirm'] = 'Are you sure you want to remove your submi
 $string['removesubmissionconfirmforstudent'] = 'Are you sure you want to remove the submission for {$a}?';
 $string['removesubmissionconfirmforstudentwithtimelimit'] = 'Are you sure you want to remove the submission for {$a}? Please note that this will not reset the student\'s time limit. You can give more time by adding a time limit user override.';
 $string['removesubmissionconfirmwithtimelimit'] = 'Are you sure you want to remove your submission? Please note that this will not reset your time limit.';
+$string['resizelayout'] = 'Resize layout';
 $string['revealidentities'] = 'Reveal student identities';
 $string['revealidentitiesconfirm'] = 'Are you sure you want to reveal student identities for this assignment? This operation cannot be undone. Once the student identities have been revealed, the marks will be released to the gradebook.';
 $string['reverttodefaults'] = 'Revert to assignment defaults';

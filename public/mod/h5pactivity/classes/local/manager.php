@@ -300,9 +300,10 @@ class manager {
      * Check get_active_users_join PHPdoc to a more detailed description of "active users".
      *
      * @param int|null $userid optional user id (default null)
+     * @param array $groups to filter by.
      * @return int the total amount of attempts
      */
-    public function count_attempts(?int $userid = null): int {
+    public function count_attempts(?int $userid = null, array $groups = []): int {
         global $DB;
 
         // Counting records is enough for one user.
@@ -317,14 +318,21 @@ class manager {
         }
 
         $usersjoin = $this->get_active_users_join();
+        $sql = "SELECT COUNT(*)
+                 FROM {user} u $usersjoin->joins
+                 WHERE $usersjoin->wheres";
+        $params = array_merge($usersjoin->params);
+        if (!empty($groups)) {
+            $members = groups_get_groups_members(array_keys($groups));
+            if (empty($members)) {
+                return 0;
+            }
+            [$sqlmembers, $paramsmembers] = $DB->get_in_or_equal(array_keys($members), SQL_PARAMS_NAMED);
+            $sql .= " AND u.id " . $sqlmembers;
+            $params = array_merge($params, $paramsmembers);
+        }
 
-        // Final SQL.
-        return $DB->count_records_sql(
-            "SELECT COUNT(*)
-               FROM {user} u $usersjoin->joins
-              WHERE $usersjoin->wheres",
-            array_merge($usersjoin->params)
-        );
+        return $DB->count_records_sql($sql, $params);
     }
 
     /**
@@ -357,7 +365,6 @@ class manager {
 
         // We want to present all potential users.
         $capjoin = get_enrolled_with_capabilities_join($context, '', 'mod/h5pactivity:view', $currentgroup);
-
         if ($capjoin->cannotmatchanyrows) {
             return $capjoin;
         }
@@ -368,11 +375,13 @@ class manager {
             return $capjoin;
         }
 
-        $capjoin = new sql_join(
-            $capjoin->joins . "\n LEFT " . str_replace('ra', 'reviewer', $reviewersjoin->joins),
-            $capjoin->wheres . " AND reviewer.userid IS NULL",
-            $capjoin->params
-        );
+        if (str_contains($reviewersjoin->joins, 'ra')) {
+            $capjoin = new sql_join(
+                $capjoin->joins . "\n LEFT " . str_replace('ra', 'reviewer', $reviewersjoin->joins),
+                $capjoin->wheres . " AND reviewer.userid IS NULL",
+                $capjoin->params
+            );
+        }
 
         if ($allpotentialusers) {
             return $capjoin;
@@ -398,17 +407,29 @@ class manager {
      * Note: this funciton only returns the list of users with attempts,
      * it does not check all participants.
      *
+     * @param array $groups to filter by.
      * @return array indexed count userid => total number of attempts
      */
-    public function count_users_attempts(): array {
+    public function count_users_attempts(array $groups = []): array {
         global $DB;
         $params = [
             'h5pactivityid' => $this->instance->id,
         ];
-        $sql = "SELECT userid, count(*)
-                  FROM {h5pactivity_attempts}
-                 WHERE h5pactivityid = :h5pactivityid
-                 GROUP BY userid";
+
+        $sql = "SELECT userid, count(*) FROM {h5pactivity_attempts} WHERE h5pactivityid = :h5pactivityid";
+
+        if (!empty($groups)) {
+            $members = groups_get_groups_members(array_keys($groups));
+            if (empty($members)) {
+                return [];
+            }
+            [$sqlmembers, $paramsmembers] = $DB->get_in_or_equal(array_keys($members), SQL_PARAMS_NAMED);
+            $sql .= " AND userid " . $sqlmembers;
+            $params = array_merge($params, $paramsmembers);
+        }
+
+        $sql .= " GROUP BY userid";
+
         return $DB->get_records_sql_menu($sql, $params);
     }
 

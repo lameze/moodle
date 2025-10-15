@@ -17,14 +17,7 @@
 namespace mod_label;
 
 use core_external\external_api;
-use externallib_advanced_testcase;
 use mod_label_external;
-
-defined('MOODLE_INTERNAL') || die();
-
-global $CFG;
-
-require_once($CFG->dirroot . '/webservice/tests/helpers.php');
 
 /**
  * External mod_label functions unit tests
@@ -35,8 +28,7 @@ require_once($CFG->dirroot . '/webservice/tests/helpers.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @since      Moodle 3.3
  */
-final class externallib_test extends externallib_advanced_testcase {
-
+final class externallib_test extends \core_external\tests\externallib_testcase {
     /**
      * Test test_mod_label_get_labels_by_courses
      */
@@ -79,7 +71,7 @@ final class externallib_test extends externallib_advanced_testcase {
 
         // Create what we expect to be returned when querying the two courses.
         $expectedfields = array('id', 'coursemodule', 'course', 'name', 'intro', 'introformat', 'introfiles', 'timemodified',
-                                'section', 'visible', 'groupmode', 'groupingid', 'lang');
+                                'section', 'visible', 'groupmode', 'groupingid', 'lang', 'enableaitools', 'enabledaiactions');
 
         // Add expected coursemodule and data.
         $label1->coursemodule = $label1->cmid;
@@ -90,6 +82,8 @@ final class externallib_test extends externallib_advanced_testcase {
         $label1->groupingid = 0;
         $label1->introfiles = [];
         $label1->lang = '';
+        $label1->enableaitools = null;
+        $label1->enabledaiactions = null;
 
         $label2->coursemodule = $label2->cmid;
         $label2->introformat = 1;
@@ -99,6 +93,8 @@ final class externallib_test extends externallib_advanced_testcase {
         $label2->groupingid = 0;
         $label2->introfiles = [];
         $label2->lang = '';
+        $label2->enableaitools = null;
+        $label2->enabledaiactions = null;
 
         foreach ($expectedfields as $field) {
             $expected1[$field] = $label1->{$field};

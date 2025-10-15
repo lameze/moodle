@@ -18,6 +18,7 @@ namespace core_courseformat;
 
 use cm_info;
 use core\context\module as module_context;
+use core\output\local\properties\text_align;
 use core_completion\cm_completion_details;
 use core_courseformat\local\overview\overviewitem;
 use core_courseformat\output\local\overview\activityname;
@@ -266,16 +267,14 @@ abstract class activityoverviewbase {
             }
 
             $gradegrade = grade_grade::fetch(['itemid' => $item->id, 'userid' => $USER->id]);
-
-            if (
-                !$gradegrade
-                || ($gradegrade->is_hidden() && !has_capability('moodle/grade:viewhidden', $this->context))
-            ) {
-                $result[] = new overviewitem(
-                    name: $itemnames[$item->id],
-                    value: '-',
-                    content: '-',
-                );
+            if ((!$gradegrade || ($gradegrade->is_hidden() && !has_capability('moodle/grade:viewhidden', $this->context)))) {
+                if ($item->is_gradable()) {
+                    $result[] = new overviewitem(
+                        name: $itemnames[$item->id],
+                        value: '-',
+                        content: '-',
+                    );
+                }
                 continue;
             }
 
@@ -283,6 +282,7 @@ abstract class activityoverviewbase {
                 name: $itemnames[$item->id],
                 value: $gradegrade->finalgrade,
                 content: grade_format_gradevalue($gradegrade->finalgrade, $item),
+                textalign: text_align::END,
             );
         }
         return $result;

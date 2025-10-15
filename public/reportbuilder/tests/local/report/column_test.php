@@ -19,10 +19,11 @@ declare(strict_types=1);
 namespace core_reportbuilder\local\report;
 
 use advanced_testcase;
-use coding_exception;
-use lang_string;
+use core\exception\coding_exception;
+use core\lang_string;
+use core_reportbuilder\local\aggregation\{count, groupconcat};
+use core_reportbuilder\local\helpers\{aggregation, database};
 use stdClass;
-use core_reportbuilder\local\helpers\database;
 
 /**
  * Unit tests for a report column
@@ -86,7 +87,7 @@ final class column_test extends advanced_testcase {
     /**
      * Test column type getter/setter
      */
-    public function test_type(): void {
+    public function test_get_type(): void {
         $column = $this->create_column('test');
         $this->assertEquals(column::TYPE_INTEGER, $column
             ->set_type(column::TYPE_INTEGER)
@@ -96,7 +97,7 @@ final class column_test extends advanced_testcase {
     /**
      * Test column default type
      */
-    public function test_type_default(): void {
+    public function test_get_type_default(): void {
         $column = $this->create_column('test');
         $this->assertEquals(column::TYPE_TEXT, $column->get_type());
     }
@@ -104,7 +105,7 @@ final class column_test extends advanced_testcase {
     /**
      * Test column type with invalid value
      */
-    public function test_type_invalid(): void {
+    public function test_set_type_invalid(): void {
         $column = $this->create_column('test');
 
         $this->expectException(coding_exception::class);
@@ -113,9 +114,39 @@ final class column_test extends advanced_testcase {
     }
 
     /**
+     * Data provider for {@see test_get_effective_type}
+     *
+     * @return array[]
+     */
+    public static function get_effective_type_provider(): array {
+        return [
+            [column::TYPE_TEXT, null, column::TYPE_TEXT],
+            [column::TYPE_TEXT, count::get_class_name(), column::TYPE_INTEGER],
+            [column::TYPE_INTEGER, null, column::TYPE_INTEGER],
+            [column::TYPE_INTEGER, groupconcat::get_class_name(), column::TYPE_TEXT],
+        ];
+    }
+
+    /**
+     * Test effective column type
+     *
+     * @param int $columntype
+     * @param string|null $aggregation
+     * @param int $expectedtype
+     *
+     * @dataProvider get_effective_type_provider
+     */
+    public function test_get_effective_type(int $columntype, ?string $aggregation, int $expectedtype): void {
+        $column = $this->create_column('test')
+            ->set_type($columntype)
+            ->set_aggregation($aggregation);
+        $this->assertEquals($expectedtype, $column->get_effective_type());
+    }
+
+    /**
      * Data provider for {@see test_add_field}
      *
-     * @return array
+     * @return array[]
      */
     public static function add_field_provider(): array {
         return [
@@ -203,7 +234,7 @@ final class column_test extends advanced_testcase {
     /**
      * Data provider for {@see test_add_fields}
      *
-     * @return array
+     * @return array[]
      */
     public static function add_fields_provider(): array {
         return [
@@ -459,6 +490,63 @@ final class column_test extends advanced_testcase {
         $this->assertEquals('LENOIL', $column->format_value([
             'c1_foo' => 'lenoil',
         ]));
+    }
+
+    /**
+     * Test setting column aggregation
+     */
+    public function test_set_aggregation(): void {
+        $column = $this->create_column('test');
+        $this->assertNull($column->get_aggregation());
+
+        $column->set_aggregation(count::get_class_name());
+        $this->assertInstanceOf(count::class, $column->get_aggregation());
+    }
+
+    /**
+     * Test setting invalid column aggregation
+     */
+    public function test_set_aggregation_invalid(): void {
+        $column = $this->create_column('test');
+
+        $this->expectException(coding_exception::class);
+        $this->expectExceptionMessage('Invalid column aggregation');
+        $column->set_aggregation('invalid');
+    }
+
+    /**
+     * Test setting column aggregation options
+     */
+    public function test_set_aggregation_options(): void {
+        $column = $this->create_column('test');
+        $this->assertEquals([], $column->get_aggregation_options(count::get_class_name()));
+
+        $column->set_aggregation_options(count::get_class_name(), ['foo' => 'bar']);
+        $this->assertEquals(['foo' => 'bar'], $column->get_aggregation_options(count::get_class_name()));
+    }
+
+    /**
+     * Test disabling column aggregation
+     */
+    public function test_set_disabled_aggregation(): void {
+        $column = $this->create_column('test');
+        $this->assertEquals([], $column->get_disabled_aggregation());
+
+        $column->set_disabled_aggregation([count::get_class_name()]);
+        $this->assertEquals([count::get_class_name()], $column->get_disabled_aggregation());
+    }
+
+    /**
+     * Test disabling all column aggregation
+     */
+    public function test_set_disabled_aggregation_all(): void {
+        $column = $this->create_column('test')
+            ->set_disabled_aggregation_all();
+
+        $this->assertEquals(array_map(
+            fn($aggregation) => $aggregation::get_class_name(),
+            aggregation::get_aggregations(),
+        ), $column->get_disabled_aggregation());
     }
 
     /**

@@ -112,7 +112,7 @@ class router {
             }
         }
 
-        if ($CFG->routerconfigured !== true || $userphp) {
+        if ($CFG->routerconfigured != true || $userphp) {
             $scriptroot .= '/r.php';
         }
 
@@ -198,11 +198,14 @@ class router {
      * Add the Error Handling Middleware to the RouteGroup.
      */
     protected function add_error_handler_middleware(): void {
+        global $CFG;
+        // Display error details only when debugging is on.
+        $displayerrordetails = !empty($CFG->debugdisplay);
         // Add the Error Handling Middleware and configure it to show Moodle Errors for HTML pages.
         $errormiddleware = new ErrorMiddleware(
             $this->app->getCallableResolver(),
             $this->app->getResponseFactory(),
-            displayErrorDetails: true,
+            displayErrorDetails: $displayerrordetails,
             logErrors: true,
             logErrorDetails: true,
         );
@@ -232,6 +235,7 @@ class router {
                 route_loader_interface::ROUTE_GROUP_API => $this->configure_api_route($collection),
                 route_loader_interface::ROUTE_GROUP_PAGE => $this->configure_standard_route($collection),
                 route_loader_interface::ROUTE_GROUP_SHIM => $this->configure_shim_route($collection),
+                route_loader_interface::ROUTE_GROUP_SHORTLINK => array_walk($collection, [$this, 'configure_shortlink_route']),
                 default => null,
             };
         }
@@ -272,6 +276,18 @@ class router {
             // Note: In the future we may wish to add a shim middleware to notify users of updated bookmarks.
             ->add(di::get(validation_middleware::class));
     }
+
+    /**
+     * Configure the Short link Route Middleware.
+     *
+     * @param RouteGroupInterface $group
+     */
+    protected function configure_shortlink_route($group): void {
+        $group
+            ->add(di::get(moodle_authentication_middleware::class))
+            ->add(di::get(validation_middleware::class));
+    }
+
 
     /**
      * Configure caching for the routes.

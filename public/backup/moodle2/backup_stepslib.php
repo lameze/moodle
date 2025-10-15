@@ -28,6 +28,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 use core_question\local\bank\random_question_loader;
+use core_question\question_reference_manager;
 
 /**
  * Create the temp dir where backup/restore will happen and create temp ids table.
@@ -308,6 +309,7 @@ trait backup_question_set_reference_trait {
 
         foreach ($setreferenceconditions as $setreferencecondition) {
             $conditions = json_decode($setreferencecondition, true);
+            $conditions = question_reference_manager::convert_legacy_set_reference_filter_condition($conditions);
             $setreferencequestionids += array_keys($randomloader->get_filtered_questions($conditions['filter'], 0));
         }
         if (empty($setreferencequestionids)) {
@@ -409,7 +411,9 @@ class backup_module_structure_step extends backup_structure_step {
             'visibleold', 'groupmode', 'groupingid',
             'completion', 'completiongradeitemnumber', 'completionpassgrade',
             'completionview', 'completionexpected',
-            'availability', 'showdescription', 'downloadcontent', 'lang'));
+            'availability', 'showdescription', 'downloadcontent', 'lang',
+            'enableaitools', 'enabledaiactions',
+        ));
 
         $tags = new backup_nested_element('tags');
         $tag = new backup_nested_element('tag', array('id'), array('name', 'rawname'));
@@ -533,7 +537,9 @@ class backup_course_structure_step extends backup_structure_step {
             'requested',
             'showactivitydates',
             'showcompletionconditions', 'pdfexportfont',
-            'enablecompletion', 'completionstartonenrol', 'completionnotify'));
+            'enablecompletion', 'completionstartonenrol', 'completionnotify',
+            'enableaitools', 'enabledaiactions',
+        ));
 
         $category = new backup_nested_element('category', array('id'), array(
             'name', 'description'));

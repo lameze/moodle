@@ -622,10 +622,8 @@ require_once($CFG->libdir .'/setuplib.php');        // Functions that MUST be lo
 
 // Load up standard libraries.
 require_once($CFG->libdir .'/filterlib.php');       // Functions for filtering test as it is output.
-require_once($CFG->libdir .'/ajax/ajaxlib.php');    // Functions for managing our use of JavaScript and YUI.
 require_once($CFG->libdir .'/weblib.php');          // Functions relating to HTTP and content.
 require_once($CFG->libdir .'/outputlib.php');       // Functions for generating output.
-require_once($CFG->libdir .'/navigationlib.php');   // Class for generating Navigation structure.
 require_once($CFG->libdir .'/dmllib.php');          // Database access.
 require_once($CFG->libdir .'/datalib.php');         // Legacy lib with a big-mix of functions..
 require_once($CFG->libdir .'/accesslib.php');       // Access control functions.
@@ -1162,15 +1160,27 @@ if (!empty($_SERVER['HTTP_USER_AGENT']) and strpos($_SERVER['HTTP_USER_AGENT'], 
 
 // Switch to CLI maintenance mode if required, we need to do it here after all the settings are initialised.
 if (isset($CFG->maintenance_later) and $CFG->maintenance_later <= time()) {
+
+    // Because maintenance_later is triggered by any potentially real non admin user
+    // who just happened to be the first to load a page after the time is due, we do
+    // this simple workaround so add_to_config_log doesn't log it as them.
+    \core\session\manager::write_close();
+    $USER->id = 0;
+
     if (!file_exists("$CFG->dataroot/climaintenance.html")) {
         require_once("$CFG->libdir/adminlib.php");
+        set_config('maintenance_enabled', 'cli mode', null, true);
         enable_cli_maintenance_mode();
     }
-    unset_config('maintenance_later');
+    if (isset($CFG->maintenance_later)) {
+        unset_config('maintenance_later', null, true);
+    }
     if (AJAX_SCRIPT) {
         die;
     } else if (!CLI_SCRIPT) {
-        redirect(new moodle_url('/'));
+        // We redirect to ourselves to reload the page to get a fresh bootstrap
+        // so that we get the maintenance page which is earlier in setup.
+        redirect(new moodle_url($ME));
     }
 }
 

@@ -17,14 +17,12 @@
 namespace mod_scorm;
 
 use core_external\external_api;
-use externallib_advanced_testcase;
 use mod_scorm_external;
 
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot . '/webservice/tests/helpers.php');
 require_once($CFG->dirroot . '/mod/scorm/lib.php');
 
 /**
@@ -36,8 +34,7 @@ require_once($CFG->dirroot . '/mod/scorm/lib.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @since      Moodle 3.0
  */
-final class externallib_test extends externallib_advanced_testcase {
-
+final class externallib_test extends \core_external\tests\externallib_testcase {
     /** @var \stdClass course record. */
     protected \stdClass $course;
 
@@ -726,6 +723,8 @@ final class externallib_test extends externallib_advanced_testcase {
         $scorm1->groupmode = 0;
         $scorm1->groupingid = 0;
         $scorm1->lang = '';
+        $scorm1->enableaitools = null;
+        $scorm1->enabledaiactions = null;
 
         $scorm2->coursemodule = $scorm2->cmid;
         $scorm2->section = 0;
@@ -733,6 +732,8 @@ final class externallib_test extends externallib_advanced_testcase {
         $scorm2->groupmode = 0;
         $scorm2->groupingid = 0;
         $scorm2->lang = '';
+        $scorm2->enableaitools = null;
+        $scorm2->enabledaiactions = null;
 
         // SCORM size. The same package is used in both SCORMs.
         $scormcontext1 = \context_module::instance($scorm1->cmid);
@@ -809,7 +810,8 @@ final class externallib_test extends externallib_advanced_testcase {
 
         $additionalfields = array('updatefreq', 'timemodified', 'options',
                                     'completionstatusrequired', 'completionscorerequired', 'completionstatusallscos',
-                                    'autocommit', 'section', 'visible', 'groupmode', 'groupingid');
+                                    'autocommit', 'section', 'visible', 'groupmode', 'groupingid',
+                                    'enableaitools', 'enabledaiactions');
 
         foreach ($additionalfields as $field) {
             $fieldtype = $returndescription->keys['scorms']->content->keys[$field]->type;

@@ -16,16 +16,14 @@
 
 namespace core_cohort;
 
+use core_cohort\customfield\cohort_handler;
 use core_cohort_external;
 use core_external\external_api;
-use externallib_advanced_testcase;
-use core_cohort\customfield\cohort_handler;
 
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot . '/webservice/tests/helpers.php');
 require_once($CFG->dirroot . '/cohort/externallib.php');
 
 /**
@@ -36,8 +34,7 @@ require_once($CFG->dirroot . '/cohort/externallib.php');
  * @copyright  MediaTouch 2000 srl
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-final class externallib_test extends externallib_advanced_testcase {
-
+final class externallib_test extends \core_external\tests\externallib_testcase {
     /**
      * Create cohort custom fields for testing.
      */
@@ -672,6 +669,7 @@ final class externallib_test extends externallib_advanced_testcase {
         role_assign($userrole, $catuser->id, $catcontext->id);
 
         // Enrol user in the course.
+        $this->getDataGenerator()->enrol_user($creator->id, $course->id);
         $this->getDataGenerator()->enrol_user($courseuser->id, $course->id, 'courserole');
 
         $syscontext = array('contextid' => \context_system::instance()->id);
@@ -758,18 +756,27 @@ final class externallib_test extends externallib_advanced_testcase {
         $this->assertCount(4, $result['cohorts']);
 
         // A user in the course context with the system cohort:view capability. Check that all the system cohorts are returned.
-        $this->setUser($courseuser);
         $result = core_cohort_external::search_cohorts("Cohortsearch", $coursecontext, 'all');
-        $this->assertCount(2, $result['cohorts']);
-        $this->assertEquals('Cohortsearch 1', $result['cohorts'][$cohort1->id]->name);
+        $this->assertCount(4, $result['cohorts']);
+
+        // A user in the course context without the ability to view system cohorts.
+        $this->setUser($courseuser);
+        try {
+            $result = core_cohort_external::search_cohorts("Cohortsearch", $coursecontext, 'all');
+            $this->fail('Exception expected');
+        } catch (\Throwable $e) {
+            $this->assertInstanceOf(\required_capability_exception::class, $e);
+            $this->assertStringContainsString('(View site-wide cohorts)', $e->getMessage());
+        }
 
         // Detect invalid parameter $includes.
         $this->setUser($creator);
         try {
             $result = core_cohort_external::search_cohorts("Cohortsearch", $syscontext, 'invalid');
-            $this->fail('Invalid parameter includes');
-        } catch (\coding_exception $e) {
-            // All good.
+            $this->fail('Exception expected');
+        } catch (\Throwable $e) {
+            $this->assertInstanceOf(\coding_exception::class, $e);
+            $this->assertStringContainsString('Invalid parameter value for \'includes\'', $e->getMessage());
         }
     }
 }

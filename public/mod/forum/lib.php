@@ -358,25 +358,24 @@ function forum_delete_instance($id) {
  * @return mixed True if module supports feature, false if not, null if doesn't know or string for the module purpose.
  */
 function forum_supports($feature) {
-    switch($feature) {
-        case FEATURE_GROUPS:                  return true;
-        case FEATURE_GROUPINGS:               return true;
-        case FEATURE_MOD_INTRO:               return true;
-        case FEATURE_COMPLETION_TRACKS_VIEWS: return true;
-        case FEATURE_COMPLETION_HAS_RULES:    return true;
-        case FEATURE_GRADE_HAS_GRADE:         return true;
-        case FEATURE_GRADE_OUTCOMES:          return true;
-        case FEATURE_RATE:                    return true;
-        case FEATURE_BACKUP_MOODLE2:          return true;
-        case FEATURE_SHOW_DESCRIPTION:        return true;
-        case FEATURE_PLAGIARISM:              return true;
-        case FEATURE_ADVANCED_GRADING:        return true;
-        case FEATURE_MOD_PURPOSE:             return MOD_PURPOSE_COLLABORATION;
-        case FEATURE_CAN_UNINSTALL:
-            return false;
-
-        default: return null;
-    }
+    return match ($feature) {
+        FEATURE_GROUPS => true,
+        FEATURE_GROUPINGS => true,
+        FEATURE_MOD_INTRO => true,
+        FEATURE_COMPLETION_TRACKS_VIEWS => true,
+        FEATURE_COMPLETION_HAS_RULES => true,
+        FEATURE_GRADE_HAS_GRADE => true,
+        FEATURE_GRADE_OUTCOMES => true,
+        FEATURE_RATE => true,
+        FEATURE_BACKUP_MOODLE2 => true,
+        FEATURE_SHOW_DESCRIPTION => true,
+        FEATURE_PLAGIARISM => true,
+        FEATURE_ADVANCED_GRADING => true,
+        FEATURE_MOD_PURPOSE => MOD_PURPOSE_COLLABORATION,
+        FEATURE_MOD_OTHERPURPOSE => MOD_PURPOSE_COMMUNICATION,
+        FEATURE_CAN_UNINSTALL => false,
+        default => null,
+    };
 }
 
 /**
@@ -2094,6 +2093,7 @@ function forum_get_course_forum($courseid, $type) {
             $forum->introformat = FORMAT_HTML;
             $forum->forcesubscribe = $CFG->forum_announcementsubscription;
             $forum->maxattachments = $CFG->forum_announcementmaxattachments;
+            $forum->maxbytes = $CFG->forum_announcementmaxbytes;
             $forum->assessed = 0;
             if ($courseid == SITEID) {
                 $forum->name  = get_string("sitenews");
@@ -4043,7 +4043,7 @@ function forum_print_recent_mod_activity($activity, $courseid, $detail, $modname
         'border' => '0',
         'cellpadding' => '3',
         'cellspacing' => '0',
-        'class' => 'forum-recent'
+        'class' => 'forum-recent table-reboot',
     ];
     $output = html_writer::start_tag('table', $tableoptions);
     $output .= html_writer::start_tag('tr');
@@ -5007,7 +5007,7 @@ function forum_reset_gradebook($courseid, $type='') {
  *
  * @global object
  * @global object
- * @param $data the data submitted from the reset course.
+ * @param stdClass $data the data submitted from the reset course.
  * @return array status array
  */
 function forum_reset_userdata($data) {
@@ -5210,7 +5210,13 @@ function forum_reset_userdata($data) {
     if ($data->timeshift) {
         // Any changes to the list of dates that needs to be rolled should be same during course restore and course reset.
         // See MDL-9367.
-        shift_course_mod_dates('forum', ['assesstimestart', 'assesstimefinish'], $data->timeshift, $data->courseid);
+        shift_course_mod_dates('forum', [
+            'assesstimestart',
+            'assesstimefinish',
+            'duedate',
+            'cutoffdate',
+        ], $data->timeshift, $data->courseid);
+
         $status[] = [
             'component' => $componentstr,
             'item' => get_string('date'),

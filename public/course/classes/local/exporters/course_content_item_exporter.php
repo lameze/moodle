@@ -70,6 +70,13 @@ class course_content_item_exporter extends exporter {
             'componentname' => ['type' => PARAM_TEXT, 'description' => 'The name of the component exposing the content item'],
             'purpose' => ['type' => PARAM_TEXT, 'description' => 'The purpose of the component exposing the content item'],
             'branded' => ['type' => PARAM_BOOL, 'description' => ' Whether this content item is branded or not'],
+            'gradable' => ['type' => PARAM_BOOL, 'description' => 'Whether this content item is gradable or not'],
+            'otherpurpose' => [
+                'type' => PARAM_TEXT,
+                'null' => NULL_ALLOWED,
+                'default' => null,
+                'description' => 'The alternative purpose of the component exposing the content item',
+            ],
         ];
     }
 
@@ -133,7 +140,8 @@ class course_content_item_exporter extends exporter {
             'title' => $this->contentitem->get_title()->get_value(),
             'link' => $this->contentitem->get_link()->out(false),
             'icon' => $this->contentitem->get_icon(),
-            'help' => format_text($this->contentitem->get_help(), FORMAT_MARKDOWN),
+            // Help text should not be parsed using course filters.
+            'help' => format_text($this->contentitem->get_help(), FORMAT_MARKDOWN, ['filter' => false]),
             'archetype' => $this->contentitem->get_archetype(),
             'componentname' => $this->contentitem->get_component_name(),
             'favourite' => $favourite,
@@ -141,6 +149,8 @@ class course_content_item_exporter extends exporter {
             'recommended' => $recommended,
             'purpose' => $this->contentitem->get_purpose(),
             'branded' => $this->contentitem->is_branded(),
+            'gradable' => $this->contentitem->is_gradable(),
+            'otherpurpose' => $this->contentitem->get_other_purpose(),
         ];
 
         return $properties;

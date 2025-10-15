@@ -1111,8 +1111,7 @@ function enrol_get_all_users_courses($userid, $onlyactive = false, $fields = nul
 
     if ($onlyactive) {
         $subwhere = "WHERE ue.status = :active AND e.status = :enabled AND ue.timestart < :now1 AND (ue.timeend = 0 OR ue.timeend > :now2)";
-        $params['now1']    = round(time(), -2); // improves db caching
-        $params['now2']    = $params['now1'];
+        $params['now1']    = $params['now2'] = \core\di::get(\core\clock::class)->time();
         $params['active']  = ENROL_USER_ACTIVE;
         $params['enabled'] = ENROL_INSTANCE_ENABLED;
     } else {
@@ -3652,9 +3651,9 @@ abstract class enrol_plugin {
         global $DB, $CFG;
         require_once($CFG->dirroot . '/course/lib.php');
 
-        $context = context_course::instance($instance->courseid);
         $user = core_user::get_user($userid);
         $course = get_course($instance->courseid);
+        $context = context_course::instance($course->id);
 
         // Fallback to the instance role ID if parameter not specified.
         $courseroleid = $roleid ?: $instance->roleid;
@@ -3663,13 +3662,8 @@ abstract class enrol_plugin {
         $a = new stdClass();
         $a->coursename = format_string($course->fullname, true, ['context' => $context, 'escape' => false]);
         $a->courselink = course_get_url($course)->out();
-        $a->profileurl = (new moodle_url(
-            url: '/user/view.php',
-            params: [
-                'id' => $user->id,
-                'course' => $instance->courseid,
-            ],
-        ))->out();
+        $a->coursestartdate = userdate($course->startdate, get_string('strftimedatetime', 'core_langconfig'));
+        $a->profileurl = \core\user::get_profile_url($user, $context)->out();
 
         $placeholders = \core_user::get_name_placeholders($user);
         foreach ($placeholders as $field => $value) {
@@ -3680,6 +3674,7 @@ abstract class enrol_plugin {
             $placeholders = [
                 '{$a->coursename}',
                 '{$a->courselink}',
+                '{$a->coursestartdate}',
                 '{$a->profileurl}',
                 '{$a->fullname}',
                 '{$a->email}',
@@ -3690,6 +3685,7 @@ abstract class enrol_plugin {
             $values = [
                 $a->coursename,
                 $a->courselink,
+                $a->coursestartdate,
                 $a->profileurl,
                 fullname($user),
                 $user->email,

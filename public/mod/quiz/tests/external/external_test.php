@@ -28,7 +28,6 @@ namespace mod_quiz\external;
 
 use core_external\external_api;
 use core_question\local\bank\question_version_status;
-use externallib_advanced_testcase;
 use mod_quiz\question\display_options;
 use mod_quiz\quiz_attempt;
 use mod_quiz\quiz_settings;
@@ -40,7 +39,6 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot . '/webservice/tests/helpers.php');
 require_once($CFG->dirroot . '/mod/quiz/tests/quiz_question_helper_test_trait.php');
 
 /**
@@ -86,8 +84,7 @@ class testable_mod_quiz_external extends mod_quiz_external {
  * @since      Moodle 3.1
  * @covers \mod_quiz_external
  */
-final class external_test extends externallib_advanced_testcase {
-
+final class external_test extends \core_external\tests\externallib_testcase {
     use \quiz_question_helper_test_trait;
 
     /** @var \stdClass course record. */
@@ -254,7 +251,7 @@ final class external_test extends externallib_advanced_testcase {
         $allusersfields = ['id', 'coursemodule', 'course', 'name', 'intro', 'introformat', 'introfiles', 'lang',
                                 'timeopen', 'timeclose', 'grademethod', 'section', 'visible', 'groupmode', 'groupingid',
                                 'attempts', 'timelimit', 'grademethod', 'decimalpoints', 'questiondecimalpoints', 'sumgrades',
-                                'grade', 'preferredbehaviour', 'hasfeedback'];
+                                'grade', 'preferredbehaviour', 'hasfeedback', 'enableaitools', 'enabledaiactions'];
         $userswithaccessfields = ['attemptonlast', 'reviewattempt', 'reviewcorrectness', 'reviewmaxmarks', 'reviewmarks',
                                         'reviewspecificfeedback', 'reviewgeneralfeedback', 'reviewrightanswer',
                                         'reviewoverallfeedback', 'questionsperpage', 'navmethod',
@@ -277,6 +274,8 @@ final class external_test extends externallib_advanced_testcase {
         $quiz1->autosaveperiod = get_config('quiz', 'autosaveperiod');
         $quiz1->introfiles = [];
         $quiz1->lang = '';
+        $quiz1->enableaitools = null;
+        $quiz1->enabledaiactions = null;
 
         $quiz2->coursemodule = $quiz2->cmid;
         $quiz2->introformat = 1;
@@ -290,6 +289,8 @@ final class external_test extends externallib_advanced_testcase {
         $quiz2->autosaveperiod = get_config('quiz', 'autosaveperiod');
         $quiz2->introfiles = [];
         $quiz2->lang = '';
+        $quiz2->enableaitools = null;
+        $quiz2->enabledaiactions = null;
 
         foreach (array_merge($allusersfields, $userswithaccessfields) as $field) {
             $expected1[$field] = $quiz1->{$field};

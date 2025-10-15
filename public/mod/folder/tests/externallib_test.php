@@ -17,14 +17,7 @@
 namespace mod_folder;
 
 use core_external\external_api;
-use externallib_advanced_testcase;
 use mod_folder_external;
-
-defined('MOODLE_INTERNAL') || die();
-
-global $CFG;
-
-require_once($CFG->dirroot . '/webservice/tests/helpers.php');
 
 /**
  * External mod_folder functions unit tests
@@ -35,8 +28,7 @@ require_once($CFG->dirroot . '/webservice/tests/helpers.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @since      Moodle 3.0
  */
-final class externallib_test extends externallib_advanced_testcase {
-
+final class externallib_test extends \core_external\tests\externallib_testcase {
     /**
      * Test view_folder
      */
@@ -152,7 +144,7 @@ final class externallib_test extends externallib_advanced_testcase {
         // Create what we expect to be returned when querying the two courses.
         $expectedfields = array('id', 'coursemodule', 'course', 'name', 'intro', 'introformat', 'introfiles', 'lang', 'revision',
                                 'timemodified', 'display', 'showexpanded', 'showdownloadfolder', 'section', 'visible',
-                                'forcedownload', 'groupmode', 'groupingid');
+                                'forcedownload', 'groupmode', 'groupingid', 'enableaitools', 'enabledaiactions');
 
         // Add expected coursemodule and data.
         $folder1->coursemodule = $folder1->cmid;
@@ -163,6 +155,8 @@ final class externallib_test extends externallib_advanced_testcase {
         $folder1->groupingid = 0;
         $folder1->introfiles = [];
         $folder1->lang = '';
+        $folder1->enableaitools = null;
+        $folder1->enabledaiactions = null;
 
         $folder2->coursemodule = $folder2->cmid;
         $folder2->introformat = 1;
@@ -172,6 +166,8 @@ final class externallib_test extends externallib_advanced_testcase {
         $folder2->groupingid = 0;
         $folder2->introfiles = [];
         $folder2->lang = '';
+        $folder2->enableaitools = null;
+        $folder2->enabledaiactions = null;
 
         foreach ($expectedfields as $field) {
             $expected1[$field] = $folder1->{$field};

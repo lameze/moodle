@@ -27031,174 +27031,6 @@ audio.mediaplugin_html5audio {
     position: static;
   }
 }
-/**
- * Module chooser dialogue (moodle-core-chooserdialogue)
- *
- * This CSS belong to the chooser dialogue which should work both with, and
- * without javascript enabled
- */
-.modchooser .modal-body {
-  padding: 0;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-}
-.modchooser .modal-body .searchresultitemscontainer-wrapper {
-  min-height: 495px;
-}
-.modchooser .modal-body .carousel-item {
-  height: 640px;
-}
-.modchooser .modal-body .carousel-item.active {
-  display: flex;
-}
-.modchooser .modal-body .chooser-container {
-  display: flex;
-  flex-direction: column;
-  flex: 1 1 auto;
-}
-.modchooser .modal-body .loading-icon {
-  opacity: 1;
-}
-.modchooser .modal-body .loading-icon .icon {
-  display: block;
-  font-size: 3em;
-  max-height: 3em;
-  max-width: 3em;
-}
-.modchooser .modal-body .carousel-item .loading-icon .icon {
-  margin: 1em auto;
-}
-.modchooser .modal-body .searchbar {
-  width: 100%;
-}
-
-.modchooser .modal-footer {
-  height: 70px;
-  background: var(--bs-body-bg);
-}
-.modchooser .modal-footer .moodlenet-logo .icon {
-  height: 2.5rem;
-  width: 6rem;
-  max-height: 2.5rem;
-  max-width: 6rem;
-  margin-bottom: 0.6rem;
-}
-
-.modchoosercontainer .optionscontainer,
-.modchoosercontainer .searchresultitemscontainer {
-  overflow-x: hidden;
-}
-.modchoosercontainer .optionscontainer .option,
-.modchoosercontainer .searchresultitemscontainer .option {
-  flex-basis: calc(50% - 0.5rem);
-}
-.modchoosercontainer .optionscontainer .option:hover,
-.modchoosercontainer .searchresultitemscontainer .option:hover {
-  border: 1px solid #7c7f83;
-}
-.modchoosercontainer .optionscontainer .option .optionactions .optionaction,
-.modchoosercontainer .searchresultitemscontainer .option .optionactions .optionaction {
-  cursor: pointer;
-  color: #6a737b;
-}
-.modchoosercontainer .optionscontainer .option .optionactions .optionaction i,
-.modchoosercontainer .searchresultitemscontainer .option .optionactions .optionaction i {
-  margin: 0;
-}
-.modchoosercontainer .optionscontainer .option .optioninfo a,
-.modchoosercontainer .searchresultitemscontainer .option .optioninfo a {
-  color: #495057;
-}
-.modchoosercontainer .optionscontainer .option .optioninfo a:hover,
-.modchoosercontainer .searchresultitemscontainer .option .optioninfo a:hover {
-  text-decoration: none;
-}
-
-.modchoosercontainer {
-  display: grid;
-  width: 100%;
-  grid-template-areas: "nav filters" "nav content";
-  grid-template-columns: auto 1fr;
-  grid-template-rows: auto 1fr;
-  gap: 1rem;
-}
-.modchoosercontainer .modchooserfilters {
-  grid-area: filters;
-}
-.modchoosercontainer .modchoosernav {
-  grid-area: nav;
-  min-width: 150px;
-}
-.modchoosercontainer .modchoosercontent {
-  grid-area: content;
-  overflow: auto;
-}
-.modchoosercontainer .searchresultscontainer {
-  overflow: auto;
-}
-@media (max-width: 767.98px) {
-  .modchoosercontainer {
-    grid-template-areas: "filters" "nav" "content";
-    grid-template-columns: 1fr;
-    grid-template-rows: auto auto 1fr;
-  }
-  .modchoosercontainer .modchoosernav {
-    overflow-x: auto;
-    height: 3rem;
-    white-space: nowrap;
-  }
-}
-
-.modchooser .modal-body .optionsummary {
-  background-color: #fff;
-  overflow-x: hidden;
-  overflow-y: auto;
-}
-.modchooser .modal-body .optionsummary .activitychooser-option-details {
-  min-width: 10rem;
-}
-.modchooser .modal-body .optionsummary .modchooser-detail-name {
-  margin-inline-start: -1rem;
-}
-.modchooser .modal-body .optionsummary .modchooser-detail-name .modchooser-detail-icon {
-  width: 1rem;
-}
-
-@media (max-width: 575.98px) {
-  .path-course-view .modal-dialog.modal-lg,
-  .path-course-view .modal-content,
-  .modchooser .modal-body,
-  .modchooser .modal-body .carousel,
-  .modchooser .modal-body .carousel-inner,
-  .modchooser .modal-body .carousel-item,
-  .modchooser .modal-body .optionsummary,
-  .modchoosercontainer,
-  .optionscontainer,
-  .searchresultitemscontainer {
-    min-height: auto;
-    height: 100%;
-    overflow-y: auto;
-  }
-  .path-course-view .modal-dialog.modal-lg {
-    margin: 0;
-  }
-  .modchooser .modal-body .searchresultitemscontainer-wrapper {
-    min-height: auto;
-  }
-}
-@media (min-width: 576px) {
-  .modchoosercontainer .optionscontainer .option,
-  .modchoosercontainer .searchresultitemscontainer .option {
-    flex-basis: calc(33.33% - 0.5rem);
-  }
-}
-@media (min-width: 992px) {
-  .modchoosercontainer .optionscontainer .option,
-  .modchoosercontainer .searchresultitemscontainer .option {
-    flex-basis: calc(25% - 0.5rem);
-  }
-}
 /* Form element: listing */
 .formlistingradio {
   padding-bottom: 25px;
@@ -27994,6 +27826,7 @@ input[disabled] {
 .clamp-2 {
   display: -webkit-box;
   -webkit-box-orient: vertical;
+  line-clamp: 2;
   -webkit-line-clamp: 2;
   overflow: hidden;
 }
@@ -29817,9 +29650,6 @@ aside[id^=block-region-side-] .block_recentlyaccesseditems .card:nth-of-type(n+4
     width: 100%;
   }
 }
-.block_myoverview .dropdown-item {
-  padding-left: 1.5rem;
-}
 
 .block_timeline .paged-content-page-container {
   background-color: var(--bs-body-bg);
@@ -29827,10 +29657,6 @@ aside[id^=block-region-side-] .block_recentlyaccesseditems .card:nth-of-type(n+4
 
 .block_timeline .event-action {
   padding-left: 5.55em;
-}
-
-.block_timeline .dropdown-menu .dropdown-item {
-  padding-left: 1.5rem;
 }
 
 .block_settings .block_tree [aria-expanded=true],
@@ -31806,7 +31632,15 @@ table.calendartable caption {
  * Course Overview page styles.
  */
 #course-overview-page .table {
+  margin-bottom: 0;
   border-top: none;
+}
+#course-overview-page .table td,
+#course-overview-page .table th {
+  padding: 0.5rem 1.5rem;
+}
+#course-overview-page .table tr:last-child td {
+  border-bottom: none;
 }
 #course-overview-page table tbody td {
   align-content: center;
@@ -31855,6 +31689,226 @@ table.calendartable caption {
   margin-right: 0.5rem;
 }
 
+/**
+ * File modchooser.scss.
+ * Contains styles for the module chooser.
+ */
+/* Main modal dialogue style customization. */
+.modchooser.modal-dialog {
+  --bs-modal-width: 1140px;
+  --bs-modal-header-border-width: 0;
+}
+.modchooser.modal-dialog .modal-header .modal-title {
+  flex-grow: 1;
+  text-align: center;
+  font-weight: 700;
+  font-size: 1.171875rem;
+}
+@media (min-width: 576px) {
+  .modchooser.modal-dialog .modal-header .modal-title {
+    font-size: 1.40625rem;
+  }
+}
+.modchooser.modal-dialog .modal-body {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  padding: 0;
+}
+.modchooser.modal-dialog .modal-body .carousel-item {
+  background-color: var(--bs-body-bg);
+  transition: none !important; /* stylelint-disable-line declaration-no-important */
+}
+.modchooser.modal-dialog .modal-body .carousel-item.active {
+  display: flex;
+}
+@media (min-width: 576px) {
+  .modchooser.modal-dialog .modal-body .carousel-item {
+    height: 640px;
+    max-height: calc(100vh - var(--bs-modal-margin) * 2 - 9rem);
+  }
+}
+.modchooser.modal-dialog .modal-body .loading-icon {
+  opacity: 1;
+}
+.modchooser.modal-dialog .modal-body .loading-icon .icon {
+  display: block;
+  max-height: 3rem;
+  max-width: 3rem;
+  font-size: 3rem;
+}
+.carousel-item .modchooser.modal-dialog .modal-body .loading-icon .icon {
+  margin: 1rem auto;
+}
+.modchooser.modal-dialog .modal-footer {
+  height: 70px;
+  background: var(--bs-body-bg);
+}
+.modchooser.modal-dialog .modal-footer .moodlenet-logo .icon {
+  height: 2.5rem;
+  width: 6rem;
+  max-height: 2.5rem;
+  max-width: 6rem;
+  margin-bottom: 0.6rem;
+}
+
+/* Main container layout styles. */
+.modchoosercontainer {
+  display: grid;
+  width: 100%;
+  grid-template-areas: "nav filters" "nav content";
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto 1fr;
+  gap: 1rem;
+}
+.modchoosercontainer .modchooserfilters {
+  grid-area: filters;
+}
+.modchoosercontainer .modchoosernav {
+  grid-area: nav;
+  min-width: 150px;
+}
+.modchoosercontainer .modchoosercontent {
+  grid-area: content;
+  overflow: auto;
+}
+.modchoosercontainer .searchresultscontainer {
+  overflow: auto;
+}
+@media (max-width: 767.98px) {
+  .modchoosercontainer {
+    grid-template-areas: "filters" "nav" "content";
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto 1fr;
+  }
+}
+
+/* Main container Filters styles. */
+@media (min-width: 992px) {
+  .modchooserfilters .simplesearchform {
+    justify-content: center;
+    position: relative;
+    left: calc(-1 * (75px + 2.5rem));
+  }
+  .modchooserfilters .searchbar {
+    max-width: 25rem !important; /* stylelint-disable-line declaration-no-important */
+  }
+}
+
+/* Main container Navigation styles. */
+.modchoosernav {
+  --bs-nav-pills-border-radius: 50rem;
+  --bs-nav-pills-link-active-bg: #1d2125;
+  --bs-nav-link-font-size: 0.9375rem;
+}
+.modchoosernav .nav-link {
+  --bs-nav-link-color: #1d2125;
+  --bs-nav-link-hover-color: #1d2125;
+  --bs-nav-link-font-weight: 500;
+  --bs-nav-link-padding-y: .3rem;
+  width: fit-content;
+  border: 1px solid transparent;
+}
+@media (min-width: 768px) {
+  .modchoosernav .nav-link {
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+.modchoosernav .nav-link:not(.active):hover {
+  border: 1px solid #dee2e6;
+  background-color: #f8f9fa;
+}
+@media (max-width: 767.98px) {
+  .modchoosernav {
+    overflow-x: auto;
+    white-space: nowrap;
+    background-color: #fff !important; /* stylelint-disable-line declaration-no-important */
+  }
+  .modchoosernav .nav-link {
+    border: 1px solid #dee2e6 !important; /* stylelint-disable-line declaration-no-important */
+  }
+}
+
+/* Main container Content styles. */
+.modchoosercontent .optionscontainer {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+}
+@media (max-width: 991.98px) {
+  .modchoosercontent .optionscontainer {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media (max-width: 575.98px) {
+  .modchoosercontent .optionscontainer {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+.modchoosercontent .optionscontainer .option {
+  --bs-btn-border-radius: 0.5rem;
+  height: fit-content;
+  border: 2px solid transparent;
+}
+.modchoosercontent .optionscontainer .option.selected {
+  border: 2px solid #0f6cbf;
+  background-color: #e7f0f9;
+}
+.modchoosercontent .optionscontainer .option:not(.selected):hover {
+  background-color: #f8f9fa;
+}
+.modchoosercontent .optionscontainer .option .optioninfo {
+  display: block;
+  text-align: initial;
+}
+.modchoosercontent .optionscontainer .option .optionactions {
+  position: relative;
+  z-index: 10;
+}
+
+/* Option summary styles. */
+.modchooser .optionsummary {
+  overflow-x: hidden;
+  overflow-y: auto;
+  width: 100%;
+  background-color: #fff;
+}
+.modchooser .optionsummary .activitychooser-option-details {
+  min-width: 15rem;
+}
+.modchooser .optionsummary .activitychooser-option-details .modchooser-detail:not(:last-child):not(:only-child) {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #dee2e6;
+}
+
+/* Make modchooser modal full height and scrollable on small screens. */
+@media (max-width: 575.98px) {
+  .path-course-view .modal-dialog.modal-lg,
+  .path-course-view .modal-content {
+    height: 100%;
+    overflow-y: auto;
+    margin: 0;
+  }
+  .modchooser .modal-body,
+  .modchooser .modal-body .carousel,
+  .modchooser .modal-body .carousel-inner,
+  .modchooser .modal-body .carousel-item,
+  .modchooser .modal-body .optionsummary,
+  .modchooser .modal-body .searchresultitemscontainer-wrapper {
+    height: 100%;
+    overflow-y: auto;
+  }
+  .modchoosercontainer,
+  .optionscontainer,
+  .searchresultitemscontainer {
+    height: 100%;
+    overflow-y: auto;
+  }
+}
 /* Anchor link offset fix. This makes hash links scroll 60px down to account for the fixed header. */
 :target,
 :focus {
@@ -33463,7 +33517,7 @@ a.ygtvspacer:hover {
   line-height: 10px;
   margin: 0;
   color: #666;
-  margin-left: 30px;
+  padding-left: 5px;
 }
 .notification-area .content-area .header:empty {
   display: none;
@@ -33925,7 +33979,8 @@ a.ygtvspacer:hover {
 }
 
 .chooserdialogue-questionchooser .modicon img.icon,
-#categoryquestions .qtype img.icon {
+#categoryquestions .qtype img.icon,
+.choosercontainer .modicon img.icon {
   /* Override default icon width set for fontawesome icons */
   width: 16px;
 }
@@ -34029,19 +34084,30 @@ body.path-question-type .fitem .col-form-label.visually-hidden:not(legend):not([
 }
 
 .que {
-  clear: left;
   text-align: left;
   margin: 0 auto 1.8em auto;
+  display: flex;
+  align-items: start;
+  gap: 1rem;
+}
+@media (max-width: 767.98px) {
+  .que {
+    flex-direction: column;
+  }
 }
 
 .que .info {
-  float: left;
+  flex-shrink: 0;
   width: 7em;
   padding: 0.5em;
-  margin-bottom: 1.8em;
   background-color: #f8f9fa;
   border: 1px solid #cad0d7;
   border-radius: 2px;
+}
+@media (max-width: 767.98px) {
+  .que .info {
+    width: 100%;
+  }
 }
 
 .que h3.no, .que .no.h3 {
@@ -34072,7 +34138,12 @@ body.path-question-type .fitem .col-form-label.visually-hidden:not(legend):not([
 }
 
 .que .content {
-  margin: 0 0 0 8.5em;
+  flex-grow: 1;
+}
+@media (max-width: 767.98px) {
+  .que .content {
+    width: 100%;
+  }
 }
 
 .que .formulation,
@@ -34420,15 +34491,6 @@ body.path-question-type .mform fieldset.hidden {
   position: relative;
 }
 
-@media (max-width: 767.98px) {
-  .que .info {
-    float: none;
-    width: auto;
-  }
-  .que .content {
-    margin: 0;
-  }
-}
 .qbank_managecategories-item.qbank_managecategories-droptarget-before,
 .qbank_managecategories-item .qbank_managecategories-item.qbank_managecategories-droptarget-before,
 .qbank_managecategories-categorylist.qbank_managecategories-droptarget-before > .qbank_managecategories-item:first-child {
@@ -34884,6 +34946,9 @@ body.path-question-type .mform fieldset.hidden {
 .form-select {
   width: auto;
   max-width: 100%;
+}
+.form-select.dropdown-toggle::after {
+  content: none;
 }
 
 #jump-to-activity.form-select {
@@ -36889,19 +36954,19 @@ img.userpicture {
   font-size: 1.03125rem;
 }
 
-#page-report-outline-index .table tbody tr {
+#page-report-outline-index #outlinereport tbody tr {
   background-color: #fff;
 }
-#page-report-outline-index .table tbody tr.section {
+#page-report-outline-index #outlinereport tbody tr.section {
   padding-left: 2rem;
 }
-#page-report-outline-index .table tbody tr.section h3, #page-report-outline-index .table tbody tr.section .h3 {
+#page-report-outline-index #outlinereport tbody tr.section h3, #page-report-outline-index #outlinereport tbody tr.section .h3 {
   font-size: 1.171875rem;
 }
-#page-report-outline-index .table tbody tr.section h4, #page-report-outline-index .table tbody tr.section .h4 {
+#page-report-outline-index #outlinereport tbody tr.section h4, #page-report-outline-index #outlinereport tbody tr.section .h4 {
   font-size: 1.03125rem;
 }
-#page-report-outline-index .table tbody td.delegated {
+#page-report-outline-index #outlinereport tbody td.delegated {
   padding-left: 3.5rem;
 }
 
@@ -38282,13 +38347,15 @@ body:not(.jsenabled) .langmenu:hover > .dropdown-menu,
 /**
  * Reset the Bootstrap _reboot.scss styles for tables.
  * That reboot mainly affects tables added by the tiny editor.
+ * If a table should continue using the original _reboot.scss styles, add the .table-reboot (styleless) class to opt out
+ * of this reset.
  */
-table:not(.table) thead,
-table:not(.table) tbody,
-table:not(.table) tfoot,
-table:not(.table) tr,
-table:not(.table) td,
-table:not(.table) th {
+table:not(.table):not(.ygtvtable):not(.table-reboot):not(.yui3-datatable-table) thead,
+table:not(.table):not(.ygtvtable):not(.table-reboot):not(.yui3-datatable-table) tbody,
+table:not(.table):not(.ygtvtable):not(.table-reboot):not(.yui3-datatable-table) tfoot,
+table:not(.table):not(.ygtvtable):not(.table-reboot):not(.yui3-datatable-table) tr,
+table:not(.table):not(.ygtvtable):not(.table-reboot):not(.yui3-datatable-table) td,
+table:not(.table):not(.ygtvtable):not(.table-reboot):not(.yui3-datatable-table) th {
   border-color: var(--bs-border-color);
   border-style: solid;
   border-width: var(--bs-border-width);
@@ -38387,7 +38454,7 @@ body {
   height: max(80px, 0.9375rem * 3);
   bottom: calc(max(80px, 0.9375rem * 3) * -1);
   transition: bottom 0.5s;
-  z-index: 1030;
+  z-index: 1020;
   box-shadow: 0 0 1rem rgba(0, 0, 0, 0.15);
   font-size: calc(0.9375rem * 1.10);
 }
@@ -38683,7 +38750,6 @@ body {
   line-height: 10px;
   margin: 0;
   color: inherit;
-  margin-left: 24px;
 }
 .content-item-container .view-more {
   position: absolute;
@@ -40609,9 +40675,6 @@ div.editor_atto_toolbar button .icon {
 .moremenu .dropdownmoremenu > .dropdown-menu .dropdown-menu .dropdown-divider {
   display: none;
 }
-.moremenu .dropdown-item {
-  padding-left: 1.5rem;
-}
 .moremenu .dropdown-item[aria-current=true],
 .moremenu .dropdown-item.active {
   background-color: transparent;
@@ -40897,6 +40960,9 @@ div.editor_atto_toolbar button .icon {
 
 .dropdown-menu {
   width: fit-content;
+}
+.dropdown-menu:has(.dropdown-item-active) .dropdown-item {
+  padding-left: 1.5rem;
 }
 
 .dropdown-item:hover.text-primary,

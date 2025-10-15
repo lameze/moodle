@@ -17,12 +17,10 @@ Feature: I can apply presets
     And I should see "Disable Restriction by grouping"
     And I navigate to "Plugins > Blocks > Manage blocks" in site administration
     And I should see "Disable Logged in user"
-    And I navigate to "Plugins > Course formats > Manage course formats" in site administration
-    And "Disable" "icon" should exist in the "Social" "table_row"
     And I navigate to "Plugins > Question behaviours > Manage question behaviours" in site administration
-    And "Enabled" "icon" should exist in the "Immediate feedback with CBM" "table_row"
+    And "Enabled" "link" should exist in the "Immediate feedback with CBM" "table_row"
     And I navigate to "Plugins > Question types > Manage question types" in site administration
-    And "Enabled" "icon" should exist in the "Calculated multichoice" "table_row"
+    And "Enabled" "link" should exist in the "Calculated multichoice" "table_row"
     When I navigate to "Site admin presets" in site administration
     And I press "Review settings and apply" action in the "Starter" report row
     And I should see "Setting changes"
@@ -81,11 +79,9 @@ Feature: I can apply presets
     And I should see "Restriction by profile" in the "Setting changes" "table"
     And I should see "SCORM package" in the "Setting changes" "table"
     And I should see "Search forums" in the "Setting changes" "table"
-    And I should see "Section links" in the "Setting changes" "table"
     And I should see "Server files" in the "Setting changes" "table"
     And I should see "Show data retention summary" in the "Setting changes" "table"
     And I should see "Social activities" in the "Setting changes" "table"
-    And I should see "Social" in the "Setting changes" "table"
     And I should see "Starred courses" in the "Setting changes" "table"
     And I should see "Lesson" in the "Setting changes" "table"
     And I should see "Tags" in the "Setting changes" "table"
@@ -107,12 +103,10 @@ Feature: I can apply presets
     And I should see "Enable Restriction by grouping"
     And I navigate to "Plugins > Blocks > Manage blocks" in site administration
     And I should see "Enable Logged in user"
-    And I navigate to "Plugins > Course formats > Manage course formats" in site administration
-    And "Disable" "icon" should not exist in the "Social" "table_row"
     And I navigate to "Plugins > Question behaviours > Manage question behaviours" in site administration
-    And "Enabled" "icon" should not exist in the "Immediate feedback with CBM" "table_row"
+    And "Enabled" "link" should not exist in the "Immediate feedback with CBM" "table_row"
     And I navigate to "Plugins > Question types > Manage question types" in site administration
-    And "Enabled" "icon" should not exist in the "Calculated multichoice" "table_row"
+    And "Enabled" "link" should not exist in the "Calculated multichoice" "table_row"
 
   Scenario: Re-applying Starter Moodle preset does not display setting changes
 #   Apply Starter preset.

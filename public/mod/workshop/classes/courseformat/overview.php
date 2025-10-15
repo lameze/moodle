@@ -181,15 +181,17 @@ class overview extends \core_courseformat\activityoverviewbase {
             return null;
         }
 
-        $submissions = $this->workshop->count_submissions();
-        $total = $this->workshop->count_participants();
+        $groups = array_map(fn($group) => $group->id, $this->get_groups_for_filtering());
+
+        $submissions = $this->workshop->count_all_submissions(groupids: $groups);
+        $total = $this->workshop->count_all_participants(groupids: $groups);
 
         if (!$total) {
             return new overviewitem(
                 name: get_string('submissions', 'workshop'),
                 value: 0,
                 content: '-',
-                textalign: text_align::CENTER,
+                textalign: text_align::END,
             );
         }
 
@@ -203,7 +205,7 @@ class overview extends \core_courseformat\activityoverviewbase {
             name: get_string('submissions', 'workshop'),
             value: $submissions,
             content: $content,
-            textalign: text_align::CENTER,
+            textalign: text_align::END,
         );
     }
 
@@ -213,21 +215,21 @@ class overview extends \core_courseformat\activityoverviewbase {
      * @return overviewitem|null An overview item, or null if the user lacks the required capability.
      */
     private function get_extra_assessments_overview(): ?overviewitem {
-        global $USER;
-
         if (!has_capability('mod/workshop:viewallassessments', $this->cm->context)) {
             return null;
         }
 
-        $assessments = $this->workshop->count_assessments(true);
-        $total = $this->workshop->count_assessments(false);
+        $groups = array_map(fn($group) => $group->id, $this->get_groups_for_filtering());
+
+        $assessments = $this->workshop->count_all_assessments(true, $groups);
+        $total = $this->workshop->count_all_assessments(false, $groups);
 
         if (!$total) {
             return new overviewitem(
                 name: get_string('assessments', 'workshop'),
                 value: 0,
                 content: '-',
-                textalign: text_align::CENTER,
+                textalign: text_align::END,
             );
         }
 
@@ -241,7 +243,7 @@ class overview extends \core_courseformat\activityoverviewbase {
             name: get_string('assessments', 'workshop'),
             value: $assessments,
             content: $content,
-            textalign: text_align::CENTER,
+            textalign: text_align::END,
         );
     }
 }

@@ -28,10 +28,11 @@ import {
     videoButtonName,
     mediaManagerButtonName
 } from './common';
-import MediaImage from './image';
-import MediaEmbed from './embed';
+import MediaImage from './image/image';
+import MediaEmbed from './embed/embed';
 import MediaManager from './manager';
 import {getButtonImage} from 'editor_tiny/utils';
+import Selectors from './selectors';
 
 const isImage = (node) => node.nodeName.toLowerCase() === 'img';
 const isVideo = (node) => node.nodeName.toLowerCase() === 'video' || node.nodeName.toLowerCase() === 'audio';
@@ -72,6 +73,12 @@ const registerImageCommand = (editor, imageButtonText) => {
 
     editor.ui.registry.addContextMenu(imageButtonName, {
         update: isImage,
+    });
+
+    // Let's check for image file at dragged and dropped and add img-fluid class if it does't have it yet.
+    editor.on('SetContent', function() {
+        const imgs = editor.getBody().querySelectorAll(`img:not(.${Selectors.IMAGE.styles.responsive})`);
+        imgs.forEach(img => img.classList.add(`${Selectors.IMAGE.styles.responsive}`));
     });
 };
 

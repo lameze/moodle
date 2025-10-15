@@ -32,8 +32,6 @@ use core_privacy\local\request\contextlist;
 use core_privacy\local\request\transform;
 use core_privacy\local\request\userlist;
 
-require_once($CFG->dirroot . '/comment/lib.php');
-
 /**
  * Privacy class for requesting user data.
  *
@@ -239,6 +237,7 @@ class provider implements
             $params = (isset($user)) ? ['userid' => $user->id, 'coursemoduleid' => $cmid] : ['coursemoduleid' => $cmid];
             // Only delete the record for course modules completion.
             $DB->delete_records('course_modules_completion', $params);
+            $DB->delete_records('course_modules_viewed', $params);
             return;
         }
 

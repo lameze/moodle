@@ -206,7 +206,7 @@ class helper {
 
         // Blocks: Hide Activities, Blog menu, Blog tags, Comments, Course completion status, Courses, Flickr,
         // Global search, Latest badges, Learning plans, Logged in user, Login, Main menu, Mentees, Online users,
-        // Private files, Recent blog entries, Recently accessed courses, Search forums, Section links, Social activities,
+        // Private files, Recent blog entries, Recently accessed courses, Search forums, Social activities,
         // Starred courses, Tags, YouTube.
         // Hidden by default: Course/site summary, RSS feeds, Self completion, Feedback.
         static::add_plugin($presetid, 'block', 'activity_modules', false);
@@ -228,7 +228,6 @@ class helper {
         static::add_plugin($presetid, 'block', 'blog_recent', false);
         static::add_plugin($presetid, 'block', 'rss_client', false);
         static::add_plugin($presetid, 'block', 'search_forums', false);
-        static::add_plugin($presetid, 'block', 'section_links', false);
         static::add_plugin($presetid, 'block', 'selfcompletion', false);
         static::add_plugin($presetid, 'block', 'social_activities', false);
         static::add_plugin($presetid, 'block', 'tags', false);
@@ -237,9 +236,6 @@ class helper {
         static::add_plugin($presetid, 'block', 'online_users', false);
         static::add_plugin($presetid, 'block', 'recentlyaccessedcourses', false);
         static::add_plugin($presetid, 'block', 'starredcourses', false);
-
-        // Course formats: Disable Social format.
-        static::add_plugin($presetid, 'format', 'social', false);
 
         // Data formats: Disable Javascript Object Notation (.json).
         static::add_plugin($presetid, 'dataformat', 'json', false);
@@ -309,7 +305,7 @@ class helper {
 
         // Blocks: Enable Activities, Blog menu, Blog tags, Comments, Course completion status, Courses, Flickr,
         // Global search, Latest badges, Learning plans, Logged in user, Login, Main menu, Mentees, Online users,
-        // Private files, Recent blog entries, Recently accessed courses, Search forums, Section links, Social activities,
+        // Private files, Recent blog entries, Recently accessed courses, Search forums, Social activities,
         // Starred courses, Tags, YouTube.
         // Hidden by default: Course/site summary, RSS feeds, Self completion, Feedback.
         static::add_plugin($presetid, 'block', 'activity_modules', true);
@@ -329,15 +325,11 @@ class helper {
         static::add_plugin($presetid, 'block', 'private_files', true);
         static::add_plugin($presetid, 'block', 'blog_recent', true);
         static::add_plugin($presetid, 'block', 'search_forums', true);
-        static::add_plugin($presetid, 'block', 'section_links', true);
         static::add_plugin($presetid, 'block', 'social_activities', true);
         static::add_plugin($presetid, 'block', 'tags', true);
         static::add_plugin($presetid, 'block', 'online_users', true);
         static::add_plugin($presetid, 'block', 'recentlyaccessedcourses', true);
         static::add_plugin($presetid, 'block', 'starredcourses', true);
-
-        // Course formats: Enable Social format.
-        static::add_plugin($presetid, 'format', 'social', true);
 
         // Data formats: Enable Javascript Object Notation (.json).
         static::add_plugin($presetid, 'dataformat', 'json', true);

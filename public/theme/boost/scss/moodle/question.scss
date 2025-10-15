@@ -142,7 +142,8 @@
 }
 
 .chooserdialogue-questionchooser .modicon img.icon,
-#categoryquestions .qtype img.icon {
+#categoryquestions .qtype img.icon,
+.choosercontainer .modicon img.icon {
     /* Override default icon width set for fontawesome icons */
     width: 16px;
 }
@@ -259,20 +260,28 @@ body.path-question-type {
 }
 
 .que {
-    clear: left;
     text-align: left;
     margin: 0 auto 1.8em auto;
+    display: flex;
+    align-items: start;
+    gap: 1rem;
+    @include media-breakpoint-down(md) {
+        flex-direction: column;
+    }
 }
 
 .que .info {
-    float: left;
+    flex-shrink: 0;
     width: 7em;
     padding: 0.5em;
-    margin-bottom: 1.8em;
     background-color: $gray-100;
     border: 1px solid darken($gray-300, 7%);
 
     @include border-radius(2px);
+
+    @include media-breakpoint-down(md) {
+        width: 100%;
+    }
 }
 
 .que h3.no {
@@ -303,7 +312,11 @@ body.path-question-type {
 }
 
 .que .content {
-    margin: 0 0 0 8.5em;
+    flex-grow: 1;
+
+    @include media-breakpoint-down(md) {
+        width: 100%;
+    }
 }
 
 .que .formulation,
@@ -671,16 +684,6 @@ body.path-question-type .mform fieldset.hidden {
 
 .tag-condition-container {
     position: relative;
-}
-
-@include media-breakpoint-down(md) {
-    .que .info {
-        float: none;
-        width: auto;
-    }
-    .que .content {
-        margin: 0;
-    }
 }
 
 .qbank_managecategories-item.qbank_managecategories-droptarget-before,

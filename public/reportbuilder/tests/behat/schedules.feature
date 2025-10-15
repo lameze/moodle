@@ -1,4 +1,4 @@
-@core_reportbuilder @javascript
+@core @core_reportbuilder @javascript
 Feature: Manage custom report schedules
   In order ot manage custom report schedules
   As an admin
@@ -30,6 +30,7 @@ Feature: Manage custom report schedules
     And I press "Save changes"
     When I click on the "Schedules" dynamic tab
     And I press "New schedule"
+    And I click on "Schedule an email" "link" in the ".dropdown" "css_element"
     And I set the following fields in the "New schedule" "dialogue" to these values:
       | Name          | My schedule                 |
       | Starting from | ##tomorrow 11:00##          |
@@ -52,6 +53,7 @@ Feature: Manage custom report schedules
     And I set the field "Rename audience 'All users'" to "<span class=\"multilang\" lang=\"en\">English</span><span class=\"multilang\" lang=\"es\">Spanish</span>"
     When I click on the "Schedules" dynamic tab
     And I press "New schedule"
+    And I click on "Schedule an email" "link" in the ".dropdown" "css_element"
     Then I should see "English" in the "New schedule" "dialogue"
     And I should not see "Spanish" in the "New schedule" "dialogue"
     And I click on "Cancel" "button" in the "New schedule" "dialogue"
@@ -107,7 +109,25 @@ Feature: Manage custom report schedules
       | Time last sent |
       | Time next send |
 
-  Scenario: Toggle report schedule
+  Scenario: Filter report schedules by enabled state
+    Given the following "core_reportbuilder > Schedules" exist:
+      | report    | name          | enabled |
+      | My report | My schedule 1 | 1       |
+      | My report | My schedule 2 | 0       |
+    And I am on the "My report" "reportbuilder > Editor" page logged in as "admin"
+    And I click on the "Schedules" dynamic tab
+    When I click on "Filters" "button"
+    And I set the field "Enabled operator" in the "Enabled" "core_reportbuilder > Filter" to "Yes"
+    And I click on "Apply" "button" in the "[data-region='report-filters']" "css_element"
+    Then I should see "Filters applied"
+    And I should see "My schedule 1" in the "Report schedules" "table"
+    And I should not see "My schedule 2" in the "Report schedules" "table"
+    And I set the field "Enabled operator" in the "Enabled" "core_reportbuilder > Filter" to "No"
+    And I click on "Apply" "button" in the "[data-region='report-filters']" "css_element"
+    And I should not see "My schedule 1" in the "Report schedules" "table"
+    And I should see "My schedule 2" in the "Report schedules" "table"
+
+  Scenario: Toggle report schedule enabled state
     Given the following "core_reportbuilder > Schedules" exist:
       | report    | name        |
       | My report | My schedule |
@@ -116,6 +136,7 @@ Feature: Manage custom report schedules
     When I click on "Disable schedule" "field" in the "My schedule" "table_row"
     Then the "class" attribute of "My schedule" "table_row" should contain "text-muted"
     And I click on "Enable schedule" "field" in the "My schedule" "table_row"
+    And the "class" attribute of "My schedule" "table_row" should be set
 
   Scenario: Edit report schedule
     Given the following "core_reportbuilder > Schedules" exist:
@@ -128,11 +149,22 @@ Feature: Manage custom report schedules
       | Name          | My updated schedule |
       | Starting from | ##tomorrow 11:00##  |
       | All users: All site users | 1       |
+      | Subject                | Tell me how to win your heart |
+      | Body                   | For I haven't got a clue      |
+      | If the report is empty | Don't send message            |
     And I click on "Save" "button" in the "Edit schedule details" "dialogue"
     Then I should see "Schedule updated"
     And the following should exist in the "Report schedules" table:
       | Name                | Time last sent | Time next send                          | Modified by |
       | My updated schedule | Never          | ##tomorrow 11:00##%A, %d %B %Y, %H:%M## | Admin User  |
+    And I press "Edit schedule details" action in the "My updated schedule" report row
+    And the following fields in the "Edit schedule details" "dialogue" match these values:
+      | Name          | My updated schedule |
+     # | Starting from | ##tomorrow 11:00##  | Nope, can't: MDL-86255.
+      | All users: All site users | 1       |
+      | Subject                | Tell me how to win your heart |
+      | Body                   | For I haven't got a clue      |
+      | If the report is empty | Don't send message            |
 
   Scenario: Send report schedule
     Given the following "core_reportbuilder > Schedules" exist:

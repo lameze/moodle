@@ -61,10 +61,7 @@ global $CFG;
  * @uses FEATURE_SHOW_DESCRIPTION
  */
 function bigbluebuttonbn_supports($feature) {
-    if (!$feature) {
-        return null;
-    }
-    $features = [
+    return match ($feature) {
         FEATURE_IDNUMBER => true,
         FEATURE_GROUPS => true,
         FEATURE_GROUPINGS => true,
@@ -76,11 +73,8 @@ function bigbluebuttonbn_supports($feature) {
         FEATURE_GRADE_OUTCOMES => false,
         FEATURE_SHOW_DESCRIPTION => true,
         FEATURE_MOD_PURPOSE => MOD_PURPOSE_COMMUNICATION,
-    ];
-    if (isset($features[(string) $feature])) {
-        return $features[$feature];
-    }
-    return null;
+        default => null,
+    };
 }
 
 /**
@@ -545,7 +539,6 @@ function mod_bigbluebuttonbn_core_calendar_provide_event_action(
                 'id' => $cm->id,
                 'bn' => $bigbluebuttonbn->id,
                 'timeline' => 1,
-                'sesskey' => sesskey(),
                 ]
         );
     }
@@ -575,19 +568,30 @@ function mod_bigbluebuttonbn_core_calendar_is_event_visible(calendar_event $even
  * @param navigation_node $nodenav The node to add module settings to
  */
 function bigbluebuttonbn_extend_settings_navigation(settings_navigation $settingsnav, navigation_node $nodenav) {
+    // Check for overrides.
+    $overriden = extension::override_settings_navigation($settingsnav, $nodenav);
+    if ($overriden) {
+        return;
+    }
+
+    // Run core/default logic here.
     global $USER;
-    // Don't add validate completion if the callback for meetingevents is NOT enabled.
-    if (!(boolean) \mod_bigbluebuttonbn\local\config::get('meetingevents_enabled')) {
-        return;
-    }
-    // Don't add validate completion if user is not allowed to edit the activity.
     $context = context_module::instance($settingsnav->get_page()->cm->id);
-    if (!has_capability('moodle/course:manageactivities', $context, $USER->id)) {
-        return;
+    // Add validate completion if the callback for meetingevents is enabled and user is allowed to edit the activity.
+    if (
+        (bool) \mod_bigbluebuttonbn\local\config::get('meetingevents_enabled') &&
+        has_capability('moodle/course:manageactivities', $context, $USER->id)
+    ) {
+        $completionvalidate = '#action=completion_validate&bigbluebuttonbn=' . $settingsnav->get_page()->cm->instance;
+        $nodenav->add(
+            get_string('completionvalidatestate', 'bigbluebuttonbn'),
+            $completionvalidate,
+            navigation_node::TYPE_CONTAINER
+        );
     }
-    $completionvalidate = '#action=completion_validate&bigbluebuttonbn=' . $settingsnav->get_page()->cm->instance;
-    $nodenav->add(get_string('completionvalidatestate', 'bigbluebuttonbn'),
-        $completionvalidate, navigation_node::TYPE_CONTAINER);
+
+    // Call all appends.
+    extension::append_settings_navigation($settingsnav, $nodenav);
 }
 
 /**

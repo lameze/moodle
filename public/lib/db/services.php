@@ -593,12 +593,24 @@ $functions = array(
         'type'          => 'read',
         'ajax'          => true,
     ],
+    'core_courseformat_get_section_content_items' => [
+        'classname'     => 'core_courseformat\external\get_section_content_items',
+        'description'   => 'Fetch all the content items (activities, resources and their subtypes) for the activity picker',
+        'type'          => 'read',
+        'ajax' => true,
+    ],
     'core_courseformat_get_overview_information' => [
         'classname'     => 'core_courseformat\external\get_overview_information',
         'description'   => 'Get the course overview information for an specific activity type.',
         'type'          => 'read',
         'ajax' => true,
         'services' => [MOODLE_OFFICIAL_MOBILE_SERVICE],
+    ],
+    'core_courseformat_log_view_overview_information' => [
+        'classname'     => 'core_courseformat\external\log_view_overview_information',
+        'description'   => 'Logs the course overview information page has been visited on an external application.',
+        'type'          => 'write',
+        'services'      => [MOODLE_OFFICIAL_MOBILE_SERVICE],
     ],
     'core_courseformat_new_module' => [
         'classname'     => 'core_courseformat\external\new_module',
@@ -808,7 +820,9 @@ $functions = array(
         'classname' => 'core_course_external',
         'methodname' => 'get_course_content_items',
         'classpath' => 'course/externallib.php',
-        'description' => 'Fetch all the content items (activities, resources and their subtypes) for the activity picker',
+        'description' => '** DEPRECATED ** Please do not call this function any more. ' .
+            'Use core_courseformat_get_section_content_items instead. ' .
+            'Fetch all the content items (activities, resources and their subtypes) for the activity picker',
         'type' => 'read',
         'ajax' => true,
     ),
@@ -828,6 +842,12 @@ $functions = array(
         'type' => 'write',
         'ajax' => true,
     ),
+    'core_course_view_module_instance_list' => [
+        'classname' => 'core_course\external\view_module_instance_list',
+        'description' => 'Logs that a module instance list has been viewed on an external application.',
+        'type' => 'write',
+        'services' => [MOODLE_OFFICIAL_MOBILE_SERVICE],
+    ],
     'core_enrol_get_course_enrolment_methods' => array(
         'classname' => 'core_enrol_external',
         'methodname' => 'get_course_enrolment_methods',
@@ -1731,6 +1751,7 @@ $functions = array(
         'type' => 'read',
         'loginrequired' => false,
         'ajax' => true,
+        'services' => [MOODLE_OFFICIAL_MOBILE_SERVICE],
     ),
     // Question related functions.
     'core_question_update_flag' => array(
@@ -2913,6 +2934,13 @@ $functions = array(
         'type'        => 'write',
         'ajax'        => true,
     ),
+    'core_customfield_toggle_shared' => [
+        'classname'   => core_customfield\external\toggle_shared_category::class,
+        'methodname'  => 'execute',
+        'description' => 'Toggle shared category state',
+        'type'        => 'write',
+        'ajax'        => true,
+    ],
     'core_h5p_get_trusted_h5p_file' => [
         'classname'     => 'core_h5p\external',
         'methodname'    => 'get_trusted_h5p_file',

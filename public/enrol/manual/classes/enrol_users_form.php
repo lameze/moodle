@@ -85,7 +85,9 @@ class enrol_manual_enrol_users_form extends moodleform {
         }
         $basemenu[3] = get_string('today') . ' (' . userdate($today, $dateformat) . ')';
         $basemenu[4] = get_string('now', 'enrol_manual') . ' (' . userdate($now, get_string('strftimedatetimeshort')) . ')';
+        $basemenu[5] = get_string('choosedots');
 
+        // User selection.
         $mform->addElement('header', 'main', get_string('enrolmentoptions', 'enrol'));
         $options = array(
             'ajax' => 'enrol_manual/form-potential-user-selector',
@@ -120,6 +122,29 @@ class enrol_manual_enrol_users_form extends moodleform {
         $mform->addElement('select', 'roletoassign', get_string('assignrole', 'enrol_manual'), $roles);
         $mform->setDefault('roletoassign', $instance->roleid);
 
+        if (has_capability('moodle/course:managegroups', $context)) {
+            $options = [];
+            foreach (groups_get_all_groups($course->id) as $group) {
+                $options[$group->id] = format_string($group->name, options: ['context' => $context]);
+            }
+
+            if ($options) {
+                $mform->addElement(
+                    'checkbox',
+                    'showgroups',
+                    get_string('addtogroup', 'enrol_manual'),
+                    get_string('showgroups', 'enrol_manual'),
+                );
+                $mform->addElement(
+                    'select',
+                    'group',
+                    null,
+                    $options,
+                );
+                $mform->hideIf('group', 'showgroups', 'notchecked');
+            }
+        }
+
         $mform->addAdvancedStatusElement('main');
 
         $mform->addElement('checkbox', 'recovergrades', get_string('recovergrades', 'enrol'));
@@ -128,6 +153,9 @@ class enrol_manual_enrol_users_form extends moodleform {
         $mform->addElement('select', 'startdate', get_string('startingfrom'), $basemenu);
         $mform->setDefault('startdate', $extendbase);
         $mform->setAdvanced('startdate');
+        $mform->addElement('date_time_selector', 'startdateselect', get_string('enroltimestart', 'enrol'));
+        $mform->setAdvanced('startdateselect');
+        $mform->hideIf('startdateselect', 'startdate', 'neq', 5);
         $mform->addElement('select', 'duration', get_string('enrolperiod', 'enrol'), $periodmenu);
         $mform->setDefault('duration', $defaultperiod);
         $mform->setAdvanced('duration');

@@ -37,7 +37,7 @@ import {
 import {EmbedHandler} from './embedhandler';
 import {MediaBase} from '../mediabase';
 import Notification from 'core/notification';
-import EmbedModal from '../embedmodal';
+import EmbedModal from './embedmodal';
 import {
     getEmbeddedMediaDetails,
     insertMediaThumbnailTemplateContext,
@@ -275,17 +275,19 @@ export class EmbedPreview extends MediaBase {
      */
     registerMediaDetailsEventListeners = async() => {
         // Handle the original size when selected.
-        const sizeOriginalEle = this.root.querySelector(Selectors.EMBED.elements.sizeOriginal);
-        if (sizeOriginalEle) {
-            sizeOriginalEle.addEventListener('change', () => {
+        const originalSize = this.root.querySelector(Selectors.EMBED.elements.originalSizeToggle);
+        if (originalSize) {
+            originalSize.addEventListener('click', (e) => {
+                e.preventDefault();
                 this.sizeChecked('original');
             });
         }
 
         // Handle the custom size when selected.
-        const sizeCustomEle = this.root.querySelector(Selectors.EMBED.elements.sizeCustom);
-        if (sizeCustomEle) {
-            sizeCustomEle.addEventListener('change', () => {
+        const customSize = this.root.querySelector(Selectors.EMBED.elements.customSizeToggle);
+        if (customSize) {
+            customSize.addEventListener('click', (e) => {
+                e.preventDefault();
                 this.sizeChecked('custom');
             });
         }
@@ -385,22 +387,15 @@ export class EmbedPreview extends MediaBase {
             langTracks.forEach((dropdown) => {
                 const defaultVal = dropdown.getAttribute('data-value');
                 if (defaultVal) {
-                    // ISO 639-1: 2-letter codes (e.g., en for English, fr for French).
-                    // Most widely used in applications like web development (lang="en" in HTML).
-                    // Let's check if the value of srclang is language code or language name.
-                    if (defaultVal.length === 2) {
-                        const options = dropdown.options;
-                        for (let i = 0; i < options.length; i++) {
-                            if (options[i].dataset.languageCode === defaultVal) {
-                                dropdown.value = options[i].value;
-                                break;
-                            }
+                    Array.from(dropdown.options).some(option => {
+                        // Check if srclang in track is a language code like "en"
+                        // or language name like "English" prior to MDL-85159.
+                        if (option.dataset.languageCode === defaultVal || option.value === defaultVal) {
+                            option.selected = true;
+                            return true;
                         }
-                    } else {
-                        // It means the value of srclang in track is a full language name like "English (en)",
-                        // which has been like this before this patch.
-                        dropdown.value = defaultVal;
-                    }
+                        return false;
+                    });
                 }
             });
         }

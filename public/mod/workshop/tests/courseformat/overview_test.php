@@ -16,34 +16,36 @@
 
 namespace mod_workshop\courseformat;
 
-defined('MOODLE_INTERNAL') || die();
-
-global $CFG;
-require_once($CFG->dirroot . '/mod/workshop/locallib.php');
-
 use core_courseformat\local\overview\overviewfactory;
 
 /**
  * Tests for Workshop overview integration.
  *
- * @covers \mod_workshop\course\overview
  * @package    mod_workshop
  * @category   test
  * @copyright  2025 Ferran Recio <ferran@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+#[\PHPUnit\Framework\Attributes\CoversClass(overview::class)]
 final class overview_test extends \advanced_testcase {
+    #[\Override]
+    public static function setUpBeforeClass(): void {
+        global $CFG;
+
+        parent::setUpBeforeClass();
+
+        require_once($CFG->dirroot . '/mod/workshop/locallib.php');
+    }
 
     /**
      * Test get_grade_item_names method.
      *
-     * @dataProvider data_provider_get_grade_item_names
-     * @covers ::get_grade_item_names
      * @param string $user
      * @param bool $expectempty
      * @param bool $hassubmission
      * @param bool $hasassesment
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('data_provider_get_grade_item_names')]
     public function test_get_grade_item_names(
         string $user,
         bool $expectempty,
@@ -141,39 +143,36 @@ final class overview_test extends \advanced_testcase {
     /**
      * Data provider for test_get_grade_item_names.
      *
-     * @return array
+     * @return \Generator
      */
-    public static function data_provider_get_grade_item_names(): array {
-        return [
-            'student with submissions' => [
-                'user' => 'student',
-                'expectempty' => false,
-                'hassubmission' => true,
-                'hasassesment' => false,
-            ],
-            'student with assessments' => [
-                'user' => 'student',
-                'expectempty' => false,
-                'hassubmission' => true,
-                'hasassesment' => true,
-            ],
-            'teacher' => [
-                'user' => 'teacher',
-                'expectempty' => true,
-                'hassubmission' => false,
-                'hasassesment' => false,
-            ],
+    public static function data_provider_get_grade_item_names(): \Generator {
+        yield 'student with submissions' => [
+            'user' => 'student',
+            'expectempty' => false,
+            'hassubmission' => true,
+            'hasassesment' => false,
+        ];
+        yield 'student with assessments' => [
+            'user' => 'student',
+            'expectempty' => false,
+            'hassubmission' => true,
+            'hasassesment' => true,
+        ];
+        yield 'teacher' => [
+            'user' => 'teacher',
+            'expectempty' => true,
+            'hassubmission' => false,
+            'hasassesment' => false,
         ];
     }
 
     /**
      * Test get_extra_phase_overview method.
      *
-     * @covers ::get_extra_phase_overview
-     * @dataProvider data_provider_get_extra_phase_overview
      * @param string $user
      * @param int $currentphase
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('data_provider_get_extra_phase_overview')]
     public function test_get_extra_phase_overview(string $user, int $currentphase): void {
         $this->resetAfterTest();
         $this->setAdminUser();
@@ -207,64 +206,61 @@ final class overview_test extends \advanced_testcase {
     /**
      * Data provider for test_get_extra_phase_overview.
      *
-     * @return array
+     * @return \Generator
      */
-    public static function data_provider_get_extra_phase_overview(): array {
-        return [
-            'teacher setup phase' => [
-                'user' => 'teacher',
-                'currentphase' => \workshop::PHASE_SETUP,
-            ],
-            'student setup phase' => [
-                'user' => 'student',
-                'currentphase' => \workshop::PHASE_SETUP,
-            ],
-            'teacher submission phase' => [
-                'user' => 'teacher',
-                'currentphase' => \workshop::PHASE_SUBMISSION,
-            ],
-            'student submission phase' => [
-                'user' => 'student',
-                'currentphase' => \workshop::PHASE_SUBMISSION,
-            ],
-            'teacher assessment phase' => [
-                'user' => 'teacher',
-                'currentphase' => \workshop::PHASE_ASSESSMENT,
-            ],
-            'student assessment phase' => [
-                'user' => 'student',
-                'currentphase' => \workshop::PHASE_ASSESSMENT,
-            ],
-            'teacher evaluation phase' => [
-                'user' => 'teacher',
-                'currentphase' => \workshop::PHASE_EVALUATION,
-            ],
-            'student evaluation phase' => [
-                'user' => 'student',
-                'currentphase' => \workshop::PHASE_EVALUATION,
-            ],
-            'teacher closed phase' => [
-                'user' => 'teacher',
-                'currentphase' => \workshop::PHASE_CLOSED,
-            ],
-            'student closed phase' => [
-                'user' => 'student',
-                'currentphase' => \workshop::PHASE_CLOSED,
-            ],
+    public static function data_provider_get_extra_phase_overview(): \Generator {
+        yield 'teacher setup phase' => [
+            'user' => 'teacher',
+            'currentphase' => \workshop::PHASE_SETUP,
+        ];
+        yield 'student setup phase' => [
+            'user' => 'student',
+            'currentphase' => \workshop::PHASE_SETUP,
+        ];
+        yield 'teacher submission phase' => [
+            'user' => 'teacher',
+            'currentphase' => \workshop::PHASE_SUBMISSION,
+        ];
+        yield 'student submission phase' => [
+            'user' => 'student',
+            'currentphase' => \workshop::PHASE_SUBMISSION,
+        ];
+        yield 'teacher assessment phase' => [
+            'user' => 'teacher',
+            'currentphase' => \workshop::PHASE_ASSESSMENT,
+        ];
+        yield 'student assessment phase' => [
+            'user' => 'student',
+            'currentphase' => \workshop::PHASE_ASSESSMENT,
+        ];
+        yield 'teacher evaluation phase' => [
+            'user' => 'teacher',
+            'currentphase' => \workshop::PHASE_EVALUATION,
+        ];
+        yield 'student evaluation phase' => [
+            'user' => 'student',
+            'currentphase' => \workshop::PHASE_EVALUATION,
+        ];
+        yield 'teacher closed phase' => [
+            'user' => 'teacher',
+            'currentphase' => \workshop::PHASE_CLOSED,
+        ];
+        yield 'student closed phase' => [
+            'user' => 'student',
+            'currentphase' => \workshop::PHASE_CLOSED,
         ];
     }
 
     /**
      * Test get_extra_deadline_overview method.
      *
-     * @covers ::get_extra_deadline_overview
-     * @dataProvider data_provider_get_extra_deadline_overview
      * @param string $user
      * @param int $currentphase
      * @param int $submissionend
      * @param int $assessmentend
      * @param int|null $expectedincrement null if the item should be null.
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('data_provider_get_extra_deadline_overview')]
     public function test_get_extra_deadline_overview(
         string $user,
         int $currentphase,
@@ -316,113 +312,119 @@ final class overview_test extends \advanced_testcase {
     /**
      * Data provider for test_get_extra_phase_overview.
      *
-     * @return array
+     * @return \Generator
      */
-    public static function data_provider_get_extra_deadline_overview(): array {
+    public static function data_provider_get_extra_deadline_overview(): \Generator {
         $submissionend = 3600;
         $assessmentend = 7200;
-        return [
-            'teacher setup phase' => [
-                'user' => 'teacher',
-                'currentphase' => \workshop::PHASE_SETUP,
-                'submissionend' => $submissionend,
-                'assessmentend' => $assessmentend,
-                'expectedincrement' => null,
-            ],
-            'student setup phase' => [
-                'user' => 'student',
-                'currentphase' => \workshop::PHASE_SETUP,
-                'submissionend' => $submissionend,
-                'assessmentend' => $assessmentend,
-                'expectedincrement' => null,
-            ],
-            'teacher submission phase' => [
-                'user' => 'teacher',
-                'currentphase' => \workshop::PHASE_SUBMISSION,
-                'submissionend' => $submissionend,
-                'assessmentend' => $assessmentend,
-                'expectedincrement' => $submissionend,
-            ],
-            'student submission phase' => [
-                'user' => 'student',
-                'currentphase' => \workshop::PHASE_SUBMISSION,
-                'submissionend' => $submissionend,
-                'assessmentend' => $assessmentend,
-                'expectedincrement' => $submissionend,
-            ],
-            'teacher assessment phase' => [
-                'user' => 'teacher',
-                'currentphase' => \workshop::PHASE_ASSESSMENT,
-                'submissionend' => $submissionend,
-                'assessmentend' => $assessmentend,
-                'expectedincrement' => $assessmentend,
-            ],
-            'student assessment phase' => [
-                'user' => 'student',
-                'currentphase' => \workshop::PHASE_ASSESSMENT,
-                'submissionend' => $submissionend,
-                'assessmentend' => $assessmentend,
-                'expectedincrement' => $assessmentend,
-            ],
-            'teacher evaluation phase' => [
-                'user' => 'teacher',
-                'currentphase' => \workshop::PHASE_EVALUATION,
-                'submissionend' => $submissionend,
-                'assessmentend' => $assessmentend,
-                'expectedincrement' => null,
-            ],
-            'student evaluation phase' => [
-                'user' => 'student',
-                'currentphase' => \workshop::PHASE_EVALUATION,
-                'submissionend' => $submissionend,
-                'assessmentend' => $assessmentend,
-                'expectedincrement' => null,
-            ],
-            'teacher closed phase' => [
-                'user' => 'teacher',
-                'currentphase' => \workshop::PHASE_CLOSED,
-                'submissionend' => $submissionend,
-                'assessmentend' => $assessmentend,
-                'expectedincrement' => null,
-            ],
-            'student closed phase' => [
-                'user' => 'student',
-                'currentphase' => \workshop::PHASE_CLOSED,
-                'submissionend' => $submissionend,
-                'assessmentend' => $assessmentend,
-                'expectedincrement' => null,
-            ],
+        yield 'teacher setup phase' => [
+            'user' => 'teacher',
+            'currentphase' => \workshop::PHASE_SETUP,
+            'submissionend' => $submissionend,
+            'assessmentend' => $assessmentend,
+            'expectedincrement' => null,
+        ];
+        yield 'student setup phase' => [
+            'user' => 'student',
+            'currentphase' => \workshop::PHASE_SETUP,
+            'submissionend' => $submissionend,
+            'assessmentend' => $assessmentend,
+            'expectedincrement' => null,
+        ];
+        yield 'teacher submission phase' => [
+            'user' => 'teacher',
+            'currentphase' => \workshop::PHASE_SUBMISSION,
+            'submissionend' => $submissionend,
+            'assessmentend' => $assessmentend,
+            'expectedincrement' => $submissionend,
+        ];
+        yield 'student submission phase' => [
+            'user' => 'student',
+            'currentphase' => \workshop::PHASE_SUBMISSION,
+            'submissionend' => $submissionend,
+            'assessmentend' => $assessmentend,
+            'expectedincrement' => $submissionend,
+        ];
+        yield 'teacher assessment phase' => [
+            'user' => 'teacher',
+            'currentphase' => \workshop::PHASE_ASSESSMENT,
+            'submissionend' => $submissionend,
+            'assessmentend' => $assessmentend,
+            'expectedincrement' => $assessmentend,
+        ];
+        yield 'student assessment phase' => [
+            'user' => 'student',
+            'currentphase' => \workshop::PHASE_ASSESSMENT,
+            'submissionend' => $submissionend,
+            'assessmentend' => $assessmentend,
+            'expectedincrement' => $assessmentend,
+        ];
+        yield 'teacher evaluation phase' => [
+            'user' => 'teacher',
+            'currentphase' => \workshop::PHASE_EVALUATION,
+            'submissionend' => $submissionend,
+            'assessmentend' => $assessmentend,
+            'expectedincrement' => null,
+        ];
+        yield 'student evaluation phase' => [
+            'user' => 'student',
+            'currentphase' => \workshop::PHASE_EVALUATION,
+            'submissionend' => $submissionend,
+            'assessmentend' => $assessmentend,
+            'expectedincrement' => null,
+        ];
+        yield 'teacher closed phase' => [
+            'user' => 'teacher',
+            'currentphase' => \workshop::PHASE_CLOSED,
+            'submissionend' => $submissionend,
+            'assessmentend' => $assessmentend,
+            'expectedincrement' => null,
+        ];
+        yield 'student closed phase' => [
+            'user' => 'student',
+            'currentphase' => \workshop::PHASE_CLOSED,
+            'submissionend' => $submissionend,
+            'assessmentend' => $assessmentend,
+            'expectedincrement' => null,
         ];
     }
 
     /**
      * Test get_extra_submissions_overview and get_extra_assessments_overview methods.
      *
-     * @covers ::get_extra_submissions_overview
-     * @covers ::get_extra_assessments_overview
-     * @dataProvider data_provider_get_extra_submissions_overview
-     * @param string $user
+     * @param string $role
      * @param int $currentphase
+     * @param int $groupmode
      * @param bool $hasstudentactivity
      * @param bool $expectnull
+     * @param array $expected
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('data_provider_get_extra_submissions_overview')]
     public function test_get_extra_submissions_overview(
-        string $user,
+        string $role,
         int $currentphase,
+        int $groupmode,
         bool $hasstudentactivity,
         bool $expectnull,
+        array $expected = [],
     ): void {
         $this->resetAfterTest();
         $this->setAdminUser();
 
         $course = $this->getDataGenerator()->create_course();
-        $teacher = $this->getDataGenerator()->create_and_enrol($course, 'teacher');
-        $student = $this->getDataGenerator()->create_and_enrol($course, 'student');
+        $student1 = $this->getDataGenerator()->create_and_enrol($course, 'student');
         $student2 = $this->getDataGenerator()->create_and_enrol($course, 'student');
+        $currentuser = $this->getDataGenerator()->create_and_enrol($course, $role);
+
+        if ($groupmode != NOGROUPS) {
+            $group1 = $this->getDataGenerator()->create_group(['courseid' => $course->id]);
+            $this->getDataGenerator()->create_group_member(['userid' => $currentuser->id, 'groupid' => $group1->id]);
+            $this->getDataGenerator()->create_group_member(['userid' => $student1->id, 'groupid' => $group1->id]);
+        }
 
         $activity = $this->getDataGenerator()->create_module(
             'workshop',
-            ['course' => $course->id],
+            ['course' => $course->id, 'groupmode' => $groupmode],
         );
         $cm = get_fast_modinfo($course)->get_cm($activity->cmid);
 
@@ -452,28 +454,37 @@ final class overview_test extends \advanced_testcase {
 
         if ($hasstudentactivity) {
             // Create some submissions.
-            $submissionid = $generator->create_submission(
+            $student1submissionid = $generator->create_submission(
                 $activity->id,
-                $student->id,
+                $student1->id,
                 ['title' => 'My custom title', 'grade' => 85.00000],
             );
-            $generator->create_submission(
+            $student2submissionid = $generator->create_submission(
                 $activity->id,
                 $student2->id,
                 ['title' => 'My custom title', 'grade' => 65.00000],
             );
-            // Assess one submission.
+            // Assess some submissions.
             $generator->create_assessment(
-                $submissionid,
-                $student->id,
-                ['weight' => 3, 'grade' => 95.00000],
+                $student1submissionid,
+                $currentuser->id,
+                ['weight' => 3, 'grade' => 45.00000],
+            );
+            $generator->create_assessment(
+                $student2submissionid,
+                $currentuser->id,
+                ['weight' => 3, 'grade' => 55.00000],
+            );
+            $generator->create_assessment(
+                $student2submissionid,
+                $currentuser->id,
+                ['weight' => 3, 'grade' => 65.00000],
             );
         }
 
         $manager = new \workshop($activity, $cm, $course, $cm->context);
         $manager->switch_phase($currentphase);
 
-        $currentuser = ($user == 'teacher') ? $teacher : $student;
         $this->setUser($currentuser);
 
         $overview = overviewfactory::create($cm);
@@ -494,154 +505,225 @@ final class overview_test extends \advanced_testcase {
         }
 
         $this->assertEquals(get_string('submissions', 'mod_workshop'), $itemsubmissions->get_name());
-        $expected = ($hasstudentactivity) ? 2 : 0;
-        $this->assertEquals($expected, $itemsubmissions->get_value());
+        $this->assertEquals($expected['submissions'], $itemsubmissions->get_value());
 
         $this->assertEquals(get_string('assessments', 'mod_workshop'), $itemassessment->get_name());
-        $expected = ($hasstudentactivity) ? 1 : 0;
-        $this->assertEquals($expected, $itemassessment->get_value());
+        $this->assertEquals($expected['assessments'], $itemassessment->get_value());
     }
 
     /**
      * Data provider for test_get_extra_submissions_overview.
      *
-     * @return array
+     * @return \Generator
      */
-    public static function data_provider_get_extra_submissions_overview(): array {
-        return [
-            'teacher setup phase without activity' => [
-                'user' => 'teacher',
-                'currentphase' => \workshop::PHASE_SETUP,
-                'hasstudentactivity' => false,
-                'expectnull' => false,
-            ],
-            'student setup phase without activity' => [
-                'user' => 'student',
-                'currentphase' => \workshop::PHASE_SETUP,
-                'hasstudentactivity' => false,
-                'expectnull' => true,
-            ],
-            'teacher submission phase without activity' => [
-                'user' => 'teacher',
-                'currentphase' => \workshop::PHASE_SUBMISSION,
-                'hasstudentactivity' => false,
-                'expectnull' => false,
-            ],
-            'student submission phase without activity' => [
-                'user' => 'student',
-                'currentphase' => \workshop::PHASE_SUBMISSION,
-                'hasstudentactivity' => false,
-                'expectnull' => true,
-            ],
-            'teacher assessment phase without activity' => [
-                'user' => 'teacher',
-                'currentphase' => \workshop::PHASE_ASSESSMENT,
-                'hasstudentactivity' => false,
-                'expectnull' => false,
-            ],
-            'student assessment phase without activity' => [
-                'user' => 'student',
-                'currentphase' => \workshop::PHASE_ASSESSMENT,
-                'hasstudentactivity' => false,
-                'expectnull' => true,
-            ],
-            'teacher evaluation phase without activity' => [
-                'user' => 'teacher',
-                'currentphase' => \workshop::PHASE_EVALUATION,
-                'hasstudentactivity' => false,
-                'expectnull' => false,
-            ],
-            'student evaluation phase without activity' => [
-                'user' => 'student',
-                'currentphase' => \workshop::PHASE_EVALUATION,
-                'hasstudentactivity' => false,
-                'expectnull' => true,
-            ],
-            'teacher closed phase without activity' => [
-                'user' => 'teacher',
-                'currentphase' => \workshop::PHASE_CLOSED,
-                'hasstudentactivity' => false,
-                'expectnull' => false,
-            ],
-            'student closed phase without activity' => [
-                'user' => 'student',
-                'currentphase' => \workshop::PHASE_CLOSED,
-                'hasstudentactivity' => false,
-                'expectnull' => true,
-            ],
-            // Tests with assessments.
-            'teacher setup phase with activity' => [
-                'user' => 'teacher',
-                'currentphase' => \workshop::PHASE_SETUP,
-                'hasstudentactivity' => true,
-                'expectnull' => false,
-            ],
-            'student setup phase with activity' => [
-                'user' => 'student',
-                'currentphase' => \workshop::PHASE_SETUP,
-                'hasstudentactivity' => true,
-                'expectnull' => true,
-            ],
-            'teacher submission phase with activity' => [
-                'user' => 'teacher',
-                'currentphase' => \workshop::PHASE_SUBMISSION,
-                'hasstudentactivity' => true,
-                'expectnull' => false,
-            ],
-            'student submission phase with activity' => [
-                'user' => 'student',
-                'currentphase' => \workshop::PHASE_SUBMISSION,
-                'hasstudentactivity' => true,
-                'expectnull' => true,
-            ],
-            'teacher assessment phase with activity' => [
-                'user' => 'teacher',
-                'currentphase' => \workshop::PHASE_ASSESSMENT,
-                'hasstudentactivity' => true,
-                'expectnull' => false,
-            ],
-            'student assessment phase with activity' => [
-                'user' => 'student',
-                'currentphase' => \workshop::PHASE_ASSESSMENT,
-                'hasstudentactivity' => true,
-                'expectnull' => true,
-            ],
-            'teacher evaluation phase with activity' => [
-                'user' => 'teacher',
-                'currentphase' => \workshop::PHASE_EVALUATION,
-                'hasstudentactivity' => true,
-                'expectnull' => false,
-            ],
-            'student evaluation phase with activity' => [
-                'user' => 'student',
-                'currentphase' => \workshop::PHASE_EVALUATION,
-                'hasstudentactivity' => true,
-                'expectnull' => true,
-            ],
-            'teacher closed phase with activity' => [
-                'user' => 'teacher',
-                'currentphase' => \workshop::PHASE_CLOSED,
-                'hasstudentactivity' => true,
-                'expectnull' => false,
-            ],
-            'student closed phase with activity' => [
-                'user' => 'student',
-                'currentphase' => \workshop::PHASE_CLOSED,
-                'hasstudentactivity' => true,
-                'expectnull' => true,
-            ],
+    public static function data_provider_get_extra_submissions_overview(): \Generator {
+        yield 'teacher setup phase without activity' => [
+            'role' => 'editingteacher',
+            'currentphase' => \workshop::PHASE_SETUP,
+            'groupmode' => NOGROUPS,
+            'hasstudentactivity' => false,
+            'expectnull' => false,
+            'expected' => ['submissions' => 0, 'assessments' => 0],
+        ];
+        yield 'student setup phase without activity' => [
+            'role' => 'student',
+            'currentphase' => \workshop::PHASE_SETUP,
+            'groupmode' => NOGROUPS,
+            'hasstudentactivity' => false,
+            'expectnull' => true,
+        ];
+        yield 'teacher submission phase without activity' => [
+            'role' => 'editingteacher',
+            'currentphase' => \workshop::PHASE_SUBMISSION,
+            'groupmode' => NOGROUPS,
+            'hasstudentactivity' => false,
+            'expectnull' => false,
+            'expected' => ['submissions' => 0, 'assessments' => 0],
+        ];
+        yield 'student submission phase without activity' => [
+            'role' => 'student',
+            'currentphase' => \workshop::PHASE_SUBMISSION,
+            'groupmode' => NOGROUPS,
+            'hasstudentactivity' => false,
+            'expectnull' => true,
+        ];
+        yield 'teacher assessment phase without activity' => [
+            'role' => 'editingteacher',
+            'currentphase' => \workshop::PHASE_ASSESSMENT,
+            'groupmode' => NOGROUPS,
+            'hasstudentactivity' => false,
+            'expectnull' => false,
+            'expected' => ['submissions' => 0, 'assessments' => 0],
+        ];
+        yield 'student assessment phase without activity' => [
+            'role' => 'student',
+            'currentphase' => \workshop::PHASE_ASSESSMENT,
+            'groupmode' => NOGROUPS,
+            'hasstudentactivity' => false,
+            'expectnull' => true,
+        ];
+        yield 'teacher evaluation phase without activity' => [
+            'role' => 'editingteacher',
+            'currentphase' => \workshop::PHASE_EVALUATION,
+            'groupmode' => NOGROUPS,
+            'hasstudentactivity' => false,
+            'expectnull' => false,
+            'expected' => ['submissions' => 0, 'assessments' => 0],
+        ];
+        yield 'student evaluation phase without activity' => [
+            'role' => 'student',
+            'currentphase' => \workshop::PHASE_EVALUATION,
+            'groupmode' => NOGROUPS,
+            'hasstudentactivity' => false,
+            'expectnull' => true,
+        ];
+        yield 'teacher closed phase without activity' => [
+            'role' => 'editingteacher',
+            'currentphase' => \workshop::PHASE_CLOSED,
+            'groupmode' => NOGROUPS,
+            'hasstudentactivity' => false,
+            'expectnull' => false,
+            'expected' => ['submissions' => 0, 'assessments' => 0],
+        ];
+        yield 'student closed phase without activity' => [
+            'role' => 'student',
+            'currentphase' => \workshop::PHASE_CLOSED,
+            'groupmode' => NOGROUPS,
+            'hasstudentactivity' => false,
+            'expectnull' => true,
+        ];
+        // Tests with assessments.
+        yield 'teacher setup phase with activity' => [
+            'role' => 'editingteacher',
+            'currentphase' => \workshop::PHASE_SETUP,
+            'groupmode' => NOGROUPS,
+            'hasstudentactivity' => true,
+            'expectnull' => false,
+            'expected' => ['submissions' => 2, 'assessments' => 3],
+        ];
+        yield 'student setup phase with activity' => [
+            'role' => 'student',
+            'currentphase' => \workshop::PHASE_SETUP,
+            'groupmode' => NOGROUPS,
+            'hasstudentactivity' => true,
+            'expectnull' => true,
+        ];
+        yield 'teacher submission phase with activity' => [
+            'role' => 'editingteacher',
+            'currentphase' => \workshop::PHASE_SUBMISSION,
+            'groupmode' => NOGROUPS,
+            'hasstudentactivity' => true,
+            'expectnull' => false,
+            'expected' => ['submissions' => 2, 'assessments' => 3],
+        ];
+        yield 'student submission phase with activity' => [
+            'role' => 'student',
+            'currentphase' => \workshop::PHASE_SUBMISSION,
+            'groupmode' => NOGROUPS,
+            'hasstudentactivity' => true,
+            'expectnull' => true,
+        ];
+        yield 'teacher assessment phase with activity' => [
+            'role' => 'editingteacher',
+            'currentphase' => \workshop::PHASE_ASSESSMENT,
+            'groupmode' => NOGROUPS,
+            'hasstudentactivity' => true,
+            'expectnull' => false,
+            'expected' => ['submissions' => 2, 'assessments' => 3],
+        ];
+        yield 'student assessment phase with activity' => [
+            'role' => 'student',
+            'currentphase' => \workshop::PHASE_ASSESSMENT,
+            'groupmode' => NOGROUPS,
+            'hasstudentactivity' => true,
+            'expectnull' => true,
+        ];
+        yield 'teacher evaluation phase with activity' => [
+            'role' => 'editingteacher',
+            'currentphase' => \workshop::PHASE_EVALUATION,
+            'groupmode' => NOGROUPS,
+            'hasstudentactivity' => true,
+            'expectnull' => false,
+            'expected' => ['submissions' => 2, 'assessments' => 3],
+        ];
+        yield 'student evaluation phase with activity' => [
+            'role' => 'student',
+            'currentphase' => \workshop::PHASE_EVALUATION,
+            'groupmode' => NOGROUPS,
+            'hasstudentactivity' => true,
+            'expectnull' => true,
+        ];
+        yield 'teacher closed phase with activity' => [
+            'role' => 'editingteacher',
+            'currentphase' => \workshop::PHASE_CLOSED,
+            'groupmode' => NOGROUPS,
+            'hasstudentactivity' => true,
+            'expectnull' => false,
+            'expected' => ['submissions' => 2, 'assessments' => 3],
+        ];
+        yield 'student closed phase with activity' => [
+            'role' => 'student',
+            'currentphase' => \workshop::PHASE_CLOSED,
+            'groupmode' => NOGROUPS,
+            'hasstudentactivity' => true,
+            'expectnull' => true,
+        ];
+        // Group mode tests.
+        yield 'teacher closed phase with group activity (separate groups)' => [
+            'role' => 'editingteacher',
+            'currentphase' => \workshop::PHASE_CLOSED,
+            'groupmode' => SEPARATEGROUPS,
+            'hasstudentactivity' => true,
+            'expectnull' => false,
+            'expected' => ['submissions' => 2, 'assessments' => 3],
+        ];
+        yield 'non-editing teacher closed phase with group activity (separate groups)' => [
+            'role' => 'teacher',
+            'currentphase' => \workshop::PHASE_CLOSED,
+            'groupmode' => SEPARATEGROUPS,
+            'hasstudentactivity' => true,
+            'expectnull' => false,
+            'expected' => ['submissions' => 1, 'assessments' => 1],
+        ];
+        yield 'student closed phase with group activity (separate groups)' => [
+            'role' => 'student',
+            'currentphase' => \workshop::PHASE_CLOSED,
+            'groupmode' => SEPARATEGROUPS,
+            'hasstudentactivity' => true,
+            'expectnull' => true,
+        ];
+        yield 'teacher closed phase with group activity (visible groups)' => [
+            'role' => 'editingteacher',
+            'currentphase' => \workshop::PHASE_CLOSED,
+            'groupmode' => VISIBLEGROUPS,
+            'hasstudentactivity' => true,
+            'expectnull' => false,
+            'expected' => ['submissions' => 2, 'assessments' => 3],
+        ];
+        yield 'non-editing teacher closed phase with group activity (visible groups)' => [
+            'role' => 'teacher',
+            'currentphase' => \workshop::PHASE_CLOSED,
+            'groupmode' => VISIBLEGROUPS,
+            'hasstudentactivity' => true,
+            'expectnull' => false,
+            'expected' => ['submissions' => 2, 'assessments' => 3],
+        ];
+        yield 'student closed phase with group activity (visible groups)' => [
+            'role' => 'student',
+            'currentphase' => \workshop::PHASE_CLOSED,
+            'groupmode' => VISIBLEGROUPS,
+            'hasstudentactivity' => true,
+            'expectnull' => true,
         ];
     }
 
     /**
      * Test get_actions_overview.
      *
-     * @covers ::get_actions_overview
-     * @dataProvider provider_test_get_actions_overview
-     *
      * @param string $role
      * @param array|null $expected
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provider_test_get_actions_overview')]
     public function test_get_actions_overview(
         string $role,
         ?array $expected
@@ -672,27 +754,25 @@ final class overview_test extends \advanced_testcase {
     /**
      * Data provider for test_get_actions_overview.
      *
-     * @return array
+     * @return \Generator
      */
-    public static function provider_test_get_actions_overview(): array {
-        return [
-            'Student' => [
-                'role' => 'student',
-                'expected' => null,
+    public static function provider_test_get_actions_overview(): \Generator {
+        yield 'Student' => [
+            'role' => 'student',
+            'expected' => null,
+        ];
+        yield 'Editing teacher' => [
+            'role' => 'editingteacher',
+            'expected' => [
+            'name' => get_string('actions'),
+            'value' => get_string('view'),
             ],
-            'Editing teacher' => [
-                'role' => 'editingteacher',
-                'expected' => [
-                    'name' => get_string('actions'),
-                    'value' => get_string('view'),
-                ],
-            ],
-            'Teacher' => [
-                'role' => 'teacher',
-                'expected' => [
-                    'name' => get_string('actions'),
-                    'value' => get_string('view'),
-                ],
+        ];
+        yield 'Teacher' => [
+            'role' => 'teacher',
+            'expected' => [
+            'name' => get_string('actions'),
+            'value' => get_string('view'),
             ],
         ];
     }

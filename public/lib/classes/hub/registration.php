@@ -46,7 +46,7 @@ class registration {
     const FORM_FIELDS = ['policyagreed', 'language', 'countrycode', 'privacy',
         'contactemail', 'emailalert', 'emailalertemail', 'commnews', 'commnewsemail',
         'contactname', 'name', 'description', 'imageurl', 'contactphone', 'regioncode',
-        'geolocation', 'street', 'organisationtype'];
+        'geolocation', 'street', 'organisationtype', 'commnewsfirstname', 'commnewslastname'];
 
     /** @var array List of new FORM_FIELDS or siteinfo fields added indexed by the version when they were added.
      * If site was already registered, admin will be promted to confirm new registration data manually. Until registration is manually confirmed,
@@ -540,6 +540,11 @@ class registration {
             \core\notification::add(get_string('unregistrationerror', 'hub', $e->getMessage()),
                 \core\output\notification::NOTIFY_ERROR);
             return false;
+        }
+
+        // Unset saved site info.
+        foreach (self::FORM_FIELDS as $field) {
+            set_config('site_' . $field, null, 'hub');
         }
 
         $DB->delete_records('registration_hubs', array('id' => $hub->id));

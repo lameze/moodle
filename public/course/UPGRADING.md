@@ -1,6 +1,40 @@
 # core_course (subsystem) Upgrade notes
 
-## 5.1dev
+## 5.1
+
+### Added
+
+- The following classes have been renamed and now support autoloading.
+  Existing classes are currently unaffected.
+
+   | Old class name    | New class name                |
+   | ---               | ---                           |
+   | `\course_request` | `\core_course\course_request` |
+
+  For more information see [MDL-82322](https://tracker.moodle.org/browse/MDL-82322)
+- Activities can now specify an additional purpose in their PLUGINNAME_supports function by using the new FEATURE_MOD_OTHERPURPOSE feature.
+
+  For more information see [MDL-85598](https://tracker.moodle.org/browse/MDL-85598)
+- Added new `gradable` property to `core_course\local\entity\content_item`
+
+  For more information see [MDL-86036](https://tracker.moodle.org/browse/MDL-86036)
+- - The following classes have been renamed and now support autoloading.
+    Existing classes are currently unaffected.
+
+    | Old class name    | New class name           |
+    | ---               | ---                      |
+    | `\cm_info`        | `\course\cm_info
+    | `\cached_cm_info` | `\course\cached_cm_info` |
+    | `\section_info`   | `\course\section_info`   |
+    | `\course_modinfo` | `\course\modinfo`        |
+
+  For more information see [MDL-86155](https://tracker.moodle.org/browse/MDL-86155)
+- Removed fictitious `__empty()` magic method.
+
+  The `empty()` method does not make use of any `__empty()` method. It is not a
+  defined magic method.
+
+  For more information see [MDL-86155](https://tracker.moodle.org/browse/MDL-86155)
 
 ### Changed
 
@@ -10,9 +44,36 @@
 
 ### Deprecated
 
+- The core_course_get_course_content_items is now deprecated. Use core_courseformat_get_section_content_items instead.
+
+  For more information see [MDL-80295](https://tracker.moodle.org/browse/MDL-80295)
+- The course_section_add_cm_control course renderer method is deprecated. Use section_add_cm_controls instead.
+
+  For more information see [MDL-80295](https://tracker.moodle.org/browse/MDL-80295)
+- Passing the section number (integer) to the core_course\output\activitychooserbutton is deprecated. You must use a core_course\section_info instead.
+
+  For more information see [MDL-80295](https://tracker.moodle.org/browse/MDL-80295)
+- The getModulesData and activityModules methods from core_course/local/activitychooser/repository are deprecated. Use getSectionModulesData and sectionActivityModules instead
+
+  For more information see [MDL-80295](https://tracker.moodle.org/browse/MDL-80295)
 - The duplicatesection param in course/view.php is deprecated. Use course/format/update.php with action section_duplicate instead.
 
   For more information see [MDL-84216](https://tracker.moodle.org/browse/MDL-84216)
+- The changenumsections.php script is deprecated. Please use course/format/update.php instead.
+
+  For more information see [MDL-85284](https://tracker.moodle.org/browse/MDL-85284)
+- The `\course\cm_info::$extra` and `\course\cm_info::$score` properties will now
+  emit appropriate debugging.
+
+  These have been deprecated for a long time, but did not emit any debugging.
+
+  For more information see [MDL-86155](https://tracker.moodle.org/browse/MDL-86155)
+- The `MAX_MODINFO_CACHE_SIZE` constant has been deprecated and replaced with a class constant.
+
+  For more information see [MDL-86155](https://tracker.moodle.org/browse/MDL-86155)
+- The course renderer method course_activitychooser is now deprecated. Its logic is not part of the new section_renderer::add_cm_controls method.
+
+  For more information see [MDL-86337](https://tracker.moodle.org/browse/MDL-86337)
 
 ### Removed
 

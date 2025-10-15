@@ -17,14 +17,7 @@
 namespace mod_page;
 
 use core_external\external_api;
-use externallib_advanced_testcase;
 use mod_page_external;
-
-defined('MOODLE_INTERNAL') || die();
-
-global $CFG;
-
-require_once($CFG->dirroot . '/webservice/tests/helpers.php');
 
 /**
  * External mod_page functions unit tests
@@ -35,8 +28,7 @@ require_once($CFG->dirroot . '/webservice/tests/helpers.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @since      Moodle 3.0
  */
-final class externallib_test extends externallib_advanced_testcase {
-
+final class externallib_test extends \core_external\tests\externallib_testcase {
     /**
      * Test view_page
      */
@@ -150,7 +142,8 @@ final class externallib_test extends externallib_advanced_testcase {
         // Create what we expect to be returned when querying the two courses.
         $expectedfields = array('id', 'coursemodule', 'course', 'name', 'intro', 'introformat', 'introfiles', 'lang',
                                 'content', 'contentformat', 'contentfiles', 'legacyfiles', 'legacyfileslast', 'display',
-                                'displayoptions', 'revision', 'timemodified', 'section', 'visible', 'groupmode', 'groupingid');
+                                'displayoptions', 'revision', 'timemodified', 'section', 'visible', 'groupmode', 'groupingid',
+                                'enableaitools', 'enabledaiactions');
 
         // Add expected coursemodule and data.
         $page1->coursemodule = $page1->cmid;
@@ -163,6 +156,8 @@ final class externallib_test extends externallib_advanced_testcase {
         $page1->introfiles = [];
         $page1->contentfiles = [];
         $page1->lang = '';
+        $page1->enableaitools = null;
+        $page1->enabledaiactions = null;
 
         $page2->coursemodule = $page2->cmid;
         $page2->introformat = 1;
@@ -174,6 +169,8 @@ final class externallib_test extends externallib_advanced_testcase {
         $page2->introfiles = [];
         $page2->contentfiles = [];
         $page2->lang = '';
+        $page2->enableaitools = null;
+        $page2->enabledaiactions = null;
 
         foreach ($expectedfields as $field) {
             $expected1[$field] = $page1->{$field};

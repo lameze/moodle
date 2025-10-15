@@ -369,39 +369,23 @@ function assign_update_events($assign, $override = null) {
  * @return mixed True if module supports feature, false if not, null if doesn't know or string for the module purpose.
  */
 function assign_supports($feature) {
-    switch($feature) {
-        case FEATURE_GROUPS:
-            return true;
-        case FEATURE_GROUPINGS:
-            return true;
-        case FEATURE_MOD_INTRO:
-            return true;
-        case FEATURE_COMPLETION_TRACKS_VIEWS:
-            return true;
-        case FEATURE_COMPLETION_HAS_RULES:
-            return true;
-        case FEATURE_GRADE_HAS_GRADE:
-            return true;
-        case FEATURE_GRADE_HAS_PENALTY:
-            return true;
-        case FEATURE_GRADE_OUTCOMES:
-            return true;
-        case FEATURE_BACKUP_MOODLE2:
-            return true;
-        case FEATURE_SHOW_DESCRIPTION:
-            return true;
-        case FEATURE_ADVANCED_GRADING:
-            return true;
-        case FEATURE_PLAGIARISM:
-            return true;
-        case FEATURE_COMMENT:
-            return true;
-        case FEATURE_MOD_PURPOSE:
-            return MOD_PURPOSE_ASSESSMENT;
-
-        default:
-            return null;
-    }
+    return match ($feature) {
+        FEATURE_GROUPS => true,
+        FEATURE_GROUPINGS => true,
+        FEATURE_MOD_INTRO => true,
+        FEATURE_COMPLETION_TRACKS_VIEWS => true,
+        FEATURE_COMPLETION_HAS_RULES => true,
+        FEATURE_GRADE_HAS_GRADE => true,
+        FEATURE_GRADE_HAS_PENALTY => true,
+        FEATURE_GRADE_OUTCOMES => true,
+        FEATURE_BACKUP_MOODLE2 => true,
+        FEATURE_SHOW_DESCRIPTION => true,
+        FEATURE_ADVANCED_GRADING => true,
+        FEATURE_PLAGIARISM => true,
+        FEATURE_COMMENT => true,
+        FEATURE_MOD_PURPOSE => MOD_PURPOSE_ASSESSMENT,
+        default => null,
+    };
 }
 
 /**
@@ -503,7 +487,8 @@ function assign_get_coursemodule_info($coursemodule) {
     $result = new cached_cm_info();
     $result->name = $assignment->name;
     if ($coursemodule->showdescription) {
-        if ($assignment->alwaysshowdescription || time() > $assignment->allowsubmissionsfromdate) {
+        $now = \core\di::get(\core\clock::class)->time();
+        if ($assignment->alwaysshowdescription || $now > $assignment->allowsubmissionsfromdate) {
             // Convert intro to html. Do not filter cached version, filters run at display time.
             $result->content = format_module_intro('assign', $assignment, $coursemodule->id, false);
         }
@@ -1624,7 +1609,8 @@ function mod_assign_core_calendar_provide_event_action(calendar_event $event,
             'id' => $cm->id,
             'action' => 'grader'
         ]);
-        $actionable = $assign->can_grade($userid) && (time() >= $assign->get_instance()->allowsubmissionsfromdate);
+        $now = \core\di::get(\core\clock::class)->time();
+        $actionable = $assign->can_grade($userid) && ($now >= $assign->get_instance()->allowsubmissionsfromdate);
         $itemcount = $actionable ? $assign->count_submissions_need_grading() : 0;
     } else {
         $usersubmission = $assign->get_user_submission($userid, false);
@@ -1790,7 +1776,7 @@ function mod_assign_core_calendar_event_timestart_updated(\calendar_event $event
     }
 
     if ($modified) {
-        $instance->timemodified = time();
+        $instance->timemodified = \core\di::get(\core\clock::class)->time();
         // Persist the assign instance changes.
         $DB->update_record('assign', $instance);
         $assign->update_calendar($coursemodule->id);

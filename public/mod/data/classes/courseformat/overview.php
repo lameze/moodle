@@ -16,15 +16,14 @@
 
 namespace mod_data\courseformat;
 
-use core_calendar\output\humandate;
 use cm_info;
-use core_courseformat\local\overview\overviewitem;
-use core\output\action_link;
-use core\output\local\properties\text_align;
-use core\output\local\properties\button;
 use core\url;
 use mod_data\dates;
 use mod_data\manager;
+use core_calendar\output\humandate;
+use core\output\local\properties\text_align;
+use core_courseformat\local\overview\overviewitem;
+use core_courseformat\output\local\overview\overviewaction;
 
 /**
  * Database activity overview integration.
@@ -40,6 +39,9 @@ class overview extends \core_courseformat\activityoverviewbase {
 
     /** @var bool whether the user can see pendent entries or not. */
     private $canviewall;
+
+    /** @var array All the entries belonging to groups that the current user can view. */
+    private $allentries = [];
 
     /**
      * Constructor.
@@ -59,6 +61,7 @@ class overview extends \core_courseformat\activityoverviewbase {
 
         $this->manager = manager::create_from_coursemodule($cm);
         $this->canviewall = has_capability('mod/data:approve', $cm->context);
+        $this->allentries = $this->manager->get_all_entries($this->get_groups_for_filtering());
     }
 
     #[\Override]
@@ -67,7 +70,7 @@ class overview extends \core_courseformat\activityoverviewbase {
 
         $dates = new dates($this->cm, $USER->id);
         $duedate = $dates->get_due_date();
-        $name = $this->stringmanager->get_string('duedate', 'data');
+        $name = get_string('duedate', 'data');
 
         if (empty($duedate)) {
             return new overviewitem(
@@ -92,33 +95,27 @@ class overview extends \core_courseformat\activityoverviewbase {
             return null;
         }
 
-        $text = $this->stringmanager->get_string('view', 'moodle');
+        $name = get_string('view', 'moodle');
         $toapprove = 0;
-        $alertlabel = $this->stringmanager->get_string('numberofentriestoapprove', 'data');
         if ($this->manager->get_approval_requested()) {
             // Let's calculate how many entries need to be approved.
-            $entries = $this->manager->filter_entries_by_approval($this->manager->get_all_entries(), 0);
+            $entries = $this->manager->filter_entries_by_approval($this->allentries, 0);
             $toapprove = count($entries);
-
-            $name = $this->stringmanager->get_string('approve', 'data');
             if ($toapprove > 0) {
-                $renderer = $this->rendererhelper->get_core_renderer();
-                $badge = $renderer->notice_badge(
-                    contents: $toapprove,
-                    title: $alertlabel,
-                );
-                $text = $name . $badge;
+                $name = get_string('approve', 'data');
             }
         }
+        $alertlabel = get_string('numberofentriestoapprove', 'data', $toapprove);
 
-        $content = new action_link(
+        $content = new overviewaction(
             url: new url('/mod/data/view.php', ['id' => $this->cm->id]),
-            text: $text,
-            attributes: ['class' => button::BODY_OUTLINE->classes()],
+            text: $name,
+            badgevalue: $toapprove > 0 ? $toapprove : null,
+            badgetitle: $toapprove > 0 ? $alertlabel : null,
         );
 
         return new overviewitem(
-            name: $this->stringmanager->get_string('actions'),
+            name: get_string('actions'),
             value: $toapprove,
             content: $content,
             textalign: text_align::CENTER,
@@ -129,19 +126,11 @@ class overview extends \core_courseformat\activityoverviewbase {
 
     #[\Override]
     public function get_extra_overview_items(): array {
-        $columns = [];
-        // Add entry columns for each view.
-        if ($this->canviewall) {
-            $columns['totalentries'] = $this->get_extra_entries_overview();
-        } else {
-            $columns['totalentries'] = $this->get_extra_totalentries_overview();
-            $columns['myentries'] = $this->get_extra_myentries_overview();
-        }
-
-        // Add comments column for all views.
-        $columns['comments'] = $this->get_extra_comments_overview();
-
-        return $columns;
+        return [
+            'totalentries' => $this->get_extra_entries_overview(),
+            'myentries' => $this->get_extra_myentries_overview(),
+            'comments' => $this->get_extra_comments_overview(),
+        ];
     }
 
     /**
@@ -161,26 +150,30 @@ class overview extends \core_courseformat\activityoverviewbase {
             name: $this->stringmanager->get_string('totalentries', 'data'),
             value: $totalentries,
             content: $totalentries,
-            textalign: text_align::CENTER,
+            textalign: text_align::END,
         );
     }
 
     /**
      * Get the "My entries" overview item.
      *
-     * @return overviewitem The overview item.
+     * @return ?overviewitem The overview item or null when the user is a student.
      */
-    private function get_extra_myentries_overview(): overviewitem {
+    private function get_extra_myentries_overview(): ?overviewitem {
         global $USER;
 
-        $myentries = $this->manager->filter_entries_by_user($this->manager->get_all_entries(), $USER->id);
+        if ($this->canviewall) {
+            return null;
+        }
+
+        $myentries = $this->manager->filter_entries_by_user($this->allentries, $USER->id);
         $totalmyentries = count($myentries);
 
         return new overviewitem(
-            name: $this->stringmanager->get_string('myentries', 'data'),
+            name: get_string('myentries', 'data'),
             value: $totalmyentries,
             content: $totalmyentries,
-            textalign: text_align::CENTER,
+            textalign: text_align::END,
         );
     }
 
@@ -190,15 +183,22 @@ class overview extends \core_courseformat\activityoverviewbase {
      * @return overviewitem The overview item.
      */
     private function get_extra_entries_overview(): overviewitem {
-        $allentries = $this->manager->get_all_entries();
-        $totalentries = count($allentries);
-
-        // Add total entries.
+        if ($this->canviewall) {
+            $name = get_string('entries', 'data');
+            $totalentries = count($this->allentries);
+        } else {
+            $allentries = $this->allentries;
+            if ($this->manager->get_approval_requested()) {
+                $allentries = $this->manager->filter_entries_by_approval($this->allentries, 1);
+            }
+            $name = get_string('totalentries', 'data');
+            $totalentries = count($allentries);
+        }
         return new overviewitem(
-            name: $this->stringmanager->get_string('entries', 'data'),
+            name: $name,
             value: $totalentries,
             content: $totalentries,
-            textalign: text_align::CENTER,
+            textalign: text_align::END,
         );
     }
 
@@ -213,21 +213,21 @@ class overview extends \core_courseformat\activityoverviewbase {
         // Add comments column for all views.
         if (empty($CFG->usecomments) || (empty($this->manager->get_instance()->comments))) {
             return new overviewitem(
-                name: $this->stringmanager->get_string('comments', 'data'),
+                name: get_string('comments', 'data'),
                 value: 0,
                 content: '-',
-                textalign: text_align::CENTER,
+                textalign: text_align::END,
             );
         }
 
         $approved = ($this->canviewall) ? null : 1;
-        $comments = $this->manager->get_comments(approved: $approved);
+        $comments = $this->manager->get_comments(approved: $approved, groups: $this->get_groups_for_filtering());
         $totalcomments = ($comments) ? count($comments) : 0;
         return new overviewitem(
-            name: $this->stringmanager->get_string('comments', 'data'),
+            name: get_string('comments', 'data'),
             value: $totalcomments,
             content: $totalcomments,
-            textalign: text_align::CENTER,
+            textalign: text_align::END,
         );
     }
 }

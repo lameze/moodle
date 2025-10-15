@@ -16,14 +16,8 @@
 
 namespace core_courseformat\external;
 
+use core_course\dndupload_handler;
 use core_external\external_api;
-
-defined('MOODLE_INTERNAL') || die();
-
-global $CFG;
-require_once($CFG->dirroot . '/webservice/tests/helpers.php');
-
-use dndupload_handler;
 
 /**
  * Tests for the file_hanlders class.
@@ -34,21 +28,18 @@ use dndupload_handler;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @coversDefaultClass \core_courseformat\external\file_handlers
  */
-final class file_handlers_test extends \externallib_advanced_testcase {
-
+#[\PHPUnit\Framework\Attributes\CoversClass(file_handlers::class)]
+final class file_handlers_test extends \core_external\tests\externallib_testcase {
     /**
      * Setup to ensure that fixtures are loaded.
      */
     public static function setupBeforeClass(): void { // phpcs:ignore
         global $CFG;
         require_once($CFG->dirroot . '/course/lib.php');
-        require_once($CFG->dirroot . '/course/dnduploadlib.php');
     }
 
     /**
      * Test the behaviour of get_state::execute().
-     *
-     * @covers ::execute
      */
     public function test_execute(): void {
         $this->resetAfterTest();
@@ -70,8 +61,6 @@ final class file_handlers_test extends \externallib_advanced_testcase {
 
     /**
      * Test the behaviour of get_state::execute() in a wrong course.
-     *
-     * @covers ::execute
      */
     public function test_execute_wrong_course(): void {
         $this->resetAfterTest();

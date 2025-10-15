@@ -1729,104 +1729,6 @@ function xmldb_main_upgrade($oldversion) {
         upgrade_main_savepoint(true, 2025051600.02);
     }
 
-    if ($oldversion < 2025053000.01) {
-        // A [name => url] map of new OIDC endpoints to be updated/created.
-        $endpointuris = [
-            'discovery_endpoint' => 'https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration',
-            'token_endpoint' => 'https://login.microsoftonline.com/common/oauth2/v2.0/token',
-            'userinfo_endpoint' => 'https://graph.microsoft.com/oidc/userinfo',
-            'authorization_endpoint' => 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize',
-            'device_authorization_endpoint' => 'https://login.microsoftonline.com/common/oauth2/v2.0/devicecode',
-            'end_session_endpoint' => 'https://login.microsoftonline.com/common/oauth2/v2.0/logout',
-            'kerberos_endpoint' => 'https://login.microsoftonline.com/common/kerberos',
-        ];
-
-        // A [name] map of endpoints to be deleted.
-        $deletedendpointuris = [
-            'userpicture_endpoint',
-        ];
-
-        // A [internalfield => externalfield] map of new OIDC-based user field mappings to be updated/created.
-        $userfieldmappings = [
-            'idnumber' => 'sub',
-            'firstname' => 'givenname',
-            'lastname' => 'familyname',
-            'email' => 'email',
-            'lang' => 'locale',
-        ];
-
-        $admin = get_admin();
-        $adminid = $admin ? $admin->id : '0';
-
-        $microsoftservices = $DB->get_records('oauth2_issuer', ['servicetype' => 'microsoft']);
-        foreach ($microsoftservices as $microsoftservice) {
-            $time = time();
-
-            // Insert/update the new endpoints.
-            foreach ($endpointuris as $endpointname => $endpointuri) {
-                $endpoint = ['issuerid' => $microsoftservice->id, 'name' => $endpointname];
-                $endpointid = $DB->get_field('oauth2_endpoint', 'id', $endpoint);
-
-                if ($endpointid) {
-                    $endpoint = array_merge($endpoint, [
-                        'id' => $endpointid,
-                        'url' => $endpointuri,
-                        'timemodified' => $time,
-                        'usermodified' => $adminid,
-                    ]);
-                    $DB->update_record('oauth2_endpoint', $endpoint);
-                } else {
-                    $endpoint = array_merge($endpoint, [
-                        'url' => $endpointuri,
-                        'timecreated' => $time,
-                        'timemodified' => $time,
-                        'usermodified' => $adminid,
-                    ]);
-                    $DB->insert_record('oauth2_endpoint', $endpoint);
-                }
-            }
-
-            // Delete the old endpoints.
-            foreach ($deletedendpointuris as $endpointname) {
-                $endpoint = ['issuerid' => $microsoftservice->id, 'name' => $endpointname];
-                $DB->delete_records('oauth2_endpoint', $endpoint);
-            }
-
-            // Insert/update new user field mappings.
-            foreach ($userfieldmappings as $internalfieldname => $externalfieldname) {
-                $fieldmap = ['issuerid' => $microsoftservice->id, 'internalfield' => $internalfieldname];
-                $fieldmapid = $DB->get_field('oauth2_user_field_mapping', 'id', $fieldmap);
-
-                if ($fieldmapid) {
-                    $fieldmap = array_merge($fieldmap, [
-                        'id' => $fieldmapid,
-                        'externalfield' => $externalfieldname,
-                        'timemodified' => $time,
-                        'usermodified' => $adminid,
-                    ]);
-                    $DB->update_record('oauth2_user_field_mapping', $fieldmap);
-                } else {
-                    $fieldmap = array_merge($fieldmap, [
-                        'externalfield' => $externalfieldname,
-                        'timecreated' => $time,
-                        'timemodified' => $time,
-                        'usermodified' => $adminid,
-                    ]);
-                    $DB->insert_record('oauth2_user_field_mapping', $fieldmap);
-                }
-            }
-
-            // Update the baseurl for the issuer.
-            $microsoftservice->baseurl = 'https://login.microsoftonline.com/common/v2.0';
-            $microsoftservice->timemodified = $time;
-            $microsoftservice->usermodified = $adminid;
-            $DB->update_record('oauth2_issuer', $microsoftservice);
-        }
-
-        // Main savepoint reached.
-        upgrade_main_savepoint(true, 2025053000.01);
-    }
-
     if ($oldversion < 2025053000.02) {
 
         // Define field systememail to be added to oauth2_issuer.
@@ -1987,6 +1889,420 @@ function xmldb_main_upgrade($oldversion) {
         // Main savepoint reached.
         upgrade_main_savepoint(true, 2025072500.01);
     }
+
+    if ($oldversion < 2025073100.01) {
+        // A [name => url] map of new OIDC endpoints to be updated/created.
+        $endpointuris = [
+            'discovery_endpoint' => 'https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration',
+            'token_endpoint' => 'https://login.microsoftonline.com/common/oauth2/v2.0/token',
+            'userinfo_endpoint' => 'https://graph.microsoft.com/oidc/userinfo',
+            'authorization_endpoint' => 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize',
+            'device_authorization_endpoint' => 'https://login.microsoftonline.com/common/oauth2/v2.0/devicecode',
+            'end_session_endpoint' => 'https://login.microsoftonline.com/common/oauth2/v2.0/logout',
+            'kerberos_endpoint' => 'https://login.microsoftonline.com/common/kerberos',
+        ];
+        // A [name] map of endpoints to be deleted.
+        $deletedendpointuris = [
+            'userpicture_endpoint',
+        ];
+        // A [internalfield => externalfield] map of new OIDC-based user field mappings to be updated/created.
+        $userfieldmappings = [
+            'idnumber' => 'sub',
+            'firstname' => 'givenname',
+            'lastname' => 'familyname',
+            'email' => 'email',
+            'lang' => 'locale',
+        ];
+        $admin = get_admin();
+        $adminid = $admin ? $admin->id : '0';
+        $microsoftservices = $DB->get_records('oauth2_issuer', ['servicetype' => 'microsoft']);
+        foreach ($microsoftservices as $microsoftservice) {
+            $time = time();
+            if (strpos($microsoftservice->baseurl, 'common') !== false) {
+                // Multi-tenant endpoint, proceed with upgrade.
+                // Insert/update the new endpoints.
+                foreach ($endpointuris as $endpointname => $endpointuri) {
+                    $endpoint = ['issuerid' => $microsoftservice->id, 'name' => $endpointname];
+                    $endpointid = $DB->get_field('oauth2_endpoint', 'id', $endpoint);
+                    if ($endpointid) {
+                        $endpoint = array_merge($endpoint, [
+                            'id' => $endpointid,
+                            'url' => $endpointuri,
+                            'timemodified' => $time,
+                            'usermodified' => $adminid,
+                        ]);
+                        $DB->update_record('oauth2_endpoint', $endpoint);
+                    } else {
+                        $endpoint = array_merge($endpoint, [
+                            'url' => $endpointuri,
+                            'timecreated' => $time,
+                            'timemodified' => $time,
+                            'usermodified' => $adminid,
+                        ]);
+                        $DB->insert_record('oauth2_endpoint', $endpoint);
+                    }
+                }
+                // Delete the old endpoints.
+                foreach ($deletedendpointuris as $endpointname) {
+                    $endpoint = ['issuerid' => $microsoftservice->id, 'name' => $endpointname];
+                    $DB->delete_records('oauth2_endpoint', $endpoint);
+                }
+                // Insert/update new user field mappings.
+                foreach ($userfieldmappings as $internalfieldname => $externalfieldname) {
+                    $fieldmap = ['issuerid' => $microsoftservice->id, 'internalfield' => $internalfieldname];
+                    $fieldmapid = $DB->get_field('oauth2_user_field_mapping', 'id', $fieldmap);
+                    if ($fieldmapid) {
+                        $fieldmap = array_merge($fieldmap, [
+                            'id' => $fieldmapid,
+                            'externalfield' => $externalfieldname,
+                            'timemodified' => $time,
+                            'usermodified' => $adminid,
+                        ]);
+                        $DB->update_record('oauth2_user_field_mapping', $fieldmap);
+                    } else {
+                        $fieldmap = array_merge($fieldmap, [
+                            'externalfield' => $externalfieldname,
+                            'timecreated' => $time,
+                            'timemodified' => $time,
+                            'usermodified' => $adminid,
+                        ]);
+                        $DB->insert_record('oauth2_user_field_mapping', $fieldmap);
+                    }
+                }
+                // Update the baseurl for the issuer.
+                $microsoftservice->baseurl = 'https://login.microsoftonline.com/common/v2.0';
+                $microsoftservice->timemodified = $time;
+                $microsoftservice->usermodified = $adminid;
+                $DB->update_record('oauth2_issuer', $microsoftservice);
+            } else {
+                // Single-tenant endpoint, add discovery_endpoint if it doesn't exist.
+                $url = $microsoftservice->baseurl;
+                $url .= (substr($url, -1) === '/') ? '' : '/';
+                $url .= '.well-known/openid-configuration';
+                $endpoint = ['issuerid' => $microsoftservice->id, 'name' => 'discovery_endpoint'];
+                $endpointid = $DB->get_field('oauth2_endpoint', 'id', $endpoint);
+                if (!$endpointid) {
+                    $endpoint = array_merge($endpoint, [
+                        'url' => $url,
+                        'timecreated' => $time,
+                        'timemodified' => $time,
+                        'usermodified' => $adminid,
+                    ]);
+                    $DB->insert_record('oauth2_endpoint', $endpoint);
+                }
+            }
+        }
+        // Main savepoint reached.
+        upgrade_main_savepoint(true, 2025073100.01);
+    }
+
+    if ($oldversion < 2025081900.03) {
+        // Remove section_links block.
+
+        if (!file_exists($CFG->dirroot . "/blocks/section_links/version.php")) {
+            uninstall_plugin('block', 'section_links');
+            // Delete all the admin preset plugin references to section_links.
+            $DB->delete_records('adminpresets_plug', ['plugin' => 'block', 'name' => 'section_links']);
+            // Remove the section_links block from the unaddableblocks setting.
+            $settings = $DB->get_records('config_plugins', ['name' => 'unaddableblocks'], '', 'plugin, value');
+            foreach ($settings as $setting) {
+                // Split the value into an array of items and remove 'section_links'.
+                // Using PREG_SPLIT_NO_EMPTY will remove any empty strings resulting from multiple commas.
+                $items = preg_split('/,/', $setting->value, -1, PREG_SPLIT_NO_EMPTY);
+                $newvalue = array_filter($items, function($item) {
+                    return trim($item) !== 'section_links';
+                });
+                set_config(
+                    'unaddableblocks',
+                    implode(',', $newvalue),
+                    $setting->plugin,
+                );
+            }
+        }
+
+        // Main savepoint reached.
+        upgrade_main_savepoint(true, 2025081900.03);
+    }
+
+    if ($oldversion < 2025081900.04) {
+
+        // Define table shortlink to be created.
+        $table = new xmldb_table('shortlink');
+
+        // Adding fields to table shortlink.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null, null);
+        $table->add_field('shortcode', XMLDB_TYPE_CHAR, '12', null, XMLDB_NOTNULL, null, null, 'id');
+        $table->add_field('userid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null, 'shortcode');
+        $table->add_field('component', XMLDB_TYPE_CHAR, '100', null, XMLDB_NOTNULL, null, null, 'userid');
+        $table->add_field('linktype', XMLDB_TYPE_CHAR, '100', null, XMLDB_NOTNULL, null, null, 'component');
+        $table->add_field('identifier', XMLDB_TYPE_CHAR, '1333', null, XMLDB_NOTNULL, null, null, 'linktype');
+
+        // Adding keys to table shortlink.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+        $table->add_key('userid', XMLDB_KEY_FOREIGN, ['userid'], 'user', ['id']);
+
+        // Adding indexes to table shortlink.
+        $table->add_index('shortcode_userid', XMLDB_INDEX_UNIQUE, ['userid', 'shortcode']);
+        $table->add_index('shortcode', XMLDB_INDEX_NOTUNIQUE, ['shortcode']);
+
+        // Conditionally launch create table for shortlink.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        // Main savepoint reached.
+        upgrade_main_savepoint(true, 2025081900.04);
+    }
+
+    if ($oldversion < 2025082600.01) {
+        if (get_config('moodlecourse', 'format') === 'social') {
+            // If the social course format is set as default, change it to topics.
+            set_config('format', 'topics', 'moodlecourse');
+        }
+        $DB->delete_records('adminpresets_plug', ['plugin' => 'format', 'name' => 'social']);
+
+        // Disable Social course format.
+        $manager = \core_plugin_manager::resolve_plugininfo_class('format');
+        $manager::enable_plugin('social', 0);
+
+        // Main savepoint reached.
+        upgrade_main_savepoint(true, 2025082600.01);
+    }
+
+    if ($oldversion < 2025082900.01) {
+        // Changing precision of field name on table question_categories to (1333).
+        $table = new xmldb_table('question_categories');
+        $field = new xmldb_field('name', XMLDB_TYPE_CHAR, '1333', null, XMLDB_NOTNULL, null, null, 'id');
+
+        // Launch change of precision for field name.
+        $dbman->change_field_precision($table, $field);
+
+        // Main savepoint reached.
+        upgrade_main_savepoint(true, 2025082900.01);
+    }
+
+    if ($oldversion < 2025090200.01) {
+        // Define field enableaitools to be added to course.
+        $table = new xmldb_table('course');
+        $field = new xmldb_field('enableaitools', XMLDB_TYPE_INTEGER, '1', null, null, null, null, 'pdfexportfont');
+
+        // Conditionally launch add field enableaitools.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Define field enableaitools to be added to course_modules.
+        $table = new xmldb_table('course_modules');
+        $field = new xmldb_field('enableaitools', XMLDB_TYPE_INTEGER, '1', null, null, null, null, 'lang');
+
+        // Conditionally launch add field enableaitools.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Define field enabledaiactions to be added to course_modules.
+        $field = new xmldb_field('enabledaiactions', XMLDB_TYPE_TEXT, null, null, null, null, null, 'enableaitools');
+
+        // Conditionally launch add field enabledaiactions.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Main savepoint reached.
+        upgrade_main_savepoint(true, 2025090200.01);
+    }
+
+    if ($oldversion < 2025090200.02) {
+        $table = new xmldb_table('reportbuilder_schedule');
+
+        // Conditionally launch add field classname.
+        $field = new xmldb_field('classname', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, null, 'enabled');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Conditionally launch add field configdata.
+        $field = new xmldb_field('configdata', XMLDB_TYPE_TEXT, null, null, null, null, null, 'classname');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Migrate existing data to new structure.
+        $schedules = $DB->get_records('reportbuilder_schedule');
+        foreach ($schedules as $schedule) {
+            $DB->update_record('reportbuilder_schedule', [
+                'id' => $schedule->id,
+                'classname' => core_reportbuilder\reportbuilder\schedule\message::class,
+                'configdata' => json_encode([
+                    'subject' => $schedule->subject,
+                    'message' => ['text' => $schedule->message, 'format' => $schedule->messageformat],
+                    'reportempty' => $schedule->reportempty,
+                ]),
+            ]);
+        }
+
+        // Launch change of nullability for field configdata (after migrating data).
+        $field = new xmldb_field('configdata', XMLDB_TYPE_TEXT, null, null, XMLDB_NOTNULL, null, null, 'classname');
+        $dbman->change_field_notnull($table, $field);
+
+        // Launch change of nullability for field audiences.
+        $field = new xmldb_field('audiences', XMLDB_TYPE_TEXT, null, null, null, null, null, 'enabled');
+        $dbman->change_field_notnull($table, $field);
+
+        // Conditionally launch drop field subject.
+        $field = new xmldb_field('subject');
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->drop_field($table, $field);
+        }
+
+        // Conditionally launch drop field message.
+        $field = new xmldb_field('message');
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->drop_field($table, $field);
+        }
+
+        // Conditionally launch drop field messageformat.
+        $field = new xmldb_field('messageformat');
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->drop_field($table, $field);
+        }
+
+        // Conditionally launch drop field reportempty.
+        $field = new xmldb_field('reportempty');
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->drop_field($table, $field);
+        }
+
+        // Main savepoint reached.
+        upgrade_main_savepoint(true, 2025090200.02);
+    }
+
+    if ($oldversion < 2025091600.01) {
+        // Define field shared to be added to customfield_category.
+        $table = new xmldb_table('customfield_category');
+        $field = new xmldb_field('shared', XMLDB_TYPE_INTEGER, '1', null, null, null, '0', 'contextid');
+
+        // Conditionally launch add field shared.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Define field component to be added to customfield_data.
+        $table = new xmldb_table('customfield_data');
+        $field = new xmldb_field('component', XMLDB_TYPE_CHAR, '100', null, XMLDB_NOTNULL, null, null, 'contextid');
+
+        // Conditionally launch add field component.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+         // Define field area to be added to customfield_data.
+        $table = new xmldb_table('customfield_data');
+        $field = new xmldb_field('area', XMLDB_TYPE_CHAR, '100', null, XMLDB_NOTNULL, null, null, 'component');
+
+        // Conditionally launch add field area.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Define field itemid to be added to customfield_data.
+        $table = new xmldb_table('customfield_data');
+        $field = new xmldb_field('itemid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', 'area');
+
+        // Conditionally launch add field itemid.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Define index instanceid-fieldid (unique) to be dropped form customfield_data.
+        $table = new xmldb_table('customfield_data');
+        $index = new xmldb_index('instanceid-fieldid', XMLDB_INDEX_UNIQUE, ['instanceid', 'fieldid']);
+
+        // Conditionally launch drop index instanceid-fieldid.
+        if ($dbman->index_exists($table, $index)) {
+            $dbman->drop_index($table, $index);
+        }
+
+        // Define index instanceid-fieldid-component-area-itemid (unique) to be added to customfield_data.
+        $table = new xmldb_table('customfield_data');
+        $index = new xmldb_index(
+            'instanceid-fieldid-component-area-itemid',
+            XMLDB_INDEX_UNIQUE,
+            ['instanceid', 'fieldid', 'component', 'area', 'itemid']
+        );
+
+        // Conditionally launch add index instanceid-fieldid-component-area-itemid.
+        if (!$dbman->index_exists($table, $index)) {
+            $dbman->add_index($table, $index);
+        }
+
+        // Populate component, area and itemid for each record in customfield_data table.
+        $sql = "SELECT d.id, c.component, c.area, c.itemid
+                  FROM {customfield_data} d
+                  JOIN {customfield_field} f ON d.fieldid = f.id
+                  JOIN {customfield_category} c ON f.categoryid = c.id";
+        $records = $DB->get_records_sql($sql);
+
+        foreach ($records as $r) {
+            $DB->update_record('customfield_data', (object)[
+                'id'        => $r->id,
+                'component' => $r->component,
+                'area'      => $r->area,
+                'itemid'    => $r->itemid,
+            ]);
+        }
+
+        // Define table customfield_shared to be created.
+        $table = new xmldb_table('customfield_shared');
+
+        // Adding fields to table customfield_shared.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('categoryid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('component', XMLDB_TYPE_CHAR, '100', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('area', XMLDB_TYPE_CHAR, '100', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('itemid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('usermodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('timemodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+
+        // Adding keys to table customfield_shared.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+        $table->add_key('categoryid', XMLDB_KEY_FOREIGN, ['categoryid'], 'customfield_category', ['id']);
+        $table->add_key('usermodified', XMLDB_KEY_FOREIGN, ['usermodified'], 'user', ['id']);
+
+        // Adding indexes to table customfield_shared.
+        $table->add_index('categoryid-component-area-itemid', XMLDB_INDEX_UNIQUE, ['categoryid', 'component', 'area', 'itemid']);
+
+        // Conditionally launch create table for customfield_shared.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        // Main savepoint reached.
+        upgrade_main_savepoint(true, 2025091600.01);
+    }
+
+    if ($oldversion < 2025092200.00) {
+        // Changing precision of field name on table customfield_category to (1333).
+        $table = new xmldb_table('customfield_category');
+        $field = new xmldb_field('name', XMLDB_TYPE_CHAR, '1333', null, XMLDB_NOTNULL, null, null, 'id');
+
+        // Launch change of precision for field name.
+        $dbman->change_field_precision($table, $field);
+
+        // Changing precision of field name on table customfield_field to (1333).
+        $table = new xmldb_table('customfield_field');
+        $field = new xmldb_field('name', XMLDB_TYPE_CHAR, '1333', null, XMLDB_NOTNULL, null, null, 'shortname');
+
+        // Launch change of precision for field name.
+        $dbman->change_field_precision($table, $field);
+
+        // Main savepoint reached.
+        upgrade_main_savepoint(true, 2025092200.00);
+    }
+
+    // Automatically generated Moodle v5.1.0 release upgrade line.
+    // Put any upgrade step following this.
 
     return true;
 }

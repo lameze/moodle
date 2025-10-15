@@ -17,14 +17,7 @@
 namespace gradereport_user;
 
 use core_external\external_api;
-use externallib_advanced_testcase;
 use gradereport_user\external\user as user_external;
-
-defined('MOODLE_INTERNAL') || die();
-
-global $CFG;
-
-require_once($CFG->dirroot . '/webservice/tests/helpers.php');
 
 /**
  * User grade report functions unit tests
@@ -34,8 +27,7 @@ require_once($CFG->dirroot . '/webservice/tests/helpers.php');
  * @copyright  2015 Juan Leyva <juan@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-final class externallib_test extends externallib_advanced_testcase {
-
+final class externallib_test extends \core_external\tests\externallib_testcase {
     /**
      * Loads some data to be used by the different tests
      * @param  int $s1grade Student 1 grade
@@ -118,12 +110,12 @@ final class externallib_test extends externallib_advanced_testcase {
         $this->assertCount(1, $studentgrades['tables']);
 
         // Read returned grades.
-        $studentreturnedgrades = [];
+        $studentreturnedgradeshtml = [];
 
-        $studentreturnedgrades[$studentgrades['tables'][0]['userid']] =
-            (int) $studentgrades['tables'][0]['tabledata'][2]['grade']['content'];
+        $studentreturnedgradeshtml[$studentgrades['tables'][0]['userid']] =
+             $studentgrades['tables'][0]['tabledata'][2]['grade']['content'];
 
-        $this->assertEquals($s1grade, $studentreturnedgrades[$student1->id]);
+        $this->assertStringContainsString($s1grade, $studentreturnedgradeshtml[$student1->id]);
     }
 
     /**
@@ -149,8 +141,8 @@ final class externallib_test extends externallib_advanced_testcase {
         $this->assertTrue(count($studentgrade['warnings']) == 0);
 
         $this->assertTrue(count($studentgrade['tables']) == 1);
-        $student1returnedgrade = (int) $studentgrade['tables'][0]['tabledata'][2]['grade']['content'];
-        $this->assertEquals($s1grade, $student1returnedgrade);
+        $student1returnedgradehtml = $studentgrade['tables'][0]['tabledata'][2]['grade']['content'];
+        $this->assertStringContainsString($s1grade, $student1returnedgradehtml);
 
         // A user can see his own even when in no groups.
         $this->setUser($student3);
@@ -161,8 +153,8 @@ final class externallib_test extends externallib_advanced_testcase {
         $this->assertTrue(count($studentgrade['warnings']) == 0);
 
         $this->assertTrue(count($studentgrade['tables']) == 1);
-        $student3returnedgrade = (int) $studentgrade['tables'][0]['tabledata'][2]['grade']['content'];
-        $this->assertEquals($s3grade, $student3returnedgrade);
+        $student3returnedgradehtml = $studentgrade['tables'][0]['tabledata'][2]['grade']['content'];
+        $this->assertStringContainsString($s3grade, $student3returnedgradehtml);
 
         // Expect exception when user is not indicated.
         $this->setUser($student3);

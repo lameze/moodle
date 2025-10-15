@@ -30,3 +30,4 @@ $string['pluginname'] = 'Simple BigBlueButtonPlugin';
 $string['completionextraisehandtwice'] = 'Raise hand twice';
 $string['completionextraisehandtwice_desc'] = 'Raise hand twice in a meeting.';
 $string['completionextraisehandtwice_help'] = 'Raise hand twice in a meeting.';
+$string['settings_navigation_append'] = 'Append Navigation';

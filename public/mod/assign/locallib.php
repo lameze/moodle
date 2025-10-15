@@ -292,7 +292,7 @@ class assign {
      */
     public function show_intro() {
         if ($this->get_instance()->alwaysshowdescription ||
-                time() > $this->get_instance()->allowsubmissionsfromdate) {
+                \core\di::get(\core\clock::class)->time() > $this->get_instance()->allowsubmissionsfromdate) {
             return true;
         }
         return false;
@@ -733,8 +733,9 @@ class assign {
         // Add the database record.
         $update = new stdClass();
         $update->name = $formdata->name;
-        $update->timemodified = time();
-        $update->timecreated = time();
+        $now = \core\di::get(\core\clock::class)->time();
+        $update->timemodified = $now;
+        $update->timecreated = $now;
         $update->course = $formdata->course;
         $update->courseid = $formdata->course;
         $update->intro = $formdata->intro;
@@ -1319,12 +1320,13 @@ class assign {
 
             // Any changes to the list of dates that needs to be rolled should be same during course restore and course reset.
             // See MDL-9367.
-            shift_course_mod_dates(
-                'assign',
-                ['duedate', 'allowsubmissionsfromdate', 'cutoffdate'],
-                $data->timeshift,
-                $data->courseid, $this->get_instance()->id,
-            );
+            shift_course_mod_dates('assign', [
+                'allowsubmissionsfromdate',
+                'duedate',
+                'cutoffdate',
+                'gradingduedate',
+            ], $data->timeshift, $data->courseid, $this->get_instance()->id);
+
             $status[] = [
                 'component' => $componentstr,
                 'item' => get_string('date'),
@@ -1528,7 +1530,7 @@ class assign {
         $update = new stdClass();
         $update->id = $formdata->instance;
         $update->name = $formdata->name;
-        $update->timemodified = time();
+        $update->timemodified = \core\di::get(\core\clock::class)->time();
         $update->course = $formdata->course;
         $update->intro = $formdata->intro;
         $update->introformat = $formdata->introformat;
@@ -2318,8 +2320,9 @@ class assign {
      * @param bool $idsonly
      * @param bool $tablesort
      * @return array List of user records
+     * @param bool|null $onlyactive Whether to show only active users.
      */
-    public function list_participants($currentgroup, $idsonly, $tablesort = false) {
+    public function list_participants($currentgroup, $idsonly, $tablesort = false, ?bool $onlyactive = null) {
         global $DB, $USER;
 
         // Get the last known sort order for the grading table.
@@ -2328,10 +2331,13 @@ class assign {
             $currentgroup = 0;
         }
 
-        $key = $this->context->id . '-' . $currentgroup . '-' . $this->show_only_active_users();
+        if ($onlyactive === null) {
+            $onlyactive = $this->show_only_active_users();
+        }
+
+        $key = $this->context->id . '-' . $currentgroup . '-' . $onlyactive;
         if (!isset($this->participants[$key])) {
-            list($esql, $params) = get_enrolled_sql($this->context, 'mod/assign:submit', $currentgroup,
-                    $this->show_only_active_users());
+            list($esql, $params) = get_enrolled_sql($this->context, 'mod/assign:submit', $currentgroup, $onlyactive);
             list($ssql, $sparams) = $this->get_submitted_sql($currentgroup);
             $params += $sparams;
 
@@ -2358,8 +2364,9 @@ class assign {
                 // Note, different DBs have different ordering of NULL values.
                 // Therefore we coalesce the current time into the timecreated field, and the max possible integer into
                 // the ID field.
+                $now = \core\di::get(\core\clock::class)->time();
                 if (empty($tablesort)) {
-                    $orderby = "COALESCE(s.timecreated, " . time() . ") ASC, COALESCE(s.id, " . PHP_INT_MAX . ") ASC, um.id ASC";
+                    $orderby = "COALESCE(s.timecreated, " . $now . ") ASC, COALESCE(s.id, " . PHP_INT_MAX . ") ASC, um.id ASC";
                 }
             }
 
@@ -2435,6 +2442,25 @@ class assign {
             return $idslist;
         }
         return $this->participants[$key];
+    }
+
+    /**
+     * Get the list of users enrolled in the current course with the specified groups.
+     *
+     * @param array $groupids The group identifiers that the query is for.
+     * @return int The number of users enrolled in the course with the specified groups.
+     */
+    public function count_participants_by_groups(array $groupids): int {
+        if (empty($groupids)) {
+            return $this->count_participants(0);
+        }
+
+        return count(get_enrolled_users(
+            context: $this->context,
+            withcapability: 'mod/assign:submit',
+            groupids: $groupids,
+            onlyactive: $this->show_only_active_users(),
+        ));
     }
 
     /**
@@ -2538,9 +2564,12 @@ class assign {
     }
 
     /**
-     * Load a count of active users submissions in the current module that require grading
-     * This means the submission modification time is more recent than the
+     * Load a count of active users submissions in the current module that require grading, filtering by current group.
+     * When no current group is specified, all submissions are counted.
+     * Require grading means that the submission modification time is more recent than the
      * grading modification time and the status is SUBMITTED.
+     * For assignments using team submission, this will always return 0.
+     * Use count_submissions_need_grading_with_groups if you need to count team submissions.
      *
      * @param mixed $currentgroup int|null the group for counting (if null the function will determine it)
      * @return int number of matching submissions
@@ -2550,32 +2579,78 @@ class assign {
 
         if ($this->get_instance()->teamsubmission) {
             // This does not make sense for group assignment because the submission is shared.
+            // The behaviour of this method hasn't been changed but from Moodle 5.1, count_submissions_need_grading_with_groups
+            // also counts group submissions.
             return 0;
         }
 
         if ($currentgroup === null) {
             $currentgroup = groups_get_activity_group($this->get_course_module(), true);
         }
-        list($esql, $params) = get_enrolled_sql($this->get_context(), '', $currentgroup, true);
 
-        $params['assignid'] = $this->get_instance()->id;
-        $params['submitted'] = ASSIGN_SUBMISSION_STATUS_SUBMITTED;
-        $sqlscalegrade = $this->get_instance()->grade < 0 ? ' OR g.grade = -1' : '';
+        return $this->count_submissions_need_grading_with_groups($currentgroup ? [$currentgroup] : []);
+    }
 
-        $sql = 'SELECT COUNT(s.userid)
-                   FROM {assign_submission} s
-                   LEFT JOIN {assign_grades} g ON
-                        s.assignment = g.assignment AND
-                        s.userid = g.userid AND
-                        g.attemptnumber = s.attemptnumber
-                   JOIN(' . $esql . ') e ON e.id = s.userid
-                   WHERE
-                        s.latest = 1 AND
-                        s.assignment = :assignid AND
-                        s.timemodified IS NOT NULL AND
-                        s.status = :submitted AND
-                        (s.timemodified >= g.timemodified OR g.timemodified IS NULL OR g.grade IS NULL '
-                            . $sqlscalegrade . ')';
+    /**
+     * Count submissions in the current module that require grading, filtering by groups.
+     *
+     * Require grading means that the submission modification time is more recent than the
+     * grading modification time and the status is SUBMITTED.
+     *
+     * @param array $groupids The group identifiers that the query is for.
+     * @return int number of matching submissions
+     */
+    public function count_submissions_need_grading_with_groups(array $groupids = []): int {
+        global $DB;
+
+        $params = [
+            'assignid' => $this->get_instance()->id,
+            'submitted' => ASSIGN_SUBMISSION_STATUS_SUBMITTED,
+        ];
+        [$esql, $eparams] = get_enrolled_sql($this->get_context(), '', $groupids, true);
+        $params += $eparams;
+        $sqlscalegrade = $this->get_instance()->grade < 0 ? ' OR g.grade = ' . ASSIGN_GRADE_NOT_SET : '';
+        $sql = '     FROM {assign_submission} s
+                LEFT JOIN {assign_grades} g ON
+                          s.assignment = g.assignment AND
+                          s.userid = g.userid AND
+                          g.attemptnumber = s.attemptnumber
+                     JOIN (' . $esql . ') e ON e.id = s.userid
+                    WHERE s.assignment = :assignid AND
+                          s.status = :submitted AND
+                          s.latest = 1 AND
+                          s.timemodified IS NOT NULL AND
+                          (s.timemodified >= g.timemodified OR g.timemodified IS NULL OR g.grade IS NULL ' . $sqlscalegrade . ')';
+
+        if ($this->get_instance()->teamsubmission) {
+            // For team submissions, only count the teams (instead of the participants).
+            // First get the users that haven't been graded yet.
+            $sql = 'SELECT s.userid ' . $sql;
+            $notgraded = $DB->get_records_sql($sql, $params);
+
+            if (empty($notgraded)) {
+                return 0;
+            }
+
+            // Then get the groups that these users belong to.
+            [$usql, $uparams] = $DB->get_in_or_equal(array_keys($notgraded), SQL_PARAMS_NAMED);
+            $params = [
+                'courseid' => $this->get_course()->id,
+            ];
+            $params += $uparams;
+            $sql = 'SELECT COUNT(DISTINCT s1.groupid)
+                      FROM {assign_submission} s1
+                      JOIN (
+                           SELECT DISTINCT gm.groupid
+                             FROM {groups_members} gm
+                             JOIN {groups} g ON g.id = gm.groupid AND g.courseid = :courseid
+                            WHERE gm.userid ' . $usql . '
+                           ) gr ON s1.groupid = gr.groupid
+                     WHERE s1.userid = 0';
+        } else {
+            // For individual submissions, count the users that haven't been graded yet.
+            $sql = 'SELECT COUNT(s.userid) ' . $sql;
+        }
 
         return $DB->count_records_sql($sql, $params);
     }
@@ -2671,52 +2746,77 @@ class assign {
         if ($currentgroup === null) {
             $currentgroup = groups_get_activity_group($this->get_course_module(), true);
         }
-        list($esql, $params) = get_enrolled_sql($this->get_context(), '', $currentgroup, true);
 
-        $params['assignid'] = $this->get_instance()->id;
-        $params['assignid2'] = $this->get_instance()->id;
-        $params['submissionstatus'] = $status;
-
+        $groups = [];
         if ($this->get_instance()->teamsubmission) {
-
-            $groupsstr = '';
             if ($currentgroup != 0) {
                 // If there is an active group we should only display the current group users groups.
                 $participants = $this->list_participants($currentgroup, true);
-                $groups = groups_get_all_groups($this->get_course()->id,
-                                                array_keys($participants),
-                                                $this->get_instance()->teamsubmissiongroupingid,
-                                                'DISTINCT g.id, g.name');
+                $groups = groups_get_all_groups(
+                    $this->get_course()->id,
+                    array_keys($participants),
+                    $this->get_instance()->teamsubmissiongroupingid,
+                    'DISTINCT g.id, g.name',
+                );
                 if (empty($groups)) {
                     // If $groups is empty it means it is not part of $this->get_instance()->teamsubmissiongroupingid.
                     // All submissions from students that do not belong to any of teamsubmissiongroupingid groups
                     // count towards groupid = 0. Setting to true as only '0' key matters.
                     $groups = [true];
                 }
-                list($groupssql, $groupsparams) = $DB->get_in_or_equal(array_keys($groups), SQL_PARAMS_NAMED);
-                $groupsstr = 's.groupid ' . $groupssql . ' AND';
-                $params = $params + $groupsparams;
             }
-            $sql = 'SELECT COUNT(s.groupid)
-                        FROM {assign_submission} s
-                        WHERE
-                            s.latest = 1 AND
-                            s.assignment = :assignid AND
-                            s.timemodified IS NOT NULL AND
-                            s.userid = :groupuserid AND '
-                            . $groupsstr . '
-                            s.status = :submissionstatus';
-            $params['groupuserid'] = 0;
-        } else {
-            $sql = 'SELECT COUNT(s.userid)
-                        FROM {assign_submission} s
-                        JOIN(' . $esql . ') e ON e.id = s.userid
-                        WHERE
-                            s.latest = 1 AND
-                            s.assignment = :assignid AND
-                            s.timemodified IS NOT NULL AND
-                            s.status = :submissionstatus';
+        } else if ($currentgroup) {
+            $groups = [$currentgroup => true];
+        }
 
+        return $this->count_submissions_with_status_and_groups($status, array_keys($groups));
+    }
+
+    /**
+     * Load a count of submissions with a specified status, filtered by groups.
+     *
+     * @param string $status The submission status - should match one of the constants.
+     * @param array $groupids The group identifiers for counting. Empty array means all groups.
+     * @return int Number of matching submissions.
+     */
+    public function count_submissions_with_status_and_groups(string $status, array $groupids = []): int {
+        global $DB;
+
+        $tableprefix = ($this->get_instance()->teamsubmission || empty($groupids)) ? '' : 's.';
+        $select = $tableprefix . 'assignment = :assignid AND
+                  ' . $tableprefix . 'status = :submissionstatus AND
+                  latest = 1 AND
+                  timemodified IS NOT NULL';
+        $params = [
+            'assignid' => $this->get_instance()->id,
+            'submissionstatus' => $status,
+        ];
+
+        if ($this->get_instance()->teamsubmission) {
+            // Team submission will filter by groupid.
+            $gsql = '';
+            $select .= " AND userid = 0 ";
+            if (!empty($groupids)) {
+                // If there are groups, we need to filter by them.
+                [$gsql, $gparams] = $DB->get_in_or_equal($groupids, SQL_PARAMS_NAMED);
+                $select .= " AND (groupid $gsql)";
+                $params = array_merge($params, $gparams);
+            }
+
+            return $DB->count_records_select('assign_submission', $select, $params, 'COUNT(userid)');
+        } else {
+            // Individual submission will filter using groups_members.
+            if (empty($groupids)) {
+                return $DB->count_records_select('assign_submission', $select, $params, 'COUNT(userid)');
+            }
+
+            // If there are groups, we need to filter by them.
+            [$gsql, $gparams] = $DB->get_in_or_equal($groupids, SQL_PARAMS_NAMED);
+            $sql = "SELECT COUNT(s.userid)
+                      FROM {assign_submission} s, {groups_members} gm
+                     WHERE $select AND
+                           s.userid = gm.userid AND (gm.groupid $gsql OR gm.groupid = 0)";
+            $params = array_merge($params, $gparams);
         }
 
         return $DB->count_records_sql($sql, $params);
@@ -2773,8 +2873,8 @@ class assign {
         global $DB;
 
         // Only ever send a max of one days worth of updates.
-        $yesterday = time() - (24 * 3600);
-        $timenow   = time();
+        $timenow = \core\di::get(\core\clock::class)->time();
+        $yesterday = $timenow - (24 * 3600);
         $task = \core\task\manager::get_scheduled_task(mod_assign\task\cron_task::class);
         $lastruntime = $task->get_last_run_time();
 
@@ -3008,7 +3108,7 @@ class assign {
     public function update_grade($grade, $reopenattempt = false) {
         global $DB;
 
-        $grade->timemodified = time();
+        $grade->timemodified = \core\di::get(\core\clock::class)->time();
 
         if (!empty($grade->workflowstate)) {
             $validstates = $this->get_marking_workflow_states_for_current_user();
@@ -3253,8 +3353,10 @@ class assign {
             if ($create) {
                 $action = optional_param('action', '', PARAM_TEXT);
                 if ($action == 'editsubmission') {
-                    if (empty($submission->timestarted) && $this->get_instance()->timelimit) {
-                        $submission->timestarted = time();
+                    $starttimer = optional_param('begin', 0, PARAM_INT);
+                    // Only start the timer if the user has clicked the 'Begin assignment' button.
+                    if (empty($submission->timestarted) && $this->get_instance()->timelimit && $starttimer) {
+                        $submission->timestarted = \core\di::get(\core\clock::class)->time();
                         $DB->update_record('assign_submission', $submission);
                     }
                 }
@@ -3266,7 +3368,7 @@ class assign {
             $submission->assignment = $this->get_instance()->id;
             $submission->userid = 0;
             $submission->groupid = $groupid;
-            $submission->timecreated = time();
+            $submission->timecreated = \core\di::get(\core\clock::class)->time();
             $submission->timemodified = $submission->timecreated;
             if ($attemptnumber >= 0) {
                 $submission->attemptnumber = $attemptnumber;
@@ -3766,8 +3868,10 @@ class assign {
             if ($create) {
                 $action = optional_param('action', '', PARAM_TEXT);
                 if ($action == 'editsubmission') {
-                    if (empty($submission->timestarted) && $this->get_instance()->timelimit) {
-                        $submission->timestarted = time();
+                    $starttimer = optional_param('begin', 0, PARAM_INT);
+                    // Only start the timer if the user has clicked the 'Begin assignment' button.
+                    if (empty($submission->timestarted) && $this->get_instance()->timelimit && $starttimer) {
+                        $submission->timestarted = \core\di::get(\core\clock::class)->time();
                         $DB->update_record('assign_submission', $submission);
                     }
                 }
@@ -3778,7 +3882,7 @@ class assign {
             $submission = new stdClass();
             $submission->assignment   = $this->get_instance()->id;
             $submission->userid       = $userid;
-            $submission->timecreated = time();
+            $submission->timecreated = \core\di::get(\core\clock::class)->time();
             $submission->timemodified = $submission->timecreated;
             $submission->status = ASSIGN_SUBMISSION_STATUS_NEW;
             if ($attemptnumber >= 0) {
@@ -3914,7 +4018,7 @@ class assign {
             $grade = new stdClass();
             $grade->assignment   = $this->get_instance()->id;
             $grade->userid       = $userid;
-            $grade->timecreated = time();
+            $grade->timecreated = \core\di::get(\core\clock::class)->time();
             // If we are "auto-creating" a grade - and there is a submission
             // the new grade should not have a more recent timemodified value
             // than the submission.
@@ -4778,7 +4882,7 @@ class assign {
      * @return string The page output.
      */
     protected function view_edit_submission_page($mform, $notices) {
-        global $CFG, $USER, $DB, $PAGE;
+        global $CFG, $USER, $DB, $PAGE, $OUTPUT;
 
         $o = '';
         require_once($CFG->dirroot . '/mod/assign/submission_form.php');
@@ -4863,7 +4967,30 @@ class assign {
             $o .= $this->get_renderer()->notification($notice);
         }
 
-        $o .= $this->get_renderer()->render(new assign_form('editsubmissionform', $mform));
+        if (
+            $submission->status == ASSIGN_SUBMISSION_STATUS_NEW && $this->get_instance()->timelimit &&
+            empty($submission->timestarted)
+        ) {
+            // Timed assignment should always get a confirmation that the user wants to start it.
+            $confirmation = new \confirm_action(
+                get_string('confirmstart', 'assign', format_time($this->get_instance()->timelimit)),
+                null,
+                get_string('beginassignment', 'assign')
+            );
+            // The 'begin' flag indicates that the user is starting a timed assignment.
+            $urlparams = ['id' => $this->get_course_module()->id, 'action' => 'editsubmission', 'begin' => 1];
+            $beginbutton = new \action_link(
+                new moodle_url('/mod/assign/view.php', $urlparams),
+                get_string('beginassignment', 'assign'),
+                $confirmation,
+                ['class' => 'btn btn-primary']
+            );
+
+            $o .= $OUTPUT->render($beginbutton);
+        } else {
+            $o .= $this->get_renderer()->render(new assign_form('editsubmissionform', $mform));
+        }
+
         $o .= $this->view_footer();
 
         \mod_assign\event\submission_form_viewed::create_from_user($this, $user)->trigger();
@@ -6092,7 +6219,7 @@ class assign {
         global $DB;
 
         if ($updatetime) {
-            $submission->timemodified = time();
+            $submission->timemodified = \core\di::get(\core\clock::class)->time();
         }
 
         // First update the submission for the current user.
@@ -6168,7 +6295,7 @@ class assign {
         }
 
         if ($updatetime) {
-            $submission->timemodified = time();
+            $submission->timemodified = \core\di::get(\core\clock::class)->time();
         }
         $result= $DB->update_record('assign_submission', $submission);
         if ($result) {
@@ -6203,7 +6330,7 @@ class assign {
             $userid = $USER->id;
         }
 
-        $time = time();
+        $time = \core\di::get(\core\clock::class)->time();
         $dateopen = true;
         $finaldate = false;
         if ($this->get_instance()->cutoffdate) {
@@ -6524,7 +6651,7 @@ class assign {
         $info->courseassignsurl = $CFG->wwwroot . '/mod/assign/index.php?id=' . $course->id;
 
         // Time of the action.
-        $info->timeupdated = userdate($updatetime, get_string('strftimerecentfull'));
+        $info->timeupdated = userdate($updatetime);
 
         // Other data passed in.
         $info = (object) array_merge((array) $info, $extrainfo);
@@ -6747,7 +6874,7 @@ class assign {
 
         $instance = $this->get_instance();
 
-        $late = $instance->duedate && ($instance->duedate < time());
+        $late = $instance->duedate && ($instance->duedate < \core\di::get(\core\clock::class)->time());
 
         if (!$instance->sendnotifications && !($late && $instance->sendlatenotifications)) {
             // No need to do anything.
@@ -6774,8 +6901,13 @@ class assign {
     /**
      * Submit a submission for grading.
      *
+     * This method does all the normal checks, then calls {@see submit_submission()}
+     * to actually update the submission in the database, and trigger all the necessary
+     * actions.
+     *
      * @param stdClass $data - The form data
-     * @param array $notices - List of error messages to display on an error condition.
+     * @param array $notices - Not actually used. Was meant to be pass-by-reference to return errors,
+     *    but was not passed by reference, and changing this now causes errors because PHP.
      * @return bool Return false if the submission was not submitted.
      */
     public function submit_for_grading($data, $notices) {
@@ -6803,7 +6935,6 @@ class assign {
         }
 
         if (!$this->submissions_open($userid)) {
-            $notices[] = get_string('submissionsclosed', 'assign');
             return false;
         }
 
@@ -6820,38 +6951,53 @@ class assign {
         }
 
         if ($submission->status != ASSIGN_SUBMISSION_STATUS_SUBMITTED) {
-            // Give each submission plugin a chance to process the submission.
-            $plugins = $this->get_submission_plugins();
-            foreach ($plugins as $plugin) {
-                if ($plugin->is_enabled() && $plugin->is_visible()) {
-                    $plugin->submit_for_grading($submission);
-                }
-            }
-
-            $submission->status = ASSIGN_SUBMISSION_STATUS_SUBMITTED;
-            $this->update_submission($submission, $userid, true, $instance->teamsubmission);
-            $completion = new completion_info($this->get_course());
-            if ($completion->is_enabled($this->get_course_module()) && $instance->completionsubmit) {
-                $this->update_activity_completion_records($instance->teamsubmission,
-                                                          $instance->requireallteammemberssubmit,
-                                                          $submission,
-                                                          $userid,
-                                                          COMPLETION_COMPLETE,
-                                                          $completion);
-            }
-
             if (!empty($data->submissionstatement) && $USER->id == $userid) {
                 \mod_assign\event\statement_accepted::create_from_submission($this, $submission)->trigger();
             }
-            $this->notify_graders($submission);
-            $this->notify_student_submission_receipt($submission);
 
-            \mod_assign\event\assessable_submitted::create_from_submission($this, $submission, false)->trigger();
+            $this->submit_submission($submission, $userid);
 
             return true;
         }
-        $notices[] = get_string('submissionsclosed', 'assign');
         return false;
+    }
+
+    /**
+     * Actually submit a submission - do all necessary DB updates, send notifications, log etc.
+     *
+     * This method does not do any checks and is intended only for backend use. When the user
+     * submits from the interface, {@see submit_for_grading} should be called.
+     *
+     * @param stdClass $submission the submission.
+     * @param int $userid the user submitting (only an issue for group submissions).
+     */
+    public function submit_submission(stdClass $submission, int $userid): void {
+        $instance = $this->get_instance();
+
+        // Give each submission plugin a chance to process the submission.
+        $plugins = $this->get_submission_plugins();
+        foreach ($plugins as $plugin) {
+            if ($plugin->is_enabled() && $plugin->is_visible()) {
+                $plugin->submit_for_grading($submission);
+            }
+        }
+
+        $submission->status = ASSIGN_SUBMISSION_STATUS_SUBMITTED;
+        $this->update_submission($submission, $userid, true, $instance->teamsubmission);
+        $completion = new completion_info($this->get_course());
+        if ($completion->is_enabled($this->get_course_module()) && $instance->completionsubmit) {
+            $this->update_activity_completion_records($instance->teamsubmission,
+                $instance->requireallteammemberssubmit,
+                $submission,
+                $userid,
+                COMPLETION_COMPLETE,
+                $completion);
+        }
+
+        $this->notify_graders($submission);
+        $this->notify_student_submission_receipt($submission);
+
+        \mod_assign\event\assessable_submitted::create_from_submission($this, $submission, false)->trigger();
     }
 
     /**
@@ -8700,6 +8846,9 @@ class assign {
                 $shouldreopen = true;
                 break;
             case ASSIGN_ATTEMPT_REOPEN_METHOD_UNTILPASS:
+                if (!is_gradable($this->course->id, 'mod', 'assign', $this->get_instance()->id)) {
+                    return false;
+                }
                 // Check the gradetopass from the gradebook.
                 $gradeitem = $this->get_grade_item();
                 if ($gradeitem) {
@@ -9372,10 +9521,10 @@ class assign {
      *
      * @param int $teamsubmission value of 0 or 1 to indicate whether this is a group activity
      * @param int $requireallteammemberssubmit value of 0 or 1 to indicate whether all group members must click Submit
-     * @param obj $submission the submission
+     * @param stdClass $submission the submission
      * @param int $userid the user id
      * @param int $complete
-     * @param obj $completion
+     * @param completion_info $completion
      *
      * @return null
      */

@@ -16,13 +16,12 @@
 
 namespace mod_forum\courseformat;
 
-use action_link;
 use cm_info;
 use core\url;
 use core_calendar\output\humandate;
-use core_courseformat\local\overview\overviewitem;
-use core\output\local\properties\button;
 use core\output\local\properties\text_align;
+use core_courseformat\local\overview\overviewitem;
+use core_courseformat\output\local\overview\overviewaction;
 
 /**
  * Forum overview integration.
@@ -44,15 +43,12 @@ class overview extends \core_courseformat\activityoverviewbase {
      *
      * @param cm_info $cm the course module instance.
      * @param \core\output\renderer_helper $rendererhelper the renderer helper.
-     * @param \core_string_manager $stringmanager the string manager.
      * @param \moodle_database $db the database helper.
      */
     public function __construct(
         cm_info $cm,
         /** @var \core\output\renderer_helper $rendererhelper the renderer helper */
         protected readonly \core\output\renderer_helper $rendererhelper,
-        /** @var \core_string_manager $stringmanager the string manager */
-        protected readonly \core_string_manager $stringmanager,
         /** @var \moodle_database The database instance */
         protected readonly \moodle_database $db,
     ) {
@@ -83,13 +79,13 @@ class overview extends \core_courseformat\activityoverviewbase {
 
         if (empty($duedate)) {
             return new overviewitem(
-                name: $this->stringmanager->get_string('duedate', 'mod_forum'),
+                name: get_string('duedate', 'mod_forum'),
                 value: null,
                 content: '-',
             );
         }
         return new overviewitem(
-            name: $this->stringmanager->get_string('duedate', 'mod_forum'),
+            name: get_string('duedate', 'mod_forum'),
             value: $duedate,
             content: humandate::create_from_timestamp($duedate),
         );
@@ -126,29 +122,19 @@ class overview extends \core_courseformat\activityoverviewbase {
         }, 0); // The '0' is the initial value of $sum.
         $totalreplies += $totaldiscussions; // Add the discussions to the replies count.
 
-        $alertlabel = $this->stringmanager->get_string('unreadposts', 'mod_forum');
-
-        $badge = '';
+        $alertlabel = get_string('unreadposts', 'mod_forum');
         $unread = forum_tp_count_forum_unread_posts($this->cm, $this->course);
-        if ($totalreplies > 0 && $unread > 0) {
-            $renderer = $this->rendererhelper->get_core_renderer();
-            $badge = $renderer->notice_badge(
-                contents: $unread,
-                title: $alertlabel,
-            );
-        }
-
-        $content = new action_link(
+        $content = new overviewaction(
             url: new url('/mod/forum/view.php', ['id' => $this->cm->id]),
-            text: $totalreplies .' ' . $badge,
-            attributes: ['class' => button::SECONDARY_OUTLINE->classes()],
+            text: $totalreplies,
+            badgevalue: ($totalreplies > 0 && $unread > 0) ? $unread : null,
+            badgetitle: ($totalreplies > 0 && $unread > 0) ? $alertlabel : null,
         );
 
         return new overviewitem(
-            name: $this->stringmanager->get_string('posts', 'mod_forum'),
+            name: get_string('posts', 'mod_forum'),
             value: $totalreplies ? : '0',
             content: $content,
-            textalign: text_align::CENTER,
             alertcount: $unread,
             alertlabel: $alertlabel,
         );
@@ -168,7 +154,7 @@ class overview extends \core_courseformat\activityoverviewbase {
         $allforumtypesnames = forum_get_forum_types_all();
 
         return new overviewitem(
-            name: $this->stringmanager->get_string('forumtype', 'mod_forum'),
+            name: get_string('forumtype', 'mod_forum'),
             value: $this->forum->type,
             content: $allforumtypesnames[$this->forum->type],
         );
@@ -189,38 +175,44 @@ class overview extends \core_courseformat\activityoverviewbase {
             (intval($this->forum->trackingtype) == FORUM_TRACKING_FORCED)
             && ($CFG->forum_allowforcedreadtracking)
         ) {
-            $label = $this->stringmanager->get_string(
+            $label = get_string(
                 'labelvalue',
                 'core',
                 [
-                    'label' => $this->stringmanager->get_string('trackforum', 'mod_forum'),
-                    'value' => $this->stringmanager->get_string('trackingon', 'mod_forum'),
+                    'label' => get_string('trackforum', 'mod_forum'),
+                    'value' => get_string('trackingon', 'mod_forum'),
                 ],
             );
             $disabled = true;
             $tracked = true;
         } else if (intval($this->forum->trackingtype) === FORUM_TRACKING_OFF) {
-            $label = $this->stringmanager->get_string(
+            $label = get_string(
                 'labelvalue',
                 'core',
                 [
-                    'label' => $this->stringmanager->get_string('trackforum', 'mod_forum'),
-                    'value' => $this->stringmanager->get_string('trackingoff', 'mod_forum'),
+                    'label' => get_string('trackforum', 'mod_forum'),
+                    'value' => get_string('trackingoff', 'mod_forum'),
                 ],
             );
             $disabled = true;
         } else if (forum_tp_can_track_forums($this->forum)) {
             $tracked = forum_tp_is_tracked($this->forum);
             $disabled = false;
-            $label = $this->stringmanager->get_string('trackforum', 'mod_forum');
+            $label = get_string('trackforum', 'mod_forum');
         }
 
+        $arialabel = $tracked
+            ? get_string('untrackforforum', 'mod_forum', $this->forum->name)
+            : get_string('trackforforum', 'mod_forum', $this->forum->name);
+
         $renderer = $this->rendererhelper->get_renderer('mod_forum');
-        $dataattributes = [
-            ['name' => 'type', 'value' => 'forum-track-toggle'],
-            ['name' => 'action', 'value' => 'toggle'],
-            ['name' => 'forumid', 'value' => $this->forum->id],
-            ['name' => 'targetstate', 'value' => !$tracked],
+        $extraattributes = [
+            ['name' => 'data-type', 'value' => 'forum-track-toggle'],
+            ['name' => 'data-action', 'value' => 'toggle'],
+            ['name' => 'data-forumid', 'value' => $this->forum->id],
+            ['name' => 'data-forumname', 'value' => $this->forum->name],
+            ['name' => 'data-targetstate', 'value' => !$tracked],
+            ['name' => 'aria-label', 'value' => $arialabel],
         ];
         $content = $renderer->render_from_template(
             'core/toggle',
@@ -228,7 +220,7 @@ class overview extends \core_courseformat\activityoverviewbase {
                 'id' => 'forum-track-toggle-' . $this->forum->id,
                 'checked' => $tracked,
                 'disabled' => $disabled,
-                'dataattributes' => $dataattributes,
+                'extraattributes' => $extraattributes,
                 'label' => $label,
                 'labelclasses' => 'visually-hidden',
             ],
@@ -241,7 +233,7 @@ class overview extends \core_courseformat\activityoverviewbase {
         );
 
         return new overviewitem(
-            name: $this->stringmanager->get_string('tracking', 'mod_forum'),
+            name: get_string('tracking', 'mod_forum'),
             value: $label,
             content: $content,
         );
@@ -260,39 +252,46 @@ class overview extends \core_courseformat\activityoverviewbase {
         if (\mod_forum\subscriptions::is_forcesubscribed($this->forum)) {
             $disabled = true;
             $subscribed = true;
-            $label = $this->stringmanager->get_string('subscribed', 'mod_forum');
+            $label = get_string('subscribed', 'mod_forum');
         } else if (
             \mod_forum\subscriptions::subscription_disabled($this->forum)
             && !has_capability('mod/forum:managesubscriptions', $this->context)
         ) {
             $disabled = true;
-            $label = $this->stringmanager->get_string('unsubscribed', 'mod_forum');
+            $label = get_string('unsubscribed', 'mod_forum');
         } else if (!is_enrolled($this->context, $this->user, '', true)) {
             $disabled = true;
-            $label = $this->stringmanager->get_string('unsubscribed', 'mod_forum');
+            $label = get_string('unsubscribed', 'mod_forum');
         } else {
             $subscribed = \mod_forum\subscriptions::is_subscribed($this->user->id, $this->forum);
             if ($subscribed) {
-                $label = $this->stringmanager->get_string('unsubscribe', 'mod_forum');
+                $label = get_string('unsubscribe', 'mod_forum');
             } else {
-                $label = $this->stringmanager->get_string('subscribe', 'mod_forum');
+                $label = get_string('subscribe', 'mod_forum');
             }
         }
 
+        $arialabel = $subscribed
+            ? get_string('unsubscribefromforum', 'mod_forum', $this->forum->name)
+            : get_string('subscribetoforum', 'mod_forum', $this->forum->name);
+
         $renderer = $this->rendererhelper->get_renderer('mod_forum');
-        $dataattributes = [
-            ['name' => 'type', 'value' => 'forum-subscription-toggle'],
-            ['name' => 'action', 'value' => 'toggle'],
-            ['name' => 'forumid', 'value' => $this->forum->id],
-            ['name' => 'targetstate', 'value' => !$subscribed],
+        $extraattributes = [
+            ['name' => 'data-type', 'value' => 'forum-subscription-toggle'],
+            ['name' => 'data-action', 'value' => 'toggle'],
+            ['name' => 'data-forumid', 'value' => $this->forum->id],
+            ['name' => 'data-forumname', 'value' => $this->forum->name],
+            ['name' => 'data-targetstate', 'value' => !$subscribed],
+            ['name' => 'aria-label', 'value' => $arialabel],
         ];
+
         $content = $renderer->render_from_template(
             'core/toggle',
             [
                 'id' => 'forum-subscription-toggle-' . $this->forum->id,
                 'checked' => $subscribed,
                 'disabled' => $disabled,
-                'dataattributes' => $dataattributes,
+                'extraattributes' => $extraattributes,
                 'label' => $label,
                 'labelclasses' => 'visually-hidden',
             ],
@@ -305,7 +304,7 @@ class overview extends \core_courseformat\activityoverviewbase {
         );
 
         return new overviewitem(
-            name: $this->stringmanager->get_string('subscribed', 'mod_forum'),
+            name: get_string('subscribed', 'mod_forum'),
             value: $label,
             content: $content,
         );
@@ -332,10 +331,9 @@ class overview extends \core_courseformat\activityoverviewbase {
         $options = forum_get_user_digest_options();
 
         return new overviewitem(
-            name: $this->stringmanager->get_string('digesttype', 'mod_forum'),
+            name: get_string('digesttype', 'mod_forum'),
             value: $options[$this->forum->maildigest] ?? '-',
             content: $content ?? '-',
-            textalign: text_align::CENTER,
         );
     }
 
@@ -349,10 +347,10 @@ class overview extends \core_courseformat\activityoverviewbase {
         $totaldiscussions = forum_count_discussions($this->forum, $this->cm, $this->course);
 
         return new overviewitem(
-            name: $this->stringmanager->get_string('discussions', 'mod_forum'),
+            name: get_string('discussions', 'mod_forum'),
             value: $totaldiscussions,
             content: $totaldiscussions,
-            textalign: text_align::CENTER,
+            textalign: text_align::END,
         );
     }
 

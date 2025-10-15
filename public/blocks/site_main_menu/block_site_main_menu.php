@@ -80,18 +80,14 @@ class block_site_main_menu extends block_base {
             include_course_ajax($course);
         }
 
+        /** @var \core_course_renderer $courserenderer */
         $courserenderer = $format->get_renderer($this->page);
 
         $output = new block_site_main_menu\output\mainsection($format, $section);
 
         $this->content->text = $courserenderer->render($output);
 
-        $this->content->footer = $courserenderer->course_section_add_cm_control(
-            course: $course,
-            section: 0,
-            sectionreturn: null,
-            displayoptions: ['inblock' => true],
-        );
+        $this->content->footer = $courserenderer->section_add_cm_controls($format, $section);
         return $this->content;
     }
     /**
@@ -104,22 +100,21 @@ class block_site_main_menu extends block_base {
 
         if (!empty($this->page)) {
             $course = $this->page->course;
+            $context = $this->page->context;
         }
         if (empty($course)) {
             $course = $COURSE;
+            $context = \core\context\course::instance($course->id);
         }
 
-        if ($this->context) {
-            $context = $this->context->get_parent_context();
-            if ($context->contextlevel == CONTEXT_COURSE) {
-                $courseid = $context->instanceid;
-            } else if ($context->contextlevel == CONTEXT_SYSTEM) {
-                $courseid = SITEID;
-            } else {
-                $coursecontext = $context->get_course_context(false);
-                if ($coursecontext) {
-                    $courseid = $coursecontext->instanceid;
-                }
+        if ($context->contextlevel == CONTEXT_COURSE) {
+            $courseid = $context->instanceid;
+        } else if ($context->contextlevel == CONTEXT_SYSTEM) {
+            $courseid = SITEID;
+        } else {
+            $coursecontext = $context->get_course_context(false);
+            if ($coursecontext) {
+                $courseid = $coursecontext->instanceid;
             }
         }
 

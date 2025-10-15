@@ -1312,7 +1312,6 @@ function glossary_print_entry_icons($course, $cm, $glossary, $entry, $mode='',$h
     $return .= '</span>';
 
     if (!empty($CFG->usecomments) && has_capability('mod/glossary:comment', $context) and $glossary->allowcomments) {
-        require_once($CFG->dirroot . '/comment/lib.php');
         $cmt = new stdClass();
         $cmt->component = 'mod_glossary';
         $cmt->context  = $context;
@@ -1321,7 +1320,7 @@ function glossary_print_entry_icons($course, $cm, $glossary, $entry, $mode='',$h
         $cmt->area     = 'glossary_entry';
         $cmt->itemid   = $entry->id;
         $cmt->showcount = true;
-        $comment = new comment($cmt);
+        $comment = new \core_comment\manager($cmt);
         $return .= '<div>'.$comment->output(true).'</div>';
         $output = true;
     }
@@ -1360,7 +1359,7 @@ function glossary_print_entry_lower_section($course, $cm, $glossary, $entry, $mo
         $icons   = glossary_print_entry_icons($course, $cm, $glossary, $entry, $mode, $hook,'html');
     }
     if ($aliases || $icons || !empty($entry->rating)) {
-        echo '<table>';
+        echo '<table class="table-reboot">';
         if ( $aliases ) {
             $id = "keyword-{$entry->id}";
             echo '<tr valign="top"><td class="aliases hstack gap-2">' .
@@ -1421,7 +1420,7 @@ function  glossary_print_entry_approval($cm, $entry, $mode, $align="right", $ins
 
     if ($mode == 'approval' and !$entry->approved) {
         if ($insidetable) {
-            echo '<table class="glossaryapproval" align="'.$align.'"><tr><td align="'.$align.'">';
+            echo '<table class="glossaryapproval table-reboot" align="' . $align . '"><tr><td align="' . $align . '">';
         }
         echo $OUTPUT->action_icon(
             new moodle_url('approve.php', array('eid' => $entry->id, 'mode' => $mode, 'sesskey' => sesskey())),
@@ -1915,7 +1914,7 @@ function glossary_print_categories_menu($cm, $glossary, $hook, $category) {
     $fmtoptions = array(
         'context' => $context);
 
-     echo '<table border="0" width="100%">';
+     echo '<table class="table-reboot" border="0" width="100%">';
      echo '<tr>';
 
      echo '<td align="center" style="width:20%">';
@@ -2193,7 +2192,7 @@ function glossary_print_dynaentry($courseid, $entries, $displayformat = -1) {
     global $USER, $CFG, $DB;
 
     echo '<div class="boxaligncenter">';
-    echo '<table class="glossarypopup" cellspacing="0"><tr>';
+    echo '<table class="glossarypopup table-reboot" cellspacing="0"><tr>';
     echo '<td>';
     if ( $entries ) {
         foreach ( $entries as $entry ) {
@@ -2431,14 +2430,11 @@ function glossary_generate_export_file($glossary, $ignored = "", $hook = 0) {
  * Read import file and convert to current charset
  *
  * @global object
- * @param string $file
- * @return string
+ * @param string $filecontent
+ * @return array|false
  */
-function glossary_read_imported_file($file_content) {
-    global $CFG;
-    require_once "../../lib/xmlize.php";
-
-    return xmlize($file_content, 0);
+function glossary_read_imported_file($filecontent): array|false {
+    return (new \core\xml_parser())->parse($filecontent, 0);
 }
 
 /**
@@ -3124,22 +3120,22 @@ function glossary_get_extra_capabilities() {
  * @return mixed True if module supports feature, false if not, null if doesn't know or string for the module purpose.
  */
 function glossary_supports($feature) {
-    switch($feature) {
-        case FEATURE_GROUPS:                  return false;
-        case FEATURE_GROUPINGS:               return false;
-        case FEATURE_MOD_INTRO:               return true;
-        case FEATURE_COMPLETION_TRACKS_VIEWS: return true;
-        case FEATURE_COMPLETION_HAS_RULES:    return true;
-        case FEATURE_GRADE_HAS_GRADE:         return true;
-        case FEATURE_GRADE_OUTCOMES:          return true;
-        case FEATURE_RATE:                    return true;
-        case FEATURE_BACKUP_MOODLE2:          return true;
-        case FEATURE_SHOW_DESCRIPTION:        return true;
-        case FEATURE_COMMENT:                 return true;
-        case FEATURE_MOD_PURPOSE:             return MOD_PURPOSE_COLLABORATION;
-
-        default: return null;
-    }
+    return match ($feature) {
+        FEATURE_GROUPS => false,
+        FEATURE_GROUPINGS => false,
+        FEATURE_MOD_INTRO => true,
+        FEATURE_COMPLETION_TRACKS_VIEWS => true,
+        FEATURE_COMPLETION_HAS_RULES => true,
+        FEATURE_GRADE_HAS_GRADE => true,
+        FEATURE_GRADE_OUTCOMES => true,
+        FEATURE_RATE => true,
+        FEATURE_BACKUP_MOODLE2 => true,
+        FEATURE_SHOW_DESCRIPTION => true,
+        FEATURE_COMMENT => true,
+        FEATURE_MOD_PURPOSE => MOD_PURPOSE_COLLABORATION,
+        FEATURE_MOD_OTHERPURPOSE => MOD_PURPOSE_CONTENT,
+        default => null,
+    };
 }
 
 function glossary_extend_navigation($navigation, $course, $module, $cm) {
@@ -3271,10 +3267,10 @@ function glossary_comment_validate($comment_param) {
     global $DB;
     // validate comment area
     if ($comment_param->commentarea != 'glossary_entry') {
-        throw new comment_exception('invalidcommentarea');
+        throw new \core_comment\comment_exception('invalidcommentarea');
     }
     if (!$record = $DB->get_record('glossary_entries', array('id'=>$comment_param->itemid))) {
-        throw new comment_exception('invalidcommentitemid');
+        throw new \core_comment\comment_exception('invalidcommentitemid');
     }
     if ($record->sourceglossaryid && $record->sourceglossaryid == $comment_param->cm->instance) {
         $glossary = $DB->get_record('glossary', array('id'=>$record->sourceglossaryid));
@@ -3282,37 +3278,37 @@ function glossary_comment_validate($comment_param) {
         $glossary = $DB->get_record('glossary', array('id'=>$record->glossaryid));
     }
     if (!$glossary) {
-        throw new comment_exception('invalidid', 'data');
+        throw new \core_comment\comment_exception('invalidid', 'data');
     }
     if (!$course = $DB->get_record('course', array('id'=>$glossary->course))) {
-        throw new comment_exception('coursemisconf');
+        throw new \core_comment\comment_exception('coursemisconf');
     }
     if (!$cm = get_coursemodule_from_instance('glossary', $glossary->id, $course->id)) {
-        throw new comment_exception('invalidcoursemodule');
+        throw new \core_comment\comment_exception('invalidcoursemodule');
     }
     $context = context_module::instance($cm->id);
 
     if ($glossary->defaultapproval and !$record->approved and !has_capability('mod/glossary:approve', $context)) {
-        throw new comment_exception('notapproved', 'glossary');
+        throw new \core_comment\comment_exception('notapproved', 'glossary');
     }
     // validate context id
     if ($context->id != $comment_param->context->id) {
-        throw new comment_exception('invalidcontext');
+        throw new \core_comment\comment_exception('invalidcontext');
     }
     // validation for comment deletion
     if (!empty($comment_param->commentid)) {
         if ($comment = $DB->get_record('comments', array('id'=>$comment_param->commentid))) {
             if ($comment->commentarea != 'glossary_entry') {
-                throw new comment_exception('invalidcommentarea');
+                throw new \core_comment\comment_exception('invalidcommentarea');
             }
             if ($comment->contextid != $comment_param->context->id) {
-                throw new comment_exception('invalidcontext');
+                throw new \core_comment\comment_exception('invalidcontext');
             }
             if ($comment->itemid != $comment_param->itemid) {
-                throw new comment_exception('invalidcommentitemid');
+                throw new \core_comment\comment_exception('invalidcommentitemid');
             }
         } else {
-            throw new comment_exception('invalidcommentid');
+            throw new \core_comment\comment_exception('invalidcommentid');
         }
     }
     return true;
@@ -4684,4 +4680,49 @@ function mod_glossary_prepare_entry_for_edition(stdClass $entry): stdClass {
     }
 
     return $entry;
+}
+
+/**
+ * Gets comments for the given glossary.
+ *
+ * @package  mod_glossary
+ * @category comment
+ *
+ * @param cm_info $cm The glossary course module information.
+ * @return array An array of comments related to the glossary entries.
+ */
+function mod_glossary_get_comments(cm_info $cm): array {
+    global $CFG;
+
+    $context = context_module::instance($cm->id);
+    $glossary = $cm->get_instance_record();
+    if (empty($CFG->usecomments) || !has_capability('mod/glossary:comment', $context) || !$glossary->allowcomments) {
+        return [];
+    }
+
+    // Initilising comment object.
+    $cmtoptions = new stdClass();
+    $cmtoptions->context = $context;
+    $cmtoptions->course = $cm->get_course();
+    $cmtoptions->cm = $cm;
+    $cmtoptions->component = 'mod_glossary';
+    $cmtoptions->area = 'glossary_entry';
+
+    $qb = new mod_glossary_entry_query_builder($glossary);
+    $qb->add_field('*', 'entries');
+    if (has_capability('mod/glossary:approve', $context)) {
+        $qb->filter_by_non_approved(mod_glossary_entry_query_builder::NON_APPROVED_ALL);
+    } else {
+        $qb->filter_by_non_approved(mod_glossary_entry_query_builder::NON_APPROVED_SELF);
+    }
+
+    $comments = [];
+    $entries = $qb->get_records();
+    foreach ($entries as $entry) {
+        $cmtoptions->itemid = $entry->id;
+        $comment = new \core_comment\manager($cmtoptions);
+        $comments = array_merge($comments, $comment->get_comments());
+    }
+
+    return $comments;
 }

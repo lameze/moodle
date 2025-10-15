@@ -17,14 +17,7 @@
 namespace mod_book;
 
 use core_external\external_api;
-use externallib_advanced_testcase;
 use mod_book_external;
-
-defined('MOODLE_INTERNAL') || die();
-
-global $CFG;
-
-require_once($CFG->dirroot . '/webservice/tests/helpers.php');
 
 /**
  * External mod_book functions unit tests
@@ -35,8 +28,7 @@ require_once($CFG->dirroot . '/webservice/tests/helpers.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @since      Moodle 3.0
  */
-final class externallib_test extends externallib_advanced_testcase {
-
+final class externallib_test extends \core_external\tests\externallib_testcase {
     /**
      * Test view_book
      */
@@ -182,8 +174,8 @@ final class externallib_test extends externallib_advanced_testcase {
 
         $this->assertCount(1, $books['books']);
         $this->assertEquals('Second Book', $books['books'][0]['name']);
-        // We see 17 fields.
-        $this->assertCount(18, $books['books'][0]);
+        // We see 20 fields.
+        $this->assertCount(20, $books['books'][0]);
         // As an Admin you can see some book properties like 'section'.
         $this->assertEquals(0, $books['books'][0]['section']);
 

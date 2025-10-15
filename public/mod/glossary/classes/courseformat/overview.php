@@ -16,13 +16,11 @@
 
 namespace mod_glossary\courseformat;
 
-use core_courseformat\local\overview\overviewitem;
-use core\output\action_link;
-use core\output\local\properties\button;
-use core\output\local\properties\text_align;
 use core\url;
-use cm_info;
 use mod_glossary_entry_query_builder;
+use core\output\local\properties\text_align;
+use core_courseformat\local\overview\overviewitem;
+use core_courseformat\output\local\overview\overviewaction;
 
 /**
  * Glossary overview integration class.
@@ -32,25 +30,11 @@ use mod_glossary_entry_query_builder;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class overview extends \core_courseformat\activityoverviewbase {
-    /**
-     * Constructor.
-     *
-     * @param cm_info $cm the course module instance.
-     * @param \core\output\renderer_helper $rendererhelper the renderer helper.
-     */
-    public function __construct(
-        cm_info $cm,
-        /** @var \core\output\renderer_helper $rendererhelper the renderer helper */
-        protected readonly \core\output\renderer_helper $rendererhelper,
-        /** @var \core_string_manager $stringmanager the string manager */
-        protected readonly \core_string_manager $stringmanager,
-    ) {
-        parent::__construct($cm);
-    }
 
     #[\Override]
     public function get_extra_overview_items(): array {
         return [
+            'comments' => $this->get_extra_comments_overview(),
             'totalentries' => $this->get_extra_totalentries_overview(),
             'myentries' => $this->get_extra_myentries_overview(),
         ];
@@ -65,24 +49,58 @@ class overview extends \core_courseformat\activityoverviewbase {
         $qb = new mod_glossary_entry_query_builder($this->cm->get_instance_record());
         $qb->filter_by_non_approved(mod_glossary_entry_query_builder::NON_APPROVED_ONLY);
         $entriescount = $qb->count_records();
+        if ($entriescount > 0) {
+            $url = new url('/mod/glossary/view.php', ['id' => $this->cm->id, 'mode' => 'approval']);
+            $text = get_string('approve', 'mod_glossary');
+        } else {
+            $url = new url('/mod/glossary/view.php', ['id' => $this->cm->id]);
+            $text = get_string('view');
+        }
 
-        $renderer = $this->rendererhelper->get_core_renderer();
-        $badge = $renderer->notice_badge(
-            contents: $entriescount,
-            title: $this->stringmanager->get_string('numberofentriesneedapprove', 'mod_glossary'),
-        );
-
-        $content = new action_link(
-            url: new url('/mod/glossary/view.php', ['id' => $this->cm->id, 'mode' => 'approval']),
-            text: $this->stringmanager->get_string('approve', 'mod_glossary') . $badge,
-            attributes: ['class' => button::BODY_OUTLINE->classes()],
+        $alertlabel = get_string('numberofentriesneedapprove', 'mod_glossary');
+        $content = new overviewaction(
+            url: $url,
+            text: $text,
+            badgevalue: $entriescount > 0 ? $entriescount : null,
+            badgetitle: $entriescount > 0 ? $alertlabel : null,
         );
 
         return new overviewitem(
-            name: $this->stringmanager->get_string('actions'),
+            name: get_string('actions'),
             value: $entriescount,
-            content: $entriescount ? $content : '-',
+            content: $content,
             textalign: text_align::CENTER,
+            alertcount: $entriescount,
+            alertlabel: $alertlabel,
+        );
+    }
+
+    /**
+     * Get the "Comments" overview item.
+     *
+     * @return overviewitem The overview item.
+     */
+    private function get_extra_comments_overview(): overviewitem {
+        global $CFG;
+
+        // Add comments column for all views.
+        if (empty($CFG->usecomments) || !$this->cm->get_instance_record()->allowcomments) {
+            return new overviewitem(
+                name: get_string('comments', 'glossary'),
+                value: 0,
+                content: '-',
+                textalign: text_align::END,
+            );
+        }
+
+        // Get comments from the glossary.
+        $comments = mod_glossary_get_comments($this->cm);
+        $totalcomments = ($comments) ? count($comments) : 0;
+        return new overviewitem(
+            name: get_string('comments', 'glossary'),
+            value: $totalcomments,
+            content: $totalcomments,
+            textalign: text_align::END,
         );
     }
 
@@ -92,29 +110,19 @@ class overview extends \core_courseformat\activityoverviewbase {
      * @return overviewitem The overview item.
      */
     private function get_extra_totalentries_overview(): overviewitem {
-        $columnheader = $this->stringmanager->get_string('entries', 'mod_glossary');
+        $columnheader = get_string('entries', 'mod_glossary');
         if (!has_capability('mod/glossary:approve', $this->context)) {
-            $columnheader = $this->stringmanager->get_string('totalentries', 'mod_glossary');
+            $columnheader = get_string('totalentries', 'mod_glossary');
         }
 
         $qb = new mod_glossary_entry_query_builder($this->cm->get_instance_record());
         $qb->filter_by_non_approved(mod_glossary_entry_query_builder::NON_APPROVED_NONE);
         $entriescount = $qb->count_records();
 
-        $content = new action_link(
-            url: new url('/mod/glossary/view.php', ['id' => $this->cm->id]),
-            text: $entriescount,
-            attributes: [
-                'class' => button::BODY_OUTLINE->classes(),
-                'title' => $this->stringmanager->get_string('seeallentries', 'mod_glossary'),
-            ],
-        );
-
         return new overviewitem(
             name: $columnheader,
             value: $entriescount,
-            content: $entriescount ? $content : '-',
-            textalign: text_align::CENTER,
+            textalign: text_align::END,
         );
     }
 
@@ -136,10 +144,10 @@ class overview extends \core_courseformat\activityoverviewbase {
         $entriescount = $qb->count_records();
 
         return new overviewitem(
-            name: $this->stringmanager->get_string('myentries', 'mod_glossary'),
+            name: get_string('myentries', 'mod_glossary'),
             value: $entriescount,
-            content: $entriescount ?: '-',
-            textalign: text_align::CENTER,
+            content: $entriescount,
+            textalign: text_align::END,
         );
     }
 }

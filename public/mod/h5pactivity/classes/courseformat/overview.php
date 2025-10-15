@@ -107,7 +107,7 @@ class overview extends \core_courseformat\activityoverviewbase {
             name: get_string('attempts', 'mod_h5pactivity'),
             value: $attempts,
             content: $attempts ?? '-',
-            textalign: text_align::CENTER,
+            textalign: text_align::END,
         );
     }
 
@@ -122,8 +122,13 @@ class overview extends \core_courseformat\activityoverviewbase {
             return null;
         }
 
-        $attempts = $this->manager->count_users_attempts();
-        $participants = get_users_by_capability($this->context, 'mod/h5pactivity:submit');
+        $groups = $this->get_groups_for_filtering();
+        $attempts = $this->manager->count_users_attempts($groups);
+        $participants = get_users_by_capability(
+            context: $this->context,
+            capability: 'mod/h5pactivity:submit',
+            groups: array_keys($groups),
+        );
         $params = [
             'count' => count($attempts),
             'total' => count($participants),
@@ -132,7 +137,7 @@ class overview extends \core_courseformat\activityoverviewbase {
             name: get_string('attempted', 'mod_h5pactivity'),
             value: count($attempts),
             content: get_string('count_of_total', 'core', $params),
-            textalign: text_align::CENTER,
+            textalign: text_align::END,
         );
     }
 
@@ -147,12 +152,13 @@ class overview extends \core_courseformat\activityoverviewbase {
             return null;
         }
 
-        $totalattempts = $this->manager->count_attempts();
-        $totalusers = $this->manager->count_users_attempts();
+        $groups = $this->get_groups_for_filtering();
+        $totalattempts = $this->manager->count_attempts(groups: $groups);
+        $totalusers = $this->manager->count_users_attempts(groups: $groups);
 
         $averageattempts = 0;
         if ($totalusers && count($totalusers) > 0 && $totalattempts) {
-            $averageattempts = (int) round($totalattempts / count($totalusers));
+            $averageattempts = round($totalattempts / count($totalusers), 1);
         }
         $content = new overviewdialog(
             buttoncontent: $totalattempts,

@@ -17,6 +17,7 @@
 namespace mod_choice\courseformat;
 
 use cm_info;
+use core\output\pix_icon;
 use mod_choice\manager;
 use core\activity_dates;
 use core\output\action_link;
@@ -116,7 +117,7 @@ class overview extends \core_courseformat\activityoverviewbase {
     #[\Override]
     public function get_extra_overview_items(): array {
         return [
-            'studentwhoresponded' => $this->get_students_who_responded(),
+            'studentwhoresponded' => $this->get_extra_students_who_responded(),
             'responded' => $this->get_extra_status_for_user(),
         ];
     }
@@ -136,14 +137,13 @@ class overview extends \core_courseformat\activityoverviewbase {
         if ($status) {
             $statustext = get_string('answered', 'choice');
         }
-        $corerenderer = $this->rendererhelper->get_core_renderer();
         $submittedstatuscontent = "-";
         if ($status) {
-            $submittedstatuscontent = $corerenderer->pix_icon(
-                'i/checkedcircle',
-                $statustext,
-                'core',
-                ['class' => 'text-success'],
+            $submittedstatuscontent = new pix_icon(
+                pix: 'i/checkedcircle',
+                alt: $statustext,
+                component: 'core',
+                attributes: ['class' => 'text-success'],
             );
         }
         return new overviewitem(
@@ -159,12 +159,13 @@ class overview extends \core_courseformat\activityoverviewbase {
      *
      * @return overviewitem|null An overview item or null if for students.
      */
-    private function get_students_who_responded(): ?overviewitem {
+    private function get_extra_students_who_responded(): ?overviewitem {
         if (!has_capability('mod/choice:readresponses', $this->cm->context)) {
             return null;
         }
 
-        $studentwhoanswered = $this->manager->count_all_users_answered();
+        $groupids = array_keys($this->get_groups_for_filtering());
+        $studentwhoanswered = $this->manager->count_all_users_answered($groupids);
         $overviewdialog = new overviewdialog(
             buttoncontent: $studentwhoanswered,
             title: get_string('totalresponses', 'mod_choice'),
@@ -176,7 +177,7 @@ class overview extends \core_courseformat\activityoverviewbase {
         foreach ($options as $option) {
             $overviewdialog->add_item(
                 $option->text,
-                $this->manager->count_all_users_answered($option->id),
+                $this->manager->count_all_users_answered($groupids, $option->id),
             );
         }
 
@@ -184,7 +185,6 @@ class overview extends \core_courseformat\activityoverviewbase {
             name: get_string('studentwhoresponded', 'choice'),
             value: $studentwhoanswered,
             content: $overviewdialog,
-            textalign: text_align::CENTER,
         );
     }
 }

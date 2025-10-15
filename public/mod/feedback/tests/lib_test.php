@@ -1163,4 +1163,217 @@ final class lib_test extends \advanced_testcase {
         );
         $generator->create_instance($params);
     }
+
+    /**
+     * Test that if a teacher (non editing) is not part of any group in separate group mode he will not receive notification emails.
+     * @covers ::feedback_get_receivemail_users
+     */
+    public function test_feedback_get_receivemail_users(): void {
+        $this->resetAfterTest();
+        $generator = $this->getDataGenerator();
+        $course = $generator->create_course(['groupmode' => SEPARATEGROUPS, 'groupmodeforce' => 1]);
+        $group = $generator->create_group(['courseid' => $course->id, 'name' => 'group0']);
+
+        $feedbackgenerator = $generator->get_plugin_generator('mod_feedback');
+        $feedback = $feedbackgenerator->create_instance(['course' => $course->id, 'email_notification' => true]);
+        $teacher = [];
+        $data = [
+            'teacher1' => 'teacher',
+            'teacher2' => 'teacher',
+            'teacher3' => 'editingteacher',
+            'teacher4' => 'editingteacher',
+        ];
+        foreach ($data as $username => $role) {
+            $teacher[$username] = $generator->create_user(['username' => $username]);
+            $generator->enrol_user($teacher[$username]->id, $course->id, $role);
+        }
+        $generator->create_group_member([
+            'groupid' => $group->id,
+            'userid' => $teacher['teacher1']->id,
+        ]);
+        $generator->create_group_member([
+            'groupid' => $group->id,
+            'userid' => $teacher['teacher4']->id,
+        ]);
+
+        $usergroup = $group->id;
+        // Non editing Teachers (teacher1) in a group should receive notification emails.
+        // Editing teachers (teacher4), in a group should also receive notification emails.
+        $teachersingroup = feedback_get_receivemail_users($feedback->cmid, $usergroup);
+        $this->assertCount(2, $teachersingroup);
+        $this->assertNotEmpty($teachersingroup[$teacher['teacher1']->id]);
+        $this->assertNotEmpty($teachersingroup[$teacher['teacher4']->id]);
+        // Here we should return only the editing teachers (teacher3 and 4) who have access to all groups.
+        $teacherwithnogroup = feedback_get_receivemail_users($feedback->cmid);
+        $this->assertCount(2, $teacherwithnogroup);
+        $this->assertNotEmpty($teacherwithnogroup[$teacher['teacher3']->id]);
+        $this->assertNotEmpty($teacherwithnogroup[$teacher['teacher4']->id]);
+    }
+
+    /**
+     * Test feedback_get_completeds().
+     *
+     * @covers ::feedback_get_completeds
+     * @covers ::feedback_get_completeds_count
+     * @dataProvider provider_feedback_get_completeds
+     *
+     * @param int $groupmode The group mode of the course.
+     * @param array $selectedgroups The groups selected for filtering.
+     * @param int $expectedcount The expected number of completeds.
+     */
+    public function test_feedback_get_completeds(
+        int $groupmode,
+        array $selectedgroups,
+        int $expectedcount,
+    ): void {
+        $this->resetAfterTest();
+
+        $course = $this->getDataGenerator()->create_course([
+            'groupmode' => $groupmode,
+            'groupmodeforce' => true,
+        ]);
+        $allgroups = [
+            'groupa' => $this->getDataGenerator()->create_group(['courseid' => $course->id]),
+            'groupb' => $this->getDataGenerator()->create_group(['courseid' => $course->id]),
+            'groupc' => $this->getDataGenerator()->create_group(['courseid' => $course->id]),
+        ];
+
+        // Participant:  Role:           Groups:
+        // student1a     student         groupa
+        // student2a     student         groupa
+        // student3b     student         groupb
+        // teacher       editingteacher  no group .
+        $student1a = $this->getDataGenerator()->create_and_enrol($course, 'student');
+        $this->getDataGenerator()->create_group_member([
+            'groupid' => $allgroups['groupa']->id,
+            'userid' => $student1a->id,
+        ]);
+        $student2a = $this->getDataGenerator()->create_and_enrol($course, 'student');
+        $this->getDataGenerator()->create_group_member([
+            'groupid' => $allgroups['groupa']->id,
+            'userid' => $student2a->id,
+        ]);
+        $student3b = $this->getDataGenerator()->create_and_enrol($course, 'student');
+        $this->getDataGenerator()->create_group_member([
+            'groupid' => $allgroups['groupb']->id,
+            'userid' => $student3b->id,
+        ]);
+        $teacher = $this->getDataGenerator()->create_and_enrol($course, 'editingteacher');
+
+        $activity = $this->getDataGenerator()->create_module('feedback', ['course' => $course->id]);
+        $cm = get_fast_modinfo($course)->get_cm($activity->cmid);
+
+        // Add a multichoice item to the feedback and create responses for it.
+        /** @var  \mod_feedback_generator $feedbackgenerator */
+        $feedbackgenerator = $this->getDataGenerator()->get_plugin_generator('mod_feedback');
+        $item = $feedbackgenerator->create_item_multichoice($activity, ['values' => "y\nn"]);
+        $feedbackgenerator->create_response([
+            'userid' => $student1a->id,
+            'cmid' => $cm->id,
+            'anonymous' => false,
+            $item->name => 'y',
+        ]);
+        $feedbackgenerator->create_response([
+            'userid' => $student2a->id,
+            'cmid' => $cm->id,
+            'anonymous' => false,
+            $item->name => 'n',
+        ]);
+        $feedbackgenerator->create_response([
+            'userid' => $student3b->id,
+            'cmid' => $cm->id,
+            'anonymous' => false,
+            $item->name => 'y',
+        ]);
+
+        $this->setUser($teacher);
+        $groups = [];
+        if (!empty($selectedgroups)) {
+            foreach ($selectedgroups as $group) {
+                if ($group === 'unexisting') {
+                    $groups[666] = new \stdClass();
+                } else {
+                    $groups[$allgroups[$group]->id] = $allgroups[$group];
+                }
+            }
+        }
+
+        $result = feedback_get_completeds($activity, $groups);
+        $count = feedback_get_completeds_count($activity, $groups);
+        $this->assertCount($expectedcount, $result);
+        $this->assertEquals($expectedcount, $count);
+        foreach ($result as $completed) {
+            $this->assertEquals($activity->id, $completed->feedback);
+        }
+    }
+
+    /**
+     * Data provider for test_feedback_get_completeds().
+     *
+     * @return array
+     */
+    public static function provider_feedback_get_completeds(): array {
+        return [
+            'Separate groups - All completeds, without filtering by groups' => [
+                'groupmode' => SEPARATEGROUPS,
+                'selectedgroups' => [],
+                'expectedcount' => 3,
+            ],
+            'Separate groups - Filter by groupa' => [
+                'groupmode' => SEPARATEGROUPS,
+                'selectedgroups' => ['groupa'],
+                'expectedcount' => 2,
+            ],
+            'Separate groups - Filter by groupb' => [
+                'groupmode' => SEPARATEGROUPS,
+                'selectedgroups' => ['groupb'],
+                'expectedcount' => 1,
+            ],
+            'Separate groups - Filter by groupc' => [
+                'groupmode' => SEPARATEGROUPS,
+                'selectedgroups' => ['groupc'],
+                'expectedcount' => 0,
+            ],
+            'Separate groups - Filter by groupa, groupb and groupc' => [
+                'groupmode' => SEPARATEGROUPS,
+                'selectedgroups' => ['groupa', 'groupb', 'groupc'],
+                'expectedcount' => 3,
+            ],
+            'Separate groups - Unexisting groupid' => [
+                'groupmode' => SEPARATEGROUPS,
+                'selectedgroups' => ['unexisting'],
+                'expectedcount' => 0,
+            ],
+            'Visible groups - All completeds, without filtering by groups' => [
+                'groupmode' => VISIBLEGROUPS,
+                'selectedgroups' => [],
+                'expectedcount' => 3,
+            ],
+            'Visible groups - Filter by groupa' => [
+                'groupmode' => VISIBLEGROUPS,
+                'selectedgroups' => ['groupa'],
+                'expectedcount' => 2,
+            ],
+            'Visible groups - Filter by groupb' => [
+                'groupmode' => VISIBLEGROUPS,
+                'selectedgroups' => ['groupb'],
+                'expectedcount' => 1,
+            ],
+            'Visible groups - Filter by groupc' => [
+                'groupmode' => VISIBLEGROUPS,
+                'selectedgroups' => ['groupc'],
+                'expectedcount' => 0,
+            ],
+            'Visible groups - Filter by groupa, groupb and groupc' => [
+                'groupmode' => VISIBLEGROUPS,
+                'selectedgroups' => ['groupa', 'groupb', 'groupc'],
+                'expectedcount' => 3,
+            ],
+            'Visible groups - Unexisting groupid' => [
+                'groupmode' => SEPARATEGROUPS,
+                'selectedgroups' => ['unexisting'],
+                'expectedcount' => 0,
+            ],
+        ];
+    }
 }

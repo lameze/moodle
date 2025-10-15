@@ -545,7 +545,7 @@ $string['deletecheck'] = 'Delete {$a} ?';
 $string['deletechecktype'] = 'Are you sure that you want to delete this {$a->type}?';
 $string['deletechecktypename'] = 'Are you sure that you want to delete the {$a->type} "{$a->name}"?';
 $string['deletecheckfiles'] = 'Are you absolutely sure you want to delete these files?';
-$string['deletecheckfull'] = 'Are you absolutely sure you want to completely delete the user {$a}, including their enrolments, activity and other user data?';
+$string['deletecheckfull'] = 'Are you sure you want to delete user {$a}, including data such as profile details, enrolments, group and cohort membership and some user activity data?';
 $string['deletecheckwarning'] = 'You are about to delete these files';
 $string['deletepicture'] = 'Delete picture';
 $string['deletesection'] = 'Delete';
@@ -929,13 +929,13 @@ $string['force'] = 'Force';
 $string['forcelanguage'] = 'Force language';
 $string['forceno'] = 'Do not force';
 $string['forcepasswordchange'] = 'Force password change';
-$string['forcepasswordchange_help'] = 'If this checkbox is ticked, the user will be prompted to change their password on their next login';
+$string['forcepasswordchange_help'] = 'If ticked, the user will be prompted to change their password when they next log in.';
 $string['forcepasswordchangecheckfull'] = 'Are you absolutely sure you want to force a password change to {$a} ?';
 $string['forcepasswordchangenot'] = 'Could not force a password change to {$a}';
 $string['forcepasswordchangenotice'] = 'You must change your password to proceed.';
 $string['forcepasswordresetfailurenotice'] = 'Your current password no longer passes the set password policy. Please contact your Moodle administrator for assistance.
    {$a}';
-$string['forcepasswordresetnotice'] = 'Your current password no longer passes the set password policy, you must reset your password to login.
+$string['forcepasswordresetnotice'] = 'Your current password no longer passes the password policy. You must reset your password to log in.
    {$a}';
 $string['forcetheme'] = 'Force theme';
 $string['forgotaccount'] = 'Lost password?';
@@ -991,6 +991,7 @@ This program is free software: you can redistribute it and/or modify it under th
 This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the Moodle License information page for full details: https://moodledev.io/general/license';
+$string['gradable'] = 'Gradable';
 $string['grades'] = 'Grades';
 $string['gradenoun'] = 'Grade';
 $string['gradeverb'] = 'Grade';
@@ -1033,9 +1034,10 @@ $string['hiddenassign'] = 'Hidden assignment';
 $string['hiddenfromstudents'] = 'Hidden from students';
 $string['hiddenoncoursepage'] = 'Available but not shown on course page';
 $string['hiddensections'] = 'Hidden sections';
-$string['hiddensections_help'] = 'Hidden sections can be displayed to students as \'not available\' on the course page, or kept completely hidden.';
-$string['hiddensectionscollapsed'] = 'Hidden sections are shown as not available';
-$string['hiddensectionsinvisible'] = 'Hidden sections are completely invisible';
+$string['hiddensectionscollapsed'] = 'Show section names only';
+$string['hiddensectionscollapsed_description'] = 'Section names are displayed to students, but section contents are hidden.';
+$string['hiddensectionsinvisible'] = 'Hide completely';
+$string['hiddensectionsinvisible_description'] = 'Hidden sections are not displayed to students.';
 $string['hiddenwithbrackets'] = '(hidden)';
 $string['hide'] = 'Hide';
 $string['hideadvancedsettings'] = 'Hide advanced settings';
@@ -1296,7 +1298,7 @@ $string['maximumgradex'] = 'Maximum grade: {$a}';
 $string['maximumshort'] = 'Max';
 $string['maximumupload'] = 'Maximum upload size';
 $string['maximumupload_help'] = 'The maximum file size allowed for student uploads to the course. Additionally, you can further restrict the maximum upload size for each activity.';
-$string['maxlengthreached'] = 'Maximum character limit of {$a} has been reached';
+$string['maxlengthreached'] = 'Maximum character limit of {$a} has been reached.';
 $string['maxnumberweeks'] = 'Maximum number of sections (deprecated)';
 $string['maxnumberweeks_desc'] = 'The maximum value in the number of sections drop-down menu (applies to certain course formats only). This setting is deprecated and will be removed in a future version of Moodle. Please use the course format settings instead.';
 $string['maxnumcoursesincombo'] = 'Browse <a href="{$a->link}">{$a->numberofcourses} courses</a>.';
@@ -1558,6 +1560,7 @@ $string['noneditingteacher'] = 'Non-editing teacher';
 $string['noneditingteacherdescription'] = 'Non-editing teachers can teach in courses and grade students, but may not alter activities.';
 $string['nonstandard'] = 'Non-standard';
 $string['noresultsfor'] = 'No results for "{$a}"';
+$string['noresultsfor_help'] = 'Check your spelling or try different words.';
 $string['nopendingcourses'] = 'There are no courses pending approval';
 $string['nopotentialadmins'] = 'No potential admins';
 $string['nopotentialcreators'] = 'No potential course creators';
@@ -1758,6 +1761,12 @@ $string['privacy:metadata:oauth2_refresh_token:token'] = 'The refresh token for 
 $string['privacy:metadata:oauth2_refresh_token:timecreated'] = 'The time when the token was created';
 $string['privacy:metadata:oauth2_refresh_token:timemodified'] = 'The time when the token was last updated';
 $string['privacy:metadata:oauth2_refresh_token:userid'] = 'The ID of the user to whom the token corresponds';
+$string['privacy:metadata:shortlink'] = 'Shortlink URL details';
+$string['privacy:metadata:shortlink:shortcode'] = 'The shortcode to use for the shortlink';
+$string['privacy:metadata:shortlink:userid'] = 'The ID of the user associated with the shortlink';
+$string['privacy:metadata:shortlink:component'] = 'The component associated with the shortlink';
+$string['privacy:metadata:shortlink:linktype'] = 'The type of link the shortlink can be identified as';
+$string['privacy:metadata:shortlink:identifier'] = 'The unique identifier associated with the shortlink';
 $string['privacy:metadata:task_adhoc'] = 'The status of ad hoc tasks.';
 $string['privacy:metadata:task_adhoc:component'] = 'The component owning the task.';
 $string['privacy:metadata:task_adhoc:nextruntime'] = 'The earliest time to run this task.';
@@ -2494,5 +2503,6 @@ $string['failedtaskcontexturlname'] = 'Status report';
 
 // Deprecated since Moodle 5.1.
 $string['activities_help'] = 'Activities, such as forums, quizzes and wikis, enable interactive content to be added to the course.';
+$string['hiddensections_help'] = 'Hidden sections can be displayed to students as \'not available\' on the course page, or kept completely hidden.';
 $string['maxsectionslimit'] = 'Cannot create new section as it would exceed the maximum number of sections allowed for this course ({$a}).';
 $string['resources_help'] = 'Resource types enable almost any kind of web content to be inserted into the course.';

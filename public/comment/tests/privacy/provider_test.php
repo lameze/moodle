@@ -23,12 +23,6 @@
  */
 namespace core_comment\privacy;
 
-defined('MOODLE_INTERNAL') || die();
-global $CFG;
-
-require_once($CFG->dirroot . '/comment/locallib.php');
-require_once($CFG->dirroot . '/comment/lib.php');
-
 use core_privacy\local\request\approved_userlist;
 use core_privacy\tests\provider_testcase;
 use core_privacy\tests\request\approved_contextlist;
@@ -420,7 +414,7 @@ final class provider_test extends provider_testcase {
      *
      * @param  context $context A context object.
      * @param  stdClass $course A course object.
-     * @return comment The comment object.
+     * @return \core_comment\manager The comment object.
      */
     protected function get_comment_object($context, $course) {
         // Comment on course page.
@@ -430,7 +424,7 @@ final class provider_test extends provider_testcase {
         $args->area = 'page_comments';
         $args->itemid = 0;
         $args->component = 'block_comments';
-        $comment = new \comment($args);
+        $comment = new \core_comment\manager($args);
         $comment->set_post_permission(true);
         return $comment;
     }

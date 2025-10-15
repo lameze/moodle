@@ -17,14 +17,12 @@
 namespace mod_wiki;
 
 use core_external\external_api;
-use externallib_advanced_testcase;
 use mod_wiki_external;
 
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot . '/webservice/tests/helpers.php');
 require_once($CFG->dirroot . '/mod/wiki/lib.php');
 
 /**
@@ -36,8 +34,7 @@ require_once($CFG->dirroot . '/mod/wiki/lib.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @since      Moodle 3.1
  */
-final class externallib_test extends externallib_advanced_testcase {
-
+final class externallib_test extends \core_external\tests\externallib_testcase {
     /** @var \stdClass course record. */
     protected $course;
 
@@ -276,6 +273,7 @@ final class externallib_test extends externallib_advanced_testcase {
         // Create what we expect to be returned when querying the two courses.
         // First for the student user.
         $expectedfields = array('id', 'coursemodule', 'course', 'name', 'intro', 'introformat', 'introfiles', 'lang',
+                'enableaitools', 'enabledaiactions',
                 'firstpagetitle', 'wikimode', 'defaultformat', 'forceformat', 'editbegin', 'editend', 'section', 'visible',
                 'groupmode', 'groupingid');
 
@@ -289,6 +287,8 @@ final class externallib_test extends externallib_advanced_testcase {
         $wiki1->groupingid = 0;
         $wiki1->introfiles = [];
         $wiki1->lang = '';
+        $wiki1->enableaitools = null;
+        $wiki1->enabledaiactions = null;
 
         $wiki2->coursemodule = $wiki2->cmid;
         $wiki2->introformat = 1;
@@ -298,6 +298,8 @@ final class externallib_test extends externallib_advanced_testcase {
         $wiki2->groupingid = 0;
         $wiki2->introfiles = [];
         $wiki2->lang = '';
+        $wiki2->enableaitools = null;
+        $wiki2->enabledaiactions = null;
 
         foreach ($expectedfields as $field) {
             $expected1[$field] = $wiki1->{$field};

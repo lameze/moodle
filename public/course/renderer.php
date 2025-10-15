@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use core_courseformat\output\section_renderer;
+
 /**
  * Renderer for use with the course section and all the goodness that falls
  * within it.
@@ -164,18 +166,26 @@ class core_course_renderer extends plugin_renderer_base {
     /**
      * Build the HTML for the module chooser javascript popup.
      *
+     * @deprecated since Moodle 5.1.
+     * @todo final deprecation in 6.0 (MDL-85655)
      * @param int $courseid The course id to fetch modules for.
      * @return string
      */
+    #[\core\attribute\deprecated(
+        reason: 'Now activity chooser init is called from section_renderer::add_cm_controls',
+        since: '5.1',
+        mdl: 'MDL-86337',
+    )]
     public function course_activitychooser($courseid) {
+        \core\deprecation::emit_deprecation([self::class, __FUNCTION__]);
 
-        if (!$this->page->requires->should_create_one_time_item_now('core_course_modchooser')) {
+        if (!$this->page->requires->should_create_one_time_item_now('core_courseformat_modchooser')) {
             return '';
         }
 
         // Build an object of config settings that we can then hook into in the Activity Chooser.
         $chooserconfig = (object) [];
-        $this->page->requires->js_call_amd('core_course/activitychooser', 'init', [$courseid, $chooserconfig]);
+        $this->page->requires->js_call_amd('core_courseformat/activitychooser', 'init', [$courseid, $chooserconfig]);
 
         return '';
     }
@@ -221,6 +231,8 @@ class core_course_renderer extends plugin_renderer_base {
      *
      * Renders the ajax control (the link which when clicked produces the activity chooser modal). No noscript fallback.
      *
+     * @deprecated since 5.1, use add_cm_controls() instead.
+     * @todo final depprecated in 6.0 (MDL-86310)
      * @param stdClass $course
      * @param int $section relative section number (field course_sections.section)
      * @param int $sectionreturn The section to link back to
@@ -228,27 +240,53 @@ class core_course_renderer extends plugin_renderer_base {
      *     option 'inblock' => true, suggesting to display controls vertically
      * @return string
      */
-    function course_section_add_cm_control($course, $section, $sectionreturn = null, $displayoptions = array()) {
-        // Check to see if user can add menus.
-        if (!has_capability('moodle/course:manageactivities', context_course::instance($course->id))
-                || !$this->page->user_is_editing()) {
-            return '';
+    #[\core\attribute\deprecated(
+        replacement: 'section_add_cm_controls',
+        since: '5.1',
+        mdl: 'MDL-80295',
+    )]
+    public function course_section_add_cm_control($course, $section, $sectionreturn = null, $displayoptions = []) {
+        \core\deprecation::emit_deprecation([self::class, __FUNCTION__]);
+
+        $format = core_courseformat\base::instance($course);
+
+        if ($sectionreturn === null) {
+            $format->set_sectionnum($sectionreturn);
         }
 
-        $sectioninfo = get_fast_modinfo($course)->get_section_info($section);
-
-        $activitychooserbutton = new \core_course\output\activitychooserbutton($sectioninfo, null, $sectionreturn);
-
-        // Load the JS for the modal.
-        $this->course_activitychooser($course->id);
-
-        return $this->render_from_template(
-            'core_courseformat/local/content/divider',
-            [
-                'content' => $this->render($activitychooserbutton),
-                'extraclasses' => 'always-visible my-3',
-            ]
+        return $this->section_add_cm_controls(
+            format: $format,
+            section: get_fast_modinfo($course)->get_section_info($section),
         );
+    }
+
+    /**
+     * Renders the controls to add activities and resources to the current course.
+     *
+     * The section_renderer is the real responsible for rendering the add cm controls.
+     * However, not all formats uses sections and could provide alternative renderers.
+     * Having this wrapper at a course system level makes it easier to render the
+     * element without checking if the format is compatible or not. Especially when
+     * the render happens in places not controlled by the format plugin,
+     * like subsections or blocks.
+     *
+     * @param core_courseformat\base $format The course format.
+     * @param section_info $section The section to add controls to.
+     * @param cm_info|null $mod The module before which the controls should be added.
+     * @return string HTML for the controls.
+     */
+    public function section_add_cm_controls(
+        core_courseformat\base $format,
+        section_info $section,
+        ?cm_info $mod = null,
+    ): string {
+        $renderer = $format->get_renderer($this->page);
+        // The probability of having a format that still not use section_renderer
+        // is very low, but not zero.
+        if (!$renderer instanceof section_renderer) {
+            return '';
+        }
+        return $renderer->add_cm_controls($format, $section, $mod);
     }
 
     /**

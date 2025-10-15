@@ -1568,34 +1568,163 @@ function quiz_reset_userdata($data) {
  *          "Attemtps 123 (45 from this group)".
  */
 function quiz_num_attempt_summary($quiz, $cm, $returnzero = false, $currentgroup = 0) {
-    global $DB, $USER;
-    $numattempts = $DB->count_records('quiz_attempts', ['quiz' => $quiz->id, 'preview' => 0]);
-    if ($numattempts || $returnzero) {
-        if (groups_get_activity_groupmode($cm)) {
-            $a = new stdClass();
-            $a->total = $numattempts;
-            if ($currentgroup) {
-                $a->group = $DB->count_records_sql('SELECT COUNT(DISTINCT qa.id) FROM ' .
-                        '{quiz_attempts} qa JOIN ' .
-                        '{groups_members} gm ON qa.userid = gm.userid ' .
-                        'WHERE quiz = ? AND preview = 0 AND groupid = ?',
-                        [$quiz->id, $currentgroup]);
-                return get_string('attemptsnumthisgroup', 'quiz', $a);
-            } else if ($groups = groups_get_all_groups($cm->course, $USER->id, $cm->groupingid)) {
-                [$usql, $params] = $DB->get_in_or_equal(array_keys($groups));
-                $a->group = $DB->count_records_sql('SELECT COUNT(DISTINCT qa.id) FROM ' .
-                        '{quiz_attempts} qa JOIN ' .
-                        '{groups_members} gm ON qa.userid = gm.userid ' .
-                        'WHERE quiz = ? AND preview = 0 AND ' .
-                        "groupid $usql", array_merge([$quiz->id], $params));
-                return get_string('attemptsnumyourgroups', 'quiz', $a);
-            }
-        }
-        return get_string('attemptsnum', 'quiz', $numattempts);
+    global $USER;
+    [$course, $fullcminfo] = get_course_and_cm_from_instance($quiz, 'quiz');
+    $totalattempts = quiz_num_attempts($fullcminfo);
+    if (!$totalattempts && !$returnzero) {
+        return '';
     }
-    return '';
+
+    if (groups_get_activity_groupmode($fullcminfo)) {
+        if ($currentgroup) {
+            $groupattempts = quiz_num_attempts($fullcminfo, [$currentgroup]);
+            return get_string(
+                'attemptsnumthisgroup',
+                'quiz',
+                [
+                    'total' => $totalattempts,
+                    'group' => $groupattempts,
+                ]
+            );
+        } else if ($groups = groups_get_all_groups($cm->course, $USER->id, $cm->groupingid)) {
+            $groupattempts = quiz_num_attempts($fullcminfo, array_keys($groups));
+            return get_string(
+                'attemptsnumyourgroups',
+                'quiz',
+                [
+                    'total' => $totalattempts,
+                    'group' => $groupattempts,
+                ]
+            );
+        }
+    }
+    return get_string('attemptsnum', 'quiz', $totalattempts);
 }
 
+/**
+ * Return a numerical summary of the number of attempts that have been made at a particular quiz.
+ *
+ * @param cm_info $cm
+ * @param array $groupidlist array of group ids to count attempts from, if array is empty we return all records from all groups.
+ * @param array $withcapabilities if non-null, only count attempts from users who have any the given capabilities
+ * in the quiz context.
+ *
+ * @return int the number of attempts filtered by group if groupidlist is not empty (or all attempts).
+ */
+function quiz_num_attempts(cm_info $cm, array $groupidlist = [], array $withcapabilities = []): int {
+    global $DB;
+    $context = context_module::instance($cm->id);
+
+    $groupjoins = groups_get_members_join($groupidlist, 'u.id', $context);
+    $params = array_merge(
+        ['quizid' => $cm->instance, 'preview' => 0],
+        $groupjoins->params ?? []
+    );
+    $joins = $groupjoins->joins;
+    $wheres = !empty($groupjoins->wheres) ? "AND $groupjoins->wheres" : "";
+
+    if ($withcapabilities) {
+        $studentsjoins = get_enrolled_with_capabilities_join(
+            $context,
+            '',
+            $withcapabilities
+        );
+        $wheres .= !empty($studentsjoins->wheres) ? " AND $studentsjoins->wheres" : "";
+        $joins .= $studentsjoins->joins;
+        $params = array_merge(
+            $params,
+            $studentsjoins->params ?? [],
+        );
+    }
+
+    return $DB->count_records_sql(
+        "SELECT
+            COUNT(DISTINCT qa.id)
+        FROM
+            {quiz_attempts} qa
+            LEFT JOIN {user} u ON qa.userid = u.id
+            {$joins}
+        WHERE
+            quiz = :quizid
+            AND preview = :preview $wheres",
+        $params
+    );
+}
+
+/**
+ * Return a number of users who have attempted a particular quiz,
+ * Returns 0 if no attempts have been made yet.
+ *
+ * @param cm_info $cm
+ * @param array $groupidlist array of group ids to count attempts from, if array is empty we return all records from all groups.
+ * @return int
+ */
+function quiz_num_users_who_attempted(cm_info $cm, array $groupidlist = []): int {
+    global $DB;
+    $context = context_module::instance($cm->id);
+
+    $studentsjoins = get_enrolled_with_capabilities_join($context, '', ['mod/quiz:attempt', 'mod/quiz:reviewmyattempts']);
+    $studentsjoins->wheres = empty($studentsjoins->wheres) ? '1=1' : $studentsjoins->wheres;
+
+    $groupjoins = groups_get_members_join($groupidlist, 'u.id', $context);
+    $groupjoins->wheres = !empty($groupjoins->wheres) ? "AND $groupjoins->wheres" : '';
+
+    $params = array_merge(
+        ['quiz' => $cm->instance, 'preview' => 0],
+        $studentsjoins->params ?? [],
+        $groupjoins->params ?? []
+    );
+
+    return $DB->count_records_sql(
+        "SELECT
+            COUNT(DISTINCT u.id)
+        FROM
+            {quiz_attempts} qa
+            LEFT JOIN {user} u ON qa.userid = u.id
+            {$studentsjoins->joins}
+            {$groupjoins->joins}
+        WHERE
+            qa.quiz = :quiz
+            AND qa.preview = :preview
+            AND {$studentsjoins->wheres} {$groupjoins->wheres}",
+        $params,
+    );
+}
+
+/**
+ * Return a number of users who can attempt a particular quiz,
+ *
+ * @param cm_info $cm
+ * @param array $groupidlist array of group ids to count attempts from, if array is empty we return all records from all groups.
+ * @return int
+ */
+function quiz_num_users_who_can_attempt(cm_info $cm, array $groupidlist = []): int {
+    global $DB;
+    $context = context_module::instance($cm->id);
+
+    $studentsjoins = get_enrolled_with_capabilities_join($context, '', ['mod/quiz:attempt', 'mod/quiz:reviewmyattempts']);
+    $studentsjoins->wheres = empty($studentsjoins->wheres) ? '1=1' : $studentsjoins->wheres;
+
+    $groupjoins = groups_get_members_join($groupidlist, 'u.id', $context);
+    $groupjoins->wheres = !empty($groupjoins->wheres) ? "AND $groupjoins->wheres" : '';
+
+    $params = array_merge(
+        $studentsjoins->params,
+        $groupjoins->params
+    );
+
+    return $DB->count_records_sql(
+        "SELECT
+            COUNT(DISTINCT u.id)
+        FROM
+            {user} u
+            {$studentsjoins->joins}
+            {$groupjoins->joins}
+        WHERE
+            {$studentsjoins->wheres} {$groupjoins->wheres}",
+        $params,
+    );
+}
 /**
  * Returns the same as {@link quiz_num_attempt_summary()} but wrapped in a link
  * to the quiz reports.
@@ -1623,23 +1752,22 @@ function quiz_attempt_summary_link_to_reports($quiz, $cm, $context, $returnzero 
  * @return mixed True if module supports feature, false if not, null if doesn't know or string for the module purpose.
  */
 function quiz_supports($feature) {
-    switch($feature) {
-        case FEATURE_GROUPS:                    return true;
-        case FEATURE_GROUPINGS:                 return true;
-        case FEATURE_MOD_INTRO:                 return true;
-        case FEATURE_COMPLETION_TRACKS_VIEWS:   return true;
-        case FEATURE_COMPLETION_HAS_RULES:      return true;
-        case FEATURE_GRADE_HAS_GRADE:           return true;
-        case FEATURE_GRADE_OUTCOMES:            return true;
-        case FEATURE_BACKUP_MOODLE2:            return true;
-        case FEATURE_SHOW_DESCRIPTION:          return true;
-        case FEATURE_CONTROLS_GRADE_VISIBILITY: return true;
-        case FEATURE_USES_QUESTIONS:            return true;
-        case FEATURE_PLAGIARISM:                return true;
-        case FEATURE_MOD_PURPOSE:               return MOD_PURPOSE_ASSESSMENT;
-
-        default: return null;
-    }
+    return match ($feature) {
+        FEATURE_GROUPS => true,
+        FEATURE_GROUPINGS => true,
+        FEATURE_MOD_INTRO => true,
+        FEATURE_COMPLETION_TRACKS_VIEWS => true,
+        FEATURE_COMPLETION_HAS_RULES => true,
+        FEATURE_GRADE_HAS_GRADE => true,
+        FEATURE_GRADE_OUTCOMES => true,
+        FEATURE_BACKUP_MOODLE2 => true,
+        FEATURE_SHOW_DESCRIPTION => true,
+        FEATURE_CONTROLS_GRADE_VISIBILITY => true,
+        FEATURE_USES_QUESTIONS => true,
+        FEATURE_PLAGIARISM => true,
+        FEATURE_MOD_PURPOSE => MOD_PURPOSE_ASSESSMENT,
+        default => null,
+    };
 }
 
 /**

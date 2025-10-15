@@ -22,6 +22,9 @@ use mod_bigbluebuttonbn\local\extension\broker_meeting_events_addons;
 use mod_bigbluebuttonbn\local\extension\custom_completion_addons;
 use mod_bigbluebuttonbn\local\extension\mod_form_addons;
 use mod_bigbluebuttonbn\local\extension\mod_instance_helper;
+use mod_bigbluebuttonbn\local\extension\navigation_append_addon;
+use mod_bigbluebuttonbn\local\extension\navigation_override_addon;
+use mod_bigbluebuttonbn\local\extension\view_page_addons;
 use stdClass;
 use core_plugin_manager;
 use core_component;
@@ -258,5 +261,54 @@ class extension {
      */
     public static function broker_meeting_events_addons_instances(instance $instance, string $data): array {
         return self::get_instances_implementing(broker_meeting_events_addons::class, [$instance, $data]);
+    }
+
+    /**
+     * Append settings navigation.
+     *
+     * @param \settings_navigation $settingsnav
+     * @param \navigation_node $nodenav
+     */
+    public static function append_settings_navigation(\settings_navigation $settingsnav, \navigation_node $nodenav) {
+        $appends = self::get_instances_implementing(navigation_append_addon::class);
+        foreach ($appends as $addon) {
+            $addon->append_settings_navigation($settingsnav, $nodenav);
+        }
+    }
+
+    /**
+     * Override settings navigation.
+     *
+     * @param \settings_navigation $settingsnav
+     * @param \navigation_node $nodenav
+     * @return bool true if the settings navigation was overridden, false otherwise.
+     */
+    public static function override_settings_navigation(\settings_navigation $settingsnav, \navigation_node $nodenav) {
+        $overrides = self::get_instances_implementing(navigation_override_addon::class);
+        if (!empty($overrides)) {
+            $firstoverride = reset($overrides);
+            $firstoverride->override_settings_navigation($settingsnav, $nodenav);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Get rendered output for override in the instance.
+     *
+     * @param \renderer_base $renderer
+     * @param instance $instance
+     * @return string|null Rendered information for the instance, or null if no override found.
+     */
+    public static function get_rendered_output_override($renderer, $instance): ?string {
+        $classes = self::get_classes_implementing(view_page_addons::class);
+        if (!empty($classes)) {
+            $outputclass = reset($classes);
+            if (class_exists($outputclass)) {
+                return $renderer->render(new $outputclass($instance));
+            }
+        }
+        // Fallback to the default rendered output if no subplugin overrides it.
+        return null;
     }
 }

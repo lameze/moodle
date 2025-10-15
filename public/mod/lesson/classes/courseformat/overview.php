@@ -113,8 +113,10 @@ class overview extends \core_courseformat\activityoverviewbase {
             return null;
         }
 
-        $attemptedusers = $this->lesson->count_submitted_participants();
-        $totalusers = $this->lesson->count_all_participants();
+        $groups = array_map(fn($group) => $group->id, $this->get_groups_for_filtering());
+
+        $attemptedusers = $this->lesson->count_submitted_participants($groups);
+        $totalusers = $this->lesson->count_all_participants($groups);
 
         return new overviewitem(
             name: $this->stringmanager->get_string('studentswhoattempted', 'mod_lesson'),
@@ -124,6 +126,7 @@ class overview extends \core_courseformat\activityoverviewbase {
                 'core',
                 ['count' => $attemptedusers, 'total' => $totalusers]
             ),
+            textalign: text_align::END,
         );
     }
 
@@ -137,10 +140,12 @@ class overview extends \core_courseformat\activityoverviewbase {
             return null;
         }
 
-        $totalattempts = $this->lesson->count_all_submissions();
+        $groups = array_map(fn($group) => $group->id, $this->get_groups_for_filtering());
+
+        $totalattempts = $this->lesson->count_all_submissions($groups);
 
         if ($this->lesson->retake) {
-            $attemptedusers = $this->lesson->count_submitted_participants();
+            $attemptedusers = $this->lesson->count_submitted_participants($groups);
 
             $overviewdialog = new overviewdialog(
                 buttoncontent: $totalattempts,
@@ -148,7 +153,7 @@ class overview extends \core_courseformat\activityoverviewbase {
                 definition: ['buttonclasses' => button::BODY_OUTLINE->classes() . ' dropdown-toggle'],
             );
 
-            $averageattempts = $totalattempts ? round($totalattempts / $attemptedusers) : 0;
+            $averageattempts = $totalattempts ? round($totalattempts / $attemptedusers, 1) : 0;
             $overviewdialog->add_item(
                 $this->stringmanager->get_string('averageattempts', 'mod_lesson'),
                 $averageattempts
@@ -161,7 +166,6 @@ class overview extends \core_courseformat\activityoverviewbase {
             name: $this->stringmanager->get_string('totalattepmts', 'mod_lesson'),
             value: !empty($overviewdialog) ? $totalattempts : null,
             content: $overviewdialog ?? $totalattempts,
-            textalign: text_align::START,
         );
     }
 }
