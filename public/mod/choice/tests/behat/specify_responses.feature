@@ -15,37 +15,27 @@ Feature: Specify any number of choice responses
       | user     | course | role           |
       | teacher1 | C1     | editingteacher |
     And the following "activities" exist:
-      | activity   | name       | intro                   | course |
-      | choice     | Choice 1   | Test choice description | C1     |
+      | activity   | name       | intro                   | course | option          |
+      | choice     | Choice 1   | Test choice description | C1     | one, two, three |
 
   Scenario: Teacher can add and display any number of responses in a choice activity
-    Given I am on the "Choice 1" "choice activity editing" page logged in as "teacher1"
-    And I set the following fields to these values:
-      | Option 1 | one   |
-      | Option 2 | two   |
-      | Option 3 | three |
-    And I press "Save and display"
-    And I wait until the page is ready
+    Given I am on the "Choice 1" "choice activity" page logged in as "teacher1"
     And I should see "one"
     And I should see "two"
     And I should see "three"
-    And I am on the "Choice 1" "choice activity editing" page
+    And I should not see "four"
+    And I should not see "five"
+    And I should not see "six"
+    When I am on the "Choice 1" "choice activity editing" page
     And I press "Add 3 field(s) to form"
-    And I press "Add 3 field(s) to form"
-    When I set the following fields to these values:
+    And I set the following fields to these values:
       | Option 4  | four  |
       | Option 5  | five  |
       | Option 6  | six   |
-      | Option 7  | seven |
-      | Option 8  | eight |
-      | Option 9  | nine  |
-      | Option 10 | ten   |
     And I press "Save and display"
-    And I wait until the page is ready
-    Then I should see "four"
+    Then I should see "one"
+    And I should see "two"
+    And I should see "three"
+    And I should see "four"
     And I should see "five"
     And I should see "six"
-    And I should see "seven"
-    And I should see "eight"
-    And I should see "nine"
-    And I should see "ten"
