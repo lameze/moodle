@@ -3646,8 +3646,11 @@ class core_message_external extends external_api {
 
         // Checks if a user can delete a message for all users.
         if (core_message\api::can_delete_message_for_all_users($USER->id, $params['messageid'])) {
+            error_log('can delete');
             \core_message\api::delete_message_for_all_users($params['messageid']);
+
         } else {
+            error_log('cannot delete');
             throw new moodle_exception('You do not have permission to delete this message for everyone.');
         }
 

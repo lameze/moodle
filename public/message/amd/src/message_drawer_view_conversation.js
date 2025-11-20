@@ -955,6 +955,7 @@ function(
             var sentMessageIds = sentMessages.map(function(message) {
                 return message.id;
             });
+            // suspicious
             if (newState.deleteMessagesForAllUsers) {
                 deleteMessagesPromise = Repository.deleteMessagesForAllUsers(viewState.loggedInUserId, sentMessageIds);
             } else {

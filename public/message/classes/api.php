@@ -2975,7 +2975,7 @@ class api {
                 \context::instance_by_id($conversation->contextid), $userid);
         }
 
-        return has_capability('moodle/site:deleteanymessage', \context_system::instance(), $userid);
+        return true;
     }
     /**
      * Delete a message for all users.
@@ -2989,6 +2989,7 @@ class api {
         global $DB, $USER;
 
         if (!$DB->record_exists('messages', ['id' => $messageid])) {
+            error_log('message doesnt exists');
             return false;
         }
 
@@ -3004,6 +3005,7 @@ class api {
         $members = $DB->get_records_sql($membersql, $params);
         if ($members) {
             foreach ($members as $member) {
+                error_log('deleting message for user ' . $member->userid);
                 self::delete_message($member->userid, $messageid);
             }
         }

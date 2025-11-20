@@ -214,6 +214,7 @@ Feature: Message delete conversations
     And I open messaging
     And I open the "Group" conversations list
     And I select "Group 1" conversation in messaging
+#    And I pause
     And I should see "Hey everyone"
     And I should not see "We can do it"
     And I log in as "student1"
