@@ -116,6 +116,25 @@ Feature: View activity completion in the SCORM activity
     And the "Do all parts of this activity" completion condition of "Music history" is displayed as "done"
     And the "Receive a grade" completion condition of "Music history" is displayed as "done"
     And the "Complete or pass the activity" completion condition of "Music history" is displayed as "done"
+    And I am on the "Music history" "scorm activity" page logged in as "teacher1"
+    And I navigate to "Reports" in current page administration
+    Then  the following should exist in the "generaltable" table:
+      | First name      | Email address        | Attempt | Score |
+      | Vinnie Student1 | student1@example.com | 1       | 9     |
+    And I click on "1" "link" in the "Vinnie Student1" "table_row"
+    And the following should exist in the "generaltable" table:
+      | Title                                   | Status    |
+      | Golf Explained - Minimum Run-time Calls |           |
+      | Playing the Game                        |           |
+      | How to Play                             | Completed |
+      | Par?                                    | Completed |
+      | Keeping Score                           | Completed |
+      | Other Scoring Systems                   | Completed |
+      | The Rules of Golf                       | Completed |
+      | Playing Golf Quiz                       | Completed |
+      | How to Have Fun Playing Golf            | Completed |
+      | How to Make Friends Playing Golf        | Completed |
+      | Having Fun Quiz                         | Completed |
 
   @javascript
   Scenario: A student can manually mark the scorm activity as done but a teacher cannot

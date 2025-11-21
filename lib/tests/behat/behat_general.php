@@ -307,6 +307,28 @@ class behat_general extends behat_base {
     }
 
     /**
+     * Clicks the specified element and accepts the expected alert dialog.
+     *
+     * Example:
+     *   When I click on "Delete selected attempts" "button" and accept the dialog
+     *
+     * @When /^I click on "(?P<label>(?:[^"]|\\")*)" "(?P<element>(?:[^"]|\\")*)" and accept the dialog$/
+     * @param string $label The label/locator of the element to click.
+     * @param string $element The selector type of the element (e.g. button, link).
+     */
+    public function i_click_on_and_accept_dialogue(string $label, string $element): void {
+        // Click the requested element.
+        $this->i_click_on($label, $element);
+
+        // Wait for the alert and accept it.
+        $alert = $this->wait_for_alert();
+        $alert->accept();
+
+        // Ensure the page is ready after accepting the dialog.
+        $this->wait_until_the_page_is_ready();
+    }
+
+    /**
      * Dismisses the currently displayed alert dialog. This step does not work in all the browsers, consider it experimental.
      * @Given /^I dismiss the currently displayed dialog$/
      */
