@@ -26,7 +26,7 @@
 
 require('../config.php');
 require_once('lib.php');
-
+sleep(5);
 redirect_if_major_upgrade_required();
 
 $testsession = optional_param('testsession', 0, PARAM_INT); // test session works properly
