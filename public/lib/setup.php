@@ -438,6 +438,9 @@ if (!defined('MOODLE_INTERNAL')) { // Necessary because cli installer has to def
     define('MOODLE_INTERNAL', true);
 }
 
+// PERF-REGRESSION TEST: artificial delay to mimic a slowdown. Remove before merge.
+usleep(200000); // 200 ms
+
 // The core_component class can be used in any scripts, it does not need anything else.
 require_once($CFG->libdir .'/classes/component.php');
 
