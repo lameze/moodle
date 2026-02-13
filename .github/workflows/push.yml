@@ -56,6 +56,23 @@ jobs:
         image: redis
         ports:
           - 6379:6379
+      # Official MySQL service to replace moodlehq/mysql-action which invoked Docker
+      # from inside an action container and caused a Docker client/server API mismatch.
+      mysql:
+        image: mysql:8.0
+        ports:
+          - 3306:3306
+        env:
+          MYSQL_ROOT_PASSWORD: test
+          MYSQL_DATABASE: test
+          MYSQL_USER: test
+          MYSQL_PASSWORD: test
+        options: >-
+          --health-cmd='mysqladmin ping -h localhost --silent'
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+          --tmpfs /var/lib/mysql:rw,size=1024M
     strategy:
       fail-fast: false
       matrix:
@@ -71,19 +88,6 @@ jobs:
             db: pgsql
 
     steps:
-      - name: Setting up DB mysql
-        if: ${{ matrix.db == 'mysqli' }}
-        uses: moodlehq/mysql-action@v1
-        with:
-          collation server: utf8mb4_bin
-          mysql version: 8.4
-          mysql database: test
-          mysql user: test
-          mysql password: test
-          use tmpfs: true
-          tmpfs size: '1024M'
-          extra conf: --skip-log-bin
-
       - name: Setting up DB pgsql
         if: ${{ matrix.db == 'pgsql' }}
         uses: m4nu56/postgresql-action@v1
