@@ -21,6 +21,8 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+import Pending from 'core/pending';
+
 const selectors = {
     presetRadioButton: 'input[name="fullname"]',
     selectPresetButton: 'input[name="selectpreset"]',
@@ -39,8 +41,17 @@ export const init = () => {
     radioButton.forEach((elem) => {
         elem.addEventListener('change', function(event) {
             event.preventDefault();
+
+            // Behat can run the next step before the DOM mutation from this handler is observed.
+            // Mark this as a short-lived pending JS action and resolve it after the browser
+            // has had a chance to apply the attribute/class updates.
+            const pending = new Pending('mod_data/selectpreset');
+
             // Enable the "Use a preset" button when any of the radio buttons in the presets list is checked.
             disableUsePresetButton();
+
+            // Resolve on the next frame to ensure the updated disabled state is visible.
+            window.requestAnimationFrame(() => pending.resolve());
         });
     });
 
