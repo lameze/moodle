@@ -4,8 +4,9 @@ Feature: Managers can create courses
   As a manager
   I need to create courses and set default values on them
 
-  @javascript
+  @javascript @mdl87905
   Scenario: Courses are created with the default announcements forum
+    And I pause
     Given the following "users" exist:
       | username | firstname | lastname | email |
       | teacher1 | Teacher | 1 | teacher1@example.com |
