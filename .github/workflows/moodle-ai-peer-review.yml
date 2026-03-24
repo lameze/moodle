@@ -1,0 +1,117 @@
+name: Moodle Agentic Peer Review
+
+on:
+  push:
+    branches-ignore:
+      - 'main'
+      - 'MOODLE_*_STABLE'
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    permissions:
+      # Required by actions/ai-inference to call the Copilot/Models API.
+      models: read
+      contents: read
+
+    steps:
+      - name: Checkout pushed branch
+        uses: actions/checkout@v4
+        with:
+          # Fetch the full history of this branch so merge-base can be calculated.
+          fetch-depth: 0
+          fetch-tags: false
+
+      - name: Fetch main branch only
+        # We need origin/main as a reference point to find the divergence point
+        # (merge-base), not to diff against its full contents.
+        run: git fetch origin main --no-tags
+
+      - name: Split diff into per-file chunks
+        # Diffs only the commits that belong to THIS branch (since it diverged
+        # from main), not the entire history between HEAD and origin/main.
+        run: |
+          mkdir -p /tmp/chunks
+
+          # Find the exact commit where this branch diverged from main.
+          MERGE_BASE=$(git merge-base origin/main HEAD)
+          echo "Merge base: $MERGE_BASE"
+          echo "Branch tip: $(git rev-parse HEAD)"
+
+          git diff "$MERGE_BASE" HEAD -- \
+            ':(exclude)*.min.js' \
+            ':(exclude)*.min.css' \
+            ':(exclude)vendor/**' \
+            ':(exclude)node_modules/**' \
+            ':(exclude)*.lock' \
+            ':(exclude)npm-shrinkwrap.json' \
+            > /tmp/full.diff
+
+          echo "Changed files in this branch:"
+          git diff --name-only "$MERGE_BASE" HEAD
+
+          # Bail out early if the diff is empty.
+          if [ ! -s /tmp/full.diff ]; then
+            echo "No relevant changes to review."
+            exit 0
+          fi
+
+          # Split on "diff --git" boundaries into individual files.
+          csplit --quiet --prefix=/tmp/chunks/chunk_ --suffix-format='%03d.diff' \
+            /tmp/full.diff '/^diff --git/' '{*}' || true
+
+          # Remove the empty preamble chunk csplit always creates before the first match.
+          find /tmp/chunks -name '*.diff' -empty -delete
+
+          CHUNK_COUNT=$(find /tmp/chunks -name '*.diff' | wc -l)
+          echo "Total file chunks to review: $CHUNK_COUNT"
+          find /tmp/chunks -name '*.diff' | sort
+
+      - name: Review each file chunk
+        # Loops over each per-file diff, calls ai-inference, appends to the report.
+        run: |
+          echo "# Moodle AI Peer Review" > /tmp/review_report.md
+          echo "_Branch: \`${{ github.ref_name }}\` — reviewed against merge-base with \`main\`_" >> /tmp/review_report.md
+          echo "" >> /tmp/review_report.md
+
+          for chunk in $(find /tmp/chunks -name '*.diff' | sort); do
+            FILENAME=$(head -1 "$chunk" | sed 's/diff --git a\///' | awk '{print $1}')
+            echo "## Reviewing: $FILENAME"
+
+            # Write the prompt for this chunk to a temp file.
+            {
+              echo "Please review ONLY the following single-file patch. Be concise."
+              echo ""
+              echo '```diff'
+              cat "$chunk"
+              echo '```'
+            } > /tmp/current_prompt.txt
+
+            cat .github/skills/moodle-reviewer/SKILL.md > /tmp/current_skill.txt
+
+            # Call ai-inference via the action's underlying binary.
+            # We use the GitHub Models REST endpoint directly here since we're
+            # inside a loop (actions/ai-inference can't be called in a loop).
+            RESPONSE=$(curl -s \
+              -H "Authorization: Bearer $GITHUB_TOKEN" \
+              -H "Content-Type: application/json" \
+              "https://models.inference.ai.azure.com/chat/completions" \
+              -d "$(jq -n \
+                --rawfile system /tmp/current_skill.txt \
+                --rawfile user   /tmp/current_prompt.txt \
+                '{model:"gpt-4o",max_tokens:2000,messages:[
+                  {role:"system",content:$system},
+                  {role:"user",  content:$user}
+                ]}')")
+
+            echo "### \`$FILENAME\`" >> /tmp/review_report.md
+            echo "" >> /tmp/review_report.md
+            echo "$RESPONSE" | jq -r '.choices[0].message.content // "⚠️ No response for this chunk."' >> /tmp/review_report.md
+            echo "" >> /tmp/review_report.md
+          done
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Post Review to Job Summary
+        # This makes the results appear in the 'Summary' tab of the Action run.
+        run: cat /tmp/review_report.md >> $GITHUB_STEP_SUMMARY
