@@ -25,9 +25,6 @@ Feature: Perform calendar filter actions
       | user     | group |
       | teacher1 | G1    |
     And the following "events" exist:
-      | name       | eventtype |
-      | Site event | site      |
-    And the following "events" exist:
       | name      | eventtype | course |
       | C1 event  | course    | C1     |
     And the following "events" exist:
@@ -36,6 +33,15 @@ Feature: Perform calendar filter actions
     And the following "events" exist:
       | name         | eventtype | group | course |
       | Group1 event | group     | G1    | C1     |
+    # Workaround for the known site event generator visibility bug
+    And I log in as "admin"
+    And I follow "Calendar" in the user menu
+    And I click on "New event" "button"
+    And I set the field "Event title" to "Site event"
+    And I set the field "Type of event" to "Site"
+    And I click on "Save" "button" in the "New event" "dialogue"
+    And I wait until the page is ready
+    And I log out
 
   Scenario: Teacher of a Course can see his events and filter them
     Given I log in as "teacher1"
@@ -43,6 +49,11 @@ Feature: Perform calendar filter actions
     Then I should see "C1 event"
     And I should see "Dep1a event"
     And I should see "Group1 event"
+    # Test interacting with an event (QA Step 7) - Moved here so it only runs in Month view!
+    And I click on "C1 event" "link"
+    And I should see "C1 event" in the "C1 event" "dialogue"
+    And I click on "Close" "button" in the "C1 event" "dialogue"
+    # Continue with testing the filters
     And I click on "Hide category events" "link"
     And I should see "C1 event"
     And I should not see "Dep1a event"
@@ -73,3 +84,36 @@ Feature: Perform calendar filter actions
     Then I should see "C1 event"
     And I should see "Dep1a event"
     And I should see "Group1 event"
+
+  Scenario Outline: Course filter shows all events when switching from a course to all courses in <view> view
+    Given the following "events" exist:
+      | name       | eventtype | user     |
+      | User event | user      | teacher1 |
+    And I log in as "teacher1"
+    And I follow "Calendar" in the user menu
+    And I click on "Month" "button"
+    And I click on "<view_link>" "link"
+    And I should see "All courses" in the "course" "select"
+    And I should see "Site event"
+    And I should see "C1 event"
+    And I should see "Dep1a event"
+    And I should see "Group1 event"
+    And I should see "User event" 
+    And I click on "Hide site events" "link"
+    And I should not see "Site event"
+    And I click on "Show site events" "link"
+    And I should see "Site event"
+    And I set the field "course" to "<test_course>"
+    And I should not see "C1 event"
+    And I should not see "Dep1a event"
+    And I should not see "Group1 event"
+    When I set the field "course" to "All courses"
+    Then I should see "C1 event"
+    And I should see "Dep1a event"
+    And I should see "Group1 event"
+
+    Examples:
+      | view            | view_link       | test_course |
+      | month           | Month           | Course 2    |
+      | day             | Day             | Course 2    |
+      | upcoming events | Upcoming events | Course 2    |
