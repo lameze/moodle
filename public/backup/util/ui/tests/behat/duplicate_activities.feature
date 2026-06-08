@@ -19,8 +19,6 @@ Feature: Duplicate activities
     And the following "activities" exist:
       | activity | name               | intro                     | course | idnumber   | section |
       | data     | Test database name | Test database description | C1     | database1  | 1       |
-    And the following config values are set as admin:
-      | backup_import_activities | 0 | backup |
     And the following "core_badges > Badges" exist:
       | name            | course | description       | image                        | status | type |
       | My course badge | C1     | Badge description | badges/tests/behat/badge.png | active | 2    |
