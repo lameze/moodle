@@ -986,6 +986,11 @@ EOF;
 
             // Debugging messages.
             if ($debuggingmessages = $this->getSession()->getPage()->findAll('xpath', $debuggingxpath)) {
+                // Some tests may intentionally trigger debugging() messages and rely on
+                // a scenario tag to treat these as expected.
+                if ($this->has_tag('allowDebugMessages')) {
+                    return;
+                }
                 $msgs = [];
                 foreach ($debuggingmessages as $debuggingmessage) {
                     $msgs[] = $this->get_debug_text($debuggingmessage->getHtml());
