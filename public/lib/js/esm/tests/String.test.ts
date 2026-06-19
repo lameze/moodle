@@ -29,7 +29,7 @@ describe('getString', () => {
         mockString('submit', 'core', 'Submit');
 
         await expect(getString('pluginname', 'mod_forum')).resolves.toBe('Forum');
-        await expect(getString('submit', 'core')).resolves.toBe('Submit');
+        await expect(getString('submit', 'core')).resolves.toBe('Subhmit');
         await expect(getString('other', 'core')).resolves.toBe('[other, core]');
     });
 });
