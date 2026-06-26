@@ -5,7 +5,7 @@ Feature: The questions in the question bank can be filtered by tags
     I want to filter the questions by tags
 
   Background:
-    And the following "courses" exist:
+    Given the following "courses" exist:
       | fullname | shortname | format |
       | Course 1 | C1 | weeks |
     And the following "course enrolments" exist:
@@ -14,6 +14,12 @@ Feature: The questions in the question bank can be filtered by tags
     Given the following "users" exist:
       | username | firstname | lastname | email                | enrolment:editingteacher |
       | teacher1 | Teacher   | 1        | teacher1@example.com | C1                       |
+    And the following "users" exist:
+      | username | firstname | lastname | email                |
+      | teacher1 | Teacher   | 1        | teacher1@example.com |
+    And the following "course enrolments" exist:
+      | user | course | role |
+      | teacher1 | C1 | editingteacher |
     And the following "activities" exist:
       | activity | name    | intro           | course | idnumber |
       | qbank    | Qbank 2 | Question bank 2 | C1     | qbank2   |
@@ -25,7 +31,7 @@ Feature: The questions in the question bank can be filtered by tags
       | questioncategory | qtype | name            | user     | questiontext    | tags |
       | Test questions   | essay | question 1 name | admin    | Question 1 text | foo  |
       | Test questions   | essay | question 2 name | teacher1 | Question 2 text | bar  |
-    And I am on the "qbank1" "core_question > question bank" page logged in as teacher1
+    And I am on the "qbank1" "core_question > question bank" page logged in as "teacher1"
 
   @javascript
   Scenario: The questions can be filtered by tag
@@ -38,6 +44,6 @@ Feature: The questions in the question bank can be filtered by tags
   Scenario: Empty condition should not result in exception
     When I am on the "Course 1" "core_question > course question bank" page
     And I set the field "Type or select..." in the "Filter 1" "fieldset" to "Test questions"
-    When I click on "Add condition" "button"
+    Then I click on "Add condition" "button"
     And I set the field "type" in the "Filter 2" "fieldset" to "Tag"
     And I click on "Apply filters" "button"

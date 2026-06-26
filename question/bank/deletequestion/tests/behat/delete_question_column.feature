@@ -19,9 +19,10 @@ Feature: Use the qbank plugin manager page for deletequestion
       | contextlevel | reference | name           |
       | Course       | C1        | Test questions |
     And the following "questions" exist:
-      | questioncategory | qtype     | name                  | questiontext              |
-      | Test questions   | truefalse | First question        | Answer the first question |
-      | Test questions   | truefalse | First question second | Answer the first question |
+      | questioncategory | qtype     | name       | questiontext               | tags |
+      | Test questions   | truefalse | Question 1 | Answer the first question  | foo  |
+      | Test questions   | truefalse | Question 2 | Answer the second question |      |
+      | Test questions   | truefalse | Question 3 | Answer the third question  |      |
 
   Scenario: Enable/disable delete question column from the base view
     Given I log in as "admin"
@@ -63,11 +64,8 @@ Feature: Use the qbank plugin manager page for deletequestion
 
   @javascript
   Scenario: I should be able to delete a question when filtered using tags
-    Given I am on the "First question" "core_question > edit" page logged in as "admin"
-    And I set the following fields to these values:
-      | Tags | foo |
-    And I click on "Save changes" "button"
-    And I am on the "Test quiz" "mod_quiz > question bank" page
+    Given I am on the "Test quiz" "mod_quiz > question bank" page logged in as "admin"
+    And I apply question bank filter "Category" with value "Test questions"
     And I apply question bank filter "Tag" with value "foo"
     And I click on "First question" "checkbox"
     And I click on "With selected" "button"
