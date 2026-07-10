@@ -64,7 +64,7 @@ Feature: Feedbacks in courses with groups
       | label           | multichoice1                            |
       | subtype         | r                                       |
       | hidenoselect    | 1                                       |
-      | values          | Yes of course\nNot at all\nI don't know |
+      | values          | Yes of course\\nNot at all\\nI don't know |
     And the following "mod_feedback > responses" exist:
       | activity  | user  | Do you like this course? |
       | feedback1 | user1 | Not at all               |
@@ -161,7 +161,7 @@ Feature: Feedbacks in courses with groups
       | label           | multichoice1                            |
       | subtype         | r                                       |
       | hidenoselect    | 1                                       |
-      | values          | Yes of course\nNot at all\nI don't know |
+      | values          | Yes of course\\nNot at all\\nI don't know |
     And the following "mod_feedback > responses" exist:
       | activity  | user  | Do you like this course? |
       | feedback2 | user1 | Not at all               |
@@ -179,7 +179,7 @@ Feature: Feedbacks in courses with groups
       | label           | multichoice1                            |
       | subtype         | r                                       |
       | hidenoselect    | 1                                       |
-      | values          | Yes of course\nNot at all\nI don't know |
+      | values          | Yes of course\\nNot at all\\nI don't know |
     And the following "mod_feedback > responses" exist:
       | activity  | user  | Do you like this course? |
       | feedback2 | user1 | Not at all               |

@@ -30,7 +30,7 @@ Feature: Testing multichoice questions in feedback
       | Question         | this is a multiple choice 1 |
       | Label            | multichoice1                |
       | Multiple choice type | Multiple choice - single answer |
-      | Multiple choice values | option a\noption b\noption c  |
+      | Multiple choice values | option a\\noption b\\noption c  |
     And I add a "Text and media area" question to the feedback with:
       | Contents | this is the first page of the feedback |
     And I add a page break to the feedback
@@ -38,7 +38,7 @@ Feature: Testing multichoice questions in feedback
       | Question         | this is a multiple choice 2 |
       | Label            | multichoice2                |
       | Multiple choice type | Multiple choice - single answer |
-      | Multiple choice values | option d\noption e\noption f  |
+      | Multiple choice values | option d\\noption e\\noption f  |
       | Required | 1 |
     And I add a "Text and media area" question to the feedback with:
       | Contents | this is the second page of the feedback |
@@ -47,7 +47,7 @@ Feature: Testing multichoice questions in feedback
       | Question         | this is a multiple choice 3 |
       | Label            | multichoice3                |
       | Multiple choice type | Multiple choice - single answer |
-      | Multiple choice values | option g\noption h\noption i  |
+      | Multiple choice values | option g\\noption h\\noption i  |
       | Hide the "Not selected" option | Yes                   |
       | Dependence item                | multichoice2          |
       | Dependence value               | option d              |
@@ -169,7 +169,7 @@ Feature: Testing multichoice questions in feedback
       | Question         | this is a multiple choice 1 |
       | Label            | multichoice1                |
       | Multiple choice type | Multiple choice - multiple answers |
-      | Multiple choice values | option a\noption b\noption c  |
+      | Multiple choice values | option a\\noption b\\noption c  |
     And I add a "Text and media area" question to the feedback with:
       | Contents | this is the first page of the feedback |
     And I add a page break to the feedback
@@ -177,7 +177,7 @@ Feature: Testing multichoice questions in feedback
       | Question         | this is a multiple choice 2 |
       | Label            | multichoice2                |
       | Multiple choice type | Multiple choice - multiple answers |
-      | Multiple choice values | option d\noption e\noption f  |
+      | Multiple choice values | option d\\noption e\\noption f  |
       | Required | 1 |
     And I add a "Text and media area" question to the feedback with:
       | Contents | this is the second page of the feedback |
@@ -186,7 +186,7 @@ Feature: Testing multichoice questions in feedback
       | Question         | this is a multiple choice 3 |
       | Label            | multichoice3                |
       | Multiple choice type | Multiple choice - multiple answers |
-      | Multiple choice values | option g\noption h\noption i  |
+      | Multiple choice values | option g\\noption h\\noption i  |
       | Dependence item                | multichoice2          |
       | Dependence value               | option d              |
     And I add a "Text and media area" question to the feedback with:
@@ -307,7 +307,7 @@ Feature: Testing multichoice questions in feedback
       | Question         | this is a multiple choice 1 |
       | Label            | multichoice1                |
       | Multiple choice type | Multiple choice - single answer allowed (drop-down menu) |
-      | Multiple choice values | option a\noption b\noption c  |
+      | Multiple choice values | option a\\noption b\\noption c  |
     And I add a "Text and media area" question to the feedback with:
       | Contents | this is the first page of the feedback |
     And I add a page break to the feedback
@@ -315,7 +315,7 @@ Feature: Testing multichoice questions in feedback
       | Question         | this is a multiple choice 2 |
       | Label            | multichoice2                |
       | Multiple choice type | Multiple choice - single answer allowed (drop-down menu) |
-      | Multiple choice values | option d\noption e\noption f  |
+      | Multiple choice values | option d\\noption e\\noption f  |
       | Required | 1 |
     And I add a "Text and media area" question to the feedback with:
       | Contents | this is the second page of the feedback |
@@ -324,7 +324,7 @@ Feature: Testing multichoice questions in feedback
       | Question         | this is a multiple choice 3 |
       | Label            | multichoice3                |
       | Multiple choice type | Multiple choice - single answer allowed (drop-down menu) |
-      | Multiple choice values | option g\noption h\noption i  |
+      | Multiple choice values | option g\\noption h\\noption i  |
       | Dependence item                | multichoice2          |
       | Dependence value               | option d              |
     And I add a "Text and media area" question to the feedback with:

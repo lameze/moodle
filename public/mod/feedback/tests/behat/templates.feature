@@ -31,7 +31,7 @@ Feature: Saving, using and deleting feedback templates
       | Question         | this is a multiple choice 1 |
       | Label            | multichoice1                |
       | Multiple choice type | Multiple choice - single answer |
-      | Multiple choice values | option a\noption b\noption c  |
+      | Multiple choice values | option a\\noption b\\noption c  |
     And I log out
 
   @javascript
@@ -89,7 +89,7 @@ Feature: Saving, using and deleting feedback templates
       | Question         | What is your favourite subject |
       | Label            | subjectchoice                  |
       | Multiple choice type | Multiple choice - single answer   |
-      | Multiple choice values | Maths\bScience\nEnglish\nOther  |
+      | Multiple choice values | Maths\bScience\\nEnglish\\nOther  |
     # Import template appending items
     And I navigate to "Templates" in current page administration
     And I open the action menu in "My first template" "table_row"

@@ -14,7 +14,7 @@ Feature: The my overview block allows users to group courses by custom fields
       | name           | category      | type     | shortname     | configdata                                           |
       | Checkbox field | Course fields | checkbox | checkboxfield |                                                      |
       | Date field     | Course fields | date     | datefield     | {"mindate":0, "maxdate":0}                           |
-      | Select field   | Course fields | select   | selectfield   | {"options":"Option 1\nOption 2\nOption 3\nOption 4"} |
+      | Select field   | Course fields | select   | selectfield   | {"options":"Option 1\\nOption 2\\nOption 3\\nOption 4"} |
       | Text field     | Course fields | text     | textfield     | {"visibility":"2"}                                   |
       | Text field 2   | Course fields | text     | textfield2    | {"visibility":"2"}                                   |
       | Hidden field   | Course fields | text     | hiddenfield   | {"visibility":"0"}                                   |

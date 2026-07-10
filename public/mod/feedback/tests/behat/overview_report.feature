@@ -42,7 +42,7 @@ Feature: Testing overview integration in mod_feedback
       | label        | multichoice1                            |
       | subtype      | r                                       |
       | hidenoselect | 1                                       |
-      | values       | Yes of course\nNot at all\nI don't know |
+      | values       | Yes of course\\nNot at all\\nI don't know |
     And the following "mod_feedback > responses" exist:
       | activity  | user     | Do you like this course? |
       | feedback1 | student1 | Not at all               |

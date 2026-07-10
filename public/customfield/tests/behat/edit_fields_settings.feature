@@ -15,7 +15,7 @@ Feature: Teachers can edit course custom fields
       | Field 2 | Category for test | textarea | f2        | d2          |                       |
       | Field 3 | Category for test | checkbox | f3        | d3          |                       |
       | Field 4 | Category for test | date     | f4        | d4          |                       |
-      | Field 5 | Category for test | select   | f5        | d5          | {"options":"a\nb\nc"} |
+      | Field 5 | Category for test | select   | f5        | d5          | {"options":"a\\nb\\nc"} |
       | Field 6 | Shared category   | text     | shf1      | shd1        |                       |
     And the following "users" exist:
       | username | firstname | lastname | email                |

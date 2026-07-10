@@ -54,12 +54,12 @@ Feature: Mapping courses in a feedback
       | Question               | this is a multiple choice rated    |
       | Label                  | multichoicerated                   |
       | Multiple choice type   | Multiple choice - single answer    |
-      | Multiple choice values | 0/option a\n1/option b\n5/option c |
+      | Multiple choice values | 0/option a\\n1/option b\\n5/option c |
     And I add a "Multiple choice" question to the feedback with:
       | Question               | this is a simple multiple choice    |
       | Label                  | multichoicesimple                   |
       | Multiple choice type   | Multiple choice - single answer allowed (drop-down menu) |
-      | Multiple choice values | option d\noption e\noption f                           |
+      | Multiple choice values | option d\\noption e\\noption f                           |
     And I log out
 
   Scenario: Course feedback can not be mapped

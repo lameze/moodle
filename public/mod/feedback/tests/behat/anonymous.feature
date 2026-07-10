@@ -37,7 +37,7 @@ Feature: Anonymous feedback
       | Label                          | multichoice2                       |
       | Multiple choice type           | Multiple choice - single answer    |
       | Hide the "Not selected" option | Yes                                |
-      | Multiple choice values         | Yes\nNo\nI don't know              |
+      | Multiple choice values         | Yes\\nNo\\nI don't know              |
     And I log out
 
   Scenario: Guests can see anonymous feedback on front page but can not complete
@@ -171,7 +171,7 @@ Feature: Anonymous feedback
       | Label                          | multichoice1                       |
       | Multiple choice type           | Multiple choice - single answer    |
       | Hide the "Not selected" option | Yes                                |
-      | Multiple choice values         | Yes\nNo\nI don't know              |
+      | Multiple choice values         | Yes\\nNo\\nI don't know              |
     And I log out
 
     And I am on the "Course feedback" "feedback activity" page logged in as user1

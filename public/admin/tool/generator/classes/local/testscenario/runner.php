@@ -23,6 +23,7 @@ use behat_course;
 use behat_general;
 use behat_user;
 use core\attribute_helper;
+use Behat\Gherkin\GherkinCompatibilityMode;
 use Behat\Gherkin\Parser;
 use Behat\Gherkin\Lexer;
 use Behat\Gherkin\Keywords\ArrayKeywords;
@@ -309,7 +310,11 @@ class runner {
             ],
         ]);
         $lexer = new Lexer($keywords);
-        $parser = new Parser($lexer);
+        // Pin the parser to legacy mode so behaviour does not silently change when
+        // behat/gherkin flips its default to gherkin-32 (expected in Behat 4.0).
+        // Switching to GherkinCompatibilityMode::GHERKIN_32 is part of the Behat 4
+        // upgrade (MDL-89129) and must be done deliberately.
+        $parser = new Parser($lexer, GherkinCompatibilityMode::LEGACY);
         return $parser;
     }
 

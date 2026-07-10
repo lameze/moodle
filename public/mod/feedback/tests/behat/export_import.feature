@@ -39,26 +39,26 @@ Feature: Exporting and importing feedbacks
       | Question         | this is a multiple choice 1 |
       | Label            | multichoice1                |
       | Multiple choice type | Multiple choice - single answer |
-      | Multiple choice values | option a\noption b\noption c  |
+      | Multiple choice values | option a\\noption b\\noption c  |
     And I add a page break to the feedback
     And I add a "Multiple choice" question to the feedback with:
       | Question                       | this is a multiple choice 2        |
       | Label                          | multichoice2                       |
       | Multiple choice type           | Multiple choice - multiple answers |
       | Hide the "Not selected" option | Yes                                |
-      | Multiple choice values         | option d\noption e\noption f       |
+      | Multiple choice values         | option d\\noption e\\noption f       |
       | Dependence item                | multichoice1                       |
       | Dependence value               | option a                           |
     And I add a "Multiple choice" question to the feedback with:
       | Question                       | this is a multiple choice 3        |
       | Label                          | multichoice3                       |
       | Multiple choice type           | Multiple choice - single answer allowed (drop-down menu) |
-      | Multiple choice values         | option g\noption h\noption i                           |
+      | Multiple choice values         | option g\\noption h\\noption i                           |
     And I add a "Multiple choice (rated)" question to the feedback with:
       | Question               | this is a multiple choice rated |
       | Label                  | multichoice4                    |
       | Multiple choice type   | Multiple choice - single answer |
-      | Multiple choice values | 0/option k\n1/option l\n5/option m |
+      | Multiple choice values | 0/option k\\n1/option l\\n5/option m |
     And I add a "Numeric answer" question to the feedback with:
       | Question               | this is a numeric answer |
       | Label                  | numeric                  |

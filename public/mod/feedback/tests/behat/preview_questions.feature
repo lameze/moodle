@@ -26,7 +26,7 @@ Feature: Preview feedback questions
       | name          | What is your favourite instrument |
       | questiontype  | multichoice                       |
       | label         | instrument1                       |
-      | values        | Drums\nGuitar\nHurdy-gurdy        |
+      | values        | Drums\\nGuitar\\nHurdy-gurdy        |
 
   Scenario: Students cannot see the Preview questions button
     When I am on the "Music history" "feedback activity" page logged in as student
@@ -53,7 +53,7 @@ Feature: Preview feedback questions
       | label         | whatguitar                              |
       | dependitem    | instrument1                             |
       | dependvalue   | Guitar                                  |
-      | values        | Electric\nAcoustic\nBass                |
+      | values        | Electric\\nAcoustic\\nBass                |
     When I am on the "Music history" "feedback activity" page logged in as editingteacher
     And I navigate to "Questions" in current page administration
     Then the "region-main" "region" should meet accessibility standards with "best-practice" extra tests

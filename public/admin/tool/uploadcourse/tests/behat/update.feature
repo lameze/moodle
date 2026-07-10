@@ -41,7 +41,7 @@ Feature: An admin can update courses using a CSV file
       | name    | category | type     | shortname | configdata            |
       | Field 1 | Other    | checkbox | checkbox  |                       |
       | Field 2 | Other    | date     | date      |                       |
-      | Field 3 | Other    | select   | select    | {"options":"a\nb\nc"} |
+      | Field 3 | Other    | select   | select    | {"options":"a\\nb\\nc"} |
       | Field 4 | Other    | text     | text      |                       |
       | Field 5 | Other    | textarea | textarea  |                       |
     When I upload "admin/tool/uploadcourse/tests/fixtures/courses_custom_fields.csv" file to "File" filemanager

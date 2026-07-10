@@ -23,7 +23,7 @@ Feature: Users can be required to specify certain fields when adding entries to 
       | database | type        | name                          | required | description                   | param1                         |
       | data1    | text        | Base Text input               | 1        | Base Text input               |                                |
       | data1    | checkbox    | Required Checkbox             | 1        | Base Text input               | Required Checkbox Option 1     |
-      | data1    | checkbox    | Required Two-Option Checkbox  | 1        | Required Two-Option Checkbox  | RTOC Option 1\nRTOC Option 2   |
+      | data1    | checkbox    | Required Two-Option Checkbox  | 1        | Required Two-Option Checkbox  | RTOC Option 1\\nRTOC Option 2   |
       | data1    | latlong     | Required Coordinates          | 1        | Required Coordinates          |                                |
       | data1    | menu        | Required Menu                 | 1        | Required Menu                 | Option 1                       |
       | data1    | number      | Required Number               | 1        | Required Number               |                                |
@@ -32,7 +32,7 @@ Feature: Users can be required to specify certain fields when adding entries to 
       | data1    | textarea    | Required Text area            | 1        | Required Text area            |                                |
       | data1    | url         | Required URL                  | 1        | Required URL                  |                                |
       | data1    | multimenu   | Required Multimenu            | 1        | Required Multimenu            | Option 1                       |
-      | data1    | multimenu   | Required Two-Option Multimenu | 1        | Required Two-Option Multimenu | Option 1\nOption 2             |
+      | data1    | multimenu   | Required Two-Option Multimenu | 1        | Required Two-Option Multimenu | Option 1\\nOption 2             |
       | data1    | checkbox    | Not required Checkbox         | 0        | Not required Checkbox         | Not required Checkbox Option 1 |
       | data1    | latlong     | Not required Coordinates      | 0        | Not required Coordinates      |                                |
       | data1    | menu        | Not required Menu             | 0        | Not required Menu             | Option 1                       |

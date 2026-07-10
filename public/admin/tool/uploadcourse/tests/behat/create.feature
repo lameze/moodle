@@ -54,7 +54,7 @@ Feature: An admin can create courses using a CSV file
       | name    | category | type     | shortname | configdata            |
       | Field 1 | Other    | checkbox | checkbox  |                       |
       | Field 2 | Other    | date     | date      |                       |
-      | Field 3 | Other    | select   | select    | {"options":"a\nb\nc"} |
+      | Field 3 | Other    | select   | select    | {"options":"a\\nb\\nc"} |
       | Field 4 | Other    | text     | text      |                       |
       | Field 5 | Other    | textarea | textarea  |                       |
     When I upload "admin/tool/uploadcourse/tests/fixtures/courses_custom_fields.csv" file to "File" filemanager
@@ -80,7 +80,7 @@ Feature: An admin can create courses using a CSV file
       | name    | category | type     | shortname | configdata                                          |
       | Field 1 | Other    | checkbox | checkbox  | {"checkbydefault":1}                                |
       | Field 2 | Other    | date     | date      | {"includetime":0}                                   |
-      | Field 3 | Other    | select   | select    | {"options":"a\nb\nc","defaultvalue":"b"}            |
+      | Field 3 | Other    | select   | select    | {"options":"a\\nb\\nc","defaultvalue":"b"}            |
       | Field 4 | Other    | text     | text      | {"defaultvalue":"Hello"}                            |
       | Field 5 | Other    | textarea | textarea  | {"defaultvalue":"Some text","defaultvalueformat":1} |
     When I upload "admin/tool/uploadcourse/tests/fixtures/courses.csv" file to "File" filemanager

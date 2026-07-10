@@ -1,0 +1,14 @@
+issueNumber: MDL-89135
+notes:
+  core:
+    - message: >-
+        Feature files have been validated against the `gherkin-32` parser
+        compatibility mode, which is expected to become the default in Behat
+        4.0. Literal `\n` sequences in table cells now need to be escaped as
+        `\\n` to keep meaning a literal backslash-n under both parser modes
+        (under gherkin-32, an unescaped `\n` becomes a real newline
+        character). 17 core feature files were updated accordingly with no
+        change in behaviour. Plugin authors are encouraged to apply the same
+        escaping to their own feature files ahead of the Behat 4 upgrade
+        (MDL-89129).
+      type: changed
