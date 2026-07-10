@@ -39,12 +39,12 @@ class behat_accessibility extends behat_base {
      *
      * See {@link https://github.com/dequelabs/axe-core/blob/v4.10.3/doc/rule-descriptions.md} for the list of available tags
      *
-     * @Then the page should meet accessibility standards
-     * @Then the page should meet accessibility standards with :extratags extra tests
-     * @Then the page should meet :standardtags accessibility standards
      * @param   string $standardtags Comma-separated list of standard tags to run
      * @param   string $extratags Comma-separated list of tags to run in addition to the standard tags
      */
+    #[\Behat\Step\Then('the page should meet accessibility standards')]
+    #[\Behat\Step\Then('the page should meet accessibility standards with :extratags extra tests')]
+    #[\Behat\Step\Then('the page should meet :standardtags accessibility standards')]
     public function run_axe_validation_for_tags(string $standardtags = '', string $extratags = ''): void {
         $this->run_axe_for_tags(
             // Turn the comma-separated string into an array of trimmed values, filtering out empty values.
@@ -61,14 +61,14 @@ class behat_accessibility extends behat_base {
      *
      * See {@see behat_accessibility::run_axe_validation_for_tags} for details of the supported tags.
      *
-     * @Then the :element :selector should meet accessibility standards
-     * @Then the :element :selector should meet accessibility standards with :extratags extra tests
-     * @Then the :element :selector should meet :standardtags accessibility standards
      * @param  string $element The element to run the tests on
      * @param  string $selector The selector to use to find the element
      * @param  string $standardtags Comma-separated list of standard tags to run
      * @param  string $extratags Comma-separated list of tags to run in addition to the standard tags
      */
+    #[\Behat\Step\Then('the :element :selector should meet accessibility standards')]
+    #[\Behat\Step\Then('the :element :selector should meet accessibility standards with :extratags extra tests')]
+    #[\Behat\Step\Then('the :element :selector should meet :standardtags accessibility standards')]
     public function run_axe_validation_for_tags_within_element(
         string $element,
         string $selector,

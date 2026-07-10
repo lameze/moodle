@@ -42,11 +42,11 @@ class behat_enrol extends behat_base {
     /**
      * Add the specified enrolment method to the specified course filling the form with the provided data.
      *
-     * @Given /^I add "(?P<enrolment_method_name_string>(?:[^"]|\\")*)" enrolment method in "(?P<course_identifier_string>(?:[^"]|\\")*)" with:$/
      * @param string $enrolmethod The enrolment method being used
      * @param string $courseidentifier The courseidentifier such as short name
      * @param TableNode $table Enrolment details
      */
+    #[\Behat\Step\Given('/^I add "(?P<enrolment_method_name_string>(?:[^"]|\\\\")*)" enrolment method in "(?P<course_identifier_string>(?:[^"]|\\\\")*)" with:$/')]
     public function i_add_enrolment_method_for_with(string $enrolmethod, string $courseidentifier, TableNode $table): void {
         $this->execute("behat_navigation::i_am_on_page_instance", [$courseidentifier, 'enrolment methods']);
 
@@ -76,10 +76,10 @@ class behat_enrol extends behat_base {
      * This is a simple step, to set enrolment options would be better to
      * create a separate step as a TableNode will be required.
      *
-     * @Given /^I enrol "(?P<user_fullname_string>(?:[^"]|\\")*)" user as "(?P<rolename_string>(?:[^"]|\\")*)"$/
      * @param string $userfullname
      * @param string $rolename
      */
+    #[\Behat\Step\Given('/^I enrol "(?P<user_fullname_string>(?:[^"]|\\\\")*)" user as "(?P<rolename_string>(?:[^"]|\\\\")*)"$/')]
     public function i_enrol_user_as($userfullname, $rolename) {
 
         // Navigate to enrolment page.

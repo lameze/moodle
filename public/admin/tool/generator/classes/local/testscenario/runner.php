@@ -199,6 +199,23 @@ class runner {
      * @return string|null the given expression tag or null if not found.
      */
     private function get_method_given(ReflectionMethod $method): ?string {
+        // Core step definitions use Behat attributes (since MDL-89133).
+        $stepattributes = [
+            \Behat\Step\Given::class,
+            \Behat\Step\When::class,
+            \Behat\Step\Then::class,
+        ];
+        foreach ($method->getAttributes() as $attribute) {
+            if (!in_array($attribute->getName(), $stepattributes, true)) {
+                continue;
+            }
+            $arguments = $attribute->getArguments();
+            if (isset($arguments[0]) && is_string($arguments[0])) {
+                return $arguments[0];
+            }
+        }
+
+        // Fall back to legacy doc-block annotations, still used by third party plugins.
         $doccomment = $method->getDocComment();
         $doccomment = str_replace("\r\n", "\n", $doccomment);
         $doccomment = str_replace("\r", "\n", $doccomment);

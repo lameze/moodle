@@ -43,10 +43,10 @@ class behat_mod_feedback extends behat_base {
      *
      * The form for creating a question should be on one page.
      *
-     * @When /^I add a "(?P<question_type_string>(?:[^"]|\\")*)" question to the feedback with:$/
      * @param string $questiontype
      * @param TableNode $questiondata with data for filling the add question form
      */
+    #[\Behat\Step\When('/^I add a "(?P<question_type_string>(?:[^"]|\\\\")*)" question to the feedback with:$/')]
     public function i_add_question_to_the_feedback_with($questiontype, TableNode $questiondata) {
 
         $questiontype = $this->escape($questiontype);
@@ -76,9 +76,8 @@ class behat_mod_feedback extends behat_base {
      * Adds a question to the existing feedback with filling the form.
      *
      * The form for creating a question should be on one page.
-     *
-     * @When /^I add a page break to the feedback$/
      */
+    #[\Behat\Step\When('/^I add a page break to the feedback$/')]
     public function i_add_a_page_break_to_the_feedback() {
 
         $questiontype = $this->escape(get_string('add_pagebreak', 'feedback'));
@@ -92,10 +91,10 @@ class behat_mod_feedback extends behat_base {
     /**
      * Quick way to generate answers to a one-page feedback.
      *
-     * @When /^I log in as "(?P<user_name_string>(?:[^"]|\\")*)" and complete feedback "(?P<feedback_name_string>(?:[^"]|\\")*)" in course "(?P<course_name_string>(?:[^"]|\\")*)" with:$/
      * @param string $questiontype
      * @param TableNode $questiondata with data for filling the add question form
      */
+    #[\Behat\Step\When('/^I log in as "(?P<user_name_string>(?:[^"]|\\\\")*)" and complete feedback "(?P<feedback_name_string>(?:[^"]|\\\\")*)" in course "(?P<course_name_string>(?:[^"]|\\\\")*)" with:$/')]
     public function i_log_in_as_and_complete_feedback_in_course($username, $feedbackname, $coursename, TableNode $answers) {
         $username = $this->escape($username);
         $coursename = $this->escape($coursename);
@@ -120,10 +119,10 @@ class behat_mod_feedback extends behat_base {
     /**
      * Exports feedback and makes sure the export file is the same as in the fixture
      *
-     * @Then /^following "(?P<link_string>(?:[^"]|\\")*)" should export feedback identical to "(?P<filename_string>(?:[^"]|\\")*)"$/
      * @param string $link
      * @param string $filename
      */
+    #[\Behat\Step\Then('/^following "(?P<link_string>(?:[^"]|\\\\")*)" should export feedback identical to "(?P<filename_string>(?:[^"]|\\\\")*)"$/')]
     public function following_should_export_feedback_identical_to($link, $filename) {
         global $CFG;
         $exception = new ExpectationException('Error while downloading data from ' . $link, $this->getSession());
@@ -146,9 +145,9 @@ class behat_mod_feedback extends behat_base {
     /**
      * Clicks on Show chart data to display chart data if not visible.
      *
-     * @Then /^I show chart data for the "(?P<feedback_name_string>(?:[^"]|\\")*)" feedback$/
      * @param string $feedbackname name of the feedback for which chart data needs to be shown.
      */
+    #[\Behat\Step\Then('/^I show chart data for the "(?P<feedback_name_string>(?:[^"]|\\\\")*)" feedback$/')]
     public function i_show_chart_data_for_the_feedback($feedbackname) {
 
         $feedbackxpath = "//th[contains(normalize-space(string(.)), \"" . $feedbackname . "\")]/ancestor::table//" .

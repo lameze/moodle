@@ -32,9 +32,8 @@ class behat_analytics extends behat_base {
 
     /**
      * Check if mlbackend_python is configured.
-     *
-     * @Given /^a Python Machine Learning backend server is configured$/
      */
+    #[\Behat\Step\Given('/^a Python Machine Learning backend server is configured$/')]
     public function backend_is_configured(): void {
         if (!defined('TEST_MLBACKEND_PYTHON_HOST')) {
             throw new SkippedException(
@@ -45,9 +44,8 @@ class behat_analytics extends behat_base {
 
     /**
      * Change the Python Machine Learning backend to use external server.
-     *
-     * @Given /^I change the Python Machine Learning backend to use external server$/
      */
+    #[\Behat\Step\Given('/^I change the Python Machine Learning backend to use external server$/')]
     public function change_backend_to_external_server(): void {
         set_config('useserver', 1, 'mlbackend_python');
         set_config('host', TEST_MLBACKEND_PYTHON_HOST, 'mlbackend_python');

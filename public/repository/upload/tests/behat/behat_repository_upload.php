@@ -46,12 +46,12 @@ class behat_repository_upload extends behat_base {
     /**
      * Uploads a file to the specified filemanager leaving other fields in upload form default. The paths should be relative to moodle codebase.
      *
-     * @When /^I upload "(?P<filepath_string>(?:[^"]|\\")*)" file to "(?P<filemanager_field_string>(?:[^"]|\\")*)" filemanager$/
      * @throws DriverException
      * @throws ExpectationException Thrown by behat_base::find
      * @param string $filepath
      * @param string $filemanagerelement
      */
+    #[\Behat\Step\When('/^I upload "(?P<filepath_string>(?:[^"]|\\\\")*)" file to "(?P<filemanager_field_string>(?:[^"]|\\\\")*)" filemanager$/')]
     public function i_upload_file_to_filemanager($filepath, $filemanagerelement) {
         $this->upload_file_to_filemanager($filepath, $filemanagerelement, new TableNode(array()), false);
     }
@@ -59,12 +59,12 @@ class behat_repository_upload extends behat_base {
     /**
      * Uploads a file to the specified filemanager leaving other fields in upload form default and confirms to overwrite an existing file. The paths should be relative to moodle codebase.
      *
-     * @When /^I upload and overwrite "(?P<filepath_string>(?:[^"]|\\")*)" file to "(?P<filemanager_field_string>(?:[^"]|\\")*)" filemanager$/
      * @throws DriverException
      * @throws ExpectationException Thrown by behat_base::find
      * @param string $filepath
      * @param string $filemanagerelement
      */
+    #[\Behat\Step\When('/^I upload and overwrite "(?P<filepath_string>(?:[^"]|\\\\")*)" file to "(?P<filemanager_field_string>(?:[^"]|\\\\")*)" filemanager$/')]
     public function i_upload_and_overwrite_file_to_filemanager($filepath, $filemanagerelement) {
         $this->upload_file_to_filemanager($filepath, $filemanagerelement, new TableNode(array()),
                 get_string('overwrite', 'repository'));
@@ -73,13 +73,13 @@ class behat_repository_upload extends behat_base {
     /**
      * Uploads a file to the specified filemanager and confirms to overwrite an existing file. The paths should be relative to moodle codebase.
      *
-     * @When /^I upload "(?P<filepath_string>(?:[^"]|\\")*)" file to "(?P<filemanager_field_string>(?:[^"]|\\")*)" filemanager as:$/
      * @throws DriverException
      * @throws ExpectationException Thrown by behat_base::find
      * @param string $filepath
      * @param string $filemanagerelement
      * @param TableNode $data Data to fill in upload form
      */
+    #[\Behat\Step\When('/^I upload "(?P<filepath_string>(?:[^"]|\\\\")*)" file to "(?P<filemanager_field_string>(?:[^"]|\\\\")*)" filemanager as:$/')]
     public function i_upload_file_to_filemanager_as($filepath, $filemanagerelement, TableNode $data) {
         $this->upload_file_to_filemanager($filepath, $filemanagerelement, $data, false);
     }
@@ -87,13 +87,13 @@ class behat_repository_upload extends behat_base {
     /**
      * Uploads a file to the specified filemanager. The paths should be relative to moodle codebase.
      *
-     * @When /^I upload and overwrite "(?P<filepath_string>(?:[^"]|\\")*)" file to "(?P<filemanager_field_string>(?:[^"]|\\")*)" filemanager as:$/
      * @throws DriverException
      * @throws ExpectationException Thrown by behat_base::find
      * @param string $filepath
      * @param string $filemanagerelement
      * @param TableNode $data Data to fill in upload form
      */
+    #[\Behat\Step\When('/^I upload and overwrite "(?P<filepath_string>(?:[^"]|\\\\")*)" file to "(?P<filemanager_field_string>(?:[^"]|\\\\")*)" filemanager as:$/')]
     public function i_upload_and_overwrite_file_to_filemanager_as($filepath, $filemanagerelement, TableNode $data) {
         $this->upload_file_to_filemanager($filepath, $filemanagerelement, $data,
                 get_string('overwrite', 'repository'));

@@ -39,10 +39,10 @@ class behat_factor_sms extends behat_base {
     /**
      * Sets the given field with a valid code created in tool_mfa_secrets table
      *
-     * @Given /^I set the field "(?P<field_string>(?:[^"]|\\")*)" with valid code$/
      *
      * @param string $field
      */
+    #[\Behat\Step\Given('/^I set the field "(?P<field_string>(?:[^"]|\\\\")*)" with valid code$/')]
     public function i_set_the_field_with_valid_code(string $field): void {
         global $DB, $USER;
 

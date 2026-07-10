@@ -128,11 +128,11 @@ class behat_grades extends behat_base {
     /**
      * Select a given element within a specific container instance.
      *
-     * @Given /^I select "(?P<input_value>(?:[^"]|\\")*)" in the "(?P<instance>(?:[^"]|\\")*)" "(?P<instance_type>(?:[^"]|\\")*)"$/
      * @param string $value The Needle
      * @param string  $element The Haystack to select within
      * @param string $selectortype What type of haystack we are looking in
      */
+    #[\Behat\Step\Given('/^I select "(?P<input_value>(?:[^"]|\\\\")*)" in the "(?P<instance>(?:[^"]|\\\\")*)" "(?P<instance_type>(?:[^"]|\\\\")*)"$/')]
     public function i_select_in_the($value, $element, $selectortype) {
         // Getting the container where the text should be found.
         $container = $this->get_selected_node($selectortype, $element);
@@ -248,12 +248,12 @@ class behat_grades extends behat_base {
     /**
      * Clicks on given grade item menu.
      *
-     * @Given /^I click on grade item menu "([^"]*)" of type "([^"]*)" on "([^"]*)" page$/
      * @param string $itemname Item name
      * @param string $itemtype Item type - grade item, category or course
      * @param string $page Page - setup or grader
      * @throws Exception
      */
+    #[\Behat\Step\Given('/^I click on grade item menu "([^"]*)" of type "([^"]*)" on "([^"]*)" page$/')]
     public function i_click_on_grade_item_menu(string $itemname, string $itemtype, string $page) {
         $this->execute("behat_navigation::i_close_block_drawer_if_open");
         if ($itemtype == 'gradeitem') {
@@ -291,11 +291,11 @@ class behat_grades extends behat_base {
     /**
      * Clicks on given grade menu.
      *
-     * @Given /^I click on grade menu "([^"]*)" for user "([^"]*)"$/
      * @param string $itemname Item name
      * @param string $username User name
      * @throws Exception
      */
+    #[\Behat\Step\Given('/^I click on grade menu "([^"]*)" for user "([^"]*)"$/')]
     public function i_click_on_grade_menu(string $itemname, string $username) {
         $this->execute("behat_navigation::i_close_block_drawer_if_open");
 

@@ -68,9 +68,8 @@ class behat_qtype_ddwtos extends behat_base {
      *
      * @param string $dragitem the text of the item to drag.
      * @param int $spacenumber the number of the gap to drop into.
-     *
-     * @Given /^I drag "(?P<drag_item>[^"]*)" to space "(?P<space_number>\d+)" in the drag and drop into text question$/
      */
+    #[\Behat\Step\Given('/^I drag "(?P<drag_item>[^"]*)" to space "(?P<space_number>\d+)" in the drag and drop into text question$/')]
     public function i_drag_to_space_in_the_drag_and_drop_into_text_question($dragitem, $spacenumber) {
         $generalcontext = behat_context_helper::get('behat_general');
         $generalcontext->i_drag_and_i_drop_it_in($this->drag_xpath($dragitem),
@@ -82,9 +81,8 @@ class behat_qtype_ddwtos extends behat_base {
      *
      * @param string $dragitem the text of the item to drag.
      * @param int $placeddragnumber the number of the placed drag to drop into.
-     *
-     * @Given /^I drag "(?P<drag_item>[^"]*)" to placed drag "(?P<number>\d+)" in the drag and drop into text question$/
      */
+    #[\Behat\Step\Given('/^I drag "(?P<drag_item>[^"]*)" to placed drag "(?P<number>\d+)" in the drag and drop into text question$/')]
     public function i_drag_to_placed_drag_number_in_the_drag_and_drop_into_text_question(string $dragitem,
         int $placeddragnumber): void {
         $generalcontext = behat_context_helper::get('behat_general');
@@ -97,9 +95,8 @@ class behat_qtype_ddwtos extends behat_base {
      *
      * @param string $keys the characters to type.
      * @param int $spacenumber the number of the space to type into.
-     *
-     * @Given /^I type "(?P<keys>[^"]*)" into space "(?P<space_number>\d+)" in the drag and drop onto image question$/
      */
+    #[\Behat\Step\Given('/^I type "(?P<keys>[^"]*)" into space "(?P<space_number>\d+)" in the drag and drop onto image question$/')]
     public function i_type_into_space_in_the_drag_and_drop_into_text_question($keys, $spacenumber) {
         $node = $this->get_selected_node('xpath_element', $this->drop_xpath($spacenumber));
         $this->ensure_node_is_visible($node);
@@ -114,9 +111,8 @@ class behat_qtype_ddwtos extends behat_base {
      * Check that the given drag exist in drag home area
      *
      * @param string $dragitem the text of the drag item.
-     *
-     * @Given /^I should see "(?P<drag_item>[^"]*)" in the home area of drag and drop into text question$/
      */
+    #[\Behat\Step\Given('/^I should see "(?P<drag_item>[^"]*)" in the home area of drag and drop into text question$/')]
     public function i_should_see_drag_in_the_home_area($dragitem) {
         $this->ensure_element_exists($this->drag_xpath($dragitem), 'xpath_element');
     }

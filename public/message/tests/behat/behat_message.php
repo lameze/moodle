@@ -102,9 +102,8 @@ XPATH
 
     /**
      * Open the messaging UI.
-     *
-     * @Given /^I open messaging$/
      */
+    #[\Behat\Step\Given('/^I open messaging$/')]
     public function i_open_messaging() {
         // Visit home page and follow messages.
         $this->execute("behat_general::i_am_on_homepage");
@@ -114,9 +113,9 @@ XPATH
     /**
      * Open the messaging conversation list.
      *
-     * @Given /^I open the "(?P<tab_string>(?:[^"]|\\")*)" conversations list/
      * @param string $tab
      */
+    #[\Behat\Step\Given('/^I open the "(?P<tab_string>(?:[^"]|\\\\")*)" conversations list/')]
     public function i_open_the_conversations_list(string $tab) {
         $this->execute('behat_general::i_click_on', [
             $this->escape($tab),
@@ -126,9 +125,8 @@ XPATH
 
     /**
      * Open the messaging UI.
-     *
-     * @Given /^I open messaging information$/
      */
+    #[\Behat\Step\Given('/^I open messaging information$/')]
     public function i_open_messaging_information() {
         $this->execute('behat_general::i_click_on', ["[data-action='view-group-info']", 'css_element']);
     }
@@ -136,9 +134,9 @@ XPATH
     /**
      * View the contact information of a user in the messages ui.
      *
-     * @Given /^I view the "(?P<user_full_name_string>(?:[^"]|\\")*)" contact in the message area$/
      * @param string $userfullname
      */
+    #[\Behat\Step\Given('/^I view the "(?P<user_full_name_string>(?:[^"]|\\\\")*)" contact in the message area$/')]
     public function i_view_contact_in_messages($userfullname) {
         // Visit home page and follow messages.
         $this->execute('behat_message::i_select_user_in_messaging', [$userfullname]);
@@ -166,9 +164,9 @@ XPATH
     /**
      * Select a user in the messaging UI.
      *
-     * @Given /^I select "(?P<user_full_name_string>(?:[^"]|\\")*)" user in messaging$/
      * @param string $userfullname
      */
+    #[\Behat\Step\Given('/^I select "(?P<user_full_name_string>(?:[^"]|\\\\")*)" user in messaging$/')]
     public function i_select_user_in_messaging($userfullname) {
         $this->execute('behat_message::i_open_messaging', []);
 
@@ -191,9 +189,9 @@ XPATH
     /**
      * Search for a string using the messaging search.
      *
-     * @Given /^I search for "(?P<string>(?:[^"]|\\")*)" in messaging$/
      * @param string $string the search string.
      */
+    #[\Behat\Step\Given('/^I search for "(?P<string>(?:[^"]|\\\\")*)" in messaging$/')]
     public function i_search_for_string_in_messaging($string) {
         $messagedrawer = $this->find('css', '[data-region="message-drawer"]');
         $this->execute('behat_general::i_click_on_in_the', [
@@ -217,10 +215,10 @@ XPATH
     /**
      * Sends a message to the specified user from the logged user. The user full name should contain the first and last names.
      *
-     * @Given /^I send "(?P<message_contents_string>(?:[^"]|\\")*)" message to "(?P<user_full_name_string>(?:[^"]|\\")*)" user$/
      * @param string $messagecontent
      * @param string $userfullname
      */
+    #[\Behat\Step\Given('/^I send "(?P<message_contents_string>(?:[^"]|\\\\")*)" message to "(?P<user_full_name_string>(?:[^"]|\\\\")*)" user$/')]
     public function i_send_message_to_user($messagecontent, $userfullname) {
         $this->execute('behat_message::i_select_user_in_messaging', [$userfullname]);
 
@@ -241,9 +239,9 @@ XPATH
     /**
      * Select messages from a user in the messaging ui.
      *
-     * @Given /^I send "(?P<message_contents_string>(?:[^"]|\\")*)" message in the message area$/
      * @param string $messagecontent
      */
+    #[\Behat\Step\Given('/^I send "(?P<message_contents_string>(?:[^"]|\\\\")*)" message in the message area$/')]
     public function i_send_message_in_the_message_area($messagecontent) {
         $this->execute('behat_general::wait_until_the_page_is_ready');
 
@@ -257,9 +255,9 @@ XPATH
     /**
      * Navigate back in the messages ui drawer.
      *
-     * @Given /^I go back in "(?P<parent_element_string>(?:[^"]|\\")*)" message drawer$/
      * @param string $parentelement
      */
+    #[\Behat\Step\Given('/^I go back in "(?P<parent_element_string>(?:[^"]|\\\\")*)" message drawer$/')]
     public function i_go_back_in_message_drawer($parentelement) {
         $this->execute('behat_general::i_click_on_in_the',
             array(
@@ -274,9 +272,9 @@ XPATH
     /**
      * Select a user in the messaging UI.
      *
-     * @Given /^I select "(?P<conversation_name_string>(?:[^"]|\\")*)" conversation in messaging$/
      * @param string $conversationname
      */
+    #[\Behat\Step\Given('/^I select "(?P<conversation_name_string>(?:[^"]|\\\\")*)" conversation in messaging$/')]
     public function i_select_conversation_in_messaging($conversationname) {
         $this->execute('behat_general::i_click_on',
             array(
@@ -288,9 +286,8 @@ XPATH
 
     /**
      * Open the contact menu.
-     *
-     * @Given /^I open contact menu$/
      */
+    #[\Behat\Step\Given('/^I open contact menu$/')]
     public function i_open_contact_menu() {
         $this->execute('behat_general::wait_until_the_page_is_ready');
         $this->execute('behat_general::i_click_on_in_the',
@@ -306,10 +303,10 @@ XPATH
     /**
      * Select a user in a specific messaging UI conversations list.
      *
-     * @Given /^I select "(?P<conv_name_string>(?:[^"]|\\")*)" conversation in the "(?P<list_name_string>(?:[^"]|\\")*)" conversations list$/
      * @param string $convname
      * @param string $listname
      */
+    #[\Behat\Step\Given('/^I select "(?P<conv_name_string>(?:[^"]|\\\\")*)" conversation in the "(?P<list_name_string>(?:[^"]|\\\\")*)" conversations list$/')]
     public function i_select_conversation_in_the_conversations_list(string $convname, string $listname) {
         $xpath = '//*[@data-region="message-drawer"]//div[@data-region="view-overview-'.
             $this->escape($listname).
@@ -320,9 +317,8 @@ XPATH
 
     /**
      * Open the settings preferences.
-     *
-     * @Given /^I open messaging settings preferences$/
      */
+    #[\Behat\Step\Given('/^I open messaging settings preferences$/')]
     public function i_open_messaging_settings_preferences() {
         $this->execute('behat_general::wait_until_the_page_is_ready');
         $this->execute('behat_general::i_click_on',

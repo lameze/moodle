@@ -1,0 +1,20 @@
+issueNumber: MDL-89133
+notes:
+  core:
+    - message: >-
+        All Behat step definitions, hooks and transformations in core context
+        files have been migrated from doc-block annotations (`@Given`,
+        `@When`, `@Then`, `@Transform`, `@BeforeScenario`, ...) to PHP
+        attributes (`#[\Behat\Step\Given(...)]`,
+        `#[\Behat\Hook\BeforeScenario(...)]`,
+        `#[\Behat\Transformation\Transform(...)]`), which Behat has supported
+        since 3.10. Behat 4.0 removes annotation support entirely, so plugin
+        authors should migrate their own Behat context files to attributes
+        before the Behat 4 upgrade (MDL-89129). Rector's
+        `withAttributesSets(behat: true)` rule automates most of the
+        conversion, but note that it silently drops hook tag filters (e.g.
+        `@BeforeScenario @mytag`) and step patterns containing an unbalanced
+        double-quote character - check those manually. tool_generator's
+        scenario runner now reads step definitions from attributes, with a
+        doc-block fallback retained for third-party contexts.
+      type: changed

@@ -42,9 +42,9 @@ class behat_login extends behat_base {
     /**
      * Force a password change for a specific user.
      *
-     * @Given /^I force a password change for user "([^"]*)"$/
      * @param string $username The username of the user whose password will expire
      */
+    #[\Behat\Step\Given('/^I force a password change for user "([^"]*)"$/')]
     public function i_force_a_password_change_for_user($username) {
         $user = core_user::get_user_by_username($username, 'id', null, MUST_EXIST);
         set_user_preference("auth_forcepasswordchange", true, $user);

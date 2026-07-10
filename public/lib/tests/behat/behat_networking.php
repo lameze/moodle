@@ -36,9 +36,8 @@ require_once(__DIR__ . '/../../behat/behat_base.php');
 class behat_networking extends behat_base {
     /**
      * Trigger a custom Javascript event indicating network instability.
-     *
-     * @When my network is unstable
      */
+    #[\Behat\Step\When('my network is unstable')]
     public function my_network_is_unstable() {
         $this->getSession()
             ->getDriver()
@@ -47,9 +46,8 @@ class behat_networking extends behat_base {
 
     /**
      * Trigger a custom Javascript event indicating that the session has been touched.
-     *
-     * @When the session is touched
      */
+    #[\Behat\Step\When('the session is touched')]
     public function the_session_is_touched() {
         $this->getSession()
             ->getDriver()

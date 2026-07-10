@@ -43,9 +43,9 @@ class behat_qbank_comment extends behat_question_base {
     /**
      * Adds the specified option to the question comments of the current modal.
      *
-     * @Then I add :arg1 comment to question
      * @param string $comment
      */
+    #[\Behat\Step\Then('I add :arg1 comment to question')]
     public function i_add_comment_to_question($comment) {
 
         // Getting the textarea and setting the provided value.
@@ -67,9 +67,9 @@ class behat_qbank_comment extends behat_question_base {
     /**
      * Adds the specified option to the question comments of the question preview.
      *
-     * @Then I add :arg1 comment to question preview
      * @param string $comment
      */
+    #[\Behat\Step\Then('I add :arg1 comment to question preview')]
     public function i_add_comment_to_question_preview($comment) {
 
         // Getting the textarea and setting the provided value.
@@ -91,9 +91,9 @@ class behat_qbank_comment extends behat_question_base {
     /**
      * Deletes the specified comment from the current question comment preview.
      *
-     * @Then I delete :arg comment from question preview
      * @param string $comment
      */
+    #[\Behat\Step\Then('I delete :arg comment from question preview')]
     public function i_delete_comment_from_question_preview($comment) {
 
         $exception = new ElementNotFoundException($this->getSession(), '"' . $comment . '" comment ');
@@ -116,9 +116,9 @@ class behat_qbank_comment extends behat_question_base {
     /**
      * Deletes the specified comment from the current question comment modal.
      *
-     * @Then I delete :arg comment from question
      * @param string $comment
      */
+    #[\Behat\Step\Then('I delete :arg comment from question')]
     public function i_delete_comment_from_question($comment) {
 
         $exception = new ElementNotFoundException($this->getSession(), '"' . $comment . '" comment ');

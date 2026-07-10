@@ -41,12 +41,12 @@ class behat_download extends behat_base {
     /**
      * Downloads the file from a link on the page and verify the type and content.
      *
-     * @Then following :link_text should download a file that:
      *
      * @param string $linktext the text of the link.
      * @param TableNode $table the table of assertions to use the check the file contents.
      * @throws ExpectationException if the file cannot be downloaded, or if the download does not pass all the checks.
      */
+    #[\Behat\Step\Then('following :link_text should download a file that:')]
     public function following_should_download_a_file_that(string $linktext, TableNode $table): void {
         $this->following_in_element_should_download_a_file_that($linktext, '', '', $table);
     }
@@ -54,7 +54,6 @@ class behat_download extends behat_base {
     /**
      * Downloads the file from a link on the page and verify the type and content.
      *
-     * @Then following :link_text in the :element_container_string :text_selector_string should download a file that:
      *
      * @param string $linktext the text of the link.
      * @param string $containerlocator the container element.
@@ -62,6 +61,7 @@ class behat_download extends behat_base {
      * @param TableNode $table the table of assertions to use the check the file contents.
      * @throws ExpectationException if the file cannot be downloaded, or if the download does not pass all the checks.
      */
+    #[\Behat\Step\Then('following :link_text in the :element_container_string :text_selector_string should download a file that:')]
     public function following_in_element_should_download_a_file_that(string $linktext, string $containerlocator,
             string $containertype, TableNode $table): void {
 

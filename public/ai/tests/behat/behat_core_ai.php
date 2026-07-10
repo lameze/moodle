@@ -39,12 +39,12 @@ class behat_core_ai extends behat_base {
     /**
      * Change the enabled state of an AI provider plugin.
      *
-     * @Then /^I "(?P<state>(?:[^"]|\\")*)" the ai provider with name "(?P<provider>(?:[^"]|\\")*)"$/
      *
      * @param string $state The state to set the plugin to.
      * @param string $providername The name of the AI provider plugin.
      */
     #[\core\attribute\example('Given I "disable" the ai provider with name "OpenAI API test"')]
+    #[\Behat\Step\Then('/^I "(?P<state>(?:[^"]|\\\\")*)" the ai provider with name "(?P<provider>(?:[^"]|\\\\")*)"$/')]
     public function i_change_the_ai_provider_state_with_name(string $state, string $providername): void {
         $manager = \core\di::get(\core_ai\manager::class);
         $providers = $manager->get_provider_instances(['name' => $providername]);
@@ -59,7 +59,6 @@ class behat_core_ai extends behat_base {
     /**
      * Set action configuration for AI provider instances.
      *
-     * @Given /^I set the following action configuration for ai provider with name "(?P<providername>(?:[^"]|\\")*)":$/
      *
      * @param string $providername The name of the ai provider to configure actions for.
      * @param TableNode $data
@@ -68,6 +67,7 @@ class behat_core_ai extends behat_base {
         | action         | enabled | model | endpoint                                            |
         | generate_text  | 1       | gpt-3 | https://api.openai.com/v1/engines/gpt-3/completions |
         | summarise_text | 0       | gpt-4 |                                                     |')]
+    #[\Behat\Step\Given('/^I set the following action configuration for ai provider with name "(?P<providername>(?:[^"]|\\\\")*)":$/')]
     public function configure_provider_action(string $providername, TableNode $data) {
         $manager = \core\di::get(\core_ai\manager::class);
         $providers = $manager->get_provider_instances(['name' => $providername]);

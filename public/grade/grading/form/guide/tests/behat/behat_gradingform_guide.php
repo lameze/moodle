@@ -52,10 +52,10 @@ class behat_gradingform_guide extends behat_base {
      *
      * Works with both JS and non-JS.
      *
-     * @When /^I define the following marking guide:$/
      * @throws ExpectationException
      * @param TableNode $guide
      */
+    #[\Behat\Step\When('/^I define the following marking guide:$/')]
     public function i_define_the_following_marking_guide(TableNode $guide) {
         $steptableinfo = '| Criterion name | Description for students | Description for markers | Maximum score |';
 
@@ -106,10 +106,10 @@ class behat_gradingform_guide extends behat_base {
      * | Field name          | New value               |
      * | shortname           | Updated Grade criterion |
      *
-     * @When /^I edit the marking guide criterion "([^"]*)" with the following values:$/
      * @param string $criterionname
      * @param TableNode $fields
      */
+    #[\Behat\Step\When('/^I edit the marking guide criterion "([^"]*)" with the following values:$/')]
     public function i_edit_the_marking_guide_criterion_with_the_following_values(string $criterionname, TableNode $fields) {
         if ($fieldvalues = $fields->getHash()) {
             $criterionid = 0;
@@ -156,10 +156,10 @@ class behat_gradingform_guide extends behat_base {
      *
      * Works with both JS and non-JS.
      *
-     * @When /^I define the following frequently used comments:$/
      * @throws ExpectationException
      * @param TableNode $commentstable
      */
+    #[\Behat\Step\When('/^I define the following frequently used comments:$/')]
     public function i_define_the_following_frequently_used_comments(TableNode $commentstable) {
         $steptableinfo = '| Comment |';
 
@@ -195,12 +195,12 @@ class behat_gradingform_guide extends behat_base {
      * Performs grading of the student by filling out the marking guide.
      * Set one line per criterion and for each criterion set "| Criterion name | Points | Remark |".
      *
-     * @When /^I grade by filling the marking guide with:$/
      *
      * @throws ExpectationException
      * @param TableNode $guide
      * @return void
      */
+    #[\Behat\Step\When('/^I grade by filling the marking guide with:$/')]
     public function i_grade_by_filling_the_marking_guide_with(TableNode $guide) {
 
         $criteria = $guide->getRowsHash();

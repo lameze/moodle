@@ -42,9 +42,8 @@ class behat_email extends behat_base {
 
     /**
      * Behat step to check if email catcher is configured.
-     *
-     * @Given /^an email catcher server is configured$/
      */
+    #[\Behat\Step\Given('/^an email catcher server is configured$/')]
     public function email_catcher_is_configured(): void {
         if (!self::is_email_catcher_configured()) {
             throw new SkippedException(
@@ -69,9 +68,8 @@ class behat_email extends behat_base {
 
     /**
      * Clean up the email inbox after each scenario.
-     *
-     * @AfterScenario @behat_email
      */
+    #[\Behat\Hook\AfterScenario('@behat_email')]
     public function reset_after_test(): void {
         $this->get_catcher()?->delete_all();
     }
@@ -128,12 +126,12 @@ class behat_email extends behat_base {
     /**
      * Verifies the content of an email sent to a specific user and subject.
      *
-     * @Given the email to :user with subject containing :subject should contain :content
      *
      * @param string $user The user to check for.
      * @param string $subject The subject to check for.
      * @param string $content The content to check for.
      */
+    #[\Behat\Step\Given('the email to :user with subject containing :subject should contain :content')]
     public function verify_email_content(string $user, string $subject, string $content): void {
         $messages = $this->get_messages_matching_address_and_subject($user, $subject);
 
@@ -154,11 +152,11 @@ class behat_email extends behat_base {
     /**
      * Custom Behat test to verify the number of emails for a user.
      *
-     * @Then user :address should have :count emails
      *
      * @param string $address The user to check for.
      * @param int $expected The number of emails to check for.
      */
+    #[\Behat\Step\Then('user :address should have :count emails')]
     public function verify_email_count(string $address, int $expected): void {
         $address = $this->get_email_address_from_input($address);
         $messages = new \CallbackFilterIterator(
@@ -181,9 +179,8 @@ class behat_email extends behat_base {
 
     /**
      * Custom Behat test to empty the email inbox.
-     *
-     * @When I empty the email inbox
      */
+    #[\Behat\Step\When('I empty the email inbox')]
     public function empty_email_inbox() {
         $this->get_catcher()->delete_all();
     }
@@ -191,10 +188,10 @@ class behat_email extends behat_base {
     /**
      * Behat step to send emails.
      *
-     * @Given the following emails have been sent:
      *
      * @param TableNode $table The table of emails to send.
      */
+    #[\Behat\Step\Given('the following emails have been sent:')]
     public function the_following_emails_have_been_sent(TableNode $table): void {
         if (!$rows = $table->getRows()) {
             return;

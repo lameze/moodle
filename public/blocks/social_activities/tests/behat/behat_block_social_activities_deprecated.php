@@ -74,10 +74,10 @@ class behat_block_social_activities_deprecated extends behat_deprecated_base {
      * @todo MDL-78077 This will be deleted in Moodle 6.0.
      * @deprecated since 5.0
      *
-     * @Then /^"(?P<activity_name_string>(?:[^"]|\\")*)" activity in social activities block should have "(?P<icon_name_string>(?:[^"]|\\")*)" editing icon$/
      * @param string $activityname
      * @param string $iconname
      */
+    #[\Behat\Step\Then('/^"(?P<activity_name_string>(?:[^"]|\\\\")*)" activity in social activities block should have "(?P<icon_name_string>(?:[^"]|\\\\")*)" editing icon$/')]
     public function activity_in_social_activities_block_should_have_editing_icon($activityname, $iconname) {
         $this->deprecated_message([
             'behat_block_social_activities::activity_in_social_activities_block_should_have_editing_icon is deprecated',
@@ -101,10 +101,10 @@ class behat_block_social_activities_deprecated extends behat_deprecated_base {
      * @todo MDL-78077 This will be deleted in Moodle 6.0.
      * @deprecated since 5.0
      *
-     * @Then /^"(?P<activity_name_string>(?:[^"]|\\")*)" activity in social activities block should not have "(?P<icon_name_string>(?:[^"]|\\")*)" editing icon$/
      * @param string $activityname
      * @param string $iconname
      */
+    #[\Behat\Step\Then('/^"(?P<activity_name_string>(?:[^"]|\\\\")*)" activity in social activities block should not have "(?P<icon_name_string>(?:[^"]|\\\\")*)" editing icon$/')]
     public function activity_in_social_activities_block_should_not_have_editing_icon($activityname, $iconname) {
         $this->deprecated_message([
             'behat_block_social_activities::activity_in_social_activities_block_should_not_have_editing_icon is deprecated',
@@ -129,11 +129,11 @@ class behat_block_social_activities_deprecated extends behat_deprecated_base {
      * @todo MDL-78077 This will be deleted in Moodle 6.0.
      * @deprecated since 5.0
      *
-     * @Given /^I click on "(?P<element_string>(?:[^"]|\\")*)" "(?P<selector_string>(?:[^"]|\\")*)" in the "(?P<activity_name_string>(?:[^"]|\\")*)" activity in social activities block$/
      * @param string $element
      * @param string $selectortype
      * @param string $activityname
      */
+    #[\Behat\Step\Given('/^I click on "(?P<element_string>(?:[^"]|\\\\")*)" "(?P<selector_string>(?:[^"]|\\\\")*)" in the "(?P<activity_name_string>(?:[^"]|\\\\")*)" activity in social activities block$/')]
     public function i_click_on_in_the_activity_in_social_activities_block($element, $selectortype, $activityname) {
         $this->deprecated_message([
             'behat_block_social_activities::i_click_on_in_the_activity_in_social_activities_block is deprecated',
@@ -150,9 +150,9 @@ class behat_block_social_activities_deprecated extends behat_deprecated_base {
      * @todo MDL-78077 This will be deleted in Moodle 6.0.
      * @deprecated since 5.0
      *
-     * @Then /^"(?P<activity_name_string>(?:[^"]|\\")*)" activity in social activities block should be hidden$/
      * @param string $activityname
      */
+    #[\Behat\Step\Then('/^"(?P<activity_name_string>(?:[^"]|\\\\")*)" activity in social activities block should be hidden$/')]
     public function activity_in_social_activities_block_should_be_hidden($activityname) {
         $this->deprecated_message([
             'behat_block_social_activities::activity_in_social_activities_block_should_be_hidden is deprecated',
@@ -170,9 +170,9 @@ class behat_block_social_activities_deprecated extends behat_deprecated_base {
      * @todo MDL-78077 This will be deleted in Moodle 6.0.
      * @deprecated since 5.0
      *
-     * @Then /^"(?P<activity_name_string>(?:[^"]|\\")*)" activity in social activities block should be available but hidden from course page$/
      * @param string $activityname
      */
+    #[\Behat\Step\Then('/^"(?P<activity_name_string>(?:[^"]|\\\\")*)" activity in social activities block should be available but hidden from course page$/')]
     public function activity_in_social_activities_block_should_be_available_but_hidden_from_course_page($activityname) {
         $this->deprecated_message([
             'behat_block_social_activities::activity_in_social_activities_block_should_be_available_but_hidden_from_course_page is deprecated',
@@ -190,10 +190,10 @@ class behat_block_social_activities_deprecated extends behat_deprecated_base {
      * @todo MDL-78077 This will be deleted in Moodle 6.0.
      * @deprecated since 5.0
      *
-     * @Given /^I open "(?P<activity_name_string>(?:[^"]|\\")*)" actions menu in social activities block$/
      * @throws DriverException The step is not available when Javascript is disabled
      * @param string $activityname
      */
+    #[\Behat\Step\Given('/^I open "(?P<activity_name_string>(?:[^"]|\\\\")*)" actions menu in social activities block$/')]
     public function i_open_actions_menu_in_social_activities_block($activityname) {
         $this->deprecated_message([
             'behat_block_social_activities::i_open_actions_menu_in_social_activities_block is deprecated',

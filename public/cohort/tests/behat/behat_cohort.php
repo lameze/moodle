@@ -40,10 +40,10 @@ class behat_cohort extends behat_base {
     /**
      * Adds the user to the specified cohort. The user should be specified like "Firstname Lastname (user@example.com)".
      *
-     * @Given /^I add "(?P<user_fullname_string>(?:[^"]|\\")*)" user to "(?P<cohort_idnumber_string>(?:[^"]|\\")*)" cohort members$/
      * @param string $user
      * @param string $cohortidnumber
      */
+    #[\Behat\Step\Given('/^I add "(?P<user_fullname_string>(?:[^"]|\\\\")*)" user to "(?P<cohort_idnumber_string>(?:[^"]|\\\\")*)" cohort members$/')]
     public function i_add_user_to_cohort_members($user, $cohortidnumber) {
 
         // If we are not in the cohorts management we should move there before anything else.

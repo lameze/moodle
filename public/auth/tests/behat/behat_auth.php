@@ -41,11 +41,11 @@ class behat_auth extends behat_base {
     /**
      * Logs in the user. There should exist a user with the same value as username and password.
      *
-     * @Given /^I log in as "(?P<username_string>(?:[^"]|\\")*)"$/
-     * @Given I am logged in as :username
      * @param string $username the user to log in as.
      * @param moodle_url|null $wantsurl optional, URL to go to after logging in.
      */
+    #[\Behat\Step\Given('/^I log in as "(?P<username_string>(?:[^"]|\\\\")*)"$/')]
+    #[\Behat\Step\Given('I am logged in as :username')]
     public function i_log_in_as(string $username, ?moodle_url $wantsurl = null) {
         if ($this->running_javascript()) {
             $this->execute_script("window.globalAbortController?.abort();");
@@ -70,10 +70,9 @@ class behat_auth extends behat_base {
 
     /**
      * Logs out of the system.
-     *
-     * @Given /^I log out$/
-     * @Given I am not logged in
      */
+    #[\Behat\Step\Given('/^I log out$/')]
+    #[\Behat\Step\Given('I am not logged in')]
     public function i_log_out() {
         $this->execute('behat_general::i_visit', [new moodle_url('/auth/tests/behat/logout.php')]);
     }

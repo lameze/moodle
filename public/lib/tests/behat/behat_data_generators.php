@@ -79,7 +79,6 @@ class behat_data_generators extends behat_base {
      *
      * See the class comment for an overview.
      *
-     * @Given /^the following "(?P<element_string>(?:[^"]|\\")*)" exist:$/
      *
      * @param string    $entitytype The name of the type entity to add
      * @param TableNode $data
@@ -88,6 +87,7 @@ class behat_data_generators extends behat_base {
         | activity | name              | intro           | course   | idnumber | section | visible |
         | assign   | Activity sample 1 | Test assignment | C1       | sample1  | 1       | 1       |
         | assign   | Activity sample 2 | Test assignment | C1       | sample2  | 1       | 0       |')]
+    #[\Behat\Step\Given('/^the following "(?P<element_string>(?:[^"]|\\\\")*)" exist:$/')]
     public function the_following_entities_exist($entitytype, TableNode $data) {
         if (isset($this->movedentitytypes[$entitytype])) {
             $entitytype = $this->movedentitytypes[$entitytype];
@@ -99,7 +99,6 @@ class behat_data_generators extends behat_base {
     /**
      * Create multiple entities of one entity type.
      *
-     * @Given :count :entitytype exist with the following data:
      *
      * @param   string $entitytype The name of the type entity to add
      * @param   int $count
@@ -109,6 +108,7 @@ class behat_data_generators extends behat_base {
         | user   | student[count] |
         | course | C1             |
         | role   | student        |')]
+    #[\Behat\Step\Given(':count :entitytype exist with the following data:')]
     public function the_following_repeated_entities_exist(string $entitytype, int $count, TableNode $data): void {
         $rows = $data->getRowsHash();
 
@@ -133,7 +133,6 @@ class behat_data_generators extends behat_base {
      *
      * See the class comment for an overview.
      *
-     * @Given the following :entitytype exists:
      *
      * @param string    $entitytype The name of the type entity to add
      * @param TableNode $data
@@ -144,6 +143,7 @@ class behat_data_generators extends behat_base {
         | category         | 0           |
         | numsections      | 3           |
         | initsections     | 1           |')]
+    #[\Behat\Step\Given('the following :entitytype exists:')]
     public function the_following_entity_exists($entitytype, TableNode $data) {
         if (isset($this->movedentitytypes[$entitytype])) {
             $entitytype = $this->movedentitytypes[$entitytype];

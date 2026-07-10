@@ -174,10 +174,10 @@ class behat_core_question extends behat_question_base {
      * Creates a question in the current course questions bank with the provided data.
      * This step can only be used when creating question types composed by a single form.
      *
-     * @Given /^I add a "(?P<question_type_name_string>(?:[^"]|\\")*)" question filling the form with:$/
      * @param string $questiontypename The question type name
      * @param TableNode $questiondata The data to fill the question type form.
      */
+    #[\Behat\Step\Given('/^I add a "(?P<question_type_name_string>(?:[^"]|\\\\")*)" question filling the form with:$/')]
     public function i_add_a_question_filling_the_form_with($questiontypename, TableNode $questiondata) {
         // Click on create question.
         $this->execute('behat_forms::press_button', get_string('createnewquestion', 'question'));
@@ -189,12 +189,12 @@ class behat_core_question extends behat_question_base {
     /**
      * Checks the state of the specified question.
      *
-     * @Then /^the state of "(?P<question_description_string>(?:[^"]|\\")*)" question is shown as "(?P<state_string>(?:[^"]|\\")*)"$/
      * @throws ExpectationException
      * @throws ElementNotFoundException
      * @param string $questiondescription
      * @param string $state
      */
+    #[\Behat\Step\Then('/^the state of "(?P<question_description_string>(?:[^"]|\\\\")*)" question is shown as "(?P<state_string>(?:[^"]|\\\\")*)"$/')]
     public function the_state_of_question_is_shown_as($questiondescription, $state) {
 
         // Using xpath literal to avoid quotes problems.
@@ -217,10 +217,10 @@ class behat_core_question extends behat_question_base {
     /**
      * Activates a particular action on a particular question in the question bank UI.
      *
-     * @When I choose :action action for :questionname in the question bank
      * @param string $action the label for the action you want to activate.
      * @param string $questionname the question name.
      */
+    #[\Behat\Step\When('I choose :action action for :questionname in the question bank')]
     public function i_action_the_question($action, $questionname) {
         if ($this->running_javascript()) {
             // This method isn't allowed unless Javascript is running.
@@ -245,10 +245,10 @@ class behat_core_question extends behat_question_base {
     /**
      * Checks that action does exist for a question.
      *
-     * @Then the :action action should exist for the :questionname question in the question bank
      * @param string $action the label for the action you want to activate.
      * @param string $questionname the question name.
      */
+    #[\Behat\Step\Then('the :action action should exist for the :questionname question in the question bank')]
     public function action_exists($action, $questionname) {
         $this->execute('behat_action_menu::item_should_exist_in_the', [
             $action,
@@ -261,10 +261,10 @@ class behat_core_question extends behat_question_base {
     /**
      * Checks that action does not exist for a question.
      *
-     * @Then the :action action should not exist for the :questionname question in the question bank
      * @param string $action the label for the action you want to activate.
      * @param string $questionname the question name.
      */
+    #[\Behat\Step\Then('the :action action should not exist for the :questionname question in the question bank')]
     public function action_not_exists($action, $questionname) {
         $this->execute('behat_action_menu::item_should_not_exist_in_the', [
             $action,
@@ -277,9 +277,9 @@ class behat_core_question extends behat_question_base {
     /**
      * A particular bulk action is visible in the question bank UI.
      *
-     * @When I should see question bulk action :action
      * @param string $action the value of the input for the action.
      */
+    #[\Behat\Step\When('I should see question bulk action :action')]
     public function i_should_see_question_bulk_action($action) {
         // Check if its visible.
         $this->execute("behat_general::should_be_visible",
@@ -289,9 +289,9 @@ class behat_core_question extends behat_question_base {
     /**
      * A particular bulk action should not be visible in the question bank UI.
      *
-     * @When I should not see question bulk action :action
      * @param string $action the value of the input for the action.
      */
+    #[\Behat\Step\When('I should not see question bulk action :action')]
     public function i_should_not_see_question_bulk_action($action) {
         // Check if its visible.
         $this->execute("behat_general::should_not_be_visible",
@@ -301,9 +301,9 @@ class behat_core_question extends behat_question_base {
     /**
      * A click on a particular bulk action in the question bank UI.
      *
-     * @When I click on question bulk action :action
      * @param string $action the value of the input for the action.
      */
+    #[\Behat\Step\When('I click on question bulk action :action')]
     public function i_click_on_question_bulk_action($action) {
         // Click the bulk action.
         $this->execute("behat_general::i_click_on",
@@ -321,9 +321,9 @@ class behat_core_question extends behat_question_base {
      * questions of a valid type, then using this to change the type once the
      * data is created.
      *
-     * @Given question :questionname is changed to simulate being of an uninstalled type
      * @param string $questionname the question name.
      */
+    #[\Behat\Step\Given('question :questionname is changed to simulate being of an uninstalled type')]
     public function change_question_to_nonexistant_type($questionname) {
         global $DB;
         [$id] = $this->find_question_by_name($questionname);
@@ -350,9 +350,9 @@ class behat_core_question extends behat_question_base {
      * In order to set things up, you probably need to start by generating
      * a valid questions, then using this to remove it once the data is created.
      *
-     * @Given question :questionname no longer exists in the database
      * @param string $questionname the question name.
      */
+    #[\Behat\Step\Given('question :questionname no longer exists in the database')]
     public function remove_question_from_db($questionname) {
         global $DB;
         [$id] = $this->find_question_by_name($questionname);
@@ -365,9 +365,9 @@ class behat_core_question extends behat_question_base {
      *
      * This will add the filter if it does not exist, but leave the value empty.
      *
-     * @When I add question bank filter :filtertype
      * @param string $filtertype The filter we are adding
      */
+    #[\Behat\Step\When('I add question bank filter :filtertype')]
     public function i_add_question_bank_filter(string $filtertype) {
         $filter = $this->getSession()->getPage()->find('css',
                 '[data-filterregion=filter] [data-field-title="' . $filtertype . '"]');
@@ -388,11 +388,11 @@ class behat_core_question extends behat_question_base {
      * This will change the existing value of the specified filter, or add the filter and set its value if it doesn't already
      * exist.
      *
-     * @When I apply question bank filter :filtertype with value :value
      * @param string $filtertype The filter to apply. This should match the get_title() return value from the
      *        filter's condition class.
      * @param string $value The value to set for the condition.
      */
+    #[\Behat\Step\When('I apply question bank filter :filtertype with value :value')]
     public function i_apply_question_bank_filter(string $filtertype, string $value) {
         // Add the filter if needed.
         $this->execute('behat_core_question::i_add_question_bank_filter', [
@@ -412,11 +412,11 @@ class behat_core_question extends behat_question_base {
     /**
      * Record that a user has recently accessed the question bank related to a particular activity.
      *
-     * @Given :user has recently viewed the :activityname :activitytype question bank
      * @param string $useridentifier The user's username or email.
      * @param string $activityname name of an activity.
      * @param string $activitytype type of an activity, e.g. 'quiz' or 'qbank'.
      */
+    #[\Behat\Step\Given(':user has recently viewed the :activityname :activitytype question bank')]
     public function user_has_recently_viewed_question_bank(
         string $useridentifier,
         string $activityname,

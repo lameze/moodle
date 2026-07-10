@@ -202,11 +202,11 @@ class behat_theme_classic_behat_navigation extends behat_navigation {
      * Check that the page administration menu exists on the page.
      *
      * This confirms the existence of the menu, which authorised users should have access to.
-     * @Given /^I should see the page administration menu$/
      *
      * @throws ExpectationException
      * @return void
      */
+    #[\Behat\Step\Given('/^I should see the page administration menu$/')]
     public function page_administration_exists() {
         $menuxpath = "//section[contains(@class,'block_settings')]//div[@id='settingsnav']";
         $this->ensure_element_exists($menuxpath, 'xpath_element');
@@ -216,11 +216,11 @@ class behat_theme_classic_behat_navigation extends behat_navigation {
      * Check that the page administration menu does not exist on the page.
      *
      * This confirms the absence of the menu, which unauthorised users should not have access to.
-     * @Given /^I should not see the page administration menu$/
      *
      * @throws ExpectationException
      * @return void
      */
+    #[\Behat\Step\Given('/^I should not see the page administration menu$/')]
     public function page_administration_does_not_exist() {
         $menuxpath = "//section[contains(@class,'block_settings')]//div[@id='settingsnav']";
         $this->ensure_element_does_not_exist($menuxpath, 'xpath_element');

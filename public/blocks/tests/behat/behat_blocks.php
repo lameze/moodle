@@ -43,9 +43,9 @@ class behat_blocks extends behat_base {
     /**
      * Adds the selected block. Editing mode must be previously enabled.
      *
-     * @Given /^I add the "(?P<block_name_string>(?:[^"]|\\")*)" block$/
      * @param string $blockname
      */
+    #[\Behat\Step\Given('/^I add the "(?P<block_name_string>(?:[^"]|\\\\")*)" block$/')]
     public function i_add_the_block($blockname) {
         $addblock = get_string('addblock');
         $this->execute(
@@ -65,10 +65,10 @@ class behat_blocks extends behat_base {
      *
      * Editing mode must be previously enabled.
      *
-     * @Given /^I add the "(?P<block_name_string>(?:[^"]|\\")*)" block to the "(?P<region_string>(?:[^"]|\\")*)" region$/
      * @param string $blockname
      * @param string $region
      */
+    #[\Behat\Step\Given('/^I add the "(?P<block_name_string>(?:[^"]|\\\\")*)" block to the "(?P<region_string>(?:[^"]|\\\\")*)" region$/')]
     public function i_add_the_block_to_the_region(string $blockname, string $region) {
         if (!$this->running_javascript()) {
             throw new coding_exception('Adding block to specific region is not possible with Javascript disabled');
@@ -87,11 +87,11 @@ class behat_blocks extends behat_base {
      *
      * Editing mode must be previously enabled.
      *
-     * @Given /^I add the "(?P<block_name_string>(?:[^"]|\\")*)" block to the (?P<region_string>(?:[^"]|\\")*) region with:$/
      * @param string $blockname
      * @param string $region
      * @param TableNode $data
      */
+    #[\Behat\Step\Given('/^I add the "(?P<block_name_string>(?:[^"]|\\\\")*)" block to the (?P<region_string>(?:[^"]|\\\\")*) region with:$/')]
     public function i_add_the_block_to_the_region_with(string $blockname, string $region, TableNode $data) {
         $blocklabel = get_string('textellipsis', 'moodle', $blockname);
         $this->execute('behat_blocks::i_add_the_block_to_the_region', [$blocklabel, $region]);
@@ -105,9 +105,9 @@ class behat_blocks extends behat_base {
     /**
      * Adds the selected block if it is not already present. Editing mode must be previously enabled.
      *
-     * @Given /^I add the "(?P<block_name_string>(?:[^"]|\\")*)" block if not present$/
      * @param string $blockname
      */
+    #[\Behat\Step\Given('/^I add the "(?P<block_name_string>(?:[^"]|\\\\")*)" block if not present$/')]
     public function i_add_the_block_if_not_present($blockname) {
         try {
             $this->get_text_selector_node('block', $blockname);
@@ -119,10 +119,10 @@ class behat_blocks extends behat_base {
     /**
      * Opens a block's actions menu if it is not already opened.
      *
-     * @Given /^I open the "(?P<block_name_string>(?:[^"]|\\")*)" blocks action menu$/
      * @throws DriverException The step is not available when Javascript is disabled
      * @param string $blockname
      */
+    #[\Behat\Step\Given('/^I open the "(?P<block_name_string>(?:[^"]|\\\\")*)" blocks action menu$/')]
     public function i_open_the_blocks_action_menu($blockname) {
 
         if (!$this->running_javascript()) {
@@ -146,9 +146,9 @@ class behat_blocks extends behat_base {
      *
      * Argument block_name may be either the name of the block or CSS class of the block.
      *
-     * @Given /^I configure the "(?P<block_name_string>(?:[^"]|\\")*)" block$/
      * @param string $blockname
      */
+    #[\Behat\Step\Given('/^I configure the "(?P<block_name_string>(?:[^"]|\\\\")*)" block$/')]
     public function i_configure_the_block($blockname) {
         // Note that since $blockname may be either block name or CSS class, we can not use the exact label of "Configure" link.
 
@@ -162,9 +162,9 @@ class behat_blocks extends behat_base {
     /**
      * Ensures that block can be added to the page but does not actually add it.
      *
-     * @Then /^the add block selector should contain "(?P<block_name_string>(?:[^"]|\\")*)" block$/
      * @param string $blockname
      */
+    #[\Behat\Step\Then('/^the add block selector should contain "(?P<block_name_string>(?:[^"]|\\\\")*)" block$/')]
     public function the_add_block_selector_should_contain_block($blockname) {
         $addblock = get_string('addblock');
         $this->execute('behat_general::i_click_on', [$addblock, 'link_exact']);
@@ -183,9 +183,9 @@ class behat_blocks extends behat_base {
     /**
      * Ensures that block can not be added to the page.
      *
-     * @Then /^the add block selector should not contain "(?P<block_name_string>(?:[^"]|\\")*)" block$/
      * @param string $blockname
      */
+    #[\Behat\Step\Then('/^the add block selector should not contain "(?P<block_name_string>(?:[^"]|\\\\")*)" block$/')]
     public function the_add_block_selector_should_not_contain_block($blockname) {
         $addblock = get_string('addblock');
         $this->execute('behat_general::i_click_on', [$addblock, 'link_exact']);

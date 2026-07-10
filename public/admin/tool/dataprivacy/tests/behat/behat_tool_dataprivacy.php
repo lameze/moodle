@@ -60,11 +60,11 @@ class behat_tool_dataprivacy extends behat_base {
     /**
      * Creates the specified element. More info about available elements in https://moodledev.io/general/development/tools/behat.
      *
-     * @Given /^the following data privacy "(?P<element_string>(?:[^"]|\\")*)" exist:$/
      *
      * @param string    $elementname The name of the entity to add
      * @param TableNode $data
      */
+    #[\Behat\Step\Given('/^the following data privacy "(?P<element_string>(?:[^"]|\\\\")*)" exist:$/')]
     public function the_following_data_categories_exist($elementname, TableNode $data) {
         if (empty(self::$elements[$elementname])) {
             throw new PendingException($elementname . ' data generator is not implemented');
@@ -126,11 +126,11 @@ class behat_tool_dataprivacy extends behat_base {
     /**
      * Sets the data category and data storage purpose for the site.
      *
-     * @Given /^I set the site category and purpose to "(?P<category_string>(?:[^"]|\\")*)" and "(?P<purpose_string>(?:[^"]|\\")*)"$/
      *
      * @param string $category The ID of the category to be set for the instance.
      * @param string $purpose The ID of the purpose to be set for the instance.
      */
+    #[\Behat\Step\Given('/^I set the site category and purpose to "(?P<category_string>(?:[^"]|\\\\")*)" and "(?P<purpose_string>(?:[^"]|\\\\")*)"$/')]
     public function i_set_the_site_category_and_purpose($category, $purpose) {
         $category = \tool_dataprivacy\category::get_record(['name' => $category]);
         $purpose = \tool_dataprivacy\purpose::get_record(['name' => $purpose]);
@@ -145,12 +145,12 @@ class behat_tool_dataprivacy extends behat_base {
     /**
      * Sets the data category and data storage purpose for a course category instance.
      *
-     * @Given /^I set the category and purpose for the course category "(?P<categoryname_string>(?:[^"]|\\")*)" to "(?P<category_string>(?:[^"]|\\")*)" and "(?P<purpose_string>(?:[^"]|\\")*)"$/
      *
      * @param string $name The instance name. It should match the name or the idnumber.
      * @param string $category The ID of the category to be set for the instance.
      * @param string $purpose The ID of the purpose to be set for the instance.
      */
+    #[\Behat\Step\Given('/^I set the category and purpose for the course category "(?P<categoryname_string>(?:[^"]|\\\\")*)" to "(?P<category_string>(?:[^"]|\\\\")*)" and "(?P<purpose_string>(?:[^"]|\\\\")*)"$/')]
     public function i_set_the_category_and_purpose_for_course_category($name, $category, $purpose) {
         global $DB;
 
@@ -168,12 +168,12 @@ class behat_tool_dataprivacy extends behat_base {
     /**
      * Sets the data category and data storage purpose for a course instance.
      *
-     * @Given /^I set the category and purpose for the course "(?P<coursename_string>(?:[^"]|\\")*)" to "(?P<category_string>(?:[^"]|\\")*)" and "(?P<purpose_string>(?:[^"]|\\")*)"$/
      *
      * @param string $name The instance name. It should match the fullname or the shortname, or the idnumber.
      * @param string $category The ID of the category to be set for the instance.
      * @param string $purpose The ID of the purpose to be set for the instance.
      */
+    #[\Behat\Step\Given('/^I set the category and purpose for the course "(?P<coursename_string>(?:[^"]|\\\\")*)" to "(?P<category_string>(?:[^"]|\\\\")*)" and "(?P<purpose_string>(?:[^"]|\\\\")*)"$/')]
     public function i_set_the_category_and_purpose_for_course($name, $category, $purpose) {
         global $DB;
 
@@ -192,7 +192,6 @@ class behat_tool_dataprivacy extends behat_base {
     /**
      * Sets the data category and data storage purpose for a course instance.
      *
-     * @Given /^I set the category and purpose for the "(?P<activityname_string>(?:[^"]|\\")*)" "(?P<activitytype_string>(?:[^"]|\\")*)" in course "(?P<coursename_string>(?:[^"]|\\")*)" to "(?P<category_string>(?:[^"]|\\")*)" and "(?P<purpose_string>(?:[^"]|\\")*)"$/
      *
      * @param string $name The instance name. It should match the name of the activity.
      * @param string $type The activity type. E.g. assign, quiz, forum, etc.
@@ -200,6 +199,7 @@ class behat_tool_dataprivacy extends behat_base {
      * @param string $category The ID of the category to be set for the instance.
      * @param string $purpose The ID of the purpose to be set for the instance.
      */
+    #[\Behat\Step\Given('/^I set the category and purpose for the "(?P<activityname_string>(?:[^"]|\\\\")*)" "(?P<activitytype_string>(?:[^"]|\\\\")*)" in course "(?P<coursename_string>(?:[^"]|\\\\")*)" to "(?P<category_string>(?:[^"]|\\\\")*)" and "(?P<purpose_string>(?:[^"]|\\\\")*)"$/')]
     public function i_set_the_category_and_purpose_for_activity($name, $type, $coursename, $category, $purpose) {
         global $DB;
 
@@ -230,13 +230,13 @@ class behat_tool_dataprivacy extends behat_base {
     /**
      * Sets the data category and data storage purpose for a course instance.
      *
-     * @Given /^I set the category and purpose for the "(?P<blockname_string>(?:[^"]|\\")*)" block in the "(?P<coursename_string>(?:[^"]|\\")*)" course to "(?P<category_string>(?:[^"]|\\")*)" and "(?P<purpose_string>(?:[^"]|\\")*)"$/
      *
      * @param string $name The instance name. It should match the name of the block. (e.g. online_users)
      * @param string $coursename The course name. It should match the fullname or the shortname, or the idnumber.
      * @param string $category The ID of the category to be set for the instance.
      * @param string $purpose The ID of the purpose to be set for the instance.
      */
+    #[\Behat\Step\Given('/^I set the category and purpose for the "(?P<blockname_string>(?:[^"]|\\\\")*)" block in the "(?P<coursename_string>(?:[^"]|\\\\")*)" course to "(?P<category_string>(?:[^"]|\\\\")*)" and "(?P<purpose_string>(?:[^"]|\\\\")*)"$/')]
     public function i_set_the_category_and_purpose_for_block($name, $coursename, $category, $purpose) {
         global $DB;
 
@@ -281,11 +281,11 @@ class behat_tool_dataprivacy extends behat_base {
     /**
      * Create a dataprivacy request.
      *
-     * @Given /^I create a dataprivacy "(?P<type_string>(?:[^"]|\\")*)" request for "(?P<user_string>(?:[^"]|\\")*)"$/
      *
      * @param string $type The type of request to create (delete, or export)
      * @param string $username The username to create for
      */
+    #[\Behat\Step\Given('/^I create a dataprivacy "(?P<type_string>(?:[^"]|\\\\")*)" request for "(?P<user_string>(?:[^"]|\\\\")*)"$/')]
     public function i_create_a_dataprivacy_request_for($type, $username) {
         if ($type === 'delete') {
             $type = \tool_dataprivacy\api::DATAREQUEST_TYPE_DELETE;
@@ -303,11 +303,11 @@ class behat_tool_dataprivacy extends behat_base {
     /**
      * Approve a dataprivacy request.
      *
-     * @Given /^I approve a dataprivacy "(?P<type_string>(?:[^"]|\\")*)" request for "(?P<user_string>(?:[^"]|\\")*)"$/
      *
      * @param string $type The type of request to create (delete, or export)
      * @param string $username The username to create for
      */
+    #[\Behat\Step\Given('/^I approve a dataprivacy "(?P<type_string>(?:[^"]|\\\\")*)" request for "(?P<user_string>(?:[^"]|\\\\")*)"$/')]
     public function i_approve_a_dataprivacy_request_for($type, $username) {
         if ($type === 'delete') {
             $type = \tool_dataprivacy\api::DATAREQUEST_TYPE_DELETE;

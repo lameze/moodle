@@ -32,9 +32,8 @@ class behat_qbank_statistics extends behat_base {
          * This runs the recalcuation ad-hoc tasks. We need a special step for this
          * as the run time for these tasks is set to an hour in the future, so
          * "I run all ad-hoc tasks" will not trigger them.
-         *
-         * @Given /^I run pending statistics recalculation tasks$/
          */
+        #[\Behat\Step\Given('/^I run pending statistics recalculation tasks$/')]
         function i_run_pending_statistics_recalculation_tasks() {
             \quiz_statistics\tests\statistics_helper::run_pending_recalculation_tasks();
         }

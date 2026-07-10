@@ -41,9 +41,9 @@ class behat_search extends behat_base {
     /**
      * Create event when starting on the front page.
      *
-     * @Given /^I search for "(?P<query>[^"]*)" using the header global search box$/
      * @param string $query Query to search for
      */
+    #[\Behat\Step\Given('/^I search for "(?P<query>[^"]*)" using the header global search box$/')]
     public function i_search_for_using_the_header_global_search_box($query) {
         // In boost the toggle button lives inside the mobile-only wrapper and is hidden on desktop.
         // Classic always shows it. Check visibility before clicking to handle both cases.
@@ -65,10 +65,10 @@ class behat_search extends behat_base {
      * Sets results which will be returned for the next search. It will only return links to
      * activities at present.
      *
-     * @Given /^global search expects the query "(?P<query>[^"]*)" and will return:$/
      * @param string $query Expected query value (just used to check the query passed to the engine)
      * @param TableNode $data Data rows
      */
+    #[\Behat\Step\Given('/^global search expects the query "(?P<query>[^"]*)" and will return:$/')]
     public function global_search_expects_the_query_and_will_return($query, TableNode $data) {
         global $DB;
         $outdata = new stdClass();
@@ -146,18 +146,17 @@ class behat_search extends behat_base {
     /**
      * Updates the global search index to take account of any added activities.
      *
-     * @Given /^I update the global search index$/
      * @throws moodle_exception
      */
+    #[\Behat\Step\Given('/^I update the global search index$/')]
     public function i_update_the_global_search_index() {
         \core_search\manager::instance()->index(false);
     }
 
     /**
      * This step looks to see if Solr is installed or skip the rest of the scenario otherwise
-     *
-     * @Given /^solr is installed/
      */
+    #[\Behat\Step\Given('/^solr is installed/')]
     public function solr_is_installed() {
         if (!function_exists('solr_get_version')) {
             throw new SkippedException('Skipping this scenario because Solr is not installed.');

@@ -42,9 +42,9 @@ class behat_grading extends behat_base {
     /**
      * Goes to the selected advanced grading page. You should be in the course page when this step begins.
      *
-     * @Given /^I go to "(?P<activity_name_string>(?:[^"]|\\")*)" advanced grading page$/
      * @param string $activityname
      */
+    #[\Behat\Step\Given('/^I go to "(?P<activity_name_string>(?:[^"]|\\\\")*)" advanced grading page$/')]
     public function i_go_to_advanced_grading_page($activityname) {
 
         try {
@@ -60,9 +60,9 @@ class behat_grading extends behat_base {
     /**
      * Goes to the selected advanced grading definition page. You should be in the course page when this step begins.
      *
-     * @Given /^I go to "(?P<activity_name_string>(?:[^"]|\\")*)" advanced grading definition page$/
      * @param string $activityname
      */
+    #[\Behat\Step\Given('/^I go to "(?P<activity_name_string>(?:[^"]|\\\\")*)" advanced grading definition page$/')]
     public function i_go_to_advanced_grading_definition_page($activityname) {
 
         // Transforming to literals, probably not necessary, just in case.
@@ -80,10 +80,10 @@ class behat_grading extends behat_base {
     /**
      * Goes to the student's advanced grading page.
      *
-     * @Given /^I go to "(?P<user_fullname_string>(?:[^"]|\\")*)" "(?P<activity_name_string>(?:[^"]|\\")*)" activity advanced grading page$/
      * @param string $userfullname The user full name including firstname and lastname.
      * @param string $activityname The activity name
      */
+    #[\Behat\Step\Given('/^I go to "(?P<user_fullname_string>(?:[^"]|\\\\")*)" "(?P<activity_name_string>(?:[^"]|\\\\")*)" activity advanced grading page$/')]
     public function i_go_to_activity_advanced_grading_page($userfullname, $activityname) {
 
         // Step to access the user grade page from the grading page.
@@ -105,9 +105,9 @@ class behat_grading extends behat_base {
     /**
      * Publishes current activity grading defined form as a public template.
      *
-     * @Given /^I publish "(?P<activity_name_string>(?:[^"]|\\")*)" grading form definition as a public template$/
      * @param string $activityname
      */
+    #[\Behat\Step\Given('/^I publish "(?P<activity_name_string>(?:[^"]|\\\\")*)" grading form definition as a public template$/')]
     public function i_publish_grading_form_definition_as_a_public_template($activityname) {
 
         $this->execute('behat_grading::i_go_to_advanced_grading_page', $this->escape($activityname));
@@ -120,10 +120,10 @@ class behat_grading extends behat_base {
     /**
      * Sets a previously created grading form as the activity grading form.
      *
-     * @Given /^I set "(?P<activity_name_string>(?:[^"]|\\")*)" activity to use "(?P<grading_form_template_string>(?:[^"]|\\")*)" grading form$/
      * @param string $activityname
      * @param string $templatename
      */
+    #[\Behat\Step\Given('/^I set "(?P<activity_name_string>(?:[^"]|\\\\")*)" activity to use "(?P<grading_form_template_string>(?:[^"]|\\\\")*)" grading form$/')]
     public function i_set_activity_to_use_grading_form($activityname, $templatename) {
 
         $templateliteral = behat_context_helper::escape($templatename);
@@ -153,9 +153,8 @@ class behat_grading extends behat_base {
 
     /**
      * Saves the current page advanced grading form.
-     *
-     * @When /^I save the advanced grading form$/
      */
+    #[\Behat\Step\When('/^I save the advanced grading form$/')]
     public function i_save_the_advanced_grading_form() {
 
         $this->execute('behat_forms::press_button', get_string('savechanges'));
@@ -167,9 +166,9 @@ class behat_grading extends behat_base {
     /**
      * Grades an activity using advanced grading. Note the grade is set by other steps, depending on the grading method.
      *
-     * @Given /^I complete the advanced grading form with these values:$/
      * @param TableNode $data
      */
+    #[\Behat\Step\Given('/^I complete the advanced grading form with these values:$/')]
     public function i_complete_the_advanced_grading_form_with_these_values(TableNode $data) {
         $this->execute("behat_forms::i_set_the_following_fields_to_these_values", $data);
         $this->execute('behat_grading::i_save_the_advanced_grading_form');

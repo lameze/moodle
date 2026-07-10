@@ -38,11 +38,11 @@ class behat_tool_lp extends behat_base {
     /**
      * Click on an entry in the edit menu.
      *
-     * @When /^I click on "([^"]*)" of edit menu in the "([^"]*)" row$/
      *
      * @param string $nodetext
      * @param string $rowname
      */
+    #[\Behat\Step\When('/^I click on "([^"]*)" of edit menu in the "([^"]*)" row$/')]
     public function click_on_edit_menu_of_the_row($nodetext, $rowname) {
         $xpathtarget = "//ul//li//ul//li[contains(concat(' ', @class, ' '), ' tool-lp-menu-item ')]//a[contains(.,'" . $nodetext . "')]";
 
@@ -53,10 +53,10 @@ class behat_tool_lp extends behat_base {
     /**
      * Click on competency in the tree.
      *
-     * @Given /^I select "([^"]*)" of the competency tree$/
      *
      * @param string $competencyname
      */
+    #[\Behat\Step\Given('/^I select "([^"]*)" of the competency tree$/')]
     public function select_of_the_competency_tree($competencyname) {
         $xpathtarget = "//li[@role='tree-item']//span[contains(.,'" . $competencyname . "')]";
 

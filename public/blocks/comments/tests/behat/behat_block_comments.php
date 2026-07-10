@@ -49,10 +49,10 @@ class behat_block_comments extends behat_base {
      * Only 1 comments block instance is allowed per page, if this changes this
      * steps definitions should be adapted.
      *
-     * @Given /^I add "(?P<comment_text_string>(?:[^"]|\\")*)" comment to comments block$/
      * @throws ElementNotFoundException
      * @param string $comment
      */
+    #[\Behat\Step\Given('/^I add "(?P<comment_text_string>(?:[^"]|\\\\")*)" comment to comments block$/')]
     public function i_add_comment_to_comments_block($comment) {
 
         // Getting the textarea and setting the provided value.
@@ -82,11 +82,11 @@ class behat_block_comments extends behat_base {
     /**
      * Deletes the specified comment from the current page's comments block.
      *
-     * @Given /^I delete "(?P<comment_text_string>(?:[^"]|\\")*)" comment from comments block$/
      * @throws ElementNotFoundException
      * @throws ExpectationException
      * @param string $comment
      */
+    #[\Behat\Step\Given('/^I delete "(?P<comment_text_string>(?:[^"]|\\\\")*)" comment from comments block$/')]
     public function i_delete_comment_from_comments_block($comment) {
 
         $exception = new ElementNotFoundException($this->getSession(), '"' . $comment . '" comment ');

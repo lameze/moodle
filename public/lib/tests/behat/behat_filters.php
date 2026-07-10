@@ -41,11 +41,11 @@ class behat_filters extends behat_base {
     /**
      * Set the global filter configuration.
      *
-     * @Given /^the "(?P<filter_name>(?:[^"]|\\")*)" filter is "(on|off|disabled)"$/
      *
      * @param string $filtername the name of a filter, e.g. 'glossary'.
      * @param string $statename 'on', 'off' or 'disabled'.
      */
+    #[\Behat\Step\Given('/^the "(?P<filter_name>(?:[^"]|\\\\")*)" filter is "(on|off|disabled)"$/')]
     public function the_filter_is($filtername, $statename) {
         require_once(__DIR__ . '/../../filterlib.php');
 
@@ -68,11 +68,11 @@ class behat_filters extends behat_base {
     /**
      * Set the global filter target.
      *
-     * @Given /^the "(?P<filter_name>(?:[^"]|\\")*)" filter applies to "(content|content and headings)"$/
      *
      * @param string $filtername the name of a filter, e.g. 'glossary'.
      * @param string $filtertarget 'content' or 'content and headings'.
      */
+    #[\Behat\Step\Given('/^the "(?P<filter_name>(?:[^"]|\\\\")*)" filter applies to "(content|content and headings)"$/')]
     public function the_filter_applies_to($filtername, $filtertarget) {
         switch ($filtertarget) {
             case 'content and headings':

@@ -60,9 +60,8 @@ class behat_qtype_ddimageortext extends behat_base {
      *
      * @param string $dragitem the text of the item to drag.
      * @param int $placenumber the number of the place to drop into.
-     *
-     * @Given /^I drag "(?P<drag_item>[^"]*)" to place "(?P<place_number>\d+)" in the drag and drop onto image question$/
      */
+    #[\Behat\Step\Given('/^I drag "(?P<drag_item>[^"]*)" to place "(?P<place_number>\d+)" in the drag and drop onto image question$/')]
     public function i_drag_to_place_in_the_drag_and_drop_onto_image_question($dragitem, $placenumber) {
         $generalcontext = behat_context_helper::get('behat_general');
         $generalcontext->i_drag_and_i_drop_it_in($this->drag_xpath($dragitem),
@@ -74,9 +73,8 @@ class behat_qtype_ddimageortext extends behat_base {
      *
      * @param string $keys the characters to type.
      * @param int $placenumber the number of the place to drop into.
-     *
-     * @Given /^I type "(?P<keys>[^"]*)" on place "(?P<place_number>\d+)" in the drag and drop onto image question$/
      */
+    #[\Behat\Step\Given('/^I type "(?P<keys>[^"]*)" on place "(?P<place_number>\d+)" in the drag and drop onto image question$/')]
     public function i_type_on_place_in_the_drag_and_drop_onto_image_question($keys, $placenumber) {
         $node = $this->get_selected_node('xpath_element', $this->drop_xpath($placenumber));
         $this->ensure_node_is_visible($node);

@@ -40,11 +40,11 @@ class behat_mod_choice extends behat_base {
     /**
      * Chooses the specified option from the choice activity named as specified. You should be located in the activity's course page.
      *
-     * @Given /^I choose "(?P<option_string>(?:[^"]|\\")*)" from "(?P<choice_activity_string>(?:[^"]|\\")*)" choice activity$/
      * @param string $option
      * @param string $choiceactivity
      * @return array
      */
+    #[\Behat\Step\Given('/^I choose "(?P<option_string>(?:[^"]|\\\\")*)" from "(?P<choice_activity_string>(?:[^"]|\\\\")*)" choice activity$/')]
     public function I_choose_option_from_activity($option, $choiceactivity) {
         $this->execute('behat_navigation::i_am_on_page_instance', [$this->escape($choiceactivity), 'choice activity']);
 
@@ -57,11 +57,11 @@ class behat_mod_choice extends behat_base {
      * Chooses the specified option from the choice activity named as specified and save the choice.
      * You should be located in the activity's course page.
      *
-     * @Given /^I choose options (?P<option_string>"(?:[^"]|\\")*"(?:,"(?:[^"]|\\")*")*) from "(?P<choice_activity_string>(?:[^"]|\\")*)" choice activity$/
      * @param string $option
      * @param string $choiceactivity
      * @return array
      */
+    #[\Behat\Step\Given('/^I choose options (?P<option_string>"(?:[^"]|\\\\")*"(?:,"(?:[^"]|\\\\")*")*) from "(?P<choice_activity_string>(?:[^"]|\\\\")*)" choice activity$/')]
     public function I_choose_options_from_activity($option, $choiceactivity) {
         // Get Behat general and forms contexts.
         $behatgeneral = behat_context_helper::get('behat_general');

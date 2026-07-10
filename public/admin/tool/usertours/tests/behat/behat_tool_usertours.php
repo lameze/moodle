@@ -38,9 +38,9 @@ class behat_tool_usertours extends behat_base {
     /**
      * Add a new user tour.
      *
-     * @Given /^I add a new user tour with:$/
      * @param TableNode $table
      */
+    #[\Behat\Step\Given('/^I add a new user tour with:$/')]
     public function i_add_a_new_user_tour_with(TableNode $table) {
         $this->execute('behat_tool_usertours::i_open_the_user_tour_settings_page');
         $this->execute('behat_general::click_link', get_string('newtour', 'tool_usertours'));
@@ -54,10 +54,10 @@ class behat_tool_usertours extends behat_base {
     /**
      * Add new steps to a user tour.
      *
-     * @Given /^I add steps to the "(?P<tour_name_string>(?:[^"]|\\")*)" tour:$/
      * @param   string      $tourname   The name of the tour to add steps to.
      * @param   TableNode   $table
      */
+    #[\Behat\Step\Given('/^I add steps to the "(?P<tour_name_string>(?:[^"]|\\\\")*)" tour:$/')]
     public function i_add_steps_to_the_named_tour($tourname, TableNode $table) {
         $this->execute('behat_tool_usertours::i_open_the_user_tour_settings_page');
         $this->execute('behat_general::click_link', $this->escape($tourname));
@@ -67,9 +67,9 @@ class behat_tool_usertours extends behat_base {
     /**
      * Add new steps to the current user tour.
      *
-     * @Given /^I add steps to the tour:$/
      * @param   TableNode   $table
      */
+    #[\Behat\Step\Given('/^I add steps to the tour:$/')]
     public function i_add_steps_to_the_tour(TableNode $table) {
         foreach ($table->getHash() as $step) {
             $this->execute('behat_general::click_link', get_string('newstep', 'tool_usertours'));
@@ -85,9 +85,8 @@ class behat_tool_usertours extends behat_base {
 
     /**
      * Navigate to the user tour settings page.
-     *
-     * @Given /^I open the User tour settings page$/
      */
+    #[\Behat\Step\Given('/^I open the User tour settings page$/')]
     public function i_open_the_user_tour_settings_page() {
         $this->execute(
             'behat_navigation::i_navigate_to_in_site_administration',

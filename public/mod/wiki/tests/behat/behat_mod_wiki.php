@@ -51,9 +51,8 @@ class behat_mod_wiki extends behat_base {
      * content     (optional) the content of the page
      *
      * @param TableNode $data The pages to add
-     *
-     * @Given /^the following wiki pages exist:$/
      */
+    #[\Behat\Step\Given('/^the following wiki pages exist:$/')]
     public function the_following_wiki_pages_exist(TableNode $data): void {
         global $DB;
 

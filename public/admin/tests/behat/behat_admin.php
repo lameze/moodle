@@ -44,9 +44,9 @@ class behat_admin extends behat_base {
     /**
      * Sets the specified site settings. A table with | Setting label | value | is expected.
      *
-     * @Given /^I set the following administration settings values:$/
      * @param TableNode $table
      */
+    #[\Behat\Step\Given('/^I set the following administration settings values:$/')]
     public function i_set_the_following_administration_settings_values(TableNode $table) {
         if (!$data = $table->getRowsHash()) {
             return;
@@ -89,11 +89,11 @@ class behat_admin extends behat_base {
     /**
      * Sets the specified site settings. A table with | config | value | (optional)plugin | (optional)encrypted | is expected.
      *
-     * @Given /^the following config values are set as admin:$/
      * @param TableNode $table
      */
     #[\core\attribute\example('And the following config values are set as admin:
         | sendcoursewelcomemessage | 0 | enrol_manual |')]
+    #[\Behat\Step\Given('/^the following config values are set as admin:$/')]
     public function the_following_config_values_are_set_as_admin(TableNode $table) {
 
         if (!$data = $table->getRowsHash()) {
@@ -136,9 +136,8 @@ class behat_admin extends behat_base {
 
     /**
      * Sets pathtophp to the PHP binary.
-     *
-     * @Given /^the PHP CLI path is set to the system PHP binary$/
      */
+    #[\Behat\Step\Given('/^the PHP CLI path is set to the system PHP binary$/')]
     public function the_php_cli_path_is_set_to_the_system_php_binary(): void {
         $pathtophp = realpath(PHP_BINARY);
 

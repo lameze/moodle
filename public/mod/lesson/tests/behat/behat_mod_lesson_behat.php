@@ -35,10 +35,10 @@ class behat_mod_lesson_behat extends behat_base {
     /**
      * Select the lesson edit type [Collapsed|Expanded]
      *
-     * @Given i select edit type :edittype
      *
      * @param  string $edittype The edit type of either Collapsed or Expanded
      */
+    #[\Behat\Step\Given('i select edit type :edittype')]
     public function i_select_edit_type(string $edittype): void {
 
         $typestring = ($edittype == 'Collapsed') ? get_string('collapsed', 'mod_lesson') : get_string('full', 'mod_lesson');
@@ -51,9 +51,8 @@ class behat_mod_lesson_behat extends behat_base {
 
     /**
      * Go to the lesson essay grading page.
-     *
-     * @Given i grade lesson essays
      */
+    #[\Behat\Step\Given('i grade lesson essays')]
     public function i_grade_lesson_essays(): void {
         try {
             $this->execute("behat_general::i_click_on", [get_string('manualgrading', 'mod_lesson'), 'button']);
@@ -64,9 +63,8 @@ class behat_mod_lesson_behat extends behat_base {
 
     /**
      * Go to the lesson edit page.
-     *
-     * @Given i edit the lesson
      */
+    #[\Behat\Step\Given('i edit the lesson')]
     public function i_edit_the_lesson(): void {
         try {
             $this->execute("behat_general::click_link", [get_string('editlesson', 'mod_lesson')]);

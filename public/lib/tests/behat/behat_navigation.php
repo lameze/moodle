@@ -44,12 +44,12 @@ class behat_navigation extends behat_base {
     /**
      * Checks whether a navigation node is active within the block navigation.
      *
-     * @Given i should see :name is active in navigation
      *
      * @throws ElementNotFoundException
      * @param string      $element The name of the nav elemnent to look for.
      * @return void
      */
+    #[\Behat\Step\Given('i should see :name is active in navigation')]
     public function i_should_see_is_active_in_navigation($element) {
         $this->execute("behat_general::assert_element_contains_text",
             [$element, '.block_navigation .active_tree_node', 'css_element']);
@@ -110,12 +110,12 @@ class behat_navigation extends behat_base {
     /**
      * Returns true if the navigation node with the given text is expandable.
      *
-     * @Given /^navigation node "([^"]*)" should be expandable$/
      *
      * @throws ExpectationException
      * @param string $nodetext
      * @return bool
      */
+    #[\Behat\Step\Given('/^navigation node "([^"]*)" should be expandable$/')]
     public function navigation_node_should_be_expandable($nodetext) {
         if (!$this->running_javascript()) {
             // Nodes are only expandable when JavaScript is enabled.
@@ -134,12 +134,12 @@ class behat_navigation extends behat_base {
     /**
      * Returns true if the navigation node with the given text is not expandable.
      *
-     * @Given /^navigation node "([^"]*)" should not be expandable$/
      *
      * @throws ExpectationException
      * @param string $nodetext
      * @return bool
      */
+    #[\Behat\Step\Given('/^navigation node "([^"]*)" should not be expandable$/')]
     public function navigation_node_should_not_be_expandable($nodetext) {
         if (!$this->running_javascript()) {
             // Nodes are only expandable when JavaScript is enabled.
@@ -157,10 +157,10 @@ class behat_navigation extends behat_base {
 
     /**
      * Click on an entry in the user menu.
-     * @Given /^I follow "(?P<nodetext_string>(?:[^"]|\\")*)" in the user menu$/
      *
      * @param string $nodetext
      */
+    #[\Behat\Step\Given('/^I follow "(?P<nodetext_string>(?:[^"]|\\\\")*)" in the user menu$/')]
     public function i_follow_in_the_user_menu($nodetext) {
 
         if ($this->running_javascript()) {
@@ -180,12 +180,12 @@ class behat_navigation extends behat_base {
 
     /**
      * Expands the selected node of the navigation tree that matches the text.
-     * @Given /^I expand "(?P<nodetext_string>(?:[^"]|\\")*)" node$/
      *
      * @throws ExpectationException
      * @param string $nodetext
      * @return bool|void
      */
+    #[\Behat\Step\Given('/^I expand "(?P<nodetext_string>(?:[^"]|\\\\")*)" node$/')]
     public function i_expand_node($nodetext) {
 
         // This step is useless with Javascript disabled as Moodle auto expands
@@ -214,11 +214,11 @@ class behat_navigation extends behat_base {
     /**
      * Collapses the selected node of the navigation tree that matches the text.
      *
-     * @Given /^I collapse "(?P<nodetext_string>(?:[^"]|\\")*)" node$/
      * @throws ExpectationException
      * @param string $nodetext
      * @return bool|void
      */
+    #[\Behat\Step\Given('/^I collapse "(?P<nodetext_string>(?:[^"]|\\\\")*)" node$/')]
     public function i_collapse_node($nodetext) {
 
         // No collapsible nodes with non-JS browsers.
@@ -387,9 +387,8 @@ class behat_navigation extends behat_base {
      * The top log in and log out links are hidden when middle or small
      * size windows (or devices) are used. This step returns a step definition
      * clicking to expand the navbar if it is hidden.
-     *
-     * @Given /^I expand navigation bar$/
      */
+    #[\Behat\Step\Given('/^I expand navigation bar$/')]
     public function get_expand_navbar_step() {
 
         // Checking if we need to click the navbar button to show the navigation menu, it
@@ -417,12 +416,12 @@ class behat_navigation extends behat_base {
      *
      * This can be used on front page, course, category or modules pages.
      *
-     * @Given /^I navigate to "(?P<nodetext_string>(?:[^"]|\\")*)" in current page administration$/
      *
      * @throws ExpectationException
      * @param string $nodetext navigation node to click, may contain path, for example "Reports > Overview"
      * @return void
      */
+    #[\Behat\Step\Given('/^I navigate to "(?P<nodetext_string>(?:[^"]|\\\\")*)" in current page administration$/')]
     public function i_navigate_to_in_current_page_administration($nodetext) {
         $nodelist = array_map('trim', explode('>', $nodetext));
         $this->select_from_administration_menu($nodelist);
@@ -431,14 +430,14 @@ class behat_navigation extends behat_base {
     /**
      * Checks that current page administration contains text
      *
-     * @Given /^"(?P<element_string>(?:[^"]|\\")*)" "(?P<selector_string>[^"]*)" should exist in current page administration$/
-     *
-     * @throws ExpectationException
-     * @param string $element The locator of the specified selector.
-     *     This may be a path, for example "Subscription mode > Forced subscription"
+     *      *
+     *      * @throws ExpectationException
+     *      * @param string $element The locator of the specified selector.
+     *      *     This may be a path, for example "Subscription mode > Forced subscription"
      * @param string $selectortype The selector type (link or text)
      * @return void
      */
+    #[\Behat\Step\Given('/^"(?P<element_string>(?:[^"]|\\\\")*)" "(?P<selector_string>[^"]*)" should exist in current page administration$/')]
     public function should_exist_in_current_page_administration($element, $selectortype) {
         $nodes = array_map('trim', explode('>', $element));
         $nodetext = end($nodes);
@@ -456,14 +455,14 @@ class behat_navigation extends behat_base {
     /**
      * Checks that current page administration contains text
      *
-     * @Given /^"(?P<element_string>(?:[^"]|\\")*)" "(?P<selector_string>[^"]*)" should not exist in current page administration$/
-     *
-     * @throws ExpectationException
-     * @param string $element The locator of the specified selector.
-     *     This may be a path, for example "Subscription mode > Forced subscription"
+     *      *
+     *      * @throws ExpectationException
+     *      * @param string $element The locator of the specified selector.
+     *      *     This may be a path, for example "Subscription mode > Forced subscription"
      * @param string $selectortype The selector type (link or text)
      * @return void
      */
+    #[\Behat\Step\Given('/^"(?P<element_string>(?:[^"]|\\\\")*)" "(?P<selector_string>[^"]*)" should not exist in current page administration$/')]
     public function should_not_exist_in_current_page_administration($element, $selectortype) {
         $nodes = array_map('trim', explode('>', $element));
         $nodetext = end($nodes);
@@ -483,12 +482,12 @@ class behat_navigation extends behat_base {
     /**
      * Go to site administration item
      *
-     * @Given /^I navigate to "(?P<nodetext_string>(?:[^"]|\\")*)" in site administration$/
      *
      * @throws ExpectationException
      * @param string $nodetext navigation node to click, may contain path, for example "Reports > Overview"
      * @return void
      */
+    #[\Behat\Step\Given('/^I navigate to "(?P<nodetext_string>(?:[^"]|\\\\")*)" in site administration$/')]
     public function i_navigate_to_in_site_administration($nodetext) {
         $nodelist = array_map('trim', explode('>', $nodetext));
         $this->i_select_from_primary_navigation(get_string('administrationsite'));
@@ -498,10 +497,10 @@ class behat_navigation extends behat_base {
     /**
      * Opens the current users profile page in edit mode.
      *
-     * @Given /^I open my profile in edit mode$/
      * @throws coding_exception
      * @return void
      */
+    #[\Behat\Step\Given('/^I open my profile in edit mode$/')]
     public function i_open_my_profile_in_edit_mode() {
         global $USER;
 
@@ -559,13 +558,12 @@ class behat_navigation extends behat_base {
      *
      * For pages belonging to core, the 'core > ' bit is omitted.
      *
-     * @When /^I am on the (?<page>[^ "]*) page$/
-     * @When /^I am on the "(?<page>[^"]*)" page$/
-     *
      * @param string $page the component and page name.
      *      E.g. 'Admin notifications' or 'core_user > Preferences'.
      * @throws Exception if the specified page cannot be determined.
      */
+    #[\Behat\Step\When('/^I am on the (?<page>[^ "]*) page$/')]
+    #[\Behat\Step\When('/^I am on the "(?<page>[^"]*)" page$/')]
     public function i_am_on_page(string $page) {
         $this->execute('behat_general::i_visit', [$this->resolve_page_helper($page)]);
     }
@@ -579,15 +577,15 @@ class behat_navigation extends behat_base {
      * but with the advantage that you go straight to the desired page, without
      * having to wait for the Dashboard to load.
      *
-     * @When /^I am on the (?<page>[^ "]*) page logged in as (?<username>[^ "]*)$/
-     * @When /^I am on the "(?<page>[^"]*)" page logged in as (?<username>[^ "]*)$/
-     * @When /^I am on the (?<page>[^ "]*) page logged in as "(?<username>[^ "]*)"$/
-     * @When /^I am on the "(?<page>[^"]*)" page logged in as "(?<username>[^ "]*)"$/
      *
      * @param string $page the type of page. E.g. 'Admin notifications' or 'core_user > Preferences'.
      * @param string $username the name of the user to log in as. E.g. 'admin'.
      * @throws Exception if the specified page cannot be determined.
      */
+    #[\Behat\Step\When('/^I am on the (?<page>[^ "]*) page logged in as (?<username>[^ "]*)$/')]
+    #[\Behat\Step\When('/^I am on the "(?<page>[^"]*)" page logged in as (?<username>[^ "]*)$/')]
+    #[\Behat\Step\When('/^I am on the (?<page>[^ "]*) page logged in as "(?<username>[^ "]*)"$/')]
+    #[\Behat\Step\When('/^I am on the "(?<page>[^"]*)" page logged in as "(?<username>[^ "]*)"$/')]
     public function i_am_on_page_logged_in_as(string $page, string $username) {
         self::execute('behat_auth::i_log_in_as', [$username, $this->resolve_page_helper($page)]);
     }
@@ -644,15 +642,15 @@ class behat_navigation extends behat_base {
      *
      * For pages belonging to core, the 'core > ' bit is omitted.
      *
-     * @When /^I am on the (?<identifier>[^ "]*) (?<type>[^ "]*) page$/
-     * @When /^I am on the "(?<identifier>[^"]*)" "(?<type>[^"]*)" page$/
-     * @When /^I am on the (?<identifier>[^ "]*) "(?<type>[^"]*)" page$/
-     * @When /^I am on the "(?<identifier>[^"]*)" (?<type>[^ "]*) page$/
      *
      * @param string $identifier identifies the particular page. E.g. 'Test quiz'.
      * @param string $type the component and page type. E.g. 'mod_quiz > View'.
      * @throws Exception if the specified page cannot be determined.
      */
+    #[\Behat\Step\When('/^I am on the (?<identifier>[^ "]*) (?<type>[^ "]*) page$/')]
+    #[\Behat\Step\When('/^I am on the "(?<identifier>[^"]*)" "(?<type>[^"]*)" page$/')]
+    #[\Behat\Step\When('/^I am on the (?<identifier>[^ "]*) "(?<type>[^"]*)" page$/')]
+    #[\Behat\Step\When('/^I am on the "(?<identifier>[^"]*)" (?<type>[^ "]*) page$/')]
     public function i_am_on_page_instance(string $identifier, string $type) {
         $this->execute('behat_general::i_visit', [$this->resolve_page_instance_helper($identifier, $type)]);
     }
@@ -666,20 +664,19 @@ class behat_navigation extends behat_base {
      * but with the advantage that you go straight to the desired page, without
      * having to wait for the Dashboard to load.
      *
-     * @When /^I am on the (?<identifier>[^ "]*) (?<type>[^ "]*) page logged in as (?<username>[^ "]*)$/
-     * @When /^I am on the "(?<identifier>[^"]*)" "(?<type>[^"]*)" page logged in as (?<username>[^ "]*)$/
-     * @When /^I am on the (?<identifier>[^ "]*) "(?<type>[^"]*)" page logged in as (?<username>[^ "]*)$/
-     * @When /^I am on the "(?<identifier>[^"]*)" (?<type>[^ "]*) page logged in as (?<username>[^ "]*)$/
-     * @When /^I am on the (?<identifier>[^ "]*) (?<type>[^ "]*) page logged in as "(?<username>[^"]*)"$/
-     * @When /^I am on the "(?<identifier>[^"]*)" "(?<type>[^"]*)" page logged in as "(?<username>[^"]*)"$/
-     * @When /^I am on the (?<identifier>[^ "]*) "(?<type>[^"]*)" page logged in as "(?<username>[^"]*)"$/
-     * @When /^I am on the "(?<identifier>[^"]*)" (?<type>[^ "]*) page logged in as "(?<username>[^"]*)"$/
-     *
      * @param string $identifier identifies the particular page. E.g. 'Test quiz'.
      * @param string $type the component and page type. E.g. 'mod_quiz > View'.
      * @param string $username the name of the user to log in as. E.g. 'student'.
      * @throws Exception if the specified page cannot be determined.
      */
+    #[\Behat\Step\When('/^I am on the (?<identifier>[^ "]*) (?<type>[^ "]*) page logged in as (?<username>[^ "]*)$/')]
+    #[\Behat\Step\When('/^I am on the (?<identifier>[^ "]*) "(?<type>[^"]*)" page logged in as (?<username>[^ "]*)$/')]
+    #[\Behat\Step\When('/^I am on the (?<identifier>[^ "]*) (?<type>[^ "]*) page logged in as "(?<username>[^"]*)"$/')]
+    #[\Behat\Step\When('/^I am on the (?<identifier>[^ "]*) "(?<type>[^"]*)" page logged in as "(?<username>[^"]*)"$/')]
+    #[\Behat\Step\When('/^I am on the "(?<identifier>[^"]*)" "(?<type>[^"]*)" page logged in as (?<username>[^ "]*)$/')]
+    #[\Behat\Step\When('/^I am on the "(?<identifier>[^"]*)" (?<type>[^ "]*) page logged in as (?<username>[^ "]*)$/')]
+    #[\Behat\Step\When('/^I am on the "(?<identifier>[^"]*)" "(?<type>[^"]*)" page logged in as "(?<username>[^"]*)"$/')]
+    #[\Behat\Step\When('/^I am on the "(?<identifier>[^"]*)" (?<type>[^ "]*) page logged in as "(?<username>[^"]*)"$/')]
     public function i_am_on_page_instance_logged_in_as(string $identifier,
             string $type, string $username) {
         self::execute('behat_auth::i_log_in_as',
@@ -981,8 +978,8 @@ class behat_navigation extends behat_base {
      * Opens a new tab with given name on the same URL as current page and switches to it.
      *
      * @param string $name Tab name that can be used for switching later (no whitespace)
-     * @When /^I open a tab named "(?<name>[^"]*)" on the current page$/
      */
+    #[\Behat\Step\When('/^I open a tab named "(?<name>[^"]*)" on the current page$/')]
     public function i_open_a_tab_on_the_current_page(string $name): void {
         $this->open_tab($name, 'location.href');
     }
@@ -992,8 +989,8 @@ class behat_navigation extends behat_base {
      *
      * @param string $name Tab name that can be used for switching later (no whitespace)
      * @param string $page Page name
-     * @When /^I open a tab named "(?<name>[^"]*)" on the "(?<page>[^"]*)" page$/
      */
+    #[\Behat\Step\When('/^I open a tab named "(?<name>[^"]*)" on the "(?<page>[^"]*)" page$/')]
     public function i_open_a_tab_on_the_page(string $name, string $page): void {
         if ($page === 'current') {
             $jstarget = 'location.href';
@@ -1009,8 +1006,8 @@ class behat_navigation extends behat_base {
      * @param string $name Tab name that can be used for switching later (no whitespace)
      * @param string $identifier Page identifier
      * @param string $page Page type
-     * @When /^I open a tab named "(?<name>[^"]*)" on the "(?<identifier>[^"]*)" "(?<page>[^"]*)" page$/
      */
+    #[\Behat\Step\When('/^I open a tab named "(?<name>[^"]*)" on the "(?<identifier>[^"]*)" "(?<page>[^"]*)" page$/')]
     public function i_open_a_tab_on_the_page_instance(string $name, string $identifier, string $page): void {
         $this->open_tab($name, '"' . addslashes_js(
             $this->resolve_page_instance_helper($identifier, $page)->out(false)) . '"');
@@ -1037,11 +1034,11 @@ class behat_navigation extends behat_base {
     /**
      * Opens the course homepage. (Consider using 'I am on the "shortname" "Course" page' step instead.)
      *
-     * @Given /^I am on "(?P<coursefullname_string>(?:[^"]|\\")*)" course homepage$/
      * @throws coding_exception
      * @param string $coursefullname The full name of the course.
      * @return void
      */
+    #[\Behat\Step\Given('/^I am on "(?P<coursefullname_string>(?:[^"]|\\\\")*)" course homepage$/')]
     public function i_am_on_course_homepage($coursefullname) {
         $courseid = $this->get_course_id($coursefullname);
         $url = new moodle_url('/course/view.php', ['id' => $courseid]);
@@ -1060,11 +1057,11 @@ class behat_navigation extends behat_base {
     /**
      * Open the course homepage with editing mode set to either on, or off.
      *
-     * @Given I am on :coursefullname course homepage with editing mode :onoroff
      * @throws coding_exception
      * @param string $coursefullname The course full name of the course.
      * @param string $onoroff Whehter to switch editing on, or off.
      */
+    #[\Behat\Step\Given('I am on :coursefullname course homepage with editing mode :onoroff')]
     public function i_am_on_course_homepage_with_editing_mode_set_to(string $coursefullname, string $onoroff): void {
         if ($onoroff !== 'on' && $onoroff !== 'off') {
             throw new coding_exception("Unknown editing mode '{$onoroff}'. Accepted values are 'on' and 'off'");
@@ -1085,9 +1082,9 @@ class behat_navigation extends behat_base {
     /**
      * Opens the flat navigation drawer if it is not already open
      *
-     * @When /^I open flat navigation drawer$/
      * @throws ElementNotFoundException Thrown by behat_base::find
      */
+    #[\Behat\Step\When('/^I open flat navigation drawer$/')]
     public function i_open_flat_navigation_drawer() {
         if (!$this->running_javascript()) {
             // Navigation drawer is always open without JS.
@@ -1105,9 +1102,9 @@ class behat_navigation extends behat_base {
     /**
      * Closes the flat navigation drawer if it is open (does nothing if JS disabled)
      *
-     * @When /^I close flat navigation drawer$/
      * @throws ElementNotFoundException Thrown by behat_base::find
      */
+    #[\Behat\Step\When('/^I close flat navigation drawer$/')]
     public function i_close_flat_navigation_drawer() {
         if (!$this->running_javascript()) {
             // Navigation drawer can not be closed without JS.
@@ -1124,10 +1121,10 @@ class behat_navigation extends behat_base {
     /**
      * Clicks link with specified id|title|alt|text in the primary navigation
      *
-     * @When /^I select "(?P<link_string>(?:[^"]|\\")*)" from primary navigation$/
      * @throws ElementNotFoundException Thrown by behat_base::find
      * @param string $link
      */
+    #[\Behat\Step\When('/^I select "(?P<link_string>(?:[^"]|\\\\")*)" from primary navigation$/')]
     public function i_select_from_primary_navigation(string $link) {
         $this->execute('behat_general::i_click_on_in_the',
             [$link, 'link', '.primary-navigation .moremenu.navigation', 'css_element']
@@ -1137,10 +1134,10 @@ class behat_navigation extends behat_base {
     /**
      * Clicks link with specified id|title|alt|text in the secondary navigation
      *
-     * @When I select :link from secondary navigation
      * @throws ElementNotFoundException Thrown by behat_base::find
      * @param string $link
      */
+    #[\Behat\Step\When('I select :link from secondary navigation')]
     public function i_select_from_secondary_navigation(string $link) {
         $this->execute('behat_general::i_click_on_in_the',
             [$link, 'link', '.secondary-navigation .moremenu.navigation', 'css_element']
@@ -1377,9 +1374,9 @@ class behat_navigation extends behat_base {
      * Please always, to prevent unwanted requests, protect behat fixture files with:
      *     defined('BEHAT_SITE_RUNNING') || die();
      *
-     * @Given /^I am on fixture page "(?P<url_string>(?:[^"]|\\")*)"$/
      * @param string $url local path to fixture page
      */
+    #[\Behat\Step\Given('/^I am on fixture page "(?P<url_string>(?:[^"]|\\\\")*)"$/')]
     public function i_am_on_fixture_page($url) {
         $fixtureregex = '|^/[a-z0-9_\-/]*/tests/behat/fixtures/[a-z0-9_\-]*\.php$|';
         if (!preg_match($fixtureregex, $url)) {
@@ -1392,8 +1389,8 @@ class behat_navigation extends behat_base {
      * First checks to see if we are on this page via the breadcrumb. If not we then attempt to follow the link name given.
      *
      * @param  string $pagename Name of the breadcrumb item to check and follow.
-     * @Given /^I follow the breadcrumb "(?P<url_string>(?:[^"]|\\")*)"$/
      */
+    #[\Behat\Step\Given('/^I follow the breadcrumb "(?P<url_string>(?:[^"]|\\\\")*)"$/')]
     public function go_to_breadcrumb_location(string $pagename): void {
         $breadcrumblabel = get_string('breadcrumb', 'access');
         $link = $this->getSession()->getPage()->find(
@@ -1408,8 +1405,6 @@ class behat_navigation extends behat_base {
     /**
      * Checks whether an item exists in the user menu.
      *
-     * @Given :itemtext :selectortype should exist in the user menu
-     * @Given :itemtext :selectortype should :not exist in the user menu
      *
      * @throws ElementNotFoundException
      * @param string $itemtext The menu item to find
@@ -1417,6 +1412,8 @@ class behat_navigation extends behat_base {
      * @param string|null $not Instructs to checks whether the element does not exist in the user menu, if defined
      * @return void
      */
+    #[\Behat\Step\Given(':itemtext :selectortype should exist in the user menu')]
+    #[\Behat\Step\Given(':itemtext :selectortype should :not exist in the user menu')]
     public function should_exist_in_user_menu($itemtext, $selectortype, $not = null) {
         $callfunction = is_null($not) ? 'should_exist_in_the' : 'should_not_exist_in_the';
         $this->execute("behat_general::{$callfunction}",
@@ -1426,8 +1423,6 @@ class behat_navigation extends behat_base {
     /**
      * Checks whether an item exists in a given user submenu.
      *
-     * @Given :itemtext :selectortype should exist in the :submenuname user submenu
-     * @Given :itemtext :selectortype should :not exist in the :submenuname user submenu
      *
      * @throws ElementNotFoundException
      * @param string $itemtext The submenu item to find
@@ -1436,6 +1431,8 @@ class behat_navigation extends behat_base {
      * @param string|null $not Instructs to checks whether the element does not exist in the user menu, if defined
      * @return void
      */
+    #[\Behat\Step\Given(':itemtext :selectortype should exist in the :submenuname user submenu')]
+    #[\Behat\Step\Given(':itemtext :selectortype should :not exist in the :submenuname user submenu')]
     public function should_exist_in_user_submenu($itemtext, $selectortype, $submenuname, $not = null) {
         $callfunction = is_null($not) ? 'should_exist_in_the' : 'should_not_exist_in_the';
         $this->execute("behat_general::{$callfunction}",
@@ -1445,13 +1442,13 @@ class behat_navigation extends behat_base {
     /**
      * Checks whether a given user submenu is visible.
      *
-     * @Then /^I should see "(?P<submenu_string>[^"]*)" user submenu$/
      *
      * @throws ElementNotFoundException
      * @throws ExpectationException
      * @param string $submenuname The name of the submenu
      * @return void
      */
+    #[\Behat\Step\Then('/^I should see "(?P<submenu_string>[^"]*)" user submenu$/')]
     public function i_should_see_user_submenu($submenuname) {
         $this->execute('behat_general::should_be_visible',
             array($this->get_user_submenu_xpath($submenuname), 'xpath_element'));
@@ -1492,9 +1489,9 @@ class behat_navigation extends behat_base {
 
     /**
      * Turns editing mode on.
-     * @Given I switch editing mode on
-     * @Given I turn editing mode on
      */
+    #[\Behat\Step\Given('I switch editing mode on')]
+    #[\Behat\Step\Given('I turn editing mode on')]
     public function i_turn_editing_mode_on() {
         $this->execute('behat_forms::i_set_the_field_to', [get_string('editmode'), 1]);
 
@@ -1512,9 +1509,9 @@ class behat_navigation extends behat_base {
 
     /**
      * Turns editing mode off.
-     * @Given I switch editing mode off
-     * @Given I turn editing mode off
      */
+    #[\Behat\Step\Given('I switch editing mode off')]
+    #[\Behat\Step\Given('I turn editing mode off')]
     public function i_turn_editing_mode_off() {
         $this->execute('behat_forms::i_set_the_field_to', [get_string('editmode'), 0]);
 
@@ -1533,14 +1530,14 @@ class behat_navigation extends behat_base {
     /**
      * The named item should exist in the named dropdown.
      *
-     * @Then /^the "(?P<item_string>[^"]*)" item should (?P<not_bool>not )?exist in the "(?P<dropdown_string>[^"]*)" dropdown$/
-     * @Then /^the "(?P<item_string>[^"]*)" item should (?P<not_bool>not )?exist in the "(?P<dropdown_string>[^"]*)" dropdown of the "(?P<container_string>[^"]*)" "(?P<containertype_string>[^"]*)"$/
      * @param string $item The text on the dropdown menu item
      * @param bool $not Whether to negate this search
      * @param string $dropdown The name of the dropdown
      * @param string $container The name of the container
      * @param string $containertype The type of the container
      */
+    #[\Behat\Step\Then('/^the "(?P<item_string>[^"]*)" item should (?P<not_bool>not )?exist in the "(?P<dropdown_string>[^"]*)" dropdown$/')]
+    #[\Behat\Step\Then('/^the "(?P<item_string>[^"]*)" item should (?P<not_bool>not )?exist in the "(?P<dropdown_string>[^"]*)" dropdown of the "(?P<container_string>[^"]*)" "(?P<containertype_string>[^"]*)"$/')]
     public function should_exist_in_dropdown(
         string $item,
         bool $not,
@@ -1612,9 +1609,9 @@ class behat_navigation extends behat_base {
      *
      * This is necessary as in Behat the block drawer is open at each page load (disregarding user's settings)
      * As the block drawer is positioned at the front of some contextual dialogs on the grade report for example.
-     * @Given I close block drawer if open
      * @return void
      */
+    #[\Behat\Step\Given('I close block drawer if open')]
     public function i_close_block_drawer_if_open() {
         if ($this->running_javascript()) {
             $xpath = "//button[contains(@data-action,'closedrawer')][contains(@data-placement,'left')]";
@@ -1631,9 +1628,9 @@ class behat_navigation extends behat_base {
     /**
      * I close the block drawer and keep it closed.
      *
-     * @Given I keep block drawer closed
      * @return void
      */
+    #[\Behat\Step\Given('I keep block drawer closed')]
     public function i_keep_block_drawer_closed() {
         set_user_preference('behat_keep_drawer_closed', 1);
         $this->i_close_block_drawer_if_open();
@@ -1642,9 +1639,9 @@ class behat_navigation extends behat_base {
     /**
      * Checks if a navigation menu item is active.
      *
-     * @Then menu item :navigationmenuitem should be active
      * @param string $navigationmenuitem The navigation menu item name.
      */
+    #[\Behat\Step\Then('menu item :navigationmenuitem should be active')]
     public function menu_item_should_be_active(string $navigationmenuitem): void {
         $elementselector = "//*//a/following-sibling::*//a[contains(text(), '$navigationmenuitem') and @aria-current='true']";
         $params = [$elementselector, "xpath_element"];
@@ -1654,9 +1651,9 @@ class behat_navigation extends behat_base {
     /**
      * Checks if a navigation menu item is not active
      *
-     * @Then menu item :navigationmenuitem should not be active
      * @param string $navigationmenuitem The navigation menu item name.
      */
+    #[\Behat\Step\Then('menu item :navigationmenuitem should not be active')]
     public function menu_item_should_not_be_active(string $navigationmenuitem): void {
         $elementselector = "//*//a/following-sibling::*//a[contains(text(), '$navigationmenuitem') and @aria-current='true']";
         $params = [$elementselector, "xpath_element"];
@@ -1666,11 +1663,11 @@ class behat_navigation extends behat_base {
     /**
      * Sets a link to no longer navigate when selected.
      *
-     * @When /^I update the href of the "(?P<locator_string>[^"]*)" "(?P<selector_string>[^"]*)" link to "(?P<href_string>[^"]*)"$/
      * @param string $locator The locator to use
      * @param string $selector selector type
      * @param string $href The value
      */
+    #[\Behat\Step\When('/^I update the href of the "(?P<locator_string>[^"]*)" "(?P<selector_string>[^"]*)" link to "(?P<href_string>[^"]*)"$/')]
     public function i_update_the_link_to_go_nowhere(
         string $locator,
         string $selector,
@@ -1698,9 +1695,9 @@ class behat_navigation extends behat_base {
     /**
      * Checks if a dropdown item is active.
      *
-     * @Then dropdown item :dropdownitem should be active
      * @param string $dropdownitem The dropdown item name.
      */
+    #[\Behat\Step\Then('dropdown item :dropdownitem should be active')]
     public function dropdown_item_should_be_active(string $dropdownitem): void {
         $elementselector = "//li[contains(text(), '$dropdownitem') and @aria-selected='true']";
         $params = [$elementselector, "xpath_element"];
@@ -1710,9 +1707,9 @@ class behat_navigation extends behat_base {
     /**
      * Checks if a dropdown item is not active.
      *
-     * @Then dropdown item :dropdownitem should not be active
      * @param string $dropdownitem The dropdown item name.
      */
+    #[\Behat\Step\Then('dropdown item :dropdownitem should not be active')]
     public function dropdown_item_should_not_be_active(string $dropdownitem): void {
         $elementselector = "//li[contains(text(), '$dropdownitem') and @aria-selected='true']";
         $params = [$elementselector, "xpath_element"];
@@ -1722,10 +1719,10 @@ class behat_navigation extends behat_base {
     /**
      * Selects the specified item from the dropdown menu.
      *
-     * @When /^I select "([^"]*)" from the dropdown$/
      * @param string $selecteditem THe dropdown item selected.
      * @throws ExpectationException
      */
+    #[\Behat\Step\When('/^I select "([^"]*)" from the dropdown$/')]
     public function i_select_from_the_dropdown(string $selecteditem): void {
         $isdropdownvisible = $this->getSession()->getPage()->find('css', '.dropdown-menu.show');
         if (!$isdropdownvisible) {

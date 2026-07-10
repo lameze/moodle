@@ -32,11 +32,11 @@ class behat_report_outline extends behat_base {
      * This is a horrible, horrible hack, but it is not clear how else a range of log entries can be produced to test the
      * filtering of the log entries.
      *
-     * @Given /^the log timestamp for "(?P<username>(?:[^"]|\\")*)" and "(?P<activity_idnumber>(?:[^"]|\\")*)" is set to "(?P<date>(?:[^"]|\\")*)"$/
      * @param string $username
      * @param string $activityidnumber
      * @param string $date
      */
+    #[\Behat\Step\Given('/^the log timestamp for "(?P<username>(?:[^"]|\\\\")*)" and "(?P<activity_idnumber>(?:[^"]|\\\\")*)" is set to "(?P<date>(?:[^"]|\\\\")*)"$/')]
     public function the_log_timestamp_for_and_is_set_to($username, $activityidnumber, $date) {
         global $DB;
 

@@ -35,9 +35,9 @@ class behat_qbank_usage extends behat_question_base {
      * Looks for a table, then looks for a row that contains the given text.
      * Once it finds the right row, it clicks a link in that row.
      *
-     * @When I click :arg1 on the usage column
      * @param string $linkname
      */
+    #[\Behat\Step\When('I click :arg1 on the usage column')]
     public function i_click_on_the_usage_column($linkname) {
         $exception = new ElementNotFoundException($this->getSession(),
             'Cannot find any row on the page containing the text ' . $linkname);
@@ -48,9 +48,9 @@ class behat_qbank_usage extends behat_question_base {
     /**
      * Looks for the appropriate usage count in the column.
      *
-     * @Then I should see :arg1 on the usage column
      * @param string $linkdata
      */
+    #[\Behat\Step\Then('I should see :arg1 on the usage column')]
     public function i_should_see_on_the_usage_column($linkdata) {
         $exception = new ElementNotFoundException($this->getSession(),
             'Cannot find any row with the usage count of ' . $linkdata . ' on the column named Usage');

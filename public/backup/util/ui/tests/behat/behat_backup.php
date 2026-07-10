@@ -48,10 +48,10 @@ class behat_backup extends behat_base {
      * Backups the specified course using the provided options. If you are interested in restoring this backup would be
      * useful to provide a 'Filename' option.
      *
-     * @Given /^I backup "(?P<course_fullname_string>(?:[^"]|\\")*)" course using this options:$/
      * @param string $backupcourse
      * @param TableNode $options Backup options or false if no options provided
      */
+    #[\Behat\Step\Given('/^I backup "(?P<course_fullname_string>(?:[^"]|\\\\")*)" course using this options:$/')]
     public function i_backup_course_using_this_options($backupcourse, $options = false) {
         // We can not use other steps here as we don't know where the provided data
         // table elements are used, and we need to catch exceptions contantly.
@@ -84,9 +84,9 @@ class behat_backup extends behat_base {
      * Please note that because you can't set settings with this there is no way to know what the filename
      * that was produced was. It contains a timestamp making it hard to find.
      *
-     * @Given /^I perform a quick backup of course "(?P<course_fullname_string>(?:[^"]|\\")*)"$/
      * @param string $backupcourse
      */
+    #[\Behat\Step\Given('/^I perform a quick backup of course "(?P<course_fullname_string>(?:[^"]|\\\\")*)"$/')]
     public function i_perform_a_quick_backup_of_course($backupcourse) {
         // We can not use other steps here as we don't know where the provided data
         // table elements are used, and we need to catch exceptions contantly.
@@ -111,11 +111,11 @@ class behat_backup extends behat_base {
      * steps and duplicate code becomes bigger a common method should
      * be generalized.
      *
-     * @Given /^I import "(?P<from_course_fullname_string>(?:[^"]|\\")*)" course into "(?P<to_course_fullname_string>(?:[^"]|\\")*)" course using this options:$/
      * @param string $fromcourse
      * @param string $tocourse
      * @param TableNode $options
      */
+    #[\Behat\Step\Given('/^I import "(?P<from_course_fullname_string>(?:[^"]|\\\\")*)" course into "(?P<to_course_fullname_string>(?:[^"]|\\\\")*)" course using this options:$/')]
     public function i_import_course_into_course($fromcourse, $tocourse, $options = false) {
 
         // We can not use other steps here as we don't know where the provided data
@@ -156,11 +156,11 @@ class behat_backup extends behat_base {
      *
      * You should be in the 'Restore' page where the backup is.
      *
-     * @Given /^I restore "(?P<backup_filename_string>(?:[^"]|\\")*)" backup into "(?P<existing_course_fullname_string>(?:[^"]|\\")*)" course using this options:$/
      * @param string $backupfilename
      * @param string $existingcourse
      * @param TableNode $options Restore forms options or false if no options provided
      */
+    #[\Behat\Step\Given('/^I restore "(?P<backup_filename_string>(?:[^"]|\\\\")*)" backup into "(?P<existing_course_fullname_string>(?:[^"]|\\\\")*)" course using this options:$/')]
     public function i_restore_backup_into_course_using_this_options($backupfilename, $existingcourse, $options = false) {
 
         // Confirm restore.
@@ -190,10 +190,10 @@ class behat_backup extends behat_base {
      *
      * You should be in the 'Restore' page where the backup is.
      *
-     * @Given /^I restore "(?P<backup_filename_string>(?:[^"]|\\")*)" backup into a new course using this options:$/
      * @param string $backupfilename
      * @param TableNode $options Restore forms options or false if no options provided
      */
+    #[\Behat\Step\Given('/^I restore "(?P<backup_filename_string>(?:[^"]|\\\\")*)" backup into a new course using this options:$/')]
     public function i_restore_backup_into_a_new_course_using_this_options($backupfilename, $options = false) {
 
         // Confirm restore.
@@ -219,10 +219,10 @@ class behat_backup extends behat_base {
      *
      * You should be in the 'Restore' page where the backup is.
      *
-     * @Given /^I merge "(?P<backup_filename_string>(?:[^"]|\\")*)" backup into the current course using this options:$/
      * @param string $backupfilename
      * @param TableNode $options Restore forms options or false if no options provided
      */
+    #[\Behat\Step\Given('/^I merge "(?P<backup_filename_string>(?:[^"]|\\\\")*)" backup into the current course using this options:$/')]
     public function i_merge_backup_into_the_current_course($backupfilename, $options = false) {
 
         // Confirm restore.
@@ -247,10 +247,10 @@ class behat_backup extends behat_base {
      *
      * You should be in the 'Restore' page where the backup is.
      *
-     * @Given /^I merge "(?P<backup_filename_string>(?:[^"]|\\")*)" backup into the current course after deleting it's contents using this options:$/
      * @param string $backupfilename
      * @param TableNode $options Restore forms options or false if no options provided
      */
+    #[\Behat\Step\Given('/^I merge "(?P<backup_filename_string>(?:[^"]|\\\\")*)" backup into the current course after deleting it\'s contents using this options:$/')]
     public function i_merge_backup_into_current_course_deleting_its_contents($backupfilename, $options = false) {
 
         // Confirm restore.

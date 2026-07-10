@@ -42,9 +42,8 @@ class behat_tool_langimport extends behat_base {
     /**
      * This step looks to see if the remote language import tests should be run (indicated by
      * setting TOOL_LANGIMPORT_REMOTE_TESTS in config.php.
-     *
-     * @Given /^remote langimport tests are enabled$/
      */
+    #[\Behat\Step\Given('/^remote langimport tests are enabled$/')]
     public function remote_langimport_tests_are_enabled() {
         if (!defined('TOOL_LANGIMPORT_REMOTE_TESTS')) {
             throw new SkippedException('To run the remote langimport tests you must '.
@@ -56,8 +55,8 @@ class behat_tool_langimport extends behat_base {
      * Downloads a langpack and fakes it being outdated
      *
      * @param string $langcode The language code (e.g. en)
-     * @Given /^outdated langpack \'([^\']*)\' is installed$/
      */
+    #[\Behat\Step\Given('/^outdated langpack \\\'([^\\\']*)\\\' is installed$/')]
     public function outdated_langpack_is_installed($langcode) {
         global $CFG;
         require_once($CFG->libdir.'/componentlib.class.php');

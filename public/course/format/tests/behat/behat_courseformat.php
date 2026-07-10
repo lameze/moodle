@@ -61,9 +61,9 @@ class behat_courseformat extends behat_base {
     /**
      * Checks that the course linear navigation is visible.
      *
-     * @Then /^the course linear navigation should be visible$/
      * @throws ExpectationException
      */
+    #[\Behat\Step\Then('/^the course linear navigation should be visible$/')]
     public function the_course_linear_navigation_should_be_visible(): void {
         if (!$this->running_javascript()) {
             return;
@@ -78,9 +78,9 @@ class behat_courseformat extends behat_base {
     /**
      * Checks that the course linear navigation is not visible.
      *
-     * @Then /^the course linear navigation should not be visible$/
      * @throws ExpectationException
      */
+    #[\Behat\Step\Then('/^the course linear navigation should not be visible$/')]
     public function the_course_linear_navigation_should_not_be_visible(): void {
         try {
             $this->the_course_linear_navigation_should_be_visible();

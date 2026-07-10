@@ -40,10 +40,7 @@ class behat_tool_policy extends behat_base {
     /**
      * Click on an entry in the edit menu.
      *
-     * @Given /^the following policies exist:$/
-     *
      * Supported table fields:
-     *
      * - Name: Policy name (required).
      * - Revision: Revision name (policy version).
      * - Status: Policy version status - 'draft', 'active' or 'archived'. Defaults to 'active'.
@@ -56,6 +53,7 @@ class behat_tool_policy extends behat_base {
      *
      * @param TableNode $data
      */
+    #[\Behat\Step\Given('/^the following policies exist:$/')]
     public function the_following_policies_exist(TableNode $data) {
         global $CFG;
         if (empty($CFG->sitepolicyhandler) || $CFG->sitepolicyhandler !== 'tool_policy') {

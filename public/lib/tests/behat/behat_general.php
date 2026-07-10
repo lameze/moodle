@@ -73,27 +73,24 @@ class behat_general extends behat_base {
 
     /**
      * Opens Moodle homepage.
-     *
-     * @Given /^I am on homepage$/
      */
+    #[\Behat\Step\Given('/^I am on homepage$/')]
     public function i_am_on_homepage() {
         $this->execute([self::class, 'i_visit'], ['/']);
     }
 
     /**
      * Opens Moodle site homepage.
-     *
-     * @Given /^I am on site homepage$/
      */
+    #[\Behat\Step\Given('/^I am on site homepage$/')]
     public function i_am_on_site_homepage() {
         $this->execute([self::class, 'i_visit'], ['/?redirect=0']);
     }
 
     /**
      * Opens course index page.
-     *
-     * @Given /^I am on course index$/
      */
+    #[\Behat\Step\Given('/^I am on course index$/')]
     public function i_am_on_course_index() {
         $this->execute([self::class, 'i_visit'], ['/course/index.php']);
     }
@@ -105,9 +102,9 @@ class behat_general extends behat_base {
      * Example: Then the url should match "/mod/forum/view\.php\?id=[0-9]+"
      * Example: And the url should match "^http://moodle\.org"
      *
-     * @Then /^the url should match (?P<pattern>"(?:[^"]|\\")*")$/
      * @param string $pattern The pattern that must match to the current url.
      */
+    #[\Behat\Step\Then('/^the url should match (?P<pattern>"(?:[^"]|\\\\")*")$/')]
     public function the_url_should_match($pattern) {
         $url = $this->getSession()->getCurrentUrl();
 
@@ -120,18 +117,16 @@ class behat_general extends behat_base {
 
     /**
      * Reloads the current page.
-     *
-     * @Given /^I reload the page$/
      */
+    #[\Behat\Step\Given('/^I reload the page$/')]
     public function reload() {
         $this->getSession()->reload();
     }
 
     /**
      * Follows the page redirection. Use this step after any action that shows a message and waits for a redirection
-     *
-     * @Given /^I wait to be redirected$/
      */
+    #[\Behat\Step\Given('/^I wait to be redirected$/')]
     public function i_wait_to_be_redirected() {
 
         // Xpath and processes based on core_renderer::redirect_message(), core_renderer::$metarefreshtag and
@@ -176,10 +171,10 @@ class behat_general extends behat_base {
     /**
      * Switches to the specified iframe.
      *
-     * @Given /^I switch to "(?P<iframe_name_string>(?:[^"]|\\")*)" iframe$/
-     * @Given /^I switch to "(?P<iframe_name_string>(?:[^"]|\\")*)" class iframe$/
      * @param string $name The name of the iframe
      */
+    #[\Behat\Step\Given('/^I switch to "(?P<iframe_name_string>(?:[^"]|\\\\")*)" iframe$/')]
+    #[\Behat\Step\Given('/^I switch to "(?P<iframe_name_string>(?:[^"]|\\\\")*)" class iframe$/')]
     public function switch_to_iframe($name) {
         // We spin to give time to the iframe to be loaded.
         // Using extended timeout as we don't know about which
@@ -210,10 +205,10 @@ class behat_general extends behat_base {
     /**
      * Wait until the specified iframe is interactable (visible, sized, and not occluded).
      *
-     * @Given /^I wait until "(?P<iframe_name_string>(?:[^"]|\\")*)" iframe is interactable$/
-     * @Given /^I wait until "(?P<iframe_name_string>(?:[^"]|\\")*)" class iframe is interactable$/
      * @param string $name The name or class of the iframe
      */
+    #[\Behat\Step\Given('/^I wait until "(?P<iframe_name_string>(?:[^"]|\\\\")*)" iframe is interactable$/')]
+    #[\Behat\Step\Given('/^I wait until "(?P<iframe_name_string>(?:[^"]|\\\\")*)" class iframe is interactable$/')]
     public function wait_until_iframe_interactable(string $name): void {
         if (!$this->running_javascript()) {
             throw new DriverException(
@@ -258,10 +253,10 @@ class behat_general extends behat_base {
     /**
      * Wait until the specified iframe is interactable (visible, sized, and not occluded) and switche to it.
      *
-     * @Given /^I wait until "(?P<iframe_name_string>(?:[^"]|\\")*)" iframe is interactable and switch to it$/
-     * @Given /^I wait until "(?P<iframe_name_string>(?:[^"]|\\")*)" class iframe is interactable and switch to it$/
      * @param string $name The name of the iframe
      */
+    #[\Behat\Step\Given('/^I wait until "(?P<iframe_name_string>(?:[^"]|\\\\")*)" iframe is interactable and switch to it$/')]
+    #[\Behat\Step\Given('/^I wait until "(?P<iframe_name_string>(?:[^"]|\\\\")*)" class iframe is interactable and switch to it$/')]
     public function wait_until_iframe_interactable_and_switch_to(string $name): void {
         $this->wait_until_iframe_interactable($name);
         $this->switch_to_iframe($name);
@@ -269,9 +264,8 @@ class behat_general extends behat_base {
 
     /**
      * Switches to the main Moodle frame.
-     *
-     * @Given /^I switch to the main frame$/
      */
+    #[\Behat\Step\Given('/^I switch to the main frame$/')]
     public function switch_to_the_main_frame() {
         $this->getSession()->switchToIFrame();
     }
@@ -279,9 +273,9 @@ class behat_general extends behat_base {
     /**
      * Switches to the specified window. Useful when interacting with popup windows.
      *
-     * @Given /^I switch to "(?P<window_name_string>(?:[^"]|\\")*)" (window|tab)$/
      * @param string $windowname
      */
+    #[\Behat\Step\Given('/^I switch to "(?P<window_name_string>(?:[^"]|\\\\")*)" (window|tab)$/')]
     public function switch_to_window($windowname) {
         if ($windowname === self::MAIN_WINDOW_NAME) {
             // When switching to the main window normalise the window name to null.
@@ -295,9 +289,9 @@ class behat_general extends behat_base {
     /**
      * Switches to a second window.
      *
-     * @Given /^I switch to a second window$/
      * @throws DriverException If there aren't exactly 2 windows open.
      */
+    #[\Behat\Step\Given('/^I switch to a second window$/')]
     public function switch_to_second_window() {
         $names = $this->getSession()->getWindowNames();
 
@@ -310,9 +304,8 @@ class behat_general extends behat_base {
 
     /**
      * Switches to the main Moodle window. Useful when you finish interacting with popup windows.
-     *
-     * @Given /^I switch to the main (window|tab)$/
      */
+    #[\Behat\Step\Given('/^I switch to the main (window|tab)$/')]
     public function switch_to_the_main_window() {
         $this->switch_to_window(self::MAIN_WINDOW_NAME);
     }
@@ -322,9 +315,9 @@ class behat_general extends behat_base {
      *
      * This assumes all popups are opened by the main tab and you will now get back.
      *
-     * @Given /^I close all opened windows$/
      * @throws DriverException If there aren't exactly 1 tabs open when finish or no javascript running
      */
+    #[\Behat\Step\Given('/^I close all opened windows$/')]
     public function i_close_all_opened_windows() {
         if (!$this->running_javascript()) {
             throw new DriverException('Closing windows steps require javascript');
@@ -355,8 +348,8 @@ class behat_general extends behat_base {
 
     /**
      * Accepts the currently displayed alert dialog. This step does not work in all the browsers, consider it experimental.
-     * @Given /^I accept the currently displayed dialog$/
      */
+    #[\Behat\Step\Given('/^I accept the currently displayed dialog$/')]
     public function accept_currently_displayed_alert_dialog() {
         $alert = $this->wait_for_alert();
         $alert->accept();
@@ -364,8 +357,8 @@ class behat_general extends behat_base {
 
     /**
      * Dismisses the currently displayed alert dialog. This step does not work in all the browsers, consider it experimental.
-     * @Given /^I dismiss the currently displayed dialog$/
      */
+    #[\Behat\Step\Given('/^I dismiss the currently displayed dialog$/')]
     public function dismiss_currently_displayed_alert_dialog() {
         $alert = $this->wait_for_alert();
         $alert->dismiss();
@@ -374,10 +367,10 @@ class behat_general extends behat_base {
     /**
      * Clicks link with specified id|title|alt|text.
      *
-     * @When /^I follow "(?P<link_string>(?:[^"]|\\")*)"$/
      * @throws ElementNotFoundException Thrown by behat_base::find
      * @param string $link
      */
+    #[\Behat\Step\When('/^I follow "(?P<link_string>(?:[^"]|\\\\")*)"$/')]
     public function click_link($link) {
         $linknode = $this->find_link($link);
         $linknode->click();
@@ -386,9 +379,9 @@ class behat_general extends behat_base {
     /**
      * Waits X seconds. Required after an action that requires data from an AJAX request.
      *
-     * @Then /^I wait "(?P<seconds_number>\d+)" seconds$/
      * @param int $seconds
      */
+    #[\Behat\Step\Then('/^I wait "(?P<seconds_number>\d+)" seconds$/')]
     public function i_wait_seconds($seconds) {
         if ($this->running_javascript()) {
             $this->getSession()->wait($seconds * 1000);
@@ -399,9 +392,8 @@ class behat_general extends behat_base {
 
     /**
      * Waits until the page is completely loaded. This step is auto-executed after every step.
-     *
-     * @Given /^I wait until the page is ready$/
      */
+    #[\Behat\Step\Given('/^I wait until the page is ready$/')]
     public function wait_until_the_page_is_ready() {
 
         // No need to wait if not running JS.
@@ -419,12 +411,11 @@ class behat_general extends behat_base {
      * called by other methods which are not returning a set of
      * steps and performs the actions directly, so it would not
      * be executed if it returns another step.
-
-     * @Given /^I wait until "(?P<element_string>(?:[^"]|\\")*)" "(?P<selector_string>[^"]*)" exists$/
      * @param string $element
      * @param string $selector
      * @return void
      */
+    #[\Behat\Step\Given('/^I wait until "(?P<element_string>(?:[^"]|\\\\")*)" "(?P<selector_string>[^"]*)" exists$/')]
     public function wait_until_exists($element, $selectortype) {
         $this->ensure_element_exists($element, $selectortype);
     }
@@ -436,12 +427,11 @@ class behat_general extends behat_base {
      * called by other methods which are not returning a set of
      * steps and performs the actions directly, so it would not
      * be executed if it returns another step.
-
-     * @Given /^I wait until "(?P<element_string>(?:[^"]|\\")*)" "(?P<selector_string>[^"]*)" does not exist$/
      * @param string $element
      * @param string $selector
      * @return void
      */
+    #[\Behat\Step\Given('/^I wait until "(?P<element_string>(?:[^"]|\\\\")*)" "(?P<selector_string>[^"]*)" does not exist$/')]
     public function wait_until_does_not_exists($element, $selectortype) {
         $this->ensure_element_does_not_exist($element, $selectortype);
     }
@@ -449,10 +439,10 @@ class behat_general extends behat_base {
     /**
      * Generic mouse over action. Mouse over a element of the specified type.
      *
-     * @When /^I hover "(?P<element_string>(?:[^"]|\\")*)" "(?P<selector_string>[^"]*)"$/
      * @param string $element Element we look for
      * @param string $selectortype The type of what we look for
      */
+    #[\Behat\Step\When('/^I hover "(?P<element_string>(?:[^"]|\\\\")*)" "(?P<selector_string>[^"]*)"$/')]
     public function i_hover($element, $selectortype) {
         // Gets the node based on the requested selector type and locator.
         $node = $this->get_selected_node($selectortype, $element);
@@ -463,12 +453,12 @@ class behat_general extends behat_base {
     /**
      * Generic mouse over action. Mouse over a element of the specified type.
      *
-     * @When I hover over the :element :selectortype in the :containerelement :containerselectortype
      * @param string $element Element we look for
      * @param string $selectortype The type of what we look for
      * @param string $containerelement Element we look for
      * @param string $containerselectortype The type of what we look for
      */
+    #[\Behat\Step\When('I hover over the :element :selectortype in the :containerelement :containerselectortype')]
     public function i_hover_in_the(string $element, $selectortype, string $containerelement, $containerselectortype): void {
         // Gets the node based on the requested selector type and locator.
         $node = $this->get_node_in_container($selectortype, $element, $containerselectortype, $containerelement);
@@ -479,10 +469,10 @@ class behat_general extends behat_base {
     /**
      * Generic click action. Click on the element of the specified type.
      *
-     * @When /^I click on "(?P<element_string>(?:[^"]|\\")*)" "(?P<selector_string>[^"]*)"$/
      * @param string $element Element we look for
      * @param string $selectortype The type of what we look for
      */
+    #[\Behat\Step\When('/^I click on "(?P<element_string>(?:[^"]|\\\\")*)" "(?P<selector_string>[^"]*)"$/')]
     public function i_click_on($element, $selectortype) {
         // Gets the node based on the requested selector type and locator.
         $this->get_selected_node($selectortype, $element)->click();
@@ -491,10 +481,10 @@ class behat_general extends behat_base {
     /**
      * Sets the focus and takes away the focus from an element, generating blur JS event.
      *
-     * @When /^I take focus off "(?P<element_string>(?:[^"]|\\")*)" "(?P<selector_string>[^"]*)"$/
      * @param string $element Element we look for
      * @param string $selectortype The type of what we look for
      */
+    #[\Behat\Step\When('/^I take focus off "(?P<element_string>(?:[^"]|\\\\")*)" "(?P<selector_string>[^"]*)"$/')]
     public function i_take_focus_off_field($element, $selectortype) {
         if (!$this->running_javascript()) {
             throw new ExpectationException('Can\'t take focus off from "' . $element . '" in non-js mode', $this->getSession());
@@ -511,11 +501,11 @@ class behat_general extends behat_base {
     /**
      * Clicks the specified element and confirms the expected dialogue.
      *
-     * @When /^I click on "(?P<element_string>(?:[^"]|\\")*)" "(?P<selector_string>[^"]*)" confirming the dialogue$/
      * @throws ElementNotFoundException Thrown by behat_base::find
      * @param string $element Element we look for
      * @param string $selectortype The type of what we look for
      */
+    #[\Behat\Step\When('/^I click on "(?P<element_string>(?:[^"]|\\\\")*)" "(?P<selector_string>[^"]*)" confirming the dialogue$/')]
     public function i_click_on_confirming_the_dialogue($element, $selectortype) {
         $this->i_click_on($element, $selectortype);
         $this->execute([self::class, 'accept_currently_displayed_alert_dialog'], []);
@@ -525,11 +515,11 @@ class behat_general extends behat_base {
     /**
      * Clicks the specified element and dismissing the expected dialogue.
      *
-     * @When /^I click on "(?P<element_string>(?:[^"]|\\")*)" "(?P<selector_string>[^"]*)" dismissing the dialogue$/
      * @throws ElementNotFoundException Thrown by behat_base::find
      * @param string $element Element we look for
      * @param string $selectortype The type of what we look for
      */
+    #[\Behat\Step\When('/^I click on "(?P<element_string>(?:[^"]|\\\\")*)" "(?P<selector_string>[^"]*)" dismissing the dialogue$/')]
     public function i_click_on_dismissing_the_dialogue($element, $selectortype) {
         $this->i_click_on($element, $selectortype);
         $this->execute([self::class, 'dismiss_currently_displayed_alert_dialog'], []);
@@ -539,12 +529,12 @@ class behat_general extends behat_base {
     /**
      * Click on the element of the specified type which is located inside the second element.
      *
-     * @When /^I click on "(?P<element_string>(?:[^"]|\\")*)" "(?P<selector_string>[^"]*)" in the "(?P<element_container_string>(?:[^"]|\\")*)" "(?P<text_selector_string>[^"]*)"$/
      * @param string $element Element we look for
      * @param string $selectortype The type of what we look for
      * @param string $nodeelement Element we look in
      * @param string $nodeselectortype The type of selector where we look in
      */
+    #[\Behat\Step\When('/^I click on "(?P<element_string>(?:[^"]|\\\\")*)" "(?P<selector_string>[^"]*)" in the "(?P<element_container_string>(?:[^"]|\\\\")*)" "(?P<text_selector_string>[^"]*)"$/')]
     public function i_click_on_in_the($element, $selectortype, $nodeelement, $nodeselectortype) {
         $node = $this->get_node_in_container($selectortype, $element, $nodeselectortype, $nodeelement);
         $node->click();
@@ -557,13 +547,13 @@ class behat_general extends behat_base {
      * the webdriver limitations. For example, alt click on checkboxes with a visible label will
      * produce a normal checkbox click without the modifier.
      *
-     * @When I :modifier click on :element :selectortype in the :nodeelement :nodeselectortype
      * @param string $modifier the extra modifier to press (for example, alt+shift or shift)
      * @param string $element Element we look for
      * @param string $selectortype The type of what we look for
      * @param string $nodeelement Element we look in
      * @param string $nodeselectortype The type of selector where we look in
      */
+    #[\Behat\Step\When('I :modifier click on :element :selectortype in the :nodeelement :nodeselectortype')]
     public function i_key_click_on_in_the($modifier, $element, $selectortype, $nodeelement, $nodeselectortype) {
         behat_base::require_javascript_in_session($this->getSession());
 
@@ -607,12 +597,12 @@ class behat_general extends behat_base {
      * manage the wait times by themselves as the times and when the
      * waits should be done depends on what is being dragged & dropper.
      *
-     * @Given /^I drag "(?P<element_string>(?:[^"]|\\")*)" "(?P<selector1_string>(?:[^"]|\\")*)" and I drop it in "(?P<container_element_string>(?:[^"]|\\")*)" "(?P<selector2_string>(?:[^"]|\\")*)"$/
      * @param string $element
      * @param string $selectortype
      * @param string $containerelement
      * @param string $containerselectortype
      */
+    #[\Behat\Step\Given('/^I drag "(?P<element_string>(?:[^"]|\\\\")*)" "(?P<selector1_string>(?:[^"]|\\\\")*)" and I drop it in "(?P<container_element_string>(?:[^"]|\\\\")*)" "(?P<selector2_string>(?:[^"]|\\\\")*)"$/')]
     public function i_drag_and_i_drop_it_in($source, $sourcetype, $target, $targettype) {
         if (!$this->running_javascript()) {
             throw new DriverException('Drag and drop steps require javascript');
@@ -634,7 +624,6 @@ class behat_general extends behat_base {
     /**
      * Checks, that the specified element is visible. Only available in tests using Javascript.
      *
-     * @Then /^"(?P<element_string>(?:[^"]|\\")*)" "(?P<selector_string>(?:[^"]|\\")*)" should be visible$/
      * @throws ElementNotFoundException
      * @throws ExpectationException
      * @throws DriverException
@@ -642,6 +631,7 @@ class behat_general extends behat_base {
      * @param string $selectortype
      * @return void
      */
+    #[\Behat\Step\Then('/^"(?P<element_string>(?:[^"]|\\\\")*)" "(?P<selector_string>(?:[^"]|\\\\")*)" should be visible$/')]
     public function should_be_visible($element, $selectortype) {
 
         if (!$this->running_javascript()) {
@@ -662,13 +652,13 @@ class behat_general extends behat_base {
      * otherwise there would be a ElementNotFoundException, also here we are
      * not spinning until the element is visible.
      *
-     * @Then /^"(?P<element_string>(?:[^"]|\\")*)" "(?P<selector_string>(?:[^"]|\\")*)" should not be visible$/
      * @throws ElementNotFoundException
      * @throws ExpectationException
      * @param string $element
      * @param string $selectortype
      * @return void
      */
+    #[\Behat\Step\Then('/^"(?P<element_string>(?:[^"]|\\\\")*)" "(?P<selector_string>(?:[^"]|\\\\")*)" should not be visible$/')]
     public function should_not_be_visible($element, $selectortype) {
 
         try {
@@ -683,7 +673,6 @@ class behat_general extends behat_base {
     /**
      * Checks, that the specified element is visible inside the specified container. Only available in tests using Javascript.
      *
-     * @Then /^"(?P<element_string>(?:[^"]|\\")*)" "(?P<selector_string>[^"]*)" in the "(?P<element_container_string>(?:[^"]|\\")*)" "(?P<text_selector_string>[^"]*)" should be visible$/
      * @throws ElementNotFoundException
      * @throws DriverException
      * @throws ExpectationException
@@ -692,6 +681,7 @@ class behat_general extends behat_base {
      * @param string $nodeelement Element we look in
      * @param string $nodeselectortype The type of selector where we look in
      */
+    #[\Behat\Step\Then('/^"(?P<element_string>(?:[^"]|\\\\")*)" "(?P<selector_string>[^"]*)" in the "(?P<element_container_string>(?:[^"]|\\\\")*)" "(?P<text_selector_string>[^"]*)" should be visible$/')]
     public function in_the_should_be_visible($element, $selectortype, $nodeelement, $nodeselectortype) {
 
         if (!$this->running_javascript()) {
@@ -715,7 +705,6 @@ class behat_general extends behat_base {
      * otherwise there would be a ElementNotFoundException, also here we are
      * not spinning until the element is visible.
      *
-     * @Then /^"(?P<element_string>(?:[^"]|\\")*)" "(?P<selector_string>[^"]*)" in the "(?P<element_container_string>(?:[^"]|\\")*)" "(?P<text_selector_string>[^"]*)" should not be visible$/
      * @throws ElementNotFoundException
      * @throws ExpectationException
      * @param string $element Element we look for
@@ -723,6 +712,7 @@ class behat_general extends behat_base {
      * @param string $nodeelement Element we look in
      * @param string $nodeselectortype The type of selector where we look in
      */
+    #[\Behat\Step\Then('/^"(?P<element_string>(?:[^"]|\\\\")*)" "(?P<selector_string>[^"]*)" in the "(?P<element_container_string>(?:[^"]|\\\\")*)" "(?P<text_selector_string>[^"]*)" should not be visible$/')]
     public function in_the_should_not_be_visible($element, $selectortype, $nodeelement, $nodeselectortype) {
 
         try {
@@ -740,10 +730,10 @@ class behat_general extends behat_base {
     /**
      * Checks, that page contains specified text. It also checks if the text is visible when running Javascript tests.
      *
-     * @Then /^I should see "(?P<text_string>(?:[^"]|\\")*)"$/
      * @throws ExpectationException
      * @param string $text
      */
+    #[\Behat\Step\Then('/^I should see "(?P<text_string>(?:[^"]|\\\\")*)"$/')]
     public function assert_page_contains_text($text) {
 
         // Looking for all the matching nodes without any other descendant matching the
@@ -794,10 +784,10 @@ class behat_general extends behat_base {
      *
      * Note: When running Javascript tests it also considers that texts may be hidden.
      *
-     * @Then /^I should not see "(?P<text_string>(?:[^"]|\\")*)"$/
      * @throws ExpectationException
      * @param string $text
      */
+    #[\Behat\Step\Then('/^I should not see "(?P<text_string>(?:[^"]|\\\\")*)"$/')]
     public function assert_page_not_contains_text($text) {
 
         // Looking for all the matching nodes without any other descendant matching the
@@ -860,13 +850,13 @@ class behat_general extends behat_base {
      *
      * Note: When running Javascript tests it also considers that texts may be hidden.
      *
-     * @Then /^I should see "(?P<text_string>(?:[^"]|\\")*)" in the "(?P<element_string>(?:[^"]|\\")*)" "(?P<text_selector_string>[^"]*)"$/
      * @throws ElementNotFoundException
      * @throws ExpectationException
      * @param string $text
      * @param string $element Element we look in.
      * @param string $selectortype The type of element where we are looking in.
      */
+    #[\Behat\Step\Then('/^I should see "(?P<text_string>(?:[^"]|\\\\")*)" in the "(?P<element_string>(?:[^"]|\\\\")*)" "(?P<text_selector_string>[^"]*)"$/')]
     public function assert_element_contains_text($text, $element, $selectortype) {
 
         // Getting the container where the text should be found.
@@ -921,13 +911,13 @@ class behat_general extends behat_base {
      *
      * Note: When running Javascript tests it also considers that texts may be hidden.
      *
-     * @Then /^I should not see "(?P<text_string>(?:[^"]|\\")*)" in the "(?P<element_string>(?:[^"]|\\")*)" "(?P<text_selector_string>[^"]*)"$/
      * @throws ElementNotFoundException
      * @throws ExpectationException
      * @param string $text
      * @param string $element Element we look in.
      * @param string $selectortype The type of element where we are looking in.
      */
+    #[\Behat\Step\Then('/^I should not see "(?P<text_string>(?:[^"]|\\\\")*)" in the "(?P<element_string>(?:[^"]|\\\\")*)" "(?P<text_selector_string>[^"]*)"$/')]
     public function assert_element_not_contains_text($text, $element, $selectortype) {
 
         // Getting the container where the text should be found.
@@ -980,8 +970,6 @@ class behat_general extends behat_base {
     /**
      * Checks, that the first specified element appears before the second one.
      *
-     * @Then :preelement :preselectortype should appear before :postelement :postselectortype
-     * @Then :preelement :preselectortype should appear before :postelement :postselectortype in the :containerelement :containerselectortype
      * @throws ExpectationException
      * @param string $preelement The locator of the preceding element
      * @param string $preselectortype The selector type of the preceding element
@@ -990,6 +978,8 @@ class behat_general extends behat_base {
      * @param string $containerelement
      * @param string $containerselectortype
      */
+    #[\Behat\Step\Then(':preelement :preselectortype should appear before :postelement :postselectortype')]
+    #[\Behat\Step\Then(':preelement :preselectortype should appear before :postelement :postselectortype in the :containerelement :containerselectortype')]
     public function should_appear_before(
         string $preelement,
         string $preselectortype,
@@ -1013,8 +1003,6 @@ class behat_general extends behat_base {
     /**
      * Checks, that the first specified element appears after the second one.
      *
-     * @Then :postelement :postselectortype should appear after :preelement :preselectortype
-     * @Then :postelement :postselectortype should appear after :preelement :preselectortype in the :containerelement :containerselectortype
      * @throws ExpectationException
      * @param string $postelement The locator of the latest element
      * @param string $postselectortype The selector type of the latest element
@@ -1023,6 +1011,8 @@ class behat_general extends behat_base {
      * @param string $containerelement
      * @param string $containerselectortype
      */
+    #[\Behat\Step\Then(':postelement :postselectortype should appear after :preelement :preselectortype')]
+    #[\Behat\Step\Then(':postelement :postselectortype should appear after :preelement :preselectortype in the :containerelement :containerselectortype')]
     public function should_appear_after(
         string $postelement,
         string $postselectortype,
@@ -1105,11 +1095,11 @@ EOF;
     /**
      * Checks, that element of specified type is disabled.
      *
-     * @Then /^the "(?P<element_string>(?:[^"]|\\")*)" "(?P<selector_string>[^"]*)" should be disabled$/
      * @throws ExpectationException Thrown by behat_base::find
      * @param string $element Element we look in
      * @param string $selectortype The type of element where we are looking in.
      */
+    #[\Behat\Step\Then('/^the "(?P<element_string>(?:[^"]|\\\\")*)" "(?P<selector_string>[^"]*)" should be disabled$/')]
     public function the_element_should_be_disabled($element, $selectortype) {
         $this->the_attribute_of_should_be_set("disabled", $element, $selectortype, false);
     }
@@ -1117,11 +1107,11 @@ EOF;
     /**
      * Checks, that element of specified type is enabled.
      *
-     * @Then /^the "(?P<element_string>(?:[^"]|\\")*)" "(?P<selector_string>[^"]*)" should be enabled$/
      * @throws ExpectationException Thrown by behat_base::find
      * @param string $element Element we look on
      * @param string $selectortype The type of where we look
      */
+    #[\Behat\Step\Then('/^the "(?P<element_string>(?:[^"]|\\\\")*)" "(?P<selector_string>[^"]*)" should be enabled$/')]
     public function the_element_should_be_enabled($element, $selectortype) {
         $this->the_attribute_of_should_be_set("disabled", $element, $selectortype, true);
     }
@@ -1129,11 +1119,11 @@ EOF;
     /**
      * Checks the provided element and selector type are readonly on the current page.
      *
-     * @Then /^the "(?P<element_string>(?:[^"]|\\")*)" "(?P<selector_string>[^"]*)" should be readonly$/
      * @throws ExpectationException Thrown by behat_base::find
      * @param string $element Element we look in
      * @param string $selectortype The type of element where we are looking in.
      */
+    #[\Behat\Step\Then('/^the "(?P<element_string>(?:[^"]|\\\\")*)" "(?P<selector_string>[^"]*)" should be readonly$/')]
     public function the_element_should_be_readonly($element, $selectortype) {
         $this->the_attribute_of_should_be_set("readonly", $element, $selectortype, false);
     }
@@ -1141,11 +1131,11 @@ EOF;
     /**
      * Checks the provided element and selector type are not readonly on the current page.
      *
-     * @Then /^the "(?P<element_string>(?:[^"]|\\")*)" "(?P<selector_string>[^"]*)" should not be readonly$/
      * @throws ExpectationException Thrown by behat_base::find
      * @param string $element Element we look in
      * @param string $selectortype The type of element where we are looking in.
      */
+    #[\Behat\Step\Then('/^the "(?P<element_string>(?:[^"]|\\\\")*)" "(?P<selector_string>[^"]*)" should not be readonly$/')]
     public function the_element_should_not_be_readonly($element, $selectortype) {
         $this->the_attribute_of_should_be_set("readonly", $element, $selectortype, true);
     }
@@ -1155,11 +1145,11 @@ EOF;
      *
      * This step is for advanced users, use it if you don't find anything else suitable for what you need.
      *
-     * @Then /^"(?P<element_string>(?:[^"]|\\")*)" "(?P<selector_string>[^"]*)" should exist$/
      * @throws ElementNotFoundException Thrown by behat_base::find
      * @param string $element The locator of the specified selector
      * @param string $selectortype The selector type
      */
+    #[\Behat\Step\Then('/^"(?P<element_string>(?:[^"]|\\\\")*)" "(?P<selector_string>[^"]*)" should exist$/')]
     public function should_exist($element, $selectortype) {
         // Will throw an ElementNotFoundException if it does not exist.
         $this->find($selectortype, $element);
@@ -1170,11 +1160,11 @@ EOF;
      *
      * This step is for advanced users, use it if you don't find anything else suitable for what you need.
      *
-     * @Then /^"(?P<element_string>(?:[^"]|\\")*)" "(?P<selector_string>[^"]*)" should not exist$/
      * @throws ExpectationException
      * @param string $element The locator of the specified selector
      * @param string $selectortype The selector type
      */
+    #[\Behat\Step\Then('/^"(?P<element_string>(?:[^"]|\\\\")*)" "(?P<selector_string>[^"]*)" should not exist$/')]
     public function should_not_exist($element, $selectortype) {
         // Will throw an ElementNotFoundException if it does not exist, but, actually it should not exist, so we try &
         // catch it.
@@ -1198,10 +1188,10 @@ EOF;
     /**
      * Ensure that edit mode is (not) available on the current page.
      *
-     * @Then edit mode should be available on the current page
-     * @Then edit mode should :not be available on the current page
      * @param bool $not
      */
+    #[\Behat\Step\Then('edit mode should be available on the current page')]
+    #[\Behat\Step\Then('edit mode should :not be available on the current page')]
     public function edit_mode_should_be_available(bool $not = false): void {
         $isavailable = $this->is_edit_mode_available();
         $shouldbeavailable = empty($not);
@@ -1236,9 +1226,8 @@ EOF;
 
     /**
      * This step triggers cron like a user would do going to admin/cron.php.
-     *
-     * @Given /^I trigger cron$/
      */
+    #[\Behat\Step\Given('/^I trigger cron$/')]
     public function i_trigger_cron() {
         $this->execute([self::class, 'i_visit'], ['/admin/cron.php']);
     }
@@ -1256,9 +1245,9 @@ EOF;
      * Note: Most of the code relating to running a task is based on
      * admin/cli/scheduled_task.php.
      *
-     * @Given /^I run the scheduled task "(?P<task_name>[^"]+)"$/
      * @param string $taskname Name of task e.g. 'mod_whatever\task\do_something'
      */
+    #[\Behat\Step\Given('/^I run the scheduled task "(?P<task_name>[^"]+)"$/')]
     public function i_run_the_scheduled_task($taskname) {
         $task = \core\task\manager::get_scheduled_task($taskname);
         if (!$task) {
@@ -1316,9 +1305,9 @@ EOF;
      * While the task is running, we suppress mtrace output because it makes
      * the Behat result look ugly.
      *
-     * @Given /^I run all adhoc tasks$/
      * @throws DriverException
      */
+    #[\Behat\Step\Given('/^I run all adhoc tasks$/')]
     public function i_run_all_adhoc_tasks() {
         global $DB;
 
@@ -1358,13 +1347,13 @@ EOF;
      *
      * This step is for advanced users, use it if you don't find anything else suitable for what you need.
      *
-     * @Then /^"(?P<element_string>(?:[^"]|\\")*)" "(?P<selector_string>[^"]*)" should exist in the "(?P<element2_string>(?:[^"]|\\")*)" "(?P<selector2_string>[^"]*)"$/
      * @throws ElementNotFoundException Thrown by behat_base::find
      * @param string $element The locator of the specified selector
      * @param string $selectortype The selector type
      * @param NodeElement|string $containerelement The locator of the container selector
      * @param string $containerselectortype The container selector type
      */
+    #[\Behat\Step\Then('/^"(?P<element_string>(?:[^"]|\\\\")*)" "(?P<selector_string>[^"]*)" should exist in the "(?P<element2_string>(?:[^"]|\\\\")*)" "(?P<selector2_string>[^"]*)"$/')]
     public function should_exist_in_the($element, $selectortype, $containerelement, $containerselectortype) {
         // Will throw an ElementNotFoundException if it does not exist.
         $this->get_node_in_container($selectortype, $element, $containerselectortype, $containerelement);
@@ -1375,13 +1364,13 @@ EOF;
      *
      * This step is for advanced users, use it if you don't find anything else suitable for what you need.
      *
-     * @Then /^"(?P<element_string>(?:[^"]|\\")*)" "(?P<selector_string>[^"]*)" should not exist in the "(?P<element2_string>(?:[^"]|\\")*)" "(?P<selector2_string>[^"]*)"$/
      * @throws ExpectationException
      * @param string $element The locator of the specified selector
      * @param string $selectortype The selector type
      * @param NodeElement|string $containerelement The locator of the container selector
      * @param string $containerselectortype The container selector type
      */
+    #[\Behat\Step\Then('/^"(?P<element_string>(?:[^"]|\\\\")*)" "(?P<selector_string>[^"]*)" should not exist in the "(?P<element2_string>(?:[^"]|\\\\")*)" "(?P<selector2_string>[^"]*)"$/')]
     public function should_not_exist_in_the($element, $selectortype, $containerelement, $containerselectortype) {
         // Get the container node.
         $containernode = $this->find($containerselectortype, $containerelement);
@@ -1421,12 +1410,12 @@ EOF;
      * browser window has same viewport size even when you run Behat on multiple operating systems.
      *
      * @throws ExpectationException
-     * @Then /^I change (window|viewport) size to "(mobile|tablet|small|medium|large|\d+x\d+)"( without runtime scaling)?$/
-     * @Then /^I change the (window|viewport) size to "(mobile|tablet|small|medium|large|\d+x\d+)"( without runtime scaling)?$/
      * @param string $windowviewport Whether this is a window or viewport size hcange
      * @param string $windowsize size of the window (mobile|tablet|small|medium|large|wxh).
      * @param null|string $scale whether to lock runtime scaling (string) or to allow it (null)
      */
+    #[\Behat\Step\Then('/^I change (window|viewport) size to "(mobile|tablet|small|medium|large|\d+x\d+)"( without runtime scaling)?$/')]
+    #[\Behat\Step\Then('/^I change the (window|viewport) size to "(mobile|tablet|small|medium|large|\d+x\d+)"( without runtime scaling)?$/')]
     public function i_change_window_size_to(
         $windowviewport,
         $windowsize,
@@ -1442,8 +1431,6 @@ EOF;
     /**
      * Checks whether there the specified attribute is set or not.
      *
-     * @Then the :attribute attribute of :element :selectortype should be set
-     * @Then the :attribute attribute of :element :selectortype should :not be set
      *
      * @throws ExpectationException
      * @param string $attribute Name of attribute
@@ -1451,6 +1438,8 @@ EOF;
      * @param string $selectortype The selector type
      * @param string $not
      */
+    #[\Behat\Step\Then('the :attribute attribute of :element :selectortype should be set')]
+    #[\Behat\Step\Then('the :attribute attribute of :element :selectortype should :not be set')]
     public function the_attribute_of_should_be_set($attribute, $element, $selectortype, $not = null) {
         // Get the container node (exception if it doesn't exist).
         $containernode = $this->get_selected_node($selectortype, $element);
@@ -1475,13 +1464,13 @@ EOF;
     /**
      * Checks whether there is an attribute on the given element that contains the specified text.
      *
-     * @Then /^the "(?P<attribute_string>[^"]*)" attribute of "(?P<element_string>(?:[^"]|\\")*)" "(?P<selector_string>[^"]*)" should contain "(?P<text_string>(?:[^"]|\\")*)"$/
      * @throws ExpectationException
      * @param string $attribute Name of attribute
      * @param string $element The locator of the specified selector
      * @param string $selectortype The selector type
      * @param string $text Expected substring
      */
+    #[\Behat\Step\Then('/^the "(?P<attribute_string>[^"]*)" attribute of "(?P<element_string>(?:[^"]|\\\\")*)" "(?P<selector_string>[^"]*)" should contain "(?P<text_string>(?:[^"]|\\\\")*)"$/')]
     public function the_attribute_of_should_contain($attribute, $element, $selectortype, $text) {
         // Get the container node (exception if it doesn't exist).
         $containernode = $this->get_selected_node($selectortype, $element);
@@ -1503,13 +1492,13 @@ EOF;
     /**
      * Checks that the attribute on the given element does not contain the specified text.
      *
-     * @Then /^the "(?P<attribute_string>[^"]*)" attribute of "(?P<element_string>(?:[^"]|\\")*)" "(?P<selector_string>[^"]*)" should not contain "(?P<text_string>(?:[^"]|\\")*)"$/
      * @throws ExpectationException
      * @param string $attribute Name of attribute
      * @param string $element The locator of the specified selector
      * @param string $selectortype The selector type
      * @param string $text Expected substring
      */
+    #[\Behat\Step\Then('/^the "(?P<attribute_string>[^"]*)" attribute of "(?P<element_string>(?:[^"]|\\\\")*)" "(?P<selector_string>[^"]*)" should not contain "(?P<text_string>(?:[^"]|\\\\")*)"$/')]
     public function the_attribute_of_should_not_contain($attribute, $element, $selectortype, $text) {
         // Get the container node (exception if it doesn't exist).
         $containernode = $this->get_selected_node($selectortype, $element);
@@ -1531,13 +1520,13 @@ EOF;
     /**
      * Checks the provided value exists in specific row/column of table.
      *
-     * @Then /^"(?P<row_string>[^"]*)" row "(?P<column_string>[^"]*)" column of "(?P<table_string>[^"]*)" table should contain "(?P<value_string>[^"]*)"$/
      * @throws ElementNotFoundException
      * @param string $row row text which will be looked in.
      * @param string $column column text to search (or numeric value for the column position)
      * @param string $table table id/class/caption
      * @param string $value text to check.
      */
+    #[\Behat\Step\Then('/^"(?P<row_string>[^"]*)" row "(?P<column_string>[^"]*)" column of "(?P<table_string>[^"]*)" table should contain "(?P<value_string>[^"]*)"$/')]
     public function row_column_of_table_should_contain($row, $column, $table, $value) {
         $tablenode = $this->get_selected_node('table', $table);
         $tablexpath = $tablenode->getXpath();
@@ -1572,13 +1561,13 @@ EOF;
     /**
      * Checks the provided value should not exist in specific row/column of table.
      *
-     * @Then /^"(?P<row_string>[^"]*)" row "(?P<column_string>[^"]*)" column of "(?P<table_string>[^"]*)" table should not contain "(?P<value_string>[^"]*)"$/
      * @throws ElementNotFoundException
      * @param string $row row text which will be looked in.
      * @param string $column column text to search
      * @param string $table table id/class/caption
      * @param string $value text to check.
      */
+    #[\Behat\Step\Then('/^"(?P<row_string>[^"]*)" row "(?P<column_string>[^"]*)" column of "(?P<table_string>[^"]*)" table should not contain "(?P<value_string>[^"]*)"$/')]
     public function row_column_of_table_should_not_contain($row, $column, $table, $value) {
         try {
             $this->row_column_of_table_should_contain($row, $column, $table, $value);
@@ -1696,13 +1685,13 @@ EOF;
      * (syntax -1- is also considered to be column index). Column indexes are
      * useful in case of multirow headers and/or presence of cells with colspan.
      *
-     * @Then /^the following should exist in the "(?P<table_string>[^"]*)" table:$/
      * @throws ExpectationException
      * @param string $table name of table
      * @param TableNode $data table with first row as header and following values
      *        | Header 1 | Header 2 | Header 3 |
      *        | Value 1 | Value 2 | Value 3|
      */
+    #[\Behat\Step\Then('/^the following should exist in the "(?P<table_string>[^"]*)" table:$/')]
     public function following_should_exist_in_the_table($table, TableNode $data) {
         $datahash = $data->getHash();
         if ($datahash && count($data->getRow(0)) != count($datahash[0])) {
@@ -1721,13 +1710,13 @@ EOF;
      * If there are more than two columns, we check that NEITHER of the columns 2..n match
      * in the row where the first column matches
      *
-     * @Then /^the following should not exist in the "(?P<table_string>[^"]*)" table:$/
      * @throws ExpectationException
      * @param string $table name of table
      * @param TableNode $data table with first row as header and following values
      *        | Header 1 | Header 2 | Header 3 |
      *        | Value 1 | Value 2 | Value 3|
      */
+    #[\Behat\Step\Then('/^the following should not exist in the "(?P<table_string>[^"]*)" table:$/')]
     public function following_should_not_exist_in_the_table($table, TableNode $data) {
         $datahash = $data->getHash();
         if ($datahash && count($data->getRow(0)) != count($datahash[0])) {
@@ -1803,11 +1792,11 @@ EOF;
      * Only works if the link has an href attribute. Javascript downloads are
      * not supported. Currently, the href must be an absolute URL.
      *
-     * @Then /^following "(?P<link_string>[^"]*)" should download "(?P<expected_bytes>\d+)" bytes$/
      * @throws ExpectationException
      * @param string $link the text of the link.
      * @param number $expectedsize the expected file size in bytes.
      */
+    #[\Behat\Step\Then('/^following "(?P<link_string>[^"]*)" should download "(?P<expected_bytes>\d+)" bytes$/')]
     public function following_should_download_bytes($link, $expectedsize) {
         $exception = new ExpectationException('Error while downloading data from ' . $link, $this->getSession());
 
@@ -1841,13 +1830,13 @@ EOF;
      * The range includes the endpoints. That is, a 10 byte file in considered to
      * be between "5" and "10" bytes, and between "10" and "20" bytes.
      *
-     * @Then /^following "(?P<link_string>[^"]*)" should download between "(?P<min_bytes>\d+)" and "(?P<max_bytes>\d+)" bytes$/
      *
      * @param string $link the text of the link.
      * @param number $minexpectedsize the minimum expected file size in bytes.
      * @param number $maxexpectedsize the maximum expected file size in bytes.
      * @throws ExpectationException
      */
+    #[\Behat\Step\Then('/^following "(?P<link_string>[^"]*)" should download between "(?P<min_bytes>\d+)" and "(?P<max_bytes>\d+)" bytes$/')]
     public function following_should_download_between_and_bytes(
         $link,
         $minexpectedsize,
@@ -1884,12 +1873,12 @@ EOF;
     /**
      * Checks that the image on the page is the same as one of the fixture files
      *
-     * @Then /^the image at "(?P<element_string>(?:[^"]|\\")*)" "(?P<selector_string>[^"]*)" should be identical to "(?P<filepath_string>(?:[^"]|\\")*)"$/
      * @throws ExpectationException
      * @param string $element The locator of the image
      * @param string $selectortype The selector type
      * @param string $filepath path to the fixture file
      */
+    #[\Behat\Step\Then('/^the image at "(?P<element_string>(?:[^"]|\\\\")*)" "(?P<selector_string>[^"]*)" should be identical to "(?P<filepath_string>(?:[^"]|\\\\")*)"$/')]
     public function the_image_at_should_be_identical_to($element, $selectortype, $filepath) {
         global $CFG;
 
@@ -1925,9 +1914,8 @@ EOF;
 
     /**
      * Prepare to detect whether or not a new page has loaded (or the same page reloaded) some time in the future.
-     *
-     * @Given /^I start watching to see if a new page loads$/
      */
+    #[\Behat\Step\Given('/^I start watching to see if a new page loads$/')]
     public function i_start_watching_to_see_if_a_new_page_loads() {
         if (!$this->running_javascript()) {
             throw new DriverException('Page load detection requires JavaScript.');
@@ -1957,9 +1945,8 @@ EOF;
     /**
      * Verify that a new page has loaded (or the same page has reloaded) since the
      * last "I start watching to see if a new page loads" step.
-     *
-     * @Given /^a new page should have loaded since I started watching$/
      */
+    #[\Behat\Step\Given('/^a new page should have loaded since I started watching$/')]
     public function a_new_page_should_have_loaded_since_i_started_watching() {
         $session = $this->getSession();
 
@@ -1988,9 +1975,8 @@ EOF;
     /**
      * Verify that a new page has not loaded (or the same page has reloaded) since the
      * last "I start watching to see if a new page loads" step.
-     *
-     * @Given /^a new page should not have loaded since I started watching$/
      */
+    #[\Behat\Step\Given('/^a new page should not have loaded since I started watching$/')]
     public function a_new_page_should_not_have_loaded_since_i_started_watching() {
         $session = $this->getSession();
 
@@ -2024,9 +2010,8 @@ EOF;
 
     /**
      * Wait unit user press Enter/Return key. Useful when debugging a scenario.
-     *
-     * @Then /^(?:|I )pause(?:| scenario execution)$/
      */
+    #[\Behat\Step\Then('/^(?:|I )pause(?:| scenario execution)$/')]
     public function i_pause_scenario_execution() {
         $message = "<colour:lightYellow>Paused. Press <colour:lightRed>Enter/Return<colour:lightYellow> to continue.";
         behat_util::pause($this->getSession(), $message);
@@ -2036,10 +2021,10 @@ EOF;
      * Presses a given button in the browser.
      * NOTE: Phantomjs and browserkit driver reloads page while navigating back and forward.
      *
-     * @Then /^I press the "(back|forward|reload)" button in the browser$/
      * @param string $button the button to press.
      * @throws ExpectationException
      */
+    #[\Behat\Step\Then('/^I press the "(back|forward|reload)" button in the browser$/')]
     public function i_press_in_the_browser($button) {
         $session = $this->getSession();
 
@@ -2061,9 +2046,9 @@ EOF;
      * Example usage of this step:
      *     When I type "Penguin"
      *
-     * @When    I type :keys
      * @param   string $keys The key, or list of keys, to type
      */
+    #[\Behat\Step\When('I type :keys')]
     public function i_type(string $keys): void {
         // Certain keys, such as the newline character, must be converted to the appropriate character code.
         // Without this, keys will behave differently depending on the browser.
@@ -2114,10 +2099,10 @@ EOF;
      *     When I press the ctrl+shift enter key
      *     When I press the ctrl + shift enter key
      *
-     * @When    /^I press the (?P<modifiers_string>.* )?(?P<key_string>.*) key$/
      * @param   string $modifiers A list of keyboard modifiers, separated by the `+` character
      * @param   string $key The name of the key to press
      */
+    #[\Behat\Step\When('/^I press the (?P<modifiers_string>.* )?(?P<key_string>.*) key$/')]
     public function i_press_named_key(string $modifiers, string $key): void {
         behat_base::require_javascript_in_session($this->getSession());
 
@@ -2211,7 +2196,6 @@ EOF;
     /**
      * Trigger a keydown event for a key on a specific element.
      *
-     * @When /^I press key "(?P<key_string>(?:[^"]|\\")*)" in "(?P<element_string>(?:[^"]|\\")*)" "(?P<selector_string>[^"]*)"$/
      * @param string $key either char-code or character itself,
      *               may optionally be prefixed with ctrl-, alt-, shift- or meta-
      * @param string $element Element we look for
@@ -2219,6 +2203,7 @@ EOF;
      * @throws DriverException
      * @throws ExpectationException
      */
+    #[\Behat\Step\When('/^I press key "(?P<key_string>(?:[^"]|\\\\")*)" in "(?P<element_string>(?:[^"]|\\\\")*)" "(?P<selector_string>[^"]*)"$/')]
     public function i_press_key_in_element($key, $element, $selectortype) {
         if (!$this->running_javascript()) {
             throw new DriverException('Key down step is not available with Javascript disabled');
@@ -2250,12 +2235,12 @@ EOF;
     /**
      * Press tab key on a specific element.
      *
-     * @When /^I press tab key in "(?P<element_string>(?:[^"]|\\")*)" "(?P<selector_string>[^"]*)"$/
      * @param string $element Element we look for
      * @param string $selectortype The type of what we look for
      * @throws DriverException
      * @throws ExpectationException
      */
+    #[\Behat\Step\When('/^I press tab key in "(?P<element_string>(?:[^"]|\\\\")*)" "(?P<selector_string>[^"]*)"$/')]
     public function i_post_tab_key_in_element($element, $selectortype) {
         if (!$this->running_javascript()) {
             throw new DriverException('Tab press step is not available with Javascript disabled');
@@ -2269,11 +2254,11 @@ EOF;
     /**
      * Checks if database family used is using one of the specified, else skip. (mysql, postgres, mssql, etc.)
      *
-     * @Given /^database family used is one of the following:$/
      * @param TableNode $databasefamilies list of database.
      * @return void.
      * @throws \Moodle\BehatExtension\Exception\SkippedException
      */
+    #[\Behat\Step\Given('/^database family used is one of the following:$/')]
     public function database_family_used_is_one_of_the_following(TableNode $databasefamilies) {
         global $DB;
 
@@ -2292,10 +2277,10 @@ EOF;
     /**
      * Checks if given plugin is installed, and skips the current scenario if not.
      *
-     * @Given the :plugin plugin is installed
      * @param string $plugin frankenstyle plugin name, e.g. 'filter_embedquestion'.
      * @throws \Moodle\BehatExtension\Exception\SkippedException
      */
+    #[\Behat\Step\Given('the :plugin plugin is installed')]
     public function plugin_is_installed(string $plugin): void {
         $path = core_component::get_component_directory($plugin);
         if (!is_readable($path . '/version.php')) {
@@ -2308,13 +2293,13 @@ EOF;
     /**
      * Checks focus is with the given element.
      *
-     * @Then /^the focused element is( not)? "(?P<node_string>(?:[^"]|\\")*)" "(?P<node_selector_string>[^"]*)"$/
      * @param string $not optional step verifier
      * @param string $nodeelement Element identifier
      * @param string $nodeselectortype Element type
      * @throws DriverException If not using JavaScript
      * @throws ExpectationException
      */
+    #[\Behat\Step\Then('/^the focused element is( not)? "(?P<node_string>(?:[^"]|\\\\")*)" "(?P<node_selector_string>[^"]*)"$/')]
     public function the_focused_element_is($not, $nodeelement, $nodeselectortype) {
         if (!$this->running_javascript()) {
             throw new DriverException('Checking focus on an element requires JavaScript');
@@ -2339,7 +2324,6 @@ EOF;
     /**
      * Checks focus is with the given element.
      *
-     * @Then /^the focused element is( not)? "(?P<n>(?:[^"]|\\")*)" "(?P<ns>[^"]*)" in the "(?P<c>(?:[^"]|\\")*)" "(?P<cs>[^"]*)"$/
      * @param string $not string optional step verifier
      * @param string $element Element identifier
      * @param string $selectortype Element type
@@ -2348,6 +2332,7 @@ EOF;
      * @throws DriverException If not using JavaScript
      * @throws ExpectationException
      */
+    #[\Behat\Step\Then('/^the focused element is( not)? "(?P<n>(?:[^"]|\\\\")*)" "(?P<ns>[^"]*)" in the "(?P<c>(?:[^"]|\\\\")*)" "(?P<cs>[^"]*)"$/')]
     public function the_focused_element_is_in_the($not, $element, $selectortype, $nodeelement, $nodeselectortype) {
         if (!$this->running_javascript()) {
             throw new DriverException('Checking focus on an element requires JavaScript');
@@ -2371,10 +2356,10 @@ EOF;
     /**
      * Manually press tab key.
      *
-     * @When /^I press( shift)? tab$/
      * @param string $shift string optional step verifier
      * @throws DriverException
      */
+    #[\Behat\Step\When('/^I press( shift)? tab$/')]
     public function i_manually_press_tab($shift = '') {
         if (empty($shift)) {
             $this->execute([self::class, 'i_press_named_key'], ['', 'tab']);
@@ -2387,10 +2372,10 @@ EOF;
      * Trigger click on node via javascript instead of actually clicking on it via pointer.
      * This function resolves the issue of nested elements.
      *
-     * @When /^I click on "(?P<element_string>(?:[^"]|\\")*)" "(?P<selector_string>[^"]*)" skipping visibility check$/
      * @param string $element
      * @param string $selectortype
      */
+    #[\Behat\Step\When('/^I click on "(?P<element_string>(?:[^"]|\\\\")*)" "(?P<selector_string>[^"]*)" skipping visibility check$/')]
     public function i_click_on_skipping_visibility_check($element, $selectortype) {
 
         // Gets the node based on the requested selector type and locator.
@@ -2403,7 +2388,6 @@ EOF;
      *
      * Note: When running Javascript tests it also considers that texts may be hidden.
      *
-     * @Then /^I should see "(?P<elementscount_number>\d+)" occurrences of "(?P<text_string>(?:[^"]|\\")*)" in the "(?P<element_string>(?:[^"]|\\")*)" "(?P<text_selector_string>[^"]*)"$/
      * @throws ElementNotFoundException
      * @throws ExpectationException
      * @param int    $elementscount How many occurrences of the element we look for.
@@ -2411,6 +2395,7 @@ EOF;
      * @param string $element Element we look in.
      * @param string $selectortype The type of element where we are looking in.
      */
+    #[\Behat\Step\Then('/^I should see "(?P<elementscount_number>\d+)" occurrences of "(?P<text_string>(?:[^"]|\\\\")*)" in the "(?P<element_string>(?:[^"]|\\\\")*)" "(?P<text_selector_string>[^"]*)"$/')]
     public function i_should_see_occurrences_of_in_element($elementscount, $text, $element, $selectortype) {
         // Getting the container where the text should be found.
         $container = $this->get_selected_node($selectortype, $element);
@@ -2442,7 +2427,6 @@ EOF;
      *
      * Note: When running Javascript tests it also considers that texts may be hidden.
      *
-     * @Then /^I should see "(?P<elementscount_number>\d+)" node occurrences of type "(?P<node_type>(?:[^"]|\\")*)" in the "(?P<element_string>(?:[^"]|\\")*)" "(?P<text_selector_string>[^"]*)"$/
      * @throws ElementNotFoundException
      * @throws ExpectationException
      * @param int    $elementscount How many occurrences of the element we look for.
@@ -2450,6 +2434,7 @@ EOF;
      * @param string $element Element we look in.
      * @param string $selectortype The type of element where we are looking in.
      */
+    #[\Behat\Step\Then('/^I should see "(?P<elementscount_number>\d+)" node occurrences of type "(?P<node_type>(?:[^"]|\\\\")*)" in the "(?P<element_string>(?:[^"]|\\\\")*)" "(?P<text_selector_string>[^"]*)"$/')]
     public function i_should_see_node_occurrences_of_type_in_element(
         int $elementscount,
         string $nodetype,
@@ -2480,9 +2465,9 @@ EOF;
     /**
      * Manually press enter key.
      *
-     * @When /^I press enter/
      * @throws DriverException
      */
+    #[\Behat\Step\When('/^I press enter/')]
     public function i_manually_press_enter() {
         $this->execute([self::class, 'i_press_named_key'], ['', 'enter']);
     }
@@ -2490,10 +2475,10 @@ EOF;
     /**
      * Visit a local URL relative to the behat root.
      *
-     * @When I visit :localurl
      *
      * @param string|moodle_url $localurl The URL relative to the behat_wwwroot to visit.
      */
+    #[\Behat\Step\When('I visit :localurl')]
     public function i_visit($localurl): void {
         $localurl = new moodle_url($localurl);
         $this->getSession()->visit($this->locate_path($localurl->out_as_local_url(false)));
@@ -2503,9 +2488,8 @@ EOF;
      * Increase the webdriver timeouts.
      *
      * This should be reset between scenarios, or can be called again to decrease the timeouts.
-     *
-     * @Given I mark this test as slow setting a timeout factor of :factor
      */
+    #[\Behat\Step\Given('I mark this test as slow setting a timeout factor of :factor')]
     public function i_mark_this_test_as_long_running(int $factor = 2): void {
         $this->set_test_timeout_factor($factor);
     }
@@ -2513,10 +2497,10 @@ EOF;
     /**
      * Click on a dynamic tab to load its content
      *
-     * @Given /^I click on the "(?P<tab_string>(?:[^"]|\\")*)" dynamic tab$/
      *
      * @param string $tabname
      */
+    #[\Behat\Step\Given('/^I click on the "(?P<tab_string>(?:[^"]|\\\\")*)" dynamic tab$/')]
     public function i_click_on_the_dynamic_tab(string $tabname): void {
         $xpath = "//*[@id='dynamictabs-tabs'][descendant::a[contains(text(), '" . $this->escape($tabname) . "')]]";
         $this->execute(
@@ -2528,11 +2512,11 @@ EOF;
     /**
      * Enable an specific plugin.
      *
-     * @When /^I enable "(?P<plugin_string>(?:[^"]|\\")*)" "(?P<plugintype_string>[^"]*)" plugin$/
      * @param string $plugin Plugin we look for
      * @param string $plugintype The type of the plugin
      */
     #[\core\attribute\example('I enable "subsection" "mod" plugin')]
+    #[\Behat\Step\When('/^I enable "(?P<plugin_string>(?:[^"]|\\\\")*)" "(?P<plugintype_string>[^"]*)" plugin$/')]
     public function i_enable_plugin($plugin, $plugintype) {
         $class = core_plugin_manager::resolve_plugininfo_class($plugintype);
         $class::enable_plugin($plugin, true);
@@ -2541,11 +2525,11 @@ EOF;
     /**
      * Disable an specific plugin.
      *
-     * @When /^I disable "(?P<plugin_string>(?:[^"]|\\")*)" "(?P<plugintype_string>[^"]*)" plugin$/
      * @param string $plugin Plugin we look for
      * @param string $plugintype The type of the plugin
      */
     #[\core\attribute\example('I disable "page" "mod" plugin')]
+    #[\Behat\Step\When('/^I disable "(?P<plugin_string>(?:[^"]|\\\\")*)" "(?P<plugintype_string>[^"]*)" plugin$/')]
     public function i_disable_plugin($plugin, $plugintype) {
         $class = core_plugin_manager::resolve_plugininfo_class($plugintype);
         $class::enable_plugin($plugin, false);
@@ -2554,10 +2538,10 @@ EOF;
     /**
      * Set the default text editor to the named text editor.
      *
-     * @Given the default editor is set to :editor
      * @param string $editor
      * @throws ExpectationException If the specified editor is not available.
      */
+    #[\Behat\Step\Given('the default editor is set to :editor')]
     public function the_default_editor_is_set_to(string $editor): void {
         global $CFG;
 
@@ -2583,9 +2567,9 @@ EOF;
     /**
      * Allow to check for minimal Moodle version.
      *
-     * @Given the site is running Moodle version :minversion or higher
      * @param string $minversion The minimum version of Moodle required (inclusive).
      */
+    #[\Behat\Step\Given('the site is running Moodle version :minversion or higher')]
     public function the_site_is_running_moodle_version_or_higher(string $minversion): void {
         global $CFG;
         require_once($CFG->libdir . '/environmentlib.php');
@@ -2602,9 +2586,9 @@ EOF;
     /**
      * Allow to check for maximum Moodle version.
      *
-     * @Given the site is running Moodle version :maxversion or lower
      * @param string $maxversion The maximum version of Moodle required (inclusive).
      */
+    #[\Behat\Step\Given('the site is running Moodle version :maxversion or lower')]
     public function the_site_is_running_moodle_version_or_lower(string $maxversion): void {
         global $CFG;
         require_once($CFG->libdir . '/environmentlib.php');
@@ -2621,9 +2605,9 @@ EOF;
     /**
      * Check that the page title contains a given string.
      *
-     * @Given the page title should contain ":title"
      * @param string $title The string that should be present on the page title.
      */
+    #[\Behat\Step\Given('the page title should contain ":title"')]
     public function the_page_title_should_contain(string $title): void {
         $session = $this->getSession();
         if ($this->running_javascript()) {
@@ -2654,11 +2638,11 @@ EOF;
     /**
      * Toggles the specified admin switch.
      *
-     * @When /^I toggle the "(?P<element_string>(?:[^"]|\\")*)" admin switch "(?P<state_string>on|off)"$/
      * @param string $element Element we look for
      * @param string $state The state of the switch
      * @throws ElementNotFoundException Thrown by behat_base::find
      */
+    #[\Behat\Step\When('/^I toggle the "(?P<element_string>(?:[^"]|\\\\")*)" admin switch "(?P<state_string>on|off)"$/')]
     public function i_toggle_admin_switch($element, $state) {
         // First check we are running Javascript, otherwise explode.
         if (!$this->running_javascript()) {
@@ -2683,10 +2667,10 @@ EOF;
     /**
      * Update a stored progress bar.
      *
-     * @Given I set the stored progress bar :idnumber to :percent
      * @param string $idnumber The unique idnumber of the stored progress bar.
      * @param float $percent The value to update the progress bar to.
      */
+    #[\Behat\Step\Given('I set the stored progress bar :idnumber to :percent')]
     public function i_set_the_stored_progress_bar_to(string $idnumber, float $percent): void {
         $progress = \core\output\stored_progress_bar::get_by_idnumber($idnumber);
         if (!$progress) {
@@ -2735,11 +2719,11 @@ EOF;
      * - I confirm "Group" exists in the "Search groups" search combo box
      * - I confirm "Grade item" exists in the "Search grade items" search combo box
      *
-     * @Given /^I confirm "(?P<itemname>(?:[^"]|\\")*)" exists in the "(?P<comboboxname>(?:[^"]|\\")*)" search combo box$/
      * @param string $itemname The name of the combo box item we are searching for. This is only used if $fieldset is set
      *                         to true.
      * @param string $comboboxname The name (label) of the search combo box element. (e.g. "Search users", "Search groups").
      */
+    #[\Behat\Step\Given('/^I confirm "(?P<itemname>(?:[^"]|\\\\")*)" exists in the "(?P<comboboxname>(?:[^"]|\\\\")*)" search combo box$/')]
     public function i_confirm_in_search_combobox_exists(string $itemname, string $comboboxname): void {
         $this->execute(
             [self::class, 'assert_element_contains_text'],
@@ -2755,11 +2739,11 @@ EOF;
      * - I confirm "Group" does not exist in the "Search groups" search combo box
      * - I confirm "Grade item" does not exist in the "Search grade items" search combo box
      *
-     * @Given /^I confirm "(?P<itemname>(?:[^"]|\\")*)" does not exist in the "(?P<comboboxname>(?:[^"]|\\")*)" search combo box$/
      * @param string $itemname The name of the combo box item we are searching for. This is only used if $fieldset is set
      *                         to true.
      * @param string $comboboxname The name (label) of the search combo box element. (e.g. "Search users", "Search groups").
      */
+    #[\Behat\Step\Given('/^I confirm "(?P<itemname>(?:[^"]|\\\\")*)" does not exist in the "(?P<comboboxname>(?:[^"]|\\\\")*)" search combo box$/')]
     public function i_confirm_in_search_combobox_does_not_exist(string $itemname, string $comboboxname): void {
         $this->execute(
             [self::class, 'assert_element_not_contains_text'],
@@ -2775,11 +2759,11 @@ EOF;
      * - I click on "Group" in the "Search groups" search combo box
      * - I click on "Grade item" in the "Search grade items" search combo box
      *
-     * @Given /^I click on "(?P<itemname>(?:[^"]|\\")*)" in the "(?P<comboboxname>(?:[^"]|\\")*)" search combo box$/
      * @param string $itemname The name of the combo box item we are searching for. This is only used if $fieldset is set
      *                         to true.
      * @param string $comboboxname The name (label) of the search combo box element. (e.g. "Search users", "Search groups").
      */
+    #[\Behat\Step\Given('/^I click on "(?P<itemname>(?:[^"]|\\\\")*)" in the "(?P<comboboxname>(?:[^"]|\\\\")*)" search combo box$/')]
     public function i_click_on_in_search_combobox(string $itemname, string $comboboxname): void {
         $node = $this->get_combobox_dropdown_node($comboboxname, $itemname);
         $this->execute([self::class, 'i_click_on_in_the'], [
@@ -2796,10 +2780,10 @@ EOF;
      * Example:
      * - I click on the "Settings" link in the row containing "Text editor placement"
      *
-     * @Given /^I click on the "(?P<linktext>(?:[^"]|\\")*)" link in the table row containing "(?P<rowtext>(?:[^"]|\\")*)"$/
      * @param string $linktext
      * @param string $rowtext
      */
+    #[\Behat\Step\Given('/^I click on the "(?P<linktext>(?:[^"]|\\\\")*)" link in the table row containing "(?P<rowtext>(?:[^"]|\\\\")*)"$/')]
     public function i_click_on_the_link_in_the_table_row_containing(string $linktext, string $rowtext): void {
         $row = $this->getSession()->getPage()->find('xpath', "//tr[contains(., '{$rowtext}')]");
         if (!$row) {
@@ -2819,10 +2803,10 @@ EOF;
      * Example:
      * - I should see "This action is unavailable." in the table row containing "Generate text"
      *
-     * @Then /^I should see "(?P<text>(?:[^"]|\\")*)" in the table row containing "(?P<rowtext>(?:[^"]|\\")*)"$/
      * @param string $text
      * @param string $rowtext
      */
+    #[\Behat\Step\Then('/^I should see "(?P<text>(?:[^"]|\\\\")*)" in the table row containing "(?P<rowtext>(?:[^"]|\\\\")*)"$/')]
     public function i_should_see_in_the_table_row_containing(string $text, string $rowtext): void {
         $row = $this->getSession()->getPage()->find('xpath', "//tr[contains(., '{$rowtext}')]");
         if (!$row) {
@@ -2840,10 +2824,10 @@ EOF;
      * Example:
      * - I should not see "This action is unavailable." in the table row containing "Generate text"
      *
-     * @Then /^I should not see "(?P<text>(?:[^"]|\\")*)" in the table row containing "(?P<rowtext>(?:[^"]|\\")*)"$/
      * @param string $text
      * @param string $rowtext
      */
+    #[\Behat\Step\Then('/^I should not see "(?P<text>(?:[^"]|\\\\")*)" in the table row containing "(?P<rowtext>(?:[^"]|\\\\")*)"$/')]
     public function i_should_not_see_in_the_table_row_containing(string $text, string $rowtext): void {
         $row = $this->getSession()->getPage()->find('xpath', "//tr[contains(., '{$rowtext}')]");
         if (!$row) {
@@ -2860,9 +2844,9 @@ EOF;
      * This is not supported everywhere in Moodle: if code uses \core\clock through DI then
      * it will work, but if it just calls time() it will still get the real time.
      *
-     * @Given the time is frozen at :datetime
      * @param string $datetime Date and time in a format that strtotime understands
      */
+    #[\Behat\Step\Given('the time is frozen at :datetime')]
     public function the_time_is_frozen_at(string $datetime): void {
         global $CFG;
         require_once($CFG->libdir . '/testing/classes/frozen_clock.php');
@@ -2876,9 +2860,8 @@ EOF;
 
     /**
      * Stops freezing time so that it goes back to real time.
-     *
-     * @Given the time is no longer frozen
      */
+    #[\Behat\Step\Given('the time is no longer frozen')]
     public function the_time_is_no_longer_frozen(): void {
         unset_config('behat_frozen_clock');
         \core\di::set(\core\clock::class, new \core\system_clock());

@@ -48,9 +48,9 @@ class behat_gradereport_grader extends behat_base {
     /**
      * Clicks on given user menu.
      *
-     * @Given /^I click on user menu "([^"]*)"$/
      * @param string $student
      */
+    #[\Behat\Step\Given('/^I click on user menu "([^"]*)"$/')]
     public function i_click_on_user_menu(string $student) {
 
         $xpath = $this->get_user_selector($student);
@@ -74,9 +74,9 @@ class behat_gradereport_grader extends behat_base {
     /**
      * Clicks on given user profile field menu.
      *
-     * @Given /^I click on user profile field menu "([^"]*)"$/
      * @param string $field
      */
+    #[\Behat\Step\Given('/^I click on user profile field menu "([^"]*)"$/')]
     public function i_click_on_user_profile_field_menu(string $field) {
 
         $xpath = "//table[@id='user-grades']//*[@data-type='" . mb_strtolower($field) . "']";

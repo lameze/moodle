@@ -57,9 +57,8 @@ class behat_qtype_ordering extends behat_base {
      *
      * @param string $label the text of the item to drag.
      * @param int $position the number of the position to drop it at.
-     *
-     * @Given /^I drag "(?P<label>[^"]*)" to space "(?P<position>\d+)" in the ordering question$/
      */
+    #[\Behat\Step\Given('/^I drag "(?P<label>[^"]*)" to space "(?P<position>\d+)" in the ordering question$/')]
     public function i_drag_to_space_in_the_drag_and_drop_into_text_question(string $label, int $position): void {
 
         $testingpos = $position - 1; // 0-based index.

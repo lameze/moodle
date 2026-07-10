@@ -50,9 +50,9 @@ class behat_editor_tiny extends behat_base implements \core_behat\settable_edito
      * Any Scenario, or Feature, which has the `editor_tiny` tag, or any `tiny_*` tag will have
      * this step executed before the Scenario.
      *
-     * @BeforeScenario
      * @param BeforeScenarioScope $scope The Behat Scope
      */
+    #[\Behat\Hook\BeforeScenario]
     public function set_default_editor_flag(BeforeScenarioScope $scope): void {
         // This only applies to a scenario which matches the editor_tiny, or an tiny subplugin.
         $callback = function (string $tag): bool {
@@ -73,11 +73,11 @@ class behat_editor_tiny extends behat_base implements \core_behat\settable_edito
     /**
      * Click on a button for the specified TinyMCE editor.
      *
-     * @When /^I click on the "(?P<button_string>(?:[^"]|\\")*)" button for the "(?P<locator_string>(?:[^"]|\\")*)" TinyMCE editor$/
      *
      * @param string $button The label of the button
      * @param string $locator The locator for the editor
      */
+    #[\Behat\Step\When('/^I click on the "(?P<button_string>(?:[^"]|\\\\")*)" button for the "(?P<locator_string>(?:[^"]|\\\\")*)" TinyMCE editor$/')]
     public function i_click_on_button(string $button, string $locator): void {
         $this->require_tiny_tags();
         $container = $this->get_editor_container_for_locator($locator);
@@ -88,11 +88,11 @@ class behat_editor_tiny extends behat_base implements \core_behat\settable_edito
     /**
      * Checks that a button exists in specified TinyMCE editor.
      *
-     * @When /^"(?P<button_string>(?:[^"]|\\")*)" button should exist in the "(?P<locator_string>(?:[^"]|\\")*)" TinyMCE editor$/
      *
      * @param string $button The label of the button
      * @param string $locator The locator for the editor
      */
+    #[\Behat\Step\When('/^"(?P<button_string>(?:[^"]|\\\\")*)" button should exist in the "(?P<locator_string>(?:[^"]|\\\\")*)" TinyMCE editor$/')]
     public function button_should_exist(string $button, string $locator): void {
         $this->require_tiny_tags();
         $container = $this->get_editor_container_for_locator($locator);
@@ -103,11 +103,11 @@ class behat_editor_tiny extends behat_base implements \core_behat\settable_edito
     /**
      * Checks that a button does not exist in specified TinyMCE editor.
      *
-     * @When /^"(?P<button_string>(?:[^"]|\\")*)" button should not exist in the "(?P<locator_string>(?:[^"]|\\")*)" TinyMCE editor$/
      *
      * @param string $button The label of the button
      * @param string $locator The locator for the editor
      */
+    #[\Behat\Step\When('/^"(?P<button_string>(?:[^"]|\\\\")*)" button should not exist in the "(?P<locator_string>(?:[^"]|\\\\")*)" TinyMCE editor$/')]
     public function button_should_not_exist(string $button, string $locator): void {
         $this->require_tiny_tags();
         $container = $this->get_editor_container_for_locator($locator);
@@ -118,13 +118,13 @@ class behat_editor_tiny extends behat_base implements \core_behat\settable_edito
     /**
      * Confirm that the button state of the specified button/editor combination matches the expectation.
      *
-     * @Then /^the "(?P<button_string>(?:[^"]|\\")*)" button of the "(?P<locator_string>(?:[^"]|\\")*)" TinyMCE editor has state "(?P<state_string>(?:[^"]|\\")*)"$/
      *
      * @param string $button The text name of the button
      * @param string $locator The locator string for the editor
      * @param string $state The state of the button
      * @throws ExpectationException Thrown if the button state is not correct
      */
+    #[\Behat\Step\Then('/^the "(?P<button_string>(?:[^"]|\\\\")*)" button of the "(?P<locator_string>(?:[^"]|\\\\")*)" TinyMCE editor has state "(?P<state_string>(?:[^"]|\\\\")*)"$/')]
     public function button_state_is(string $button, string $locator, string $state): void {
         $this->require_tiny_tags();
         $container = $this->get_editor_container_for_locator($locator);
@@ -140,11 +140,11 @@ class behat_editor_tiny extends behat_base implements \core_behat\settable_edito
     /**
      * Click on a button for the specified TinyMCE editor.
      *
-     * @When /^I click on the "(?P<menuitem_string>(?:[^"]|\\")*)" menu item for the "(?P<locator_string>(?:[^"]|\\")*)" TinyMCE editor$/
      *
      * @param string $menuitem The label of the menu item
      * @param string $locator The locator for the editor
      */
+    #[\Behat\Step\When('/^I click on the "(?P<menuitem_string>(?:[^"]|\\\\")*)" menu item for the "(?P<locator_string>(?:[^"]|\\\\")*)" TinyMCE editor$/')]
     public function i_click_on_menuitem_in_menu(string $menuitem, string $locator): void {
         $this->require_tiny_tags();
         $container = $this->get_editor_container_for_locator($locator);
@@ -178,11 +178,11 @@ class behat_editor_tiny extends behat_base implements \core_behat\settable_edito
     /**
      * Select the element type/index for the specified TinyMCE editor.
      *
-     * @When /^I select the "(?P<textlocator_string>(?:[^"]|\\")*)" element in position "(?P<position_int>(?:[^"]|\\")*)" of the "(?P<locator_string>(?:[^"]|\\")*)" TinyMCE editor$/
      * @param string $textlocator The type of element to select (for example `p` or `span`)
      * @param int $position The zero-indexed position
      * @param string $locator The editor to select within
      */
+    #[\Behat\Step\When('/^I select the "(?P<textlocator_string>(?:[^"]|\\\\")*)" element in position "(?P<position_int>(?:[^"]|\\\\")*)" of the "(?P<locator_string>(?:[^"]|\\\\")*)" TinyMCE editor$/')]
     public function select_text(string $textlocator, int $position, string $locator): void {
         $this->require_tiny_tags();
 
@@ -204,9 +204,8 @@ class behat_editor_tiny extends behat_base implements \core_behat\settable_edito
      * Note: This step assumes we are already in the file picker.
      * Note: This step is for use by TinyMCE and will be removed once an appropriate step is added to core.
      * See MDL-76001 for details.
-     *
-     * @Given /^I upload "(?P<filepath_string>(?:[^"]|\\")*)" to the file picker for TinyMCE$/
      */
+    #[\Behat\Step\Given('/^I upload "(?P<filepath_string>(?:[^"]|\\\\")*)" to the file picker for TinyMCE$/')]
     public function i_upload_a_file_in_the_filepicker(string $filepath): void {
         if (!$this->has_tag('javascript')) {
             throw new DriverException('The file picker is only available with javascript enabled');
@@ -245,9 +244,8 @@ class behat_editor_tiny extends behat_base implements \core_behat\settable_edito
      * @param string $locator
      * @param string $type
      * @param string $editorlocator
-     *
-     * @Given /^I select the "(?P<locator_string>(?:[^"]|\\")*)" "(?P<type_string>(?:[^"]|\\")*)" in the "(?P<editorlocator_string>(?:[^"]|\\")*)" TinyMCE editor$/
      */
+    #[\Behat\Step\Given('/^I select the "(?P<locator_string>(?:[^"]|\\\\")*)" "(?P<type_string>(?:[^"]|\\\\")*)" in the "(?P<editorlocator_string>(?:[^"]|\\\\")*)" TinyMCE editor$/')]
     public function select_in_editor(string $locator, string $type, string $editorlocator): void {
         $this->require_tiny_tags();
 
@@ -286,10 +284,10 @@ class behat_editor_tiny extends behat_base implements \core_behat\settable_edito
     /**
      * Expand all of the TinyMCE toolbars.
      *
-     * @Given /^I expand all toolbars for the "(?P<editorlocator_string>(?:[^"]|\\")*)" TinyMCE editor$/
      *
      * @param string $locator
      */
+    #[\Behat\Step\Given('/^I expand all toolbars for the "(?P<editorlocator_string>(?:[^"]|\\\\")*)" TinyMCE editor$/')]
     public function expand_all_toolbars(string $editorlocator): void {
         $this->require_tiny_tags();
 
@@ -310,9 +308,8 @@ class behat_editor_tiny extends behat_base implements \core_behat\settable_edito
      * Switch to the TinyMCE iframe using a selector.
      *
      * @param string $editorlocator
-     *
-     * @When /^I switch to the "(?P<editorlocator_string>(?:[^"]|\\")*)" TinyMCE editor iframe$/
      */
+    #[\Behat\Step\When('/^I switch to the "(?P<editorlocator_string>(?:[^"]|\\\\")*)" TinyMCE editor iframe$/')]
     public function switch_to_tiny_iframe(string $editorlocator): void {
         $this->require_tiny_tags();
 

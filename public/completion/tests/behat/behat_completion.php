@@ -42,10 +42,10 @@ class behat_completion extends behat_base {
     /**
      * Checks that the specified user has completed the specified activity of the current course.
      *
-     * @Then /^"(?P<user_fullname_string>(?:[^"]|\\")*)" user has completed "(?P<activity_name_string>(?:[^"]|\\")*)" activity$/
      * @param string $userfullname
      * @param string $activityname
      */
+    #[\Behat\Step\Then('/^"(?P<user_fullname_string>(?:[^"]|\\\\")*)" user has completed "(?P<activity_name_string>(?:[^"]|\\\\")*)" activity$/')]
     public function user_has_completed_activity($userfullname, $activityname) {
 
         // Will throw an exception if the element can not be hovered.
@@ -61,10 +61,10 @@ class behat_completion extends behat_base {
     /**
      * Checks that the specified user has not completed the specified activity of the current course.
      *
-     * @Then /^"(?P<user_fullname_string>(?:[^"]|\\")*)" user has not completed "(?P<activity_name_string>(?:[^"]|\\")*)" activity$/
      * @param string $userfullname
      * @param string $activityname
      */
+    #[\Behat\Step\Then('/^"(?P<user_fullname_string>(?:[^"]|\\\\")*)" user has not completed "(?P<activity_name_string>(?:[^"]|\\\\")*)" activity$/')]
     public function user_has_not_completed_activity($userfullname, $activityname) {
 
         // Will throw an exception if the element can not be hovered.
@@ -79,9 +79,8 @@ class behat_completion extends behat_base {
 
     /**
      * Goes to the current course activity completion report.
-     *
-     * @Given /^I go to the current course activity completion report$/
      */
+    #[\Behat\Step\Given('/^I go to the current course activity completion report$/')]
     public function go_to_the_current_course_activity_completion_report() {
         $completionnode = get_string('pluginname', 'report_progress');
         $reportsnode = get_string('reports');
@@ -94,9 +93,9 @@ class behat_completion extends behat_base {
     /**
      * Toggles completion tracking for course being in the course page.
      *
-     * @When /^completion tracking is "(?P<completion_status_string>Enabled|Disabled)" in current course$/
      * @param string $completionstatus The status, enabled or disabled.
      */
+    #[\Behat\Step\When('/^completion tracking is "(?P<completion_status_string>Enabled|Disabled)" in current course$/')]
     public function completion_is_toggled_in_course($completionstatus) {
 
         $toggle = strtolower($completionstatus) == 'enabled' ? get_string('yes') : get_string('no');
@@ -117,9 +116,8 @@ class behat_completion extends behat_base {
 
     /**
      * Checks if the activity with specified name is maked as complete.
-     *
-     * @Given /^the "(?P<activityname_string>(?:[^"]|\\")*)" "(?P<activitytype_string>(?:[^"]|\\")*)" activity with "(manual|auto)" completion should be marked as complete$/
      */
+    #[\Behat\Step\Given('/^the "(?P<activityname_string>(?:[^"]|\\\\")*)" "(?P<activitytype_string>(?:[^"]|\\\\")*)" activity with "(manual|auto)" completion should be marked as complete$/')]
     public function activity_marked_as_complete($activityname, $activitytype, $completiontype) {
         if ($completiontype == "manual") {
             $imgalttext = get_string("completion-alt-manual-y", 'core_completion', $activityname);
@@ -137,9 +135,8 @@ class behat_completion extends behat_base {
 
     /**
      * Checks if the activity with specified name is maked as complete.
-     *
-     * @Given /^the "(?P<activityname_string>(?:[^"]|\\")*)" "(?P<activitytype_string>(?:[^"]|\\")*)" activity with "(manual|auto)" completion should be marked as not complete$/
      */
+    #[\Behat\Step\Given('/^the "(?P<activityname_string>(?:[^"]|\\\\")*)" "(?P<activitytype_string>(?:[^"]|\\\\")*)" activity with "(manual|auto)" completion should be marked as not complete$/')]
     public function activity_marked_as_not_complete($activityname, $activitytype, $completiontype) {
         if ($completiontype == "manual") {
             $imgalttext = get_string("completion-alt-manual-n", 'core_completion', $activityname);
@@ -157,11 +154,11 @@ class behat_completion extends behat_base {
     /**
      * Checks if the activity with specified name is maked as complete.
      *
-     * @When the :conditionname completion condition of :activityname is displayed as :completionstatus
      * @param string $conditionname The completion condition text.
      * @param string $activityname The activity name.
      * @param string $completionstatus The completion status. Must be either of the following: 'todo', 'done', 'failed'.
      */
+    #[\Behat\Step\When('the :conditionname completion condition of :activityname is displayed as :completionstatus')]
     public function activity_completion_condition_displayed_as(string $conditionname, string $activityname,
             string $completionstatus): void {
 
@@ -192,12 +189,12 @@ class behat_completion extends behat_base {
     /**
      * Checks if the activity with specified name is maked as complete.
      *
-     * @When the :conditionname completion condition of :activityname overridden by :username is displayed as :completionstatus
      * @param string $conditionname The completion condition text.
      * @param string $activityname The activity name.
      * @param string $username The full name of the user overriding the student's activity completion.
      * @param string $completionstatus The override completion status. Must be either of the following: 'todo', 'done'.
      */
+    #[\Behat\Step\When('the :conditionname completion condition of :activityname overridden by :username is displayed as :completionstatus')]
     public function overridden_activity_completion_condition_displayed_as(string $conditionname, string $activityname,
             string $username, string $completionstatus): void {
         if (!in_array($completionstatus, ['todo', 'done'])) {
@@ -220,11 +217,11 @@ class behat_completion extends behat_base {
     /**
      * Checks the manual completion state of an activity.
      *
-     * @Given /^the manual completion button of "(?P<activityname>(?:[^"]|\\")*)" is displayed as "(?P<completionstatus>(?:[^"]|\\")*)"$/
      * @param string $activityname The activity name.
      * @param string $completionstatus The completion status shown on the manual completion button.
      *                                 Must be either 'Mark as done' or 'Done'.
      */
+    #[\Behat\Step\Given('/^the manual completion button of "(?P<activityname>(?:[^"]|\\\\")*)" is displayed as "(?P<completionstatus>(?:[^"]|\\\\")*)"$/')]
     public function manual_completion_button_displayed_as(string $activityname, string $completionstatus): void {
         if (!in_array($completionstatus, ['Mark as done', 'Done'])) {
             throw new coding_exception('Invalid completion status. It must be "Mark as done" or "Done".');
@@ -240,12 +237,12 @@ class behat_completion extends behat_base {
     /**
      * Checks the manual completion state of an activity.
      *
-     * @Given /^the manual completion button of "(?P<activityname>(?:[^"]|\\")*)" overridden by "(?P<username>(?:[^"]|\\")*)" is displayed as "(?P<completionstatus>(?:[^"]|\\")*)"$/
      * @param string $activityname The activity name.
      * @param string $username The full name of the user overriding the student's activity completion.
      * @param string $completionstatus The completion status shown on the manual completion button.
      *                                 Must be either 'Mark as done' or 'Done'.
      */
+    #[\Behat\Step\Given('/^the manual completion button of "(?P<activityname>(?:[^"]|\\\\")*)" overridden by "(?P<username>(?:[^"]|\\\\")*)" is displayed as "(?P<completionstatus>(?:[^"]|\\\\")*)"$/')]
     public function overridden_manual_completion_button_displayed_as(string $activityname, string $username,
             string $completionstatus): void {
         if (!in_array($completionstatus, ['Mark as done', 'Done'])) {
@@ -265,9 +262,9 @@ class behat_completion extends behat_base {
     /**
      * Toggles the manual completion button for a given activity.
      *
-     * @Given /^I toggle the manual completion state of "(?P<activityname>(?:[^"]|\\")*)"$/
      * @param string $activityname The activity name.
      */
+    #[\Behat\Step\Given('/^I toggle the manual completion state of "(?P<activityname>(?:[^"]|\\\\")*)"$/')]
     public function toggle_the_manual_completion_state(string $activityname): void {
         $selector = "button[data-action=toggle-manual-completion][data-activityname='{$activityname}']";
 
@@ -277,9 +274,9 @@ class behat_completion extends behat_base {
     /**
      * Check that the activity does show completion information.
      *
-     * @Given /^there should be no completion information shown for "(?P<activityname>(?:[^"]|\\")*)"$/
      * @param string $activityname The activity name.
      */
+    #[\Behat\Step\Given('/^there should be no completion information shown for "(?P<activityname>(?:[^"]|\\\\")*)"$/')]
     public function there_should_be_no_completion_for_activity(string $activityname): void {
         $containerselector = "div[data-region=activity-information][data-activityname='$activityname']";
         try {
@@ -298,9 +295,9 @@ class behat_completion extends behat_base {
     /**
      * Check that the manual completion button for the activity is disabled.
      *
-     * @Given /^the manual completion button for "(?P<activityname>(?:[^"]|\\")*)" should be disabled$/
      * @param string $activityname The activity name.
      */
+    #[\Behat\Step\Given('/^the manual completion button for "(?P<activityname>(?:[^"]|\\\\")*)" should be disabled$/')]
     public function the_manual_completion_button_for_activity_should_be_disabled(string $activityname): void {
         $selector = "button[data-activityname='$activityname'][data-completion='manual']";
 
@@ -311,9 +308,9 @@ class behat_completion extends behat_base {
     /**
      * Check that the manual completion button for the activity does not exist.
      *
-     * @Given /^the manual completion button for "(?P<activityname>(?:[^"]|\\")*)" should not exist/
      * @param string $activityname The activity name.
      */
+    #[\Behat\Step\Given('/^the manual completion button for "(?P<activityname>(?:[^"]|\\\\")*)" should not exist/')]
     public function the_manual_completion_button_for_activity_should_not_exist(string $activityname): void {
         $selector = "button[data-activityname='$activityname'][data-completion='manual']";
 
@@ -324,9 +321,9 @@ class behat_completion extends behat_base {
     /**
      * Check that the manual completion button for the activity exists.
      *
-     * @Given /^the manual completion button for "(?P<activityname>(?:[^"]|\\")*)" should exist/
      * @param string $activityname The activity name.
      */
+    #[\Behat\Step\Given('/^the manual completion button for "(?P<activityname>(?:[^"]|\\\\")*)" should exist/')]
     public function the_manual_completion_button_for_activity_should_exist(string $activityname): void {
         $selector = "button[data-activityname='$activityname'][data-completion='manual']";
 
@@ -337,10 +334,10 @@ class behat_completion extends behat_base {
     /**
      * Check that the activity has the given automatic completion condition.
      *
-     * @When :activityname should have the :conditionname completion condition
      * @param string $activityname The activity name.
      * @param string $conditionname The automatic condition name.
      */
+    #[\Behat\Step\When(':activityname should have the :conditionname completion condition')]
     public function activity_should_have_the_completion_condition(string $activityname, string $conditionname): void {
         $containerselector = "div[data-region=activity-information][data-activityname='$activityname']";
 
@@ -363,11 +360,11 @@ class behat_completion extends behat_base {
      * Checks if the activity with specified name shows a information completion checkbox (i.e. showing the completion tracking
      * configuration).
      *
-     * @Given /^the "(?P<activityname_string>(?:[^"]|\\")*)" "(?P<activitytype_string>(?:[^"]|\\")*)" activity with "(manual|auto)" completion shows a configuration completion checkbox/
      * @param string $activityname The activity name.
      * @param string $activitytype The activity type.
      * @param string $completiontype The completion type.
      */
+    #[\Behat\Step\Given('/^the "(?P<activityname_string>(?:[^"]|\\\\")*)" "(?P<activitytype_string>(?:[^"]|\\\\")*)" activity with "(manual|auto)" completion shows a configuration completion checkbox/')]
     public function activity_has_configuration_completion_checkbox($activityname, $activitytype, $completiontype) {
         if ($completiontype == "manual") {
             $imgname = 'i/completion-manual-enabled';
@@ -386,11 +383,11 @@ class behat_completion extends behat_base {
     /**
      * Checks if the activity with specified name shows a tracking completion checkbox (i.e. showing my completion tracking status)
      *
-     * @Given /^the "(?P<activityname_string>(?:[^"]|\\")*)" "(?P<activitytype_string>(?:[^"]|\\")*)" activity with "(manual|auto)" completion shows a status completion checkbox/
      * @param string $activityname The activity name.
      * @param string $activitytype The activity type.
      * @param string $completiontype The completion type.
      */
+    #[\Behat\Step\Given('/^the "(?P<activityname_string>(?:[^"]|\\\\")*)" "(?P<activitytype_string>(?:[^"]|\\\\")*)" activity with "(manual|auto)" completion shows a status completion checkbox/')]
     public function activity_has_status_completion_checkbox($activityname, $activitytype, $completiontype) {
         if ($completiontype == "manual") {
             $imgname = 'i/completion-manual-';
@@ -413,10 +410,10 @@ class behat_completion extends behat_base {
     /**
      * Checks if the activity with specified name does not show any completion checkbox.
      *
-     * @Given /^the "(?P<activityname_string>(?:[^"]|\\")*)" "(?P<activitytype_string>(?:[^"]|\\")*)" activity does not show any completion checkbox/
      * @param string $activityname The activity name.
      * @param string $activitytype The activity type.
      */
+    #[\Behat\Step\Given('/^the "(?P<activityname_string>(?:[^"]|\\\\")*)" "(?P<activitytype_string>(?:[^"]|\\\\")*)" activity does not show any completion checkbox/')]
     public function activity_has_not_any_completion_checkbox($activityname, $activitytype) {
         $iconxpath = "//li[contains(concat(' ', @class, ' '), ' modtype_" . strtolower($activitytype) . " ')]";
         $iconxpath .= "[descendant::*[contains(text(), '" . $activityname . "')]]";

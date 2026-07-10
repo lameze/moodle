@@ -45,10 +45,10 @@ class behat_workshopallocation_manual extends behat_base {
      *
      * This step should start on manual allocation page.
      *
-     * @When /^I add a reviewer "(?P<reviewer_name_string>(?:[^"]|\\")*)" for workshop participant "(?P<participant_name_string>(?:[^"]|\\")*)"$/
      * @param string $reviewername
      * @param string $participantname
      */
+    #[\Behat\Step\When('/^I add a reviewer "(?P<reviewer_name_string>(?:[^"]|\\\\")*)" for workshop participant "(?P<participant_name_string>(?:[^"]|\\\\")*)"$/')]
     public function i_add_a_reviewer_for_workshop_participant($reviewername, $participantname) {
         $participantnameliteral = behat_context_helper::escape($participantname);
         $xpathtd = "//table[contains(concat(' ', normalize-space(@class), ' '), ' allocations ')]/".
@@ -82,11 +82,11 @@ class behat_workshopallocation_manual extends behat_base {
     /**
      * Manually allocates multiple reviewers in workshop.
      *
-     * @When /^I allocate submissions in workshop "(?P<workshop_name_string>(?:[^"]|\\")*)" as:$/
-     * @When /^I allocate submissions in workshop "(?P<workshop_name_string>(?:[^"]|\\")*)" as:"$/
      * @param string $workshopname
      * @param TableNode $table should have one column with title 'Reviewer' and another with title 'Participant' (or 'Reviewee')
      */
+    #[\Behat\Step\When('/^I allocate submissions in workshop "(?P<workshop_name_string>(?:[^"]|\\\\")*)" as:$/')]
+    #[\Behat\Step\When('/^I allocate submissions in workshop "(?P<workshop_name_string>(?:[^"]|\\\\")*)" as:"$/')]
     public function i_allocate_submissions_in_workshop_as($workshopname, TableNode $table) {
         $this->execute("behat_navigation::go_to_breadcrumb_location", $workshopname);
         $this->execute('behat_navigation::i_navigate_to_in_current_page_administration',

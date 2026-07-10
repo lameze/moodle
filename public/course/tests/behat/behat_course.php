@@ -89,9 +89,9 @@ class behat_course extends behat_base {
     /**
      * Creates a new course with the provided table data matching course settings names with the desired values.
      *
-     * @Given /^I create a course with:$/
      * @param TableNode $table The course data
      */
+    #[\Behat\Step\Given('/^I create a course with:$/')]
     public function i_create_a_course_with(TableNode $table) {
 
         // Go to course management page.
@@ -148,9 +148,8 @@ class behat_course extends behat_base {
 
     /**
      * Goes to the system courses/categories management page.
-     *
-     * @Given /^I go to the courses management page$/
      */
+    #[\Behat\Step\Given('/^I go to the courses management page$/')]
     public function i_go_to_the_courses_management_page() {
 
         $parentnodes = get_string('courses', 'admin');
@@ -228,13 +227,13 @@ class behat_course extends behat_base {
      *
      * Sections 0 and 1 are also allowed on frontpage.
      *
-     * @Given I add a :activity activity to course :coursefullname section :sectionnum and I fill the form with:
-     * @Given I add an :activity activity to course :coursefullname section :sectionnum and I fill the form with:
      * @param string $activity The activity name
      * @param string $coursefullname The course full name of the course.
      * @param int $section The section number
      * @param TableNode $data The activity field/value data
      */
+    #[\Behat\Step\Given('I add a :activity activity to course :coursefullname section :sectionnum and I fill the form with:')]
+    #[\Behat\Step\Given('I add an :activity activity to course :coursefullname section :sectionnum and I fill the form with:')]
     public function i_add_to_course_section_and_i_fill_the_form_with($activity, $coursefullname, $section, TableNode $data) {
 
         // Add activity to section.
@@ -256,13 +255,13 @@ class behat_course extends behat_base {
     /**
      * Open a add activity form page.
      *
-     * @Given I add a :activity activity to course :coursefullname section :sectionnum
-     * @Given I add an :activity activity to course :coursefullname section :sectionnum
      * @throws coding_exception
      * @param string $activity The activity name.
      * @param string $coursefullname The course full name of the course.
      * @param string $sectionnum The section number.
      */
+    #[\Behat\Step\Given('I add a :activity activity to course :coursefullname section :sectionnum')]
+    #[\Behat\Step\Given('I add an :activity activity to course :coursefullname section :sectionnum')]
     public function i_add_to_course_section(string $activity, string $coursefullname, string $sectionnum): void {
         $addurl = new moodle_url('/course/modedit.php', [
             'add' => $activity,
@@ -279,12 +278,12 @@ class behat_course extends behat_base {
      * not by plugin name. Use the standard behat_course::i_add_to_course_section step instead unless the
      * plugin create extra entries into the activity chooser (like LTI).
      *
-     * @Given I add a :activityname to section :sectionnum using the activity chooser
-     * @Given I add an :activityname to section :sectionnum using the activity chooser
      * @throws ElementNotFoundException Thrown by behat_base::find
      * @param string $activityname
      * @param int $sectionnum
      */
+    #[\Behat\Step\Given('I add a :activityname to section :sectionnum using the activity chooser')]
+    #[\Behat\Step\Given('I add an :activityname to section :sectionnum using the activity chooser')]
     public function i_add_to_section_using_the_activity_chooser($activityname, $sectionnum) {
 
         $this->require_javascript('Please use the \'the following "activity" exists:\' data generator instead.');
@@ -344,10 +343,10 @@ class behat_course extends behat_base {
     /**
      * Opens a section edit menu if it is not already opened.
      *
-     * @Given /^I open section "(?P<section>(?:[^"]|\\")*)" edit menu$/
      * @throws DriverException The step is not available when Javascript is disabled
      * @param string|int $section
      */
+    #[\Behat\Step\Given('/^I open section "(?P<section>(?:[^"]|\\\\")*)" edit menu$/')]
     public function i_open_section_edit_menu($section) {
         if (!$this->running_javascript()) {
             throw new DriverException('Section edit menu not available when Javascript is disabled');
@@ -369,9 +368,9 @@ class behat_course extends behat_base {
     /**
      * Deletes course section.
      *
-     * @Given /^I delete section "(?P<section_number>\d+)"$/
      * @param int $sectionnumber The section number
      */
+    #[\Behat\Step\Given('/^I delete section "(?P<section_number>\d+)"$/')]
     public function i_delete_section($sectionnumber) {
         // Ensures the section exists.
         $xpath = $this->section_exists($sectionnumber);
@@ -399,9 +398,9 @@ class behat_course extends behat_base {
     /**
      * Turns course section highlighting on.
      *
-     * @Given /^I turn section "(?P<section_number>\d+)" highlighting on$/
      * @param int $sectionnumber The section number
      */
+    #[\Behat\Step\Given('/^I turn section "(?P<section_number>\d+)" highlighting on$/')]
     public function i_turn_section_highlighting_on($sectionnumber) {
 
         // Ensures the section exists.
@@ -421,9 +420,9 @@ class behat_course extends behat_base {
     /**
      * Turns course section highlighting off.
      *
-     * @Given /^I turn section "(?P<section_number>\d+)" highlighting off$/
      * @param int $sectionnumber The section number
      */
+    #[\Behat\Step\Given('/^I turn section "(?P<section_number>\d+)" highlighting off$/')]
     public function i_turn_section_highlighting_off($sectionnumber) {
 
         // Ensures the section exists.
@@ -443,9 +442,9 @@ class behat_course extends behat_base {
     /**
      * Shows the specified hidden section. You need to be in the course page and on editing mode.
      *
-     * @Given /^I show section "(?P<section>(?:[^"]|\\")*)"$/
      * @param int|string $section
      */
+    #[\Behat\Step\Given('/^I show section "(?P<section>(?:[^"]|\\\\")*)"$/')]
     public function i_show_section($section) {
         // Ensures the section exists.
         $xpath = $this->section_exists($section);
@@ -476,9 +475,9 @@ class behat_course extends behat_base {
     /**
      * Hides the specified visible section. You need to be in the course page and on editing mode.
      *
-     * @Given /^I hide section "(?P<section>(?:[^"]|\\")*)"$/
      * @param int|string $section
      */
+    #[\Behat\Step\Given('/^I hide section "(?P<section>(?:[^"]|\\\\")*)"$/')]
     public function i_hide_section($section) {
         // Ensures the section exists.
         $xpath = $this->section_exists($section);
@@ -509,9 +508,9 @@ class behat_course extends behat_base {
     /**
      * Go to editing section page for specified section number. You need to be in the course page and on editing mode.
      *
-     * @Given /^I edit the section "(?P<section_number>\d+)"$/
      * @param int $sectionnumber
      */
+    #[\Behat\Step\Given('/^I edit the section "(?P<section_number>\d+)"$/')]
     public function i_edit_the_section($sectionnumber) {
         // If javascript is on, link is inside a menu.
         if ($this->running_javascript()) {
@@ -536,10 +535,10 @@ class behat_course extends behat_base {
     /**
      * Edit specified section and fill the form data with the specified field/value pairs.
      *
-     * @When /^I edit the section "(?P<section_number>\d+)" and I fill the form with:$/
      * @param int $sectionnumber The section number
      * @param TableNode $data The activity field/value data
      */
+    #[\Behat\Step\When('/^I edit the section "(?P<section_number>\d+)" and I fill the form with:$/')]
     public function i_edit_the_section_and_i_fill_the_form_with($sectionnumber, TableNode $data) {
 
         // Edit given section.
@@ -555,10 +554,10 @@ class behat_course extends behat_base {
     /**
      * Checks if the specified course section hightlighting is turned on. You need to be in the course page on editing mode.
      *
-     * @Then /^section "(?P<section_number>\d+)" should be highlighted$/
      * @throws ExpectationException
      * @param int $sectionnumber The section number
      */
+    #[\Behat\Step\Then('/^section "(?P<section_number>\d+)" should be highlighted$/')]
     public function section_should_be_highlighted($sectionnumber) {
 
         // Ensures the section exists.
@@ -572,10 +571,10 @@ class behat_course extends behat_base {
     /**
      * Checks if the specified course section highlighting is turned off. You need to be in the course page on editing mode.
      *
-     * @Then /^section "(?P<section_number>\d+)" should not be highlighted$/
      * @throws ExpectationException
      * @param int $sectionnumber The section number
      */
+    #[\Behat\Step\Then('/^section "(?P<section_number>\d+)" should not be highlighted$/')]
     public function section_should_not_be_highlighted($sectionnumber) {
 
         // We only catch ExpectationException, ElementNotFoundException should be thrown if the specified section does not exist.
@@ -592,11 +591,11 @@ class behat_course extends behat_base {
     /**
      * Checks that the specified section is visible. You need to be in the course page. It can be used being logged as a student and as a teacher on editing mode.
      *
-     * @Then /^section "(?P<section_number>\d+)" should be hidden$/
      * @throws ExpectationException
      * @throws ElementNotFoundException Thrown by behat_base::find
      * @param int $sectionnumber
      */
+    #[\Behat\Step\Then('/^section "(?P<section_number>\d+)" should be hidden$/')]
     public function section_should_be_hidden($sectionnumber) {
 
         $sectionxpath = $this->section_exists($sectionnumber);
@@ -614,11 +613,11 @@ class behat_course extends behat_base {
     /**
      * Checks that all actiities in the specified section are hidden. You need to be in the course page. It can be used being logged as a student and as a teacher on editing mode.
      *
-     * @Then /^all activities in section "(?P<section_number>\d+)" should be hidden$/
      * @throws ExpectationException
      * @throws ElementNotFoundException Thrown by behat_base::find
      * @param int $sectionnumber
      */
+    #[\Behat\Step\Then('/^all activities in section "(?P<section_number>\d+)" should be hidden$/')]
     public function section_activities_should_be_hidden($sectionnumber) {
         $sectionxpath = $this->section_exists($sectionnumber);
 
@@ -654,10 +653,10 @@ class behat_course extends behat_base {
     /**
      * Checks that the specified section is visible. You need to be in the course page. It can be used being logged as a student and as a teacher on editing mode.
      *
-     * @Then /^section "(?P<section_number>\d+)" should be visible$/
      * @throws ExpectationException
      * @param int $sectionnumber
      */
+    #[\Behat\Step\Then('/^section "(?P<section_number>\d+)" should be visible$/')]
     public function section_should_be_visible($sectionnumber) {
 
         $sectionxpath = $this->section_exists($sectionnumber);
@@ -682,10 +681,10 @@ class behat_course extends behat_base {
     /**
      * Moves up the specified section, this step only works with Javascript disabled. Editing mode should be on.
      *
-     * @Given /^I move up section "(?P<section_number>\d+)"$/
      * @throws DriverException Step not available when Javascript is enabled
      * @param int $sectionnumber
      */
+    #[\Behat\Step\Given('/^I move up section "(?P<section_number>\d+)"$/')]
     public function i_move_up_section($sectionnumber) {
 
         if ($this->running_javascript()) {
@@ -708,10 +707,10 @@ class behat_course extends behat_base {
     /**
      * Moves down the specified section, this step only works with Javascript disabled. Editing mode should be on.
      *
-     * @Given /^I move down section "(?P<section_number>\d+)"$/
      * @throws DriverException Step not available when Javascript is enabled
      * @param int $sectionnumber
      */
+    #[\Behat\Step\Given('/^I move down section "(?P<section_number>\d+)"$/')]
     public function i_move_down_section($sectionnumber) {
 
         if ($this->running_javascript()) {
@@ -734,10 +733,10 @@ class behat_course extends behat_base {
     /**
      * Checks that the specified activity is visible. You need to be in the course page. It can be used being logged as a student and as a teacher on editing mode.
      *
-     * @Then /^"(?P<activity_or_resource_string>(?:[^"]|\\")*)" activity should be visible$/
      * @param string $activityname
      * @throws ExpectationException
      */
+    #[\Behat\Step\Then('/^"(?P<activity_or_resource_string>(?:[^"]|\\\\")*)" activity should be visible$/')]
     public function activity_should_be_visible($activityname) {
 
         // The activity must exists and be visible.
@@ -767,10 +766,10 @@ class behat_course extends behat_base {
      * Checks that the specified activity is visible. You need to be in the course page.
      * It can be used being logged as a student and as a teacher on editing mode.
      *
-     * @Then /^"(?P<activity_or_resource_string>(?:[^"]|\\")*)" activity should be available but hidden from course page$/
      * @param string $activityname
      * @throws ExpectationException
      */
+    #[\Behat\Step\Then('/^"(?P<activity_or_resource_string>(?:[^"]|\\\\")*)" activity should be available but hidden from course page$/')]
     public function activity_should_be_available_but_hidden_from_course_page($activityname) {
 
         if ($this->is_course_editor()) {
@@ -817,10 +816,10 @@ class behat_course extends behat_base {
     /**
      * Checks that the specified activity is hidden. You need to be in the course page. It can be used being logged as a student and as a teacher on editing mode.
      *
-     * @Then /^"(?P<activity_or_resource_string>(?:[^"]|\\")*)" activity should be hidden$/
      * @param string $activityname
      * @throws ExpectationException
      */
+    #[\Behat\Step\Then('/^"(?P<activity_or_resource_string>(?:[^"]|\\\\")*)" activity should be hidden$/')]
     public function activity_should_be_hidden($activityname) {
         if ($this->is_course_editor()) {
             // The activity should exist.
@@ -857,10 +856,10 @@ class behat_course extends behat_base {
     /**
      * Checks that the specified label is hidden from students. You need to be in the course page.
      *
-     * @Then /^"(?P<activity_or_resource_string>(?:[^"]|\\")*)" label should be hidden$/
      * @param string $activityname
      * @throws ExpectationException
      */
+    #[\Behat\Step\Then('/^"(?P<activity_or_resource_string>(?:[^"]|\\\\")*)" label should be hidden$/')]
     public function label_should_be_hidden($activityname) {
         if ($this->is_course_editor()) {
             // The activity should exist.
@@ -877,10 +876,10 @@ class behat_course extends behat_base {
      *
      * Editing mode should be on.
      *
-     * @Given /^I move "(?P<activity_name_string>(?:[^"]|\\")*)" activity to section "(?P<section_number>\d+)"$/
      * @param string $activityname The activity name
      * @param int $sectionnumber The number of section
      */
+    #[\Behat\Step\Given('/^I move "(?P<activity_name_string>(?:[^"]|\\\\")*)" activity to section "(?P<section_number>\d+)"$/')]
     public function i_move_activity_to_section($activityname, $sectionnumber): void {
         $this->require_javascript('Moving activities requires javascript.');
 
@@ -950,11 +949,11 @@ class behat_course extends behat_base {
     /**
      * Edits the activity name through the edit activity; this step only works with Javascript enabled. Editing mode should be on.
      *
-     * @Given /^I change "(?P<activity_name_string>(?:[^"]|\\")*)" activity name to "(?P<new_name_string>(?:[^"]|\\")*)"$/
      * @throws DriverException Step not available when Javascript is disabled
      * @param string $activityname
      * @param string $newactivityname
      */
+    #[\Behat\Step\Given('/^I change "(?P<activity_name_string>(?:[^"]|\\\\")*)" activity name to "(?P<new_name_string>(?:[^"]|\\\\")*)"$/')]
     public function i_change_activity_name_to($activityname, $newactivityname) {
         $this->execute('behat_forms::i_set_the_field_in_container_to', [
             get_string('edittitle'),
@@ -967,10 +966,10 @@ class behat_course extends behat_base {
     /**
      * Opens an activity actions menu if it is not already opened.
      *
-     * @Given /^I open "(?P<activity_name_string>(?:[^"]|\\")*)" actions menu$/
      * @throws DriverException The step is not available when Javascript is disabled
      * @param string $activityname
      */
+    #[\Behat\Step\Given('/^I open "(?P<activity_name_string>(?:[^"]|\\\\")*)" actions menu$/')]
     public function i_open_actions_menu($activityname) {
 
         if (!$this->running_javascript()) {
@@ -1001,10 +1000,10 @@ class behat_course extends behat_base {
     /**
      * Closes an activity actions menu if it is not already closed.
      *
-     * @Given /^I close "(?P<activity_name_string>(?:[^"]|\\")*)" actions menu$/
      * @throws DriverException The step is not available when Javascript is disabled
      * @param string $activityname
      */
+    #[\Behat\Step\Given('/^I close "(?P<activity_name_string>(?:[^"]|\\\\")*)" actions menu$/')]
     public function i_close_actions_menu($activityname) {
 
         if (!$this->running_javascript()) {
@@ -1032,10 +1031,10 @@ class behat_course extends behat_base {
     /**
      * Checks that the specified activity's action menu is open.
      *
-     * @Then /^"(?P<activity_name_string>(?:[^"]|\\")*)" actions menu should be open$/
      * @throws DriverException The step is not available when Javascript is disabled
      * @param string $activityname
      */
+    #[\Behat\Step\Then('/^"(?P<activity_name_string>(?:[^"]|\\\\")*)" actions menu should be open$/')]
     public function actions_menu_should_be_open($activityname) {
 
         if (!$this->running_javascript()) {
@@ -1058,11 +1057,11 @@ class behat_course extends behat_base {
     /**
      * Checks that the specified activity's action menu contains an item.
      *
-     * @Then /^"(?P<activity_name_string>(?:[^"]|\\")*)" actions menu should have "(?P<menu_item_string>(?:[^"]|\\")*)" item$/
      * @throws DriverException The step is not available when Javascript is disabled
      * @param string $activityname
      * @param string $menuitem
      */
+    #[\Behat\Step\Then('/^"(?P<activity_name_string>(?:[^"]|\\\\")*)" actions menu should have "(?P<menu_item_string>(?:[^"]|\\\\")*)" item$/')]
     public function actions_menu_should_have_item($activityname, $menuitem) {
         $activitynode = $this->get_activity_action_menu_node($activityname);
 
@@ -1074,11 +1073,11 @@ class behat_course extends behat_base {
     /**
      * Checks that the specified activity's action menu does not contains an item.
      *
-     * @Then /^"(?P<activity_name_string>(?:[^"]|\\")*)" actions menu should not have "(?P<menu_item_string>(?:[^"]|\\")*)" item$/
      * @throws DriverException The step is not available when Javascript is disabled
      * @param string $activityname
      * @param string $menuitem
      */
+    #[\Behat\Step\Then('/^"(?P<activity_name_string>(?:[^"]|\\\\")*)" actions menu should not have "(?P<menu_item_string>(?:[^"]|\\\\")*)" item$/')]
     public function actions_menu_should_not_have_item($activityname, $menuitem) {
         $activitynode = $this->get_activity_action_menu_node($activityname);
 
@@ -1108,9 +1107,9 @@ class behat_course extends behat_base {
     /**
      * Indents to the right the activity or resource specified by it's name. Editing mode should be on.
      *
-     * @Given /^I indent right "(?P<activity_name_string>(?:[^"]|\\")*)" activity$/
      * @param string $activityname
      */
+    #[\Behat\Step\Given('/^I indent right "(?P<activity_name_string>(?:[^"]|\\\\")*)" activity$/')]
     public function i_indent_right_activity($activityname) {
 
         $activity = $this->escape($activityname);
@@ -1127,9 +1126,9 @@ class behat_course extends behat_base {
     /**
      * Indents to the left the activity or resource specified by it's name. Editing mode should be on.
      *
-     * @Given /^I indent left "(?P<activity_name_string>(?:[^"]|\\")*)" activity$/
      * @param string $activityname
      */
+    #[\Behat\Step\Given('/^I indent left "(?P<activity_name_string>(?:[^"]|\\\\")*)" activity$/')]
     public function i_indent_left_activity($activityname) {
 
         $activity = $this->escape($activityname);
@@ -1146,9 +1145,9 @@ class behat_course extends behat_base {
     /**
      * Deletes the activity or resource specified by it's name. This step is experimental when using it in Javascript tests. You should be in the course page with editing mode on.
      *
-     * @Given /^I delete "(?P<activity_name_string>(?:[^"]|\\")*)" activity$/
      * @param string $activityname
      */
+    #[\Behat\Step\Given('/^I delete "(?P<activity_name_string>(?:[^"]|\\\\")*)" activity$/')]
     public function i_delete_activity($activityname) {
         $steps = array();
         $activity = $this->escape($activityname);
@@ -1183,10 +1182,10 @@ class behat_course extends behat_base {
     /**
      * Deletes a course.
      *
-     * @Given the course :coursefullname is deleted
      * @param string $coursefullname
      */
     #[\core\attribute\example('And the course "Course test" is deleted')]
+    #[\Behat\Step\Given('the course :coursefullname is deleted')]
     public function the_course_is_deleted($coursefullname) {
         delete_course($this->get_course_id($coursefullname), false);
         fix_course_sortorder();
@@ -1195,9 +1194,9 @@ class behat_course extends behat_base {
     /**
      * Duplicates the activity or resource specified by it's name. You should be in the course page with editing mode on.
      *
-     * @Given /^I duplicate "(?P<activity_name_string>(?:[^"]|\\")*)" activity$/
      * @param string $activityname
      */
+    #[\Behat\Step\Given('/^I duplicate "(?P<activity_name_string>(?:[^"]|\\\\")*)" activity$/')]
     public function i_duplicate_activity($activityname) {
         $steps = array();
         $activity = $this->escape($activityname);
@@ -1213,10 +1212,10 @@ class behat_course extends behat_base {
     /**
      * Duplicates the activity or resource and modifies the new activity with the provided data. You should be in the course page with editing mode on.
      *
-     * @Given /^I duplicate "(?P<activity_name_string>(?:[^"]|\\")*)" activity editing the new copy with:$/
      * @param string $activityname
      * @param TableNode $data
      */
+    #[\Behat\Step\Given('/^I duplicate "(?P<activity_name_string>(?:[^"]|\\\\")*)" activity editing the new copy with:$/')]
     public function i_duplicate_activity_editing_the_new_copy_with($activityname, TableNode $data) {
 
         $activity = $this->escape($activityname);
@@ -1277,10 +1276,10 @@ class behat_course extends behat_base {
      * Hopefully we would not require test writers to use this step
      * and we will manage it from other step definitions.
      *
-     * @Given /^I wait until section "(?P<section>(?:[^"]|\\")*)" is available$/
      * @param int|string $section
      * @return void
      */
+    #[\Behat\Step\Given('/^I wait until section "(?P<section>(?:[^"]|\\\\")*)" is available$/')]
     public function i_wait_until_section_is_available($section) {
 
         // Looks for a hidden lightbox or a non-existent lightbox in that section.
@@ -1295,11 +1294,11 @@ class behat_course extends behat_base {
     /**
      * Clicks on the specified element of the activity. You should be in the course page with editing mode turned on.
      *
-     * @Given /^I click on "(?P<element_string>(?:[^"]|\\")*)" "(?P<selector_string>(?:[^"]|\\")*)" in the "(?P<activity_name_string>(?:[^"]|\\")*)" activity$/
      * @param string $element
      * @param string $selectortype
      * @param string $activityname
      */
+    #[\Behat\Step\Given('/^I click on "(?P<element_string>(?:[^"]|\\\\")*)" "(?P<selector_string>(?:[^"]|\\\\")*)" in the "(?P<activity_name_string>(?:[^"]|\\\\")*)" activity$/')]
     public function i_click_on_in_the_activity($element, $selectortype, $activityname) {
         $element = $this->get_activity_element($element, $selectortype, $activityname);
         $element->click();
@@ -1586,9 +1585,9 @@ class behat_course extends behat_base {
     /**
      * Clicks on a category in the management interface.
      *
-     * @Given /^I click on category "(?P<name_string>(?:[^"]|\\")*)" in the management interface$/
      * @param string $name
      */
+    #[\Behat\Step\Given('/^I click on category "(?P<name_string>(?:[^"]|\\\\")*)" in the management interface$/')]
     public function i_click_on_category_in_the_management_interface($name) {
         $node = $this->get_management_category_listing_node_by_name($name, true);
         $node->click();
@@ -1597,9 +1596,9 @@ class behat_course extends behat_base {
     /**
      * Clicks on a course in the management interface.
      *
-     * @Given /^I click on course "(?P<name_string>(?:[^"]|\\")*)" in the management interface$/
      * @param string $name
      */
+    #[\Behat\Step\Given('/^I click on course "(?P<name_string>(?:[^"]|\\\\")*)" in the management interface$/')]
     public function i_click_on_course_in_the_management_interface($name) {
         $node = $this->get_management_course_listing_node_by_name($name, true);
         $node->click();
@@ -1608,9 +1607,9 @@ class behat_course extends behat_base {
     /**
      * Clicks on a category checkbox in the management interface, if not checked.
      *
-     * @Given /^I select category "(?P<name_string>(?:[^"]|\\")*)" in the management interface$/
      * @param string $name
      */
+    #[\Behat\Step\Given('/^I select category "(?P<name_string>(?:[^"]|\\\\")*)" in the management interface$/')]
     public function i_select_category_in_the_management_interface($name) {
         $node = $this->get_management_category_listing_node_by_name($name);
         $node = $node->findField('bcat[]');
@@ -1622,9 +1621,9 @@ class behat_course extends behat_base {
     /**
      * Clicks on a category checkbox in the management interface, if checked.
      *
-     * @Given /^I unselect category "(?P<name_string>(?:[^"]|\\")*)" in the management interface$/
      * @param string $name
      */
+    #[\Behat\Step\Given('/^I unselect category "(?P<name_string>(?:[^"]|\\\\")*)" in the management interface$/')]
     public function i_unselect_category_in_the_management_interface($name) {
         $node = $this->get_management_category_listing_node_by_name($name);
         $node = $node->findField('bcat[]');
@@ -1636,9 +1635,9 @@ class behat_course extends behat_base {
     /**
      * Clicks course checkbox in the management interface, if not checked.
      *
-     * @Given /^I select course "(?P<name_string>(?:[^"]|\\")*)" in the management interface$/
      * @param string $name
      */
+    #[\Behat\Step\Given('/^I select course "(?P<name_string>(?:[^"]|\\\\")*)" in the management interface$/')]
     public function i_select_course_in_the_management_interface($name) {
         $node = $this->get_management_course_listing_node_by_name($name);
         $node = $node->findField('bc[]');
@@ -1650,9 +1649,9 @@ class behat_course extends behat_base {
     /**
      * Clicks course checkbox in the management interface, if checked.
      *
-     * @Given /^I unselect course "(?P<name_string>(?:[^"]|\\")*)" in the management interface$/
      * @param string $name
      */
+    #[\Behat\Step\Given('/^I unselect course "(?P<name_string>(?:[^"]|\\\\")*)" in the management interface$/')]
     public function i_unselect_course_in_the_management_interface($name) {
         $node = $this->get_management_course_listing_node_by_name($name);
         $node = $node->findField('bc[]');
@@ -1664,9 +1663,9 @@ class behat_course extends behat_base {
     /**
      * Move selected categories to top level in the management interface.
      *
-     * @Given /^I move category "(?P<name_string>(?:[^"]|\\")*)" to top level in the management interface$/
      * @param string $name
      */
+    #[\Behat\Step\Given('/^I move category "(?P<name_string>(?:[^"]|\\\\")*)" to top level in the management interface$/')]
     public function i_move_category_to_top_level_in_the_management_interface($name) {
         $this->i_select_category_in_the_management_interface($name);
 
@@ -1681,11 +1680,11 @@ class behat_course extends behat_base {
     /**
      * Checks that a category is a subcategory of specific category.
      *
-     * @Given /^I should see category "(?P<subcatidnumber_string>(?:[^"]|\\")*)" as subcategory of "(?P<catidnumber_string>(?:[^"]|\\")*)" in the management interface$/
      * @throws ExpectationException
      * @param string $subcatidnumber
      * @param string $catidnumber
      */
+    #[\Behat\Step\Given('/^I should see category "(?P<subcatidnumber_string>(?:[^"]|\\\\")*)" as subcategory of "(?P<catidnumber_string>(?:[^"]|\\\\")*)" in the management interface$/')]
     public function i_should_see_category_as_subcategory_of_in_the_management_interface($subcatidnumber, $catidnumber) {
         $categorynodeid = $this->get_category_id($catidnumber);
         $subcategoryid = $this->get_category_id($subcatidnumber);
@@ -1697,11 +1696,11 @@ class behat_course extends behat_base {
     /**
      * Checks that a category is not a subcategory of specific category.
      *
-     * @Given /^I should not see category "(?P<subcatidnumber_string>(?:[^"]|\\")*)" as subcategory of "(?P<catidnumber_string>(?:[^"]|\\")*)" in the management interface$/
      * @throws ExpectationException
      * @param string $subcatidnumber
      * @param string $catidnumber
      */
+    #[\Behat\Step\Given('/^I should not see category "(?P<subcatidnumber_string>(?:[^"]|\\\\")*)" as subcategory of "(?P<catidnumber_string>(?:[^"]|\\\\")*)" in the management interface$/')]
     public function i_should_not_see_category_as_subcategory_of_in_the_management_interface($subcatidnumber, $catidnumber) {
         try {
             $this->i_should_see_category_as_subcategory_of_in_the_management_interface($subcatidnumber, $catidnumber);
@@ -1715,9 +1714,9 @@ class behat_course extends behat_base {
     /**
      * Click to expand a category revealing its sub categories within the management UI.
      *
-     * @Given /^I click to expand category "(?P<idnumber_string>(?:[^"]|\\")*)" in the management interface$/
      * @param string $idnumber
      */
+    #[\Behat\Step\Given('/^I click to expand category "(?P<idnumber_string>(?:[^"]|\\\\")*)" in the management interface$/')]
     public function i_click_to_expand_category_in_the_management_interface($idnumber) {
         $categorynode = $this->get_management_category_listing_node_by_idnumber($idnumber);
         $exception = new ExpectationException('Category "' . $idnumber . '" does not contain an expand or collapse toggle.', $this->getSession());
@@ -1728,9 +1727,9 @@ class behat_course extends behat_base {
     /**
      * Checks that a category within the management interface is visible.
      *
-     * @Given /^category in management listing should be visible "(?P<idnumber_string>(?:[^"]|\\")*)"$/
      * @param string $idnumber
      */
+    #[\Behat\Step\Given('/^category in management listing should be visible "(?P<idnumber_string>(?:[^"]|\\\\")*)"$/')]
     public function category_in_management_listing_should_be_visible($idnumber) {
         $id = $this->get_category_id($idnumber);
         $exception = new ExpectationException('The category '.$idnumber.' is not visible.', $this->getSession());
@@ -1741,9 +1740,9 @@ class behat_course extends behat_base {
     /**
      * Checks that a category within the management interface is dimmed.
      *
-     * @Given /^category in management listing should be dimmed "(?P<idnumber_string>(?:[^"]|\\")*)"$/
      * @param string $idnumber
      */
+    #[\Behat\Step\Given('/^category in management listing should be dimmed "(?P<idnumber_string>(?:[^"]|\\\\")*)"$/')]
     public function category_in_management_listing_should_be_dimmed($idnumber) {
         $id = $this->get_category_id($idnumber);
         $selector = sprintf('#category-listing .listitem-category[data-id="%d"][data-visible="0"]', $id);
@@ -1754,9 +1753,9 @@ class behat_course extends behat_base {
     /**
      * Checks that a course within the management interface is visible.
      *
-     * @Given /^course in management listing should be visible "(?P<idnumber_string>(?:[^"]|\\")*)"$/
      * @param string $idnumber
      */
+    #[\Behat\Step\Given('/^course in management listing should be visible "(?P<idnumber_string>(?:[^"]|\\\\")*)"$/')]
     public function course_in_management_listing_should_be_visible($idnumber) {
         $id = $this->get_course_id($idnumber);
         $exception = new ExpectationException('The course '.$idnumber.' is not visible.', $this->getSession());
@@ -1767,9 +1766,9 @@ class behat_course extends behat_base {
     /**
      * Checks that a course within the management interface is dimmed.
      *
-     * @Given /^course in management listing should be dimmed "(?P<idnumber_string>(?:[^"]|\\")*)"$/
      * @param string $idnumber
      */
+    #[\Behat\Step\Given('/^course in management listing should be dimmed "(?P<idnumber_string>(?:[^"]|\\\\")*)"$/')]
     public function course_in_management_listing_should_be_dimmed($idnumber) {
         $id = $this->get_course_id($idnumber);
         $exception = new ExpectationException('The course '.$idnumber.' is visible.', $this->getSession());
@@ -1782,9 +1781,9 @@ class behat_course extends behat_base {
      *
      * If it was visible it will be hidden. If it is hidden it will be made visible.
      *
-     * @Given /^I toggle visibility of course "(?P<idnumber_string>(?:[^"]|\\")*)" in management listing$/
      * @param string $idnumber
      */
+    #[\Behat\Step\Given('/^I toggle visibility of course "(?P<idnumber_string>(?:[^"]|\\\\")*)" in management listing$/')]
     public function i_toggle_visibility_of_course_in_management_listing($idnumber) {
         $id = $this->get_course_id($idnumber);
         $selector = sprintf('#course-listing .listitem-course[data-id="%d"][data-visible]', $id);
@@ -1803,10 +1802,10 @@ class behat_course extends behat_base {
      *
      * If it was visible it will be hidden. If it is hidden it will be made visible.
      *
-     * @Given /^I toggle visibility of category "(?P<idnumber_string>(?:[^"]|\\")*)" in management listing$/
      *
      * @param string $idnumber The category idnumber
      */
+    #[\Behat\Step\Given('/^I toggle visibility of category "(?P<idnumber_string>(?:[^"]|\\\\")*)" in management listing$/')]
     public function i_toggle_visibility_of_category_in_management_listing($idnumber) {
         $id = $this->get_category_id($idnumber);
         $selector = sprintf('#category-listing .listitem-category[data-id="%d"][data-visible]', $id);
@@ -1823,11 +1822,11 @@ class behat_course extends behat_base {
     /**
      * Moves a category displayed in the management interface up or down one place.
      *
-     * @Given /^I click to move category "(?P<idnumber_string>(?:[^"]|\\")*)" (?P<direction>up|down) one$/
      *
      * @param string $idnumber The category idnumber
      * @param string $direction The direction to move in, either up or down
      */
+    #[\Behat\Step\Given('/^I click to move category "(?P<idnumber_string>(?:[^"]|\\\\")*)" (?P<direction>up|down) one$/')]
     public function i_click_to_move_category_by_one($idnumber, $direction) {
         $node = $this->get_management_category_listing_node_by_idnumber($idnumber);
         $this->user_moves_listing_by_one('category', $node, $direction);
@@ -1836,11 +1835,11 @@ class behat_course extends behat_base {
     /**
      * Moves a course displayed in the management interface up or down one place.
      *
-     * @Given /^I click to move course "(?P<idnumber_string>(?:[^"]|\\")*)" (?P<direction>up|down) one$/
      *
      * @param string $idnumber The course idnumber
      * @param string $direction The direction to move in, either up or down
      */
+    #[\Behat\Step\Given('/^I click to move course "(?P<idnumber_string>(?:[^"]|\\\\")*)" (?P<direction>up|down) one$/')]
     public function i_click_to_move_course_by_one($idnumber, $direction) {
         $node = $this->get_management_course_listing_node_by_idnumber($idnumber);
         $this->user_moves_listing_by_one('course', $node, $direction);
@@ -1886,12 +1885,12 @@ class behat_course extends behat_base {
     /**
      * Check that one course appears before another in the course category management listings.
      *
-     * @Given /^I should see course listing "(?P<preceedingcourse_string>(?:[^"]|\\")*)" before "(?P<followingcourse_string>(?:[^"]|\\")*)"$/
      *
      * @param string $preceedingcourse The first course to find
      * @param string $followingcourse The second course to find (should be AFTER the first course)
      * @throws ExpectationException
      */
+    #[\Behat\Step\Given('/^I should see course listing "(?P<preceedingcourse_string>(?:[^"]|\\\\")*)" before "(?P<followingcourse_string>(?:[^"]|\\\\")*)"$/')]
     public function i_should_see_course_listing_before($preceedingcourse, $followingcourse) {
         $xpath = "//div[@id='course-listing']//li[contains(concat(' ', @class, ' '), ' listitem-course ')]//a[text()='{$preceedingcourse}']/ancestor::li[@data-id]//following::a[text()='{$followingcourse}']";
         $msg = "{$preceedingcourse} course does not appear before {$followingcourse} course";
@@ -1903,12 +1902,12 @@ class behat_course extends behat_base {
     /**
      * Check that one category appears before another in the course category management listings.
      *
-     * @Given /^I should see category listing "(?P<preceedingcategory_string>(?:[^"]|\\")*)" before "(?P<followingcategory_string>(?:[^"]|\\")*)"$/
      *
      * @param string $preceedingcategory The first category to find
      * @param string $followingcategory The second category to find (should be after the first category)
      * @throws ExpectationException
      */
+    #[\Behat\Step\Given('/^I should see category listing "(?P<preceedingcategory_string>(?:[^"]|\\\\")*)" before "(?P<followingcategory_string>(?:[^"]|\\\\")*)"$/')]
     public function i_should_see_category_listing_before($preceedingcategory, $followingcategory) {
         $xpath = "//div[@id='category-listing']//li[contains(concat(' ', @class, ' '), ' listitem-category ')]//a[text()='{$preceedingcategory}']/ancestor::li[@data-id]//following::a[text()='{$followingcategory}']";
         $msg = "{$preceedingcategory} category does not appear before {$followingcategory} category";
@@ -1920,9 +1919,9 @@ class behat_course extends behat_base {
     /**
      * Checks that we are on the course management page that we expect to be on and that no course has been selected.
      *
-     * @Given /^I should see the "(?P<mode_string>(?:[^"]|\\")*)" management page$/
      * @param string $mode The mode to expected. One of 'Courses', 'Course categories' or 'Course categories and courses'
      */
+    #[\Behat\Step\Given('/^I should see the "(?P<mode_string>(?:[^"]|\\\\")*)" management page$/')]
     public function i_should_see_the_courses_management_page($mode) {
         switch ($mode) {
             case "Courses":
@@ -1955,9 +1954,9 @@ class behat_course extends behat_base {
     /**
      * Checks that we are on the course management page that we expect to be on and that a course has been selected.
      *
-     * @Given /^I should see the "(?P<mode_string>(?:[^"]|\\")*)" management page with a course selected$/
      * @param string $mode The mode to expected. One of 'Courses', 'Course categories' or 'Course categories and courses'
      */
+    #[\Behat\Step\Given('/^I should see the "(?P<mode_string>(?:[^"]|\\\\")*)" management page with a course selected$/')]
     public function i_should_see_the_courses_management_page_with_a_course_selected($mode) {
         switch ($mode) {
             case "Courses":
@@ -1989,11 +1988,11 @@ class behat_course extends behat_base {
     /**
      * Locates a course in the course category management interface and then triggers an action for it.
      *
-     * @Given /^I click on "(?P<action_string>(?:[^"]|\\")*)" action for "(?P<name_string>(?:[^"]|\\")*)" in management course listing$/
      *
      * @param string $action The action to take. One of
      * @param string $name The name of the course as it is displayed in the management interface.
      */
+    #[\Behat\Step\Given('/^I click on "(?P<action_string>(?:[^"]|\\\\")*)" action for "(?P<name_string>(?:[^"]|\\\\")*)" in management course listing$/')]
     public function i_click_on_action_for_item_in_management_course_listing($action, $name) {
         $node = $this->get_management_course_listing_node_by_name($name);
         $this->user_clicks_on_management_listing_action('course', $node, $action);
@@ -2002,11 +2001,11 @@ class behat_course extends behat_base {
     /**
      * Locates a category in the course category management interface and then triggers an action for it.
      *
-     * @Given /^I click on "(?P<action_string>(?:[^"]|\\")*)" action for "(?P<name_string>(?:[^"]|\\")*)" in management category listing$/
      *
      * @param string $action The action to take. One of
      * @param string $name The name of the category as it is displayed in the management interface.
      */
+    #[\Behat\Step\Given('/^I click on "(?P<action_string>(?:[^"]|\\\\")*)" action for "(?P<name_string>(?:[^"]|\\\\")*)" in management category listing$/')]
     public function i_click_on_action_for_item_in_management_category_listing($action, $name) {
         $node = $this->get_management_category_listing_node_by_name($name);
         $this->user_clicks_on_management_listing_action('category', $node, $action);
@@ -2015,10 +2014,10 @@ class behat_course extends behat_base {
     /**
      * Clicks to expand or collapse a category displayed on the frontpage
      *
-     * @Given /^I toggle "(?P<categoryname_string>(?:[^"]|\\")*)" category children visibility in frontpage$/
      * @throws ExpectationException
      * @param string $categoryname
      */
+    #[\Behat\Step\Given('/^I toggle "(?P<categoryname_string>(?:[^"]|\\\\")*)" category children visibility in frontpage$/')]
     public function i_toggle_category_children_visibility_in_frontpage($categoryname) {
 
         $headingtags = array();
@@ -2065,9 +2064,9 @@ class behat_course extends behat_base {
     /**
      * Clicks on a category in the management interface.
      *
-     * @Given /^I click on "(?P<categoryname_string>(?:[^"]|\\")*)" category in the management category listing$/
      * @param string $name The name of the category to click.
      */
+    #[\Behat\Step\Given('/^I click on "(?P<categoryname_string>(?:[^"]|\\\\")*)" category in the management category listing$/')]
     public function i_click_on_category_in_the_management_category_listing($name) {
         $node = $this->get_management_category_listing_node_by_name($name);
         $node->find('css', 'a.categoryname')->click();
@@ -2076,10 +2075,10 @@ class behat_course extends behat_base {
     /**
      * Locates a category in the course category management interface and then opens action menu for it.
      *
-     * @Given /^I open the action menu for "(?P<name_string>(?:[^"]|\\")*)" in management category listing$/
      *
      * @param string $name The name of the category as it is displayed in the management interface.
      */
+    #[\Behat\Step\Given('/^I open the action menu for "(?P<name_string>(?:[^"]|\\\\")*)" in management category listing$/')]
     public function i_open_the_action_menu_for_item_in_management_category_listing($name) {
         $node = $this->get_management_category_listing_node_by_name($name);
         $node->find('xpath', "//*[contains(@class, 'category-item-actions')]//a[@data-bs-toggle='dropdown']")->click();
@@ -2088,12 +2087,12 @@ class behat_course extends behat_base {
     /**
      * Checks that the specified category actions menu contains an item.
      *
-     * @Then /^"(?P<name_string>(?:[^"]|\\")*)" category actions menu should have "(?P<menu_item_string>(?:[^"]|\\")*)" item$/
      *
      * @param string $name
      * @param string $menuitem
      * @throws Behat\Mink\Exception\ExpectationException
      */
+    #[\Behat\Step\Then('/^"(?P<name_string>(?:[^"]|\\\\")*)" category actions menu should have "(?P<menu_item_string>(?:[^"]|\\\\")*)" item$/')]
     public function category_actions_menu_should_have_item($name, $menuitem) {
         $node = $this->get_management_category_listing_node_by_name($name);
 
@@ -2105,12 +2104,12 @@ class behat_course extends behat_base {
     /**
      * Checks that the specified category actions menu does not contain an item.
      *
-     * @Then /^"(?P<name_string>(?:[^"]|\\")*)" category actions menu should not have "(?P<menu_item_string>(?:[^"]|\\")*)" item$/
      *
      * @param string $name
      * @param string $menuitem
      * @throws Behat\Mink\Exception\ExpectationException
      */
+    #[\Behat\Step\Then('/^"(?P<name_string>(?:[^"]|\\\\")*)" category actions menu should not have "(?P<menu_item_string>(?:[^"]|\\\\")*)" item$/')]
     public function category_actions_menu_should_not_have_item($name, $menuitem) {
         $node = $this->get_management_category_listing_node_by_name($name);
 
@@ -2125,9 +2124,8 @@ class behat_course extends behat_base {
 
     /**
      * Go to the course participants
-     *
-     * @Given /^I navigate to course participants$/
      */
+    #[\Behat\Step\Given('/^I navigate to course participants$/')]
     public function i_navigate_to_course_participants() {
         $this->execute('behat_navigation::i_select_from_secondary_navigation', get_string('participants'));
     }
@@ -2135,13 +2133,12 @@ class behat_course extends behat_base {
     /**
      * Check that one teacher appears before another in the course contacts.
      *
-     * @Given /^I should see teacher "(?P<pteacher_string>(?:[^"]|\\")*)" before "(?P<fteacher_string>(?:[^"]|\\")*)" in the course contact listing$/
      *
      * @param string $pteacher The first teacher to find
      * @param string $fteacher The second teacher to find (should be after the first teacher)
-     *
      * @throws ExpectationException
      */
+    #[\Behat\Step\Given('/^I should see teacher "(?P<pteacher_string>(?:[^"]|\\\\")*)" before "(?P<fteacher_string>(?:[^"]|\\\\")*)" in the course contact listing$/')]
     public function i_should_see_teacher_before($pteacher, $fteacher) {
         $xpath = "//ul[contains(@class,'teachers')]//li//a[text()='{$pteacher}']/ancestor::li//following::a[text()='{$fteacher}']";
         $msg = "Teacher {$pteacher} does not appear before Teacher {$fteacher}";
@@ -2153,13 +2150,12 @@ class behat_course extends behat_base {
     /**
      * Check that one teacher oes not appears after another in the course contacts.
      *
-     * @Given /^I should not see teacher "(?P<fteacher_string>(?:[^"]|\\")*)" after "(?P<pteacher_string>(?:[^"]|\\")*)" in the course contact listing$/
      *
      * @param string $fteacher The teacher that should not be found (after the other teacher)
      * @param string $pteacher The teacher after who the other should not be found (this teacher must be found!)
-     *
      * @throws ExpectationException
      */
+    #[\Behat\Step\Given('/^I should not see teacher "(?P<fteacher_string>(?:[^"]|\\\\")*)" after "(?P<pteacher_string>(?:[^"]|\\\\")*)" in the course contact listing$/')]
     public function i_should_not_see_teacher_after($fteacher, $pteacher) {
         $xpathliteral = behat_context_helper::escape($pteacher);
         $xpath = "/descendant-or-self::*[contains(., $xpathliteral)]" .
@@ -2178,9 +2174,8 @@ class behat_course extends behat_base {
 
     /**
      * Open the activity chooser in a course.
-     *
-     * @Given /^I open the activity chooser$/
      */
+    #[\Behat\Step\Given('/^I open the activity chooser$/')]
     public function i_open_the_activity_chooser() {
         // Open the "Activity or resource and Subsection" dropdown first.
         $this->execute('behat_general::i_click_on',
@@ -2195,10 +2190,10 @@ class behat_course extends behat_base {
     /**
      * Checks the presence of the given text in the activity's displayed dates.
      *
-     * @Given /^the activity date in "(?P<activityname>(?:[^"]|\\")*)" should contain "(?P<text>(?:[^"]|\\")*)"$/
      * @param string $activityname The activity name.
      * @param string $text The text to be searched in the activity date.
      */
+    #[\Behat\Step\Given('/^the activity date in "(?P<activityname>(?:[^"]|\\\\")*)" should contain "(?P<text>(?:[^"]|\\\\")*)"$/')]
     public function activity_date_in_activity_should_contain_text(string $activityname, string $text): void {
         $containerselector = "//div[@data-activityname='$activityname']";
         $containerselector .= "//div[@data-region='activity-dates']";
@@ -2210,9 +2205,9 @@ class behat_course extends behat_base {
     /**
      * Checks the presence of activity dates information in the activity information output component.
      *
-     * @Given /^the activity date information in "(?P<activityname>(?:[^"]|\\")*)" should exist$/
      * @param string $activityname The activity name.
      */
+    #[\Behat\Step\Given('/^the activity date information in "(?P<activityname>(?:[^"]|\\\\")*)" should exist$/')]
     public function activity_dates_information_in_activity_should_exist(string $activityname): void {
         $containerselector = "//div[@data-activityname='$activityname']";
         $elementselector = "//div[@data-region='activity-dates']";
@@ -2223,9 +2218,9 @@ class behat_course extends behat_base {
     /**
      * Checks the absence of activity dates information in the activity information output component.
      *
-     * @Given /^the activity date information in "(?P<activityname>(?:[^"]|\\")*)" should not exist$/
      * @param string $activityname The activity name.
      */
+    #[\Behat\Step\Given('/^the activity date information in "(?P<activityname>(?:[^"]|\\\\")*)" should not exist$/')]
     public function activity_dates_information_in_activity_should_not_exist(string $activityname): void {
         $containerselector = "//div[@data-region='activity-information'][@data-activityname='$activityname']";
         try {

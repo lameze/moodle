@@ -51,10 +51,10 @@ class behat_transformations extends behat_base {
      * to add the " as part of an argument we escape it
      * with a backslash, this method removes this backslash.
      *
-     * @Transform /^((.*)"(.*))$/
      * @param string $string
      * @return string The string with the arguments fixed.
      */
+    #[\Behat\Transformation\Transform('/^((.*)"(.*))$/')]
     public function arg_replace_slashes($string) {
         if (!is_scalar($string)) {
             return $string;
@@ -65,10 +65,10 @@ class behat_transformations extends behat_base {
     /**
      * Replaces $NASTYSTRING vars for a nasty string.
      *
-     * @Transform /^((.*)\$NASTYSTRING(\d)(.*))$/
      * @param string $argument The whole argument value.
      * @return string
      */
+    #[\Behat\Transformation\Transform('/^((.*)\$NASTYSTRING(\d)(.*))$/')]
     public function arg_replace_nasty_strings($argument) {
         if (!is_scalar($argument)) {
             return $argument;
@@ -80,10 +80,10 @@ class behat_transformations extends behat_base {
      * Convert string time to timestamp.
      * Use ::time::STRING_TIME_TO_CONVERT::DATE_FORMAT::
      *
-     * @Transform /^##(.*)##$/
      * @param string $time
      * @return int timestamp.
      */
+    #[\Behat\Transformation\Transform('/^##(.*)##$/')]
     public function arg_time_to_string($time) {
         return $this->get_transformed_timestamp($time);
     }
@@ -94,10 +94,10 @@ class behat_transformations extends behat_base {
      * Transformations applicable to TableNode arguments should also
      * be applied, adding them in a different method for Behat API restrictions.
      *
-     * @Transform table:*
      * @param TableNode $tablenode
      * @return TableNode The transformed table
      */
+    #[\Behat\Transformation\Transform('table:*')]
     public function tablenode_transformations(TableNode $tablenode) {
         global $CFG;
         // Walk through all values including the optional headers.
@@ -135,10 +135,10 @@ class behat_transformations extends behat_base {
      * Convert #wwwroot# to the wwwroot config value, so it is
      * possible to reference fully qualified URLs within the site.
      *
-     * @Transform /^((.*)#wwwroot#(.*))$/
      * @param string $string
      * @return string
      */
+    #[\Behat\Transformation\Transform('/^((.*)#wwwroot#(.*))$/')]
     public function arg_insert_wwwroot(string $string): string {
         return $this->replace_wwwroot($string);
     }
@@ -147,10 +147,10 @@ class behat_transformations extends behat_base {
      * Convert #dirroot# to the dirroot config value, so it is
      * possible to reference files (e.g. fixtures) with an absolute path.
      *
-     * @Transform /^((.*)#dirroot#(.*))$/
      * @param string $string
      * @return string
      */
+    #[\Behat\Transformation\Transform('/^((.*)#dirroot#(.*))$/')]
     public function arg_insert_dirroot(string $string): string {
         return $this->replace_dirroot($string);
     }

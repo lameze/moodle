@@ -38,10 +38,10 @@ class behat_tool_task extends behat_base {
     /**
      * Set a fake fail delay for a scheduled task.
      *
-     * @Given /^the scheduled task "(?P<task_name>[^"]+)" has a fail delay of "(?P<seconds_number>\d+)" seconds$/
      * @param string $task Task classname
      * @param int $seconds Fail delay time in seconds
      */
+    #[\Behat\Step\Given('/^the scheduled task "(?P<task_name>[^"]+)" has a fail delay of "(?P<seconds_number>\d+)" seconds$/')]
     public function scheduled_task_has_fail_delay_seconds($task, $seconds) {
         global $DB;
         $id = $DB->get_field('task_scheduled', 'id', ['classname' => $task], IGNORE_MISSING);
@@ -54,9 +54,9 @@ class behat_tool_task extends behat_base {
     /**
      * Set a scheduled task's next run time to the future (tomorrow).
      *
-     * @Given /^the scheduled task "(?P<task_name>[^"]+)" has a next run time in the future$/
      * @param string $task Task classname
      */
+    #[\Behat\Step\Given('/^the scheduled task "(?P<task_name>[^"]+)" has a next run time in the future$/')]
     public function scheduled_task_has_next_run_time_in_future($task) {
         global $DB;
         if (!$DB->record_exists('task_scheduled', ['classname' => $task])) {
@@ -68,9 +68,9 @@ class behat_tool_task extends behat_base {
     /**
      * Set a scheduled task's next run time to the past (already due).
      *
-     * @Given /^the scheduled task "(?P<task_name>[^"]+)" has a next run time in the past$/
      * @param string $task Task classname
      */
+    #[\Behat\Step\Given('/^the scheduled task "(?P<task_name>[^"]+)" has a next run time in the past$/')]
     public function scheduled_task_has_next_run_time_in_past($task) {
         global $DB;
         if (!$DB->record_exists('task_scheduled', ['classname' => $task])) {
@@ -82,9 +82,9 @@ class behat_tool_task extends behat_base {
     /**
      * Disable a scheduled task.
      *
-     * @Given /^the scheduled task "(?P<task_name>[^"]+)" is disabled$/
      * @param string $task Task classname
      */
+    #[\Behat\Step\Given('/^the scheduled task "(?P<task_name>[^"]+)" is disabled$/')]
     public function scheduled_task_is_disabled($task) {
         global $DB;
         if (!$DB->record_exists('task_scheduled', ['classname' => $task])) {
@@ -96,9 +96,9 @@ class behat_tool_task extends behat_base {
     /**
      * Enable a scheduled task.
      *
-     * @Given /^the scheduled task "(?P<task_name>[^"]+)" is enabled$/
      * @param string $task Task classname
      */
+    #[\Behat\Step\Given('/^the scheduled task "(?P<task_name>[^"]+)" is enabled$/')]
     public function scheduled_task_is_enabled($task) {
         global $DB;
         if (!$DB->record_exists('task_scheduled', ['classname' => $task])) {

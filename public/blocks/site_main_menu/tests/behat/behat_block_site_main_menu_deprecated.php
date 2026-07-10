@@ -54,11 +54,11 @@ class behat_block_site_main_menu_deprecated extends behat_deprecated_base {
      * @todo MDL-78077 This will be deleted in Moodle 6.0.
      * @deprecated since 5.0
      *
-     * @Given /^I click on "(?P<element_string>(?:[^"]|\\")*)" "(?P<selector_string>(?:[^"]|\\")*)" in the "(?P<activity_name_string>(?:[^"]|\\")*)" activity in site main menu block$/
      * @param string $element
      * @param string $selectortype
      * @param string $activityname
      */
+    #[\Behat\Step\Given('/^I click on "(?P<element_string>(?:[^"]|\\\\")*)" "(?P<selector_string>(?:[^"]|\\\\")*)" in the "(?P<activity_name_string>(?:[^"]|\\\\")*)" activity in site main menu block$/')]
     public function i_click_on_in_the_activity_in_site_main_menu_block($element, $selectortype, $activityname) {
         $this->deprecated_message([
             'behat_block_site_main_menu::i_click_on_in_the_activity_in_site_main_menu_block is deprecated',
@@ -91,10 +91,10 @@ class behat_block_site_main_menu_deprecated extends behat_deprecated_base {
      * @todo MDL-78077 This will be deleted in Moodle 6.0.
      * @deprecated since 5.0
      *
-     * @Then /^"(?P<activity_name_string>(?:[^"]|\\")*)" activity in site main menu block should have "(?P<icon_name_string>(?:[^"]|\\")*)" editing icon$/
      * @param string $activityname
      * @param string $iconname
      */
+    #[\Behat\Step\Then('/^"(?P<activity_name_string>(?:[^"]|\\\\")*)" activity in site main menu block should have "(?P<icon_name_string>(?:[^"]|\\\\")*)" editing icon$/')]
     public function activity_in_site_main_menu_block_should_have_editing_icon($activityname, $iconname) {
         $this->deprecated_message([
             'behat_block_site_main_menu::activity_in_site_main_menu_block_should_have_editing_icon is deprecated',
@@ -114,10 +114,10 @@ class behat_block_site_main_menu_deprecated extends behat_deprecated_base {
      * @todo MDL-78077 This will be deleted in Moodle 6.0.
      * @deprecated since 5.0
      *
-     * @Then /^"(?P<activity_name_string>(?:[^"]|\\")*)" activity in site main menu block should not have "(?P<icon_name_string>(?:[^"]|\\")*)" editing icon$/
      * @param string $activityname
      * @param string $iconname
      */
+    #[\Behat\Step\Then('/^"(?P<activity_name_string>(?:[^"]|\\\\")*)" activity in site main menu block should not have "(?P<icon_name_string>(?:[^"]|\\\\")*)" editing icon$/')]
     public function activity_in_site_main_menu_block_should_not_have_editing_icon($activityname, $iconname) {
         $this->deprecated_message([
             'behat_block_site_main_menu::activity_in_site_main_menu_block_should_not_have_editing_icon is deprecated',
@@ -140,9 +140,9 @@ class behat_block_site_main_menu_deprecated extends behat_deprecated_base {
      * @todo MDL-78077 This will be deleted in Moodle 6.0.
      * @deprecated since 5.0
      *
-     * @Then /^"(?P<activity_name_string>(?:[^"]|\\")*)" activity in site main menu block should be hidden$/
      * @param string $activityname
      */
+    #[\Behat\Step\Then('/^"(?P<activity_name_string>(?:[^"]|\\\\")*)" activity in site main menu block should be hidden$/')]
     public function activity_in_site_main_menu_block_should_be_hidden($activityname) {
         $this->deprecated_message([
             'behat_block_site_main_menu::activity_in_site_main_menu_block_should_be_hidden is deprecated',
@@ -159,9 +159,9 @@ class behat_block_site_main_menu_deprecated extends behat_deprecated_base {
      * @todo MDL-78077 This will be deleted in Moodle 6.0.
      * @deprecated since 5.0
      *
-     * @Then /^"(?P<activity_name_string>(?:[^"]|\\")*)" activity in site main menu block should be available but hidden from course page$/
      * @param string $activityname
      */
+    #[\Behat\Step\Then('/^"(?P<activity_name_string>(?:[^"]|\\\\")*)" activity in site main menu block should be available but hidden from course page$/')]
     public function activity_in_site_main_menu_block_should_be_available_but_hidden_from_course_page($activityname) {
         $this->deprecated_message([
             'behat_block_site_main_menu::activity_in_site_main_menu_block_should_be_available_but_hidden_from_course_page is deprecated',
@@ -178,10 +178,10 @@ class behat_block_site_main_menu_deprecated extends behat_deprecated_base {
      * @todo MDL-78077 This will be deleted in Moodle 6.0.
      * @deprecated since 5.0
      *
-     * @Given /^I open "(?P<activity_name_string>(?:[^"]|\\")*)" actions menu in site main menu block$/
      * @throws DriverException The step is not available when Javascript is disabled
      * @param string $activityname
      */
+    #[\Behat\Step\Given('/^I open "(?P<activity_name_string>(?:[^"]|\\\\")*)" actions menu in site main menu block$/')]
     public function i_open_actions_menu_in_site_main_menu_block($activityname) {
         $this->deprecated_message([
             'behat_block_site_main_menu::i_open_actions_menu_in_site_main_menu_block is deprecated',

@@ -79,11 +79,11 @@ class behat_report_competency extends behat_base {
     /**
      * Set the value of a competency filter.
      *
-     * @When /^I set the competency filter "([^"]*)" to "([^"]*)"$/
      * @param string $fieldlocator The field locator.
      * @param string $value The value to set.
      * @throws Exception
      */
+    #[\Behat\Step\When('/^I set the competency filter "([^"]*)" to "([^"]*)"$/')]
     public function set_competency_filter(
         string $fieldlocator,
         string $value,

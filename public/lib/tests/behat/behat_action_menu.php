@@ -43,11 +43,11 @@ class behat_action_menu extends behat_base {
     /**
      * Open the action menu in
      *
-     * @Given /^I open the action menu in "(?P<element_string>(?:[^"]|\\")*)" "(?P<selector_string>[^"]*)"$/
      * @param string $element
      * @param string $selector
      * @return void
      */
+    #[\Behat\Step\Given('/^I open the action menu in "(?P<element_string>(?:[^"]|\\\\")*)" "(?P<selector_string>[^"]*)"$/')]
     public function i_open_the_action_menu_in($element, $selectortype) {
         // Gets the node based on the requested selector type and locator.
         $node = $this->get_node_in_container(
@@ -72,10 +72,10 @@ class behat_action_menu extends behat_base {
      * will do two clicks, one on the Group mode menu item, and one on the Visible groups link
      * in the sub-menu.
      *
-     * @Given /^I choose "(?P<link_string>(?:[^"]|\\")*)" in the open action menu$/
      * @param string $linkstring
      * @return void
      */
+    #[\Behat\Step\Given('/^I choose "(?P<link_string>(?:[^"]|\\\\")*)" in the open action menu$/')]
     public function i_choose_in_the_open_action_menu($menuitemstring) {
         if (!$this->running_javascript()) {
             throw new DriverException('Action menu steps are not available with Javascript disabled');
@@ -94,10 +94,10 @@ class behat_action_menu extends behat_base {
     /**
      * Select a specific item in an action menu.
      *
-     * @When /^I choose the "(?P<item_string>(?:[^"]|\\")*)" item in the "(?P<actionmenu_string>(?:[^"]|\\")*)" action menu$/
      * @param string $item The item to choose
      * @param string $actionmenu The text used in the description of the action menu
      */
+    #[\Behat\Step\When('/^I choose the "(?P<item_string>(?:[^"]|\\\\")*)" item in the "(?P<actionmenu_string>(?:[^"]|\\\\")*)" action menu$/')]
     public function i_choose_in_the_named_menu(string $item, string $actionmenu): void {
         $menu = $this->find('actionmenu', $actionmenu);
         $this->select_item_in_action_menu($item, $menu);
@@ -106,12 +106,12 @@ class behat_action_menu extends behat_base {
     /**
      * Select a specific item in an action menu within a container.
      *
-     * @When /^I choose the "(?P<item_string>(?:[^"]|\\")*)" item in the "(?P<actionmenu_string>(?:[^"]|\\")*)" action menu of the "(?P<locator_string>(?:[^"]|\\")*)" "(?P<type_string>(?:[^"]|\\")*)"$/
      * @param string $item The item to choose
      * @param string $actionmenu The text used in the description of the action menu
      * @param string|NodeElement $locator The identifer used for the container
      * @param string $selector The type of container to locate
      */
+    #[\Behat\Step\When('/^I choose the "(?P<item_string>(?:[^"]|\\\\")*)" item in the "(?P<actionmenu_string>(?:[^"]|\\\\")*)" action menu of the "(?P<locator_string>(?:[^"]|\\\\")*)" "(?P<type_string>(?:[^"]|\\\\")*)"$/')]
     public function i_choose_in_the_named_menu_in_container(string $item, string $actionmenu, $locator, $selector): void {
         $container = $this->find($selector, $locator);
         $menu = $this->find('actionmenu', $actionmenu, false, $container);
@@ -145,10 +145,10 @@ class behat_action_menu extends behat_base {
     /**
      * The action menu item should not exist.
      *
-     * @Then /^the "(?P<item_string>(?:[^"]|\\")*)" item should not exist in the "(?P<actionmenu_string>(?:[^"]|\\")*)" action menu$/
      * @param string $item The item to check
      * @param string $actionmenu The text used in the description of the action menu
      */
+    #[\Behat\Step\Then('/^the "(?P<item_string>(?:[^"]|\\\\")*)" item should not exist in the "(?P<actionmenu_string>(?:[^"]|\\\\")*)" action menu$/')]
     public function item_should_not_exist(string $item, string $actionmenu): void {
         $menu = $this->find('actionmenu', $actionmenu);
         $this->execute('behat_general::should_not_exist_in_the', [
@@ -160,12 +160,12 @@ class behat_action_menu extends behat_base {
     /**
      * The action menu item should not exist within a container.
      *
-     * @Then /^the "(?P<item_string>(?:[^"]|\\")*)" item should not exist in the "(?P<actionmenu_string>(?:[^"]|\\")*)" action menu of the "(?P<locator_string>(?:[^"]|\\")*)" "(?P<type_string>(?:[^"]|\\")*)"$/
      * @param string $item The item to check
      * @param string $actionmenu The text used in the description of the action menu
      * @param string|NodeElement $locator The identifer used for the container
      * @param string $selector The type of container to locate
      */
+    #[\Behat\Step\Then('/^the "(?P<item_string>(?:[^"]|\\\\")*)" item should not exist in the "(?P<actionmenu_string>(?:[^"]|\\\\")*)" action menu of the "(?P<locator_string>(?:[^"]|\\\\")*)" "(?P<type_string>(?:[^"]|\\\\")*)"$/')]
     public function item_should_not_exist_in_the(string $item, string $actionmenu, $locator, $selector): void {
         $container = $this->find($selector, $locator);
         $menu = $this->find('actionmenu', $actionmenu, false, $container);
@@ -179,10 +179,10 @@ class behat_action_menu extends behat_base {
     /**
      * The action menu item should exist.
      *
-     * @Then /^the "(?P<item_string>(?:[^"]|\\")*)" item should exist in the "(?P<actionmenu_string>(?:[^"]|\\")*)" action menu$/
      * @param string $item The item to check
      * @param string $actionmenu The text used in the description of the action menu
      */
+    #[\Behat\Step\Then('/^the "(?P<item_string>(?:[^"]|\\\\")*)" item should exist in the "(?P<actionmenu_string>(?:[^"]|\\\\")*)" action menu$/')]
     public function item_should_exist(string $item, string $actionmenu): void {
         $menu = $this->find('actionmenu', $actionmenu);
         $this->execute('behat_general::should_exist_in_the', [
@@ -194,12 +194,12 @@ class behat_action_menu extends behat_base {
     /**
      * The action menu item should exist within a container.
      *
-     * @Then /^the "(?P<item_string>(?:[^"]|\\")*)" item should exist in the "(?P<actionmenu_string>(?:[^"]|\\")*)" action menu of the "(?P<locator_string>(?:[^"]|\\")*)" "(?P<type_string>(?:[^"]|\\")*)"$/
      * @param string $item The item to check
      * @param string $actionmenu The text used in the description of the action menu
      * @param string|NodeElement $locator The identifer used for the container
      * @param string $selector The type of container to locate
      */
+    #[\Behat\Step\Then('/^the "(?P<item_string>(?:[^"]|\\\\")*)" item should exist in the "(?P<actionmenu_string>(?:[^"]|\\\\")*)" action menu of the "(?P<locator_string>(?:[^"]|\\\\")*)" "(?P<type_string>(?:[^"]|\\\\")*)"$/')]
     public function item_should_exist_in_the(string $item, string $actionmenu, $locator, $selector): void {
         $container = $this->find($selector, $locator);
         $menu = $this->find('actionmenu', $actionmenu, false, $container);

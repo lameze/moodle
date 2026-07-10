@@ -84,13 +84,12 @@ class behat_reportbuilder extends behat_base {
     /**
      * Set aggregation for given column in report editor (proxied so we can skip if aggregation type not available)
      *
-     * @When I set the :column column aggregation to :aggregation
      *
      * @param string $column
      * @param string $aggregation
-     *
      * @throws \Moodle\BehatExtension\Exception\SkippedException
      */
+    #[\Behat\Step\When('I set the :column column aggregation to :aggregation')]
     public function i_set_the_column_aggregation_to(string $column, string $aggregation): void {
 
         // Skip if aggregation type unavailable.
@@ -106,11 +105,11 @@ class behat_reportbuilder extends behat_base {
     /**
      * Press a given action from the action menu in a given report row
      *
-     * @When I press :action action in the :row report row
      *
      * @param string $action
      * @param string $row
      */
+    #[\Behat\Step\When('I press :action action in the :row report row')]
     public function i_press_action_in_the_report_row(string $action, string $row): void {
         $this->execute('behat_action_menu::i_choose_in_the_named_menu_in_container', [
             $this->escape($action),

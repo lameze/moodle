@@ -42,9 +42,9 @@ class behat_mod_glossary extends behat_base {
     /**
      * Adds an entry to the current glossary with the provided data. You should be in the glossary page.
      *
-     * @Given /^I add a glossary entry with the following data:$/
      * @param TableNode $data
      */
+    #[\Behat\Step\Given('/^I add a glossary entry with the following data:$/')]
     public function i_add_a_glossary_entry_with_the_following_data(TableNode $data) {
         $this->execute("behat_forms::press_button", get_string('addsingleentry', 'mod_glossary'));
 
@@ -56,9 +56,9 @@ class behat_mod_glossary extends behat_base {
     /**
      * Adds a category with the specified name to the current glossary. You need to be in the glossary page.
      *
-     * @Given /^I add a glossary entries category named "(?P<category_name_string>(?:[^"]|\\")*)"$/
      * @param string $categoryname Category name
      */
+    #[\Behat\Step\Given('/^I add a glossary entries category named "(?P<category_name_string>(?:[^"]|\\\\")*)"$/')]
     public function i_add_a_glossary_entries_category_named($categoryname) {
         $params = [
             get_string('categoryview', 'mod_glossary'),

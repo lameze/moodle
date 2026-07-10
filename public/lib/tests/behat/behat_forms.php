@@ -48,10 +48,10 @@ class behat_forms extends behat_base {
     /**
      * Presses button with specified id|name|title|alt|value.
      *
-     * @When /^I press "(?P<button_string>(?:[^"]|\\")*)"$/
      * @throws ElementNotFoundException Thrown by behat_base::find
      * @param string $button
      */
+    #[\Behat\Step\When('/^I press "(?P<button_string>(?:[^"]|\\\\")*)"$/')]
     public function press_button($button) {
         $this->execute('behat_general::i_click_on', [$button, 'button']);
     }
@@ -59,10 +59,10 @@ class behat_forms extends behat_base {
     /**
      * Press button with specified id|name|title|alt|value and switch to main window.
      *
-     * @When /^I press "(?P<button_string>(?:[^"]|\\")*)" and switch to main window$/
      * @throws ElementNotFoundException Thrown by behat_base::find
      * @param string $button
      */
+    #[\Behat\Step\When('/^I press "(?P<button_string>(?:[^"]|\\\\")*)" and switch to main window$/')]
     public function press_button_and_switch_to_main_window($button) {
         // Ensures the button is present, before pressing.
         $buttonnode = $this->find_button($button);
@@ -77,10 +77,10 @@ class behat_forms extends behat_base {
     /**
      * Fills a form with field/value data.
      *
-     * @Given /^I set the following fields to these values:$/
      * @throws ElementNotFoundException Thrown by behat_base::find
      * @param TableNode $data
      */
+    #[\Behat\Step\Given('/^I set the following fields to these values:$/')]
     public function i_set_the_following_fields_to_these_values(TableNode $data) {
 
         // Expand all fields in case we have.
@@ -97,12 +97,12 @@ class behat_forms extends behat_base {
     /**
      * Fills a form with field/value data.
      *
-     * @Given /^I set the following fields in the "(?P<element_container_string>(?:[^"]|\\")*)" "(?P<text_selector_string>[^"]*)" to these values:$/
      * @throws ElementNotFoundException Thrown by behat_base::find
      * @param string $containerelement Element we look in
      * @param string $containerselectortype The type of selector where we look in
      * @param TableNode $data
      */
+    #[\Behat\Step\Given('/^I set the following fields in the "(?P<element_container_string>(?:[^"]|\\\\")*)" "(?P<text_selector_string>[^"]*)" to these values:$/')]
     public function i_set_the_following_fields_in_container_to_these_values(
             $containerelement, $containerselectortype, TableNode $data) {
 
@@ -119,8 +119,8 @@ class behat_forms extends behat_base {
 
     /**
      * Expands all moodleform's fields, including collapsed fieldsets and advanced fields if they are present.
-     * @Given /^I expand all fieldsets$/
      */
+    #[\Behat\Step\Given('/^I expand all fieldsets$/')]
     public function i_expand_all_fieldsets() {
         $this->expand_all_fields();
     }
@@ -203,12 +203,12 @@ class behat_forms extends behat_base {
     /**
      * Sets the field to wwwroot plus the given path. Include the first slash.
      *
-     * @Given /^I set the field "(?P<field_string>(?:[^"]|\\")*)" to local url "(?P<field_path_string>(?:[^"]|\\")*)"$/
      * @throws ElementNotFoundException Thrown by behat_base::find
      * @param string $field
      * @param string $path
      * @return void
      */
+    #[\Behat\Step\Given('/^I set the field "(?P<field_string>(?:[^"]|\\\\")*)" to local url "(?P<field_path_string>(?:[^"]|\\\\")*)"$/')]
     public function i_set_the_field_to_local_url($field, $path) {
         global $CFG;
         $this->set_field_value($field, $CFG->wwwroot . $path);
@@ -217,12 +217,12 @@ class behat_forms extends behat_base {
     /**
      * Sets the specified value to the field.
      *
-     * @Given /^I set the field "(?P<field_string>(?:[^"]|\\")*)" to "(?P<field_value_string>(?:[^"]|\\")*)"$/
      * @throws ElementNotFoundException Thrown by behat_base::find
      * @param string $field
      * @param string $value
      * @return void
      */
+    #[\Behat\Step\Given('/^I set the field "(?P<field_string>(?:[^"]|\\\\")*)" to "(?P<field_value_string>(?:[^"]|\\\\")*)"$/')]
     public function i_set_the_field_to($field, $value) {
         $this->set_field_value($field, $value);
     }
@@ -230,13 +230,13 @@ class behat_forms extends behat_base {
     /**
      * Sets the specified value to the field.
      *
-     * @Given /^I set the field "(?P<field_string>(?:[^"]|\\")*)" in the "(?P<element_container_string>(?:[^"]|\\")*)" "(?P<text_selector_string>[^"]*)" to "(?P<field_value_string>(?:[^"]|\\")*)"$/
      * @throws ElementNotFoundException Thrown by behat_base::find
      * @param string $field
      * @param string $containerelement Element we look in
      * @param string $containerselectortype The type of selector where we look in
      * @param string $value
      */
+    #[\Behat\Step\Given('/^I set the field "(?P<field_string>(?:[^"]|\\\\")*)" in the "(?P<element_container_string>(?:[^"]|\\\\")*)" "(?P<text_selector_string>[^"]*)" to "(?P<field_value_string>(?:[^"]|\\\\")*)"$/')]
     public function i_set_the_field_in_container_to($field, $containerelement, $containerselectortype, $value) {
         $this->set_field_value_in_container($field, $value, $containerselectortype, $containerelement);
     }
@@ -246,13 +246,13 @@ class behat_forms extends behat_base {
      *
      * Note that the character key will not actually be typed in the input field
      *
-     * @Given /^I press key "(?P<key_string>(?:[^"]|\\")*)" in the field "(?P<field_string>(?:[^"]|\\")*)"$/
      * @throws ElementNotFoundException Thrown by behat_base::find
      * @param string $key either char-code or character itself,
      *          may optionally be prefixed with ctrl-, alt-, shift- or meta-
      * @param string $field
      * @return void
      */
+    #[\Behat\Step\Given('/^I press key "(?P<key_string>(?:[^"]|\\\\")*)" in the field "(?P<field_string>(?:[^"]|\\\\")*)"$/')]
     public function i_press_key_in_the_field($key, $field) {
         if (!$this->running_javascript()) {
             throw new DriverException('Key press step is not available with Javascript disabled');
@@ -272,12 +272,12 @@ class behat_forms extends behat_base {
     /**
      * Sets the specified value to the field.
      *
-     * @Given /^I set the field "(?P<field_string>(?:[^"]|\\")*)" to multiline:$/
      * @throws ElementNotFoundException Thrown by behat_base::find
      * @param string $field
      * @param PyStringNode $value
      * @return void
      */
+    #[\Behat\Step\Given('/^I set the field "(?P<field_string>(?:[^"]|\\\\")*)" to multiline:$/')]
     public function i_set_the_field_to_multiline($field, PyStringNode $value) {
         $this->set_field_value($field, (string)$value);
     }
@@ -285,12 +285,12 @@ class behat_forms extends behat_base {
     /**
      * Sets the specified value to the field with xpath.
      *
-     * @Given /^I set the field with xpath "(?P<fieldxpath_string>(?:[^"]|\\")*)" to "(?P<field_value_string>(?:[^"]|\\")*)"$/
      * @throws ElementNotFoundException Thrown by behat_base::find
      * @param string $field
      * @param string $value
      * @return void
      */
+    #[\Behat\Step\Given('/^I set the field with xpath "(?P<fieldxpath_string>(?:[^"]|\\\\")*)" to "(?P<field_value_string>(?:[^"]|\\\\")*)"$/')]
     public function i_set_the_field_with_xpath_to($fieldxpath, $value) {
         $this->set_field_node_value($this->find('xpath', $fieldxpath), $value);
     }
@@ -298,12 +298,12 @@ class behat_forms extends behat_base {
     /**
      * Checks, the field matches the value.
      *
-     * @Then /^the field "(?P<field_string>(?:[^"]|\\")*)" matches value "(?P<field_value_string>(?:[^"]|\\")*)"$/
      * @throws ElementNotFoundException Thrown by behat_base::find
      * @param string $field
      * @param string $value
      * @return void
      */
+    #[\Behat\Step\Then('/^the field "(?P<field_string>(?:[^"]|\\\\")*)" matches value "(?P<field_value_string>(?:[^"]|\\\\")*)"$/')]
     public function the_field_matches_value($field, $value) {
 
         // Get the field.
@@ -322,13 +322,13 @@ class behat_forms extends behat_base {
     /**
      * Checks, the field contains the value.
      *
-     * @Then /^the field "(?P<field_string>(?:[^"]|\\")*)" (?P<doesnot_bool>does not )?match(?:es)* expression "(?P<expression_string>(?:[^"]|\\")*)"$/
      * @throws ElementNotFoundException Thrown by behat_base::find
      * @param string $field The naem or reference to the field
      * @param bool $doesnot
      * @param string $expression The Perl-like regular expression, including any delimeters and flag
      * @return void
      */
+    #[\Behat\Step\Then('/^the field "(?P<field_string>(?:[^"]|\\\\")*)" (?P<doesnot_bool>does not )?match(?:es)* expression "(?P<expression_string>(?:[^"]|\\\\")*)"$/')]
     public function the_field_matches_expression(
         string $field,
         bool $doesnot,
@@ -360,12 +360,12 @@ class behat_forms extends behat_base {
     /**
      * Checks, the field matches the value.
      *
-     * @Then /^the field "(?P<field_string>(?:[^"]|\\")*)" matches multiline:$/
      * @throws ElementNotFoundException Thrown by behat_base::find
      * @param string $field
      * @param PyStringNode $value
      * @return void
      */
+    #[\Behat\Step\Then('/^the field "(?P<field_string>(?:[^"]|\\\\")*)" matches multiline:$/')]
     public function the_field_matches_multiline($field, PyStringNode $value) {
         $this->the_field_matches_value($field, (string)$value);
     }
@@ -373,12 +373,12 @@ class behat_forms extends behat_base {
     /**
      * Checks, the field does not match the value.
      *
-     * @Then /^the field "(?P<field_string>(?:[^"]|\\")*)" does not match value "(?P<field_value_string>(?:[^"]|\\")*)"$/
      * @throws ExpectationException
      * @throws ElementNotFoundException Thrown by behat_base::find
      * @param string $field
      * @param string $value
      */
+    #[\Behat\Step\Then('/^the field "(?P<field_string>(?:[^"]|\\\\")*)" does not match value "(?P<field_value_string>(?:[^"]|\\\\")*)"$/')]
     public function the_field_does_not_match_value($field, $value) {
 
         // Get the field.
@@ -396,13 +396,13 @@ class behat_forms extends behat_base {
     /**
      * Checks, the field matches the value.
      *
-     * @Then /^the field "(?P<field_string>(?:[^"]|\\")*)" in the "(?P<element_container_string>(?:[^"]|\\")*)" "(?P<text_selector_string>[^"]*)" matches value "(?P<field_value_string>(?:[^"]|\\")*)"$/
      * @throws ElementNotFoundException Thrown by behat_base::find
      * @param string $field
      * @param string $containerelement Element we look in
      * @param string $containerselectortype The type of selector where we look in
      * @param string $value
      */
+    #[\Behat\Step\Then('/^the field "(?P<field_string>(?:[^"]|\\\\")*)" in the "(?P<element_container_string>(?:[^"]|\\\\")*)" "(?P<text_selector_string>[^"]*)" matches value "(?P<field_value_string>(?:[^"]|\\\\")*)"$/')]
     public function the_field_in_container_matches_value($field, $containerelement, $containerselectortype, $value) {
 
         // Get the field.
@@ -422,7 +422,6 @@ class behat_forms extends behat_base {
     /**
      * Checks, the field does not match the value.
      *
-     * @Then /^the field "(?P<field_string>(?:[^"]|\\")*)" in the "(?P<element_container_string>(?:[^"]|\\")*)" "(?P<text_selector_string>[^"]*)" does not match value "(?P<field_value_string>(?:[^"]|\\")*)"$/
      * @throws ExpectationException
      * @throws ElementNotFoundException Thrown by behat_base::find
      * @param string $field
@@ -430,6 +429,7 @@ class behat_forms extends behat_base {
      * @param string $containerselectortype The type of selector where we look in
      * @param string $value
      */
+    #[\Behat\Step\Then('/^the field "(?P<field_string>(?:[^"]|\\\\")*)" in the "(?P<element_container_string>(?:[^"]|\\\\")*)" "(?P<text_selector_string>[^"]*)" does not match value "(?P<field_value_string>(?:[^"]|\\\\")*)"$/')]
     public function the_field_in_container_does_not_match_value($field, $containerelement, $containerselectortype, $value) {
 
         // Get the field.
@@ -448,13 +448,13 @@ class behat_forms extends behat_base {
     /**
      * Checks, the field matches the value.
      *
-     * @Then /^the field with xpath "(?P<xpath_string>(?:[^"]|\\")*)" matches value "(?P<field_value_string>(?:[^"]|\\")*)"$/
      * @throws ExpectationException
      * @throws ElementNotFoundException Thrown by behat_base::find
      * @param string $fieldxpath
      * @param string $value
      * @return void
      */
+    #[\Behat\Step\Then('/^the field with xpath "(?P<xpath_string>(?:[^"]|\\\\")*)" matches value "(?P<field_value_string>(?:[^"]|\\\\")*)"$/')]
     public function the_field_with_xpath_matches_value($fieldxpath, $value) {
 
         // Get the field.
@@ -474,13 +474,13 @@ class behat_forms extends behat_base {
     /**
      * Checks, the field does not match the value.
      *
-     * @Then /^the field with xpath "(?P<xpath_string>(?:[^"]|\\")*)" does not match value "(?P<field_value_string>(?:[^"]|\\")*)"$/
      * @throws ExpectationException
      * @throws ElementNotFoundException Thrown by behat_base::find
      * @param string $fieldxpath
      * @param string $value
      * @return void
      */
+    #[\Behat\Step\Then('/^the field with xpath "(?P<xpath_string>(?:[^"]|\\\\")*)" does not match value "(?P<field_value_string>(?:[^"]|\\\\")*)"$/')]
     public function the_field_with_xpath_does_not_match_value($fieldxpath, $value) {
 
         // Get the field.
@@ -499,10 +499,10 @@ class behat_forms extends behat_base {
     /**
      * Checks, the provided field/value matches.
      *
-     * @Then /^the following fields match these values:$/
      * @throws ExpectationException
      * @param TableNode $data Pairs of | field | value |
      */
+    #[\Behat\Step\Then('/^the following fields match these values:$/')]
     public function the_following_fields_match_these_values(TableNode $data) {
 
         // Expand all fields in case we have.
@@ -519,10 +519,10 @@ class behat_forms extends behat_base {
     /**
      * Checks that the provided field/value pairs don't match.
      *
-     * @Then /^the following fields do not match these values:$/
      * @throws ExpectationException
      * @param TableNode $data Pairs of | field | value |
      */
+    #[\Behat\Step\Then('/^the following fields do not match these values:$/')]
     public function the_following_fields_do_not_match_these_values(TableNode $data) {
 
         // Expand all fields in case we have.
@@ -539,12 +539,12 @@ class behat_forms extends behat_base {
     /**
      * Checks, the provided field/value matches.
      *
-     * @Then /^the following fields in the "(?P<element_container_string>(?:[^"]|\\")*)" "(?P<text_selector_string>[^"]*)" match these values:$/
      * @throws ExpectationException
      * @param string $containerelement Element we look in
      * @param string $containerselectortype The type of selector where we look in
      * @param TableNode $data Pairs of | field | value |
      */
+    #[\Behat\Step\Then('/^the following fields in the "(?P<element_container_string>(?:[^"]|\\\\")*)" "(?P<text_selector_string>[^"]*)" match these values:$/')]
     public function the_following_fields_in_container_match_these_values(
             $containerelement, $containerselectortype, TableNode $data) {
 
@@ -562,12 +562,12 @@ class behat_forms extends behat_base {
     /**
      * Checks that the provided field/value pairs don't match.
      *
-     * @Then /^the following fields in the "(?P<element_container_string>(?:[^"]|\\")*)" "(?P<text_selector_string>[^"]*)" do not match these values:$/
      * @throws ExpectationException
      * @param string $containerelement Element we look in
      * @param string $containerselectortype The type of selector where we look in
      * @param TableNode $data Pairs of | field | value |
      */
+    #[\Behat\Step\Then('/^the following fields in the "(?P<element_container_string>(?:[^"]|\\\\")*)" "(?P<text_selector_string>[^"]*)" do not match these values:$/')]
     public function the_following_fields_in_container_do_not_match_these_values(
             $containerelement, $containerselectortype, TableNode $data) {
 
@@ -585,13 +585,13 @@ class behat_forms extends behat_base {
     /**
      * Checks, that given select box contains the specified option.
      *
-     * @Then /^the "(?P<select_string>(?:[^"]|\\")*)" select box should contain "(?P<option_string>(?:[^"]|\\")*)"$/
      * @throws ExpectationException
      * @throws ElementNotFoundException Thrown by behat_base::find
      * @param string $select The select element name
      * @param string $option The option text/value. Plain value or comma separated
      *                       values if multiple. Commas in multiple values escaped with backslash.
      */
+    #[\Behat\Step\Then('/^the "(?P<select_string>(?:[^"]|\\\\")*)" select box should contain "(?P<option_string>(?:[^"]|\\\\")*)"$/')]
     public function the_select_box_should_contain($select, $option) {
 
         $selectnode = $this->find_field($select);
@@ -629,13 +629,13 @@ class behat_forms extends behat_base {
     /**
      * Checks, that given select box does not contain the specified option.
      *
-     * @Then /^the "(?P<select_string>(?:[^"]|\\")*)" select box should not contain "(?P<option_string>(?:[^"]|\\")*)"$/
      * @throws ExpectationException
      * @throws ElementNotFoundException Thrown by behat_base::find
      * @param string $select The select element name
      * @param string $option The option text/value. Plain value or comma separated
      *                       values if multiple. Commas in multiple values escaped with backslash.
      */
+    #[\Behat\Step\Then('/^the "(?P<select_string>(?:[^"]|\\\\")*)" select box should not contain "(?P<option_string>(?:[^"]|\\\\")*)"$/')]
     public function the_select_box_should_not_contain($select, $option) {
 
         $selectnode = $this->find_field($select);
@@ -716,9 +716,8 @@ class behat_forms extends behat_base {
 
     /**
      * Select a value from single select and redirect.
-     *
-     * @Given /^I select "(?P<singleselect_option_string>(?:[^"]|\\")*)" from the "(?P<singleselect_name_string>(?:[^"]|\\")*)" singleselect$/
      */
+    #[\Behat\Step\Given('/^I select "(?P<singleselect_option_string>(?:[^"]|\\\\")*)" from the "(?P<singleselect_name_string>(?:[^"]|\\\\")*)" singleselect$/')]
     public function i_select_from_the_singleselect($option, $singleselect) {
 
         $this->execute('behat_forms::i_set_the_field_to', array($this->escape($singleselect), $this->escape($option)));
@@ -742,10 +741,10 @@ class behat_forms extends behat_base {
     /**
      * Select item from autocomplete list.
      *
-     * @Given /^I click on "([^"]*)" item in the autocomplete list$/
      *
      * @param string $item
      */
+    #[\Behat\Step\Given('/^I click on "([^"]*)" item in the autocomplete list$/')]
     public function i_click_on_item_in_the_autocomplete_list($item) {
         $xpathtarget = "//ul[@class='form-autocomplete-suggestions']//*" .
             "[contains(concat('|', normalize-space(.), '|'),'|" . $item . "|')]";
@@ -755,10 +754,9 @@ class behat_forms extends behat_base {
 
     /**
      * Open the auto-complete suggestions list (Assuming there is only one on the page.).
-     *
-     * @Given I open the autocomplete suggestions list
-     * @Given I open the autocomplete suggestions list in the :container :containertype
      */
+    #[\Behat\Step\Given('I open the autocomplete suggestions list')]
+    #[\Behat\Step\Given('I open the autocomplete suggestions list in the :container :containertype')]
     public function i_open_the_autocomplete_suggestions_list($container = null, $containertype = null) {
         $csstarget = ".form-autocomplete-downarrow";
         if ($container && $containertype) {
@@ -771,10 +769,10 @@ class behat_forms extends behat_base {
     /**
      * Expand the given autocomplete list
      *
-     * @Given /^I expand the "(?P<field_string>(?:[^"]|\\")*)" autocomplete$/
      *
      * @param string $field Field name
      */
+    #[\Behat\Step\Given('/^I expand the "(?P<field_string>(?:[^"]|\\\\")*)" autocomplete$/')]
     public function i_expand_the_autocomplete($field) {
         $csstarget = '.form-autocomplete-downarrow';
         $node = $this->get_node_in_container('css_element', $csstarget, 'form_row', $field);
@@ -784,11 +782,11 @@ class behat_forms extends behat_base {
     /**
      * Assert the given option exist in the given autocomplete list
      *
-     * @Given /^I should see "(?P<option_string>(?:[^"]|\\")*)" in the list of options for the "(?P<field_string>(?:[^"]|\\")*)" autocomplete$$/
      *
      * @param string $option Name of option
      * @param string $field Field name
      */
+    #[\Behat\Step\Given('/^I should see "(?P<option_string>(?:[^"]|\\\\")*)" in the list of options for the "(?P<field_string>(?:[^"]|\\\\")*)" autocomplete$$/')]
     public function i_should_see_in_the_list_of_option_for_the_autocomplete($option, $field) {
         $xpathtarget = "//div[contains(@class, 'form-autocomplete-selection') and contains(.//div, '" . $option . "')]";
         $node = $this->get_node_in_container('xpath_element', $xpathtarget, 'form_row', $field);
@@ -798,8 +796,6 @@ class behat_forms extends behat_base {
     /**
      * Checks whether the select menu contains an option with specified text or not.
      *
-     * @Then the :name select menu should contain :option
-     * @Then the :name select menu should :not contain :option
      *
      * @throws ExpectationException When the expectation is not satisfied
      * @param string $label The label of the select menu element
@@ -812,6 +808,8 @@ class behat_forms extends behat_base {
      * @param string|null $not If set, the select menu should not contain the specified option. If null, the option
      *                         should be present.
      */
+    #[\Behat\Step\Then('the :name select menu should contain :option')]
+    #[\Behat\Step\Then('the :name select menu should :not contain :option')]
     public function the_select_menu_should_contain(string $label, string $option, ?string $not = null) {
 
         $field = behat_field_manager::get_form_field_from_label($label, $this);
@@ -839,10 +837,10 @@ class behat_forms extends behat_base {
     /**
      * Check that the validationMessage property on a form field element includes the given text.
      *
-     * @Then the :field field validation message should contain :text
      * @param string $field The css selector for the input field
      * @param string $text The text which should be found in the validation message
      */
+    #[\Behat\Step\Then('the :field field validation message should contain :text')]
     public function the_field_validation_message_should_contain(string $field, string $text): void {
 
         // We can't use this assertion if javascript is not running.
@@ -867,10 +865,10 @@ class behat_forms extends behat_base {
     /**
      * Check that the result of calling the checkValidity API on a form field element matches the expected result.
      *
-     * @Then the :field field validity check should return :result
      * @param string $field The css selector for the input field
      * @param string $expected "true" or "false"
      */
+    #[\Behat\Step\Then('the :field field validity check should return :result')]
     public function the_field_validity_check_should_return(string $field, string $expected): void {
 
         // We can't use this assertion if javascript is not running.

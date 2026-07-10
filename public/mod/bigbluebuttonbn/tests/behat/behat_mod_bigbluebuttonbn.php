@@ -50,10 +50,9 @@ class behat_mod_bigbluebuttonbn extends behat_base {
     /**
      * BeforeScenario hook to reset the remote testpoint.
      *
-     * @BeforeScenario @mod_bigbluebuttonbn
-     *
      * @param BeforeScenarioScope $scope
      */
+    #[\Behat\Hook\BeforeScenario('@mod_bigbluebuttonbn')]
     public function before_scenario(BeforeScenarioScope $scope) {
         if (defined('TEST_MOD_BIGBLUEBUTTONBN_MOCK_SERVER')) {
             $this->send_mock_request('backoffice/reset');
@@ -65,9 +64,8 @@ class behat_mod_bigbluebuttonbn extends behat_base {
 
     /**
      * Check that the TEST_MOD_BIGBLUEBUTTONBN_MOCK_SERVER is defined, so we can connect to the mock server.
-     *
-     * @Given /^a BigBlueButton mock server is configured$/
      */
+    #[\Behat\Step\Given('/^a BigBlueButton mock server is configured$/')]
     public function mock_is_configured(): void {
         if (!defined('TEST_MOD_BIGBLUEBUTTONBN_MOCK_SERVER')) {
             throw new SkippedException(
@@ -186,9 +184,8 @@ XPATH
 
     /**
      * Trigger a recording ready notification on BBB side
-     *
-     * @Given the BigBlueButtonBN server has sent recording ready notifications
      */
+    #[\Behat\Step\Given('the BigBlueButtonBN server has sent recording ready notifications')]
     public function trigger_recording_ready_notification(): void {
         $this->send_mock_request('backoffice/sendRecordingReadyNotifications', [
                 'secret' => \mod_bigbluebuttonbn\local\config::DEFAULT_SHARED_SECRET,
@@ -199,10 +196,10 @@ XPATH
     /**
      * Trigger a meeting event on BBB side
      *
-     * @Given /^the BigBlueButtonBN server has received the following events from user "(?P<element_string>(?:[^"]|\\")*)":$/
      * @param string $username
      * @param TableNode $data
      */
+    #[\Behat\Step\Given('/^the BigBlueButtonBN server has received the following events from user "(?P<element_string>(?:[^"]|\\\\")*)":$/')]
     public function trigger_meeting_event(string $username, TableNode $data): void {
         global $DB;
         $user = core_user::get_user_by_username($username);
@@ -226,9 +223,9 @@ XPATH
     /**
      * Send all events received for this meeting back to moodle
      *
-     * @Given /^the BigBlueButtonBN activity "(?P<element_string>(?:[^"]|\\")*)" has sent recording all its events$/
      * @param string $instancename
      */
+    #[\Behat\Step\Given('/^the BigBlueButtonBN activity "(?P<element_string>(?:[^"]|\\\\")*)" has sent recording all its events$/')]
     public function trigger_all_events(string $instancename): void {
         global $DB;
 
@@ -245,36 +242,32 @@ XPATH
 
     /**
      * Install the simple subplugin
-     *
-     * @BeforeScenario @with_bbbext_simple
      */
+    #[\Behat\Hook\BeforeScenario('@with_bbbext_simple')]
     public function install_simple_subplugin() {
         $this->install_bbbext_subplugin('simple');
     }
 
     /**
      * Install the complex subplugin
-     *
-     * @BeforeScenario @with_bbbext_complex
      */
+    #[\Behat\Hook\BeforeScenario('@with_bbbext_complex')]
     public function install_complex_subplugin() {
         $this->install_bbbext_subplugin('complex');
     }
 
     /**
      * Uninstall the simple subplugin
-     *
-     * @AfterScenario @with_bbbext_simple
      */
+    #[\Behat\Hook\AfterScenario('@with_bbbext_simple')]
     public function uninstall_simple_subplugin() {
         $this->uninstall_fake_plugin("simple");
     }
 
     /**
      * Uninstall the complex subplugin
-     *
-     * @AfterScenario @with_bbbext_complex
      */
+    #[\Behat\Hook\AfterScenario('@with_bbbext_complex')]
     public function uninstall_complex_subplugin() {
         $this->uninstall_fake_plugin("complex");
     }

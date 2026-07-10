@@ -61,10 +61,10 @@ class behat_gradingform_rubric extends behat_base {
      *
      * Works with both JS and non-JS.
      *
-     * @When /^I define the following rubric:$/
      * @throws ExpectationException
      * @param TableNode $rubric
      */
+    #[\Behat\Step\When('/^I define the following rubric:$/')]
     public function i_define_the_following_rubric(TableNode $rubric) {
         // Being a smart method is nothing good when we talk about step definitions, in
         // this case we didn't have any other options as there are no labels no elements
@@ -225,12 +225,12 @@ class behat_gradingform_rubric extends behat_base {
     /**
      * Replaces a value from the specified criterion. You can use it when editing rubrics, to set both name or points.
      *
-     * @When /^I replace "(?P<current_value_string>(?:[^"]|\\")*)" rubric level with "(?P<value_string>(?:[^"]|\\")*)" in "(?P<criterion_string>(?:[^"]|\\")*)" criterion$/
      * @throws ElementNotFoundException
      * @param string $currentvalue
      * @param string $value
      * @param string $criterionname
      */
+    #[\Behat\Step\When('/^I replace "(?P<current_value_string>(?:[^"]|\\\\")*)" rubric level with "(?P<value_string>(?:[^"]|\\\\")*)" in "(?P<criterion_string>(?:[^"]|\\\\")*)" criterion$/')]
     public function i_replace_rubric_level_with($currentvalue, $value, $criterionname) {
         $currentvalueliteral = behat_context_helper::escape($currentvalue);
         $criterionliteral = behat_context_helper::escape($criterionname);
@@ -278,11 +278,11 @@ class behat_gradingform_rubric extends behat_base {
     /**
      * Grades filling the current page rubric. Set one line per criterion and for each criterion set "| Criterion name | Points | Remark |".
      *
-     * @When /^I grade by filling the rubric with:$/
      *
      * @throws ExpectationException
      * @param TableNode $rubric
      */
+    #[\Behat\Step\When('/^I grade by filling the rubric with:$/')]
     public function i_grade_by_filling_the_rubric_with(TableNode $rubric) {
         $criteria = $rubric->getRowsHash();
 
@@ -349,12 +349,12 @@ class behat_gradingform_rubric extends behat_base {
     /**
      * Checks that the level was previously selected and the user changed to another level.
      *
-     * @Then /^the level with "(?P<points_number>\d+)" points was previously selected for the rubric criterion "(?P<criterion_name_string>(?:[^"]|\\")*)"$/
      * @throws ExpectationException
      * @param string $criterionname
      * @param int $points
      * @return void
      */
+    #[\Behat\Step\Then('/^the level with "(?P<points_number>\d+)" points was previously selected for the rubric criterion "(?P<criterion_name_string>(?:[^"]|\\\\")*)"$/')]
     public function the_level_with_points_was_previously_selected_for_the_rubric_criterion($points, $criterionname) {
         $levelxpath = $this->get_criterion_xpath($criterionname) .
             $this->get_level_xpath($points) .
@@ -377,12 +377,12 @@ class behat_gradingform_rubric extends behat_base {
     /**
      * Checks that the level is currently selected. Works both when grading rubrics and viewing graded rubrics.
      *
-     * @Then /^the level with "(?P<points_number>\d+)" points is selected for the rubric criterion "(?P<criterion_name_string>(?:[^"]|\\")*)"$/
      * @throws ExpectationException
      * @param string $criterionname
      * @param int $points
      * @return void
      */
+    #[\Behat\Step\Then('/^the level with "(?P<points_number>\d+)" points is selected for the rubric criterion "(?P<criterion_name_string>(?:[^"]|\\\\")*)"$/')]
     public function the_level_with_points_is_selected_for_the_rubric_criterion($points, $criterionname) {
         $levelxpath = $this->get_criterion_xpath($criterionname) .
             $this->get_level_xpath($points);
@@ -407,12 +407,12 @@ class behat_gradingform_rubric extends behat_base {
     /**
      * Checks that the level is not currently selected. Works both when grading rubrics and viewing graded rubrics.
      *
-     * @Then /^the level with "(?P<points_number>\d+)" points is not selected for the rubric criterion "(?P<criterion_name_string>(?:[^"]|\\")*)"$/
      * @throws ExpectationException
      * @param string $criterionname
      * @param int $points
      * @return void
      */
+    #[\Behat\Step\Then('/^the level with "(?P<points_number>\d+)" points is not selected for the rubric criterion "(?P<criterion_name_string>(?:[^"]|\\\\")*)"$/')]
     public function the_level_with_points_is_not_selected_for_the_rubric_criterion($points, $criterionname) {
         $levelxpath = $this->get_criterion_xpath($criterionname) .
             $this->get_level_xpath($points);

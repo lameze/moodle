@@ -58,9 +58,8 @@ class behat_qtype_ddmarker extends behat_base {
      *
      * @param string $marker the marker to drag. The label, optionally followed by ,<instance number> (int) if relevant.
      * @param string $coordinates the position to drag the marker to, 'x,y'.
-     *
-     * @Given /^I drag "(?P<marker>[^"]*)" to "(?P<coordinates>\d+,\d+)" in the drag and drop markers question$/
      */
+    #[\Behat\Step\Given('/^I drag "(?P<marker>[^"]*)" to "(?P<coordinates>\d+,\d+)" in the drag and drop markers question$/')]
     public function i_drag_to_in_the_drag_and_drop_markers_question($marker, $coordinates) {
         list($x, $y) = explode(',', $coordinates);
 
@@ -113,9 +112,8 @@ class behat_qtype_ddmarker extends behat_base {
      * @param string $direction the direction key to press.
      * @param int $
      * @param string $marker the marker to drag. The label, optionally followed by ,<instance number> (int) if relevant.
-     *
-     * @Given /^I type "(?P<direction>up|down|left|right)" "(?P<repeats>\d+)" times on marker "(?P<marker>[^"]*)" in the drag and drop markers question$/
      */
+    #[\Behat\Step\Given('/^I type "(?P<direction>up|down|left|right)" "(?P<repeats>\d+)" times on marker "(?P<marker>[^"]*)" in the drag and drop markers question$/')]
     public function i_type_on_marker_in_the_drag_and_drop_markers_question($direction, $repeats, $marker) {
         $node = $this->get_selected_node('xpath_element', $this->marker_xpath($marker, true));
         $this->ensure_node_is_visible($node);

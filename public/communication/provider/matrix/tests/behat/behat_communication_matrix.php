@@ -39,10 +39,9 @@ class behat_communication_matrix extends \behat_base {
     /**
      * BeforeScenario hook to reset the mock server.
      *
-     * @BeforeScenario @communication_matrix
-     *
      * @param BeforeScenarioScope $scope
      */
+    #[\Behat\Hook\BeforeScenario('@communication_matrix')]
     public function before_scenario(BeforeScenarioScope $scope) {
         if (defined('TEST_COMMUNICATION_MATRIX_MOCK_SERVER')) {
             $this->reset_mock();
@@ -51,9 +50,8 @@ class behat_communication_matrix extends \behat_base {
 
     /**
      * Setup and configure and mock server for matrix.
-     *
-     * @Given /^a Matrix mock server is configured$/
      */
+    #[\Behat\Step\Given('/^a Matrix mock server is configured$/')]
     public function initialize_mock_server(): void {
         if (!defined('TEST_COMMUNICATION_MATRIX_MOCK_SERVER')) {
             throw new SkippedException(

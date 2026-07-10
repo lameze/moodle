@@ -54,7 +54,6 @@ class behat_admin_presets_deprecated extends behat_deprecated_base {
      *
      * @deprecated since 5.0
      *
-     * @Then /^following "(?P<link_string>[^"]*)" "(?P<selector_string>[^"]*)" in the "(?P<element_container_string>(?:[^"]|\\")*)" "(?P<text_selector_string>[^"]*)" should download between "(?P<min_bytes>\d+)" and "(?P<max_bytes>\d+)" bytes$/
      * @param string $link the text of the link.
      * @param string $selectortype The type of what we look for
      * @param string $nodeelement Element we look in
@@ -65,6 +64,7 @@ class behat_admin_presets_deprecated extends behat_deprecated_base {
      * @throws ExpectationException
      */
     #[\core\attribute\deprecated('behat_admin_presets::following_in_the_should_download_between_and_bytes', since: '5.0')]
+    #[\Behat\Step\Then('/^following "(?P<link_string>[^"]*)" "(?P<selector_string>[^"]*)" in the "(?P<element_container_string>(?:[^"]|\\\\")*)" "(?P<text_selector_string>[^"]*)" should download between "(?P<min_bytes>\d+)" and "(?P<max_bytes>\d+)" bytes$/')]
     final public function following_in_the_should_download_between_and_bytes(string $link, string $selectortype,
         string $nodeelement, string $nodeselectortype, int $minexpectedsize, int $maxexpectedsize): void {
 

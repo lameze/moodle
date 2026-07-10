@@ -96,7 +96,6 @@ class behat_tool_lp_deprecated extends behat_deprecated_base {
     /**
      * Creates the specified element. More info about available elements in https://moodledev.io/general/development/tools/behat.
      *
-     * @Given /^the following lp "(?P<element_string>(?:[^"]|\\")*)" exist:$/
      *
      * @todo MDL-78077 This will be deleted in Moodle 6.0.
      * @deprecated since 5.0
@@ -107,6 +106,7 @@ class behat_tool_lp_deprecated extends behat_deprecated_base {
      * @param TableNode $data
      */
     #[\core\attribute\deprecated('behat_tool_lp_data_generators::the_following_lp_exist', since: '5.0')]
+    #[\Behat\Step\Given('/^the following lp "(?P<element_string>(?:[^"]|\\\\")*)" exist:$/')]
     public function the_following_lp_exist($elementname, TableNode $data) {
         $this->deprecated_message([
             'behat_tool_lp_data_generators::the_following_lp_exist is deprecated',

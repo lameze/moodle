@@ -47,11 +47,11 @@ class behat_theme_boost_behat_navigation extends behat_navigation {
     /**
      * Checks whether a node is active in the secondary nav.
      *
-     * @Given i should see :name is active in secondary navigation
      * @throws ElementNotFoundException
      * @param string      $element The name of the nav elemnent to look for.
      * @return void
      */
+    #[\Behat\Step\Given('i should see :name is active in secondary navigation')]
     public function i_should_see_is_active_in_secondary_navigation($element) {
         $page = $this->getSession()->getPage();
 
@@ -139,13 +139,13 @@ class behat_theme_boost_behat_navigation extends behat_navigation {
     /**
      * Checks whether the language selector menu is present in the navbar.
      *
-     * @Given language selector menu should exist in the navbar
-     * @Given language selector menu should :not exist in the navbar
      *
      * @throws ElementNotFoundException
      * @param string|null $not Instructs to checks whether the element does not exist in the user menu, if defined
      * @return void
      */
+    #[\Behat\Step\Given('language selector menu should exist in the navbar')]
+    #[\Behat\Step\Given('language selector menu should :not exist in the navbar')]
     public function lang_menu_should_exist($not = null) {
         $callfunction = is_null($not) ? 'should_exist' : 'should_not_exist';
         $this->execute("behat_general::{$callfunction}", [$this->get_lang_menu_xpath(), 'xpath_element']);
@@ -154,8 +154,6 @@ class behat_theme_boost_behat_navigation extends behat_navigation {
     /**
      * Checks whether an item exists in the language selector menu.
      *
-     * @Given :itemtext :selectortype should exist in the language selector menu
-     * @Given :itemtext :selectortype should :not exist in the language selector menu
      *
      * @throws ElementNotFoundException
      * @param string $itemtext The menu item to find
@@ -163,6 +161,8 @@ class behat_theme_boost_behat_navigation extends behat_navigation {
      * @param string|null $not Instructs to checks whether the element does not exist in the user menu, if defined
      * @return void
      */
+    #[\Behat\Step\Given(':itemtext :selectortype should exist in the language selector menu')]
+    #[\Behat\Step\Given(':itemtext :selectortype should :not exist in the language selector menu')]
     public function should_exist_in_lang_menu($itemtext, $selectortype, $not = null) {
         $callfunction = is_null($not) ? 'should_exist_in_the' : 'should_not_exist_in_the';
         $this->execute("behat_general::{$callfunction}",

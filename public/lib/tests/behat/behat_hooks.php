@@ -127,9 +127,9 @@ class behat_hooks extends behat_base {
      * Includes config.php to use moodle codebase with $CFG->behat_* instead of $CFG->prefix and $CFG->dataroot, called
      * once per suite.
      *
-     * @BeforeSuite
      * @param BeforeSuiteScope $scope scope passed by event fired before suite.
      */
+    #[\Behat\Hook\BeforeSuite]
     public static function before_suite_hook(BeforeSuiteScope $scope) {
         global $CFG;
 
@@ -209,9 +209,9 @@ EOF;
     /**
      * Run final tests before running the suite.
      *
-     * @BeforeSuite
      * @param BeforeSuiteScope $scope scope passed by event fired before suite.
      */
+    #[\Behat\Hook\BeforeSuite]
     public static function before_suite_final_checks(BeforeSuiteScope $scope) {
         $happy = defined('BEHAT_TEST');
         $happy = $happy && defined('BEHAT_SITE_RUNNING');
@@ -229,8 +229,8 @@ EOF;
      * Gives access to moodle codebase, to keep track of feature start time.
      *
      * @param BeforeFeatureScope $scope scope passed by event fired before feature.
-     * @BeforeFeature
      */
+    #[\Behat\Hook\BeforeFeature]
     public static function before_feature(BeforeFeatureScope $scope) {
         if (!defined('BEHAT_FEATURE_TIMING_FILE')) {
             return;
@@ -243,8 +243,8 @@ EOF;
      * Gives access to moodle codebase, to keep track of feature end time.
      *
      * @param AfterFeatureScope $scope scope passed by event fired after feature.
-     * @AfterFeature
      */
+    #[\Behat\Hook\AfterFeature]
     public static function after_feature(AfterFeatureScope $scope) {
         if (!defined('BEHAT_FEATURE_TIMING_FILE')) {
             return;
@@ -261,8 +261,8 @@ EOF;
      * Gives access to moodle codebase, to keep track of suite timings.
      *
      * @param AfterSuiteScope $scope scope passed by event fired after suite.
-     * @AfterSuite
      */
+    #[\Behat\Hook\AfterSuite]
     public static function after_suite(AfterSuiteScope $scope) {
         if (!defined('BEHAT_FEATURE_TIMING_FILE')) {
             return;
@@ -307,9 +307,9 @@ EOF;
     /**
      * Restart the session before each non-javascript scenario.
      *
-     * @BeforeScenario @~javascript
      * @param BeforeScenarioScope $scope scope passed by event fired before scenario.
      */
+    #[\Behat\Hook\BeforeScenario('@~javascript')]
     public function before_browserkit_scenarios(BeforeScenarioScope $scope) {
         if ($this->running_javascript()) {
             // A bug in the BeforeScenario filtering prevents the @~javascript filter on this hook from working
@@ -325,10 +325,9 @@ EOF;
      * Start the session before the first javascript scenario.
      *
      * This is treated slightly differently to try to capture when Selenium is not running at all.
-     *
-     * @BeforeScenario @javascript
      * @param BeforeScenarioScope $scope scope passed by event fired before scenario.
      */
+    #[\Behat\Hook\BeforeScenario('@javascript')]
     public function before_first_scenario_start_session(BeforeScenarioScope $scope) {
         if (!self::is_first_javascript_scenario()) {
             // The first Scenario has started.
@@ -368,10 +367,9 @@ EOF;
      * Start the session before each javascript scenario.
      *
      * Note: Before the first scenario the @see before_first_scenario_start_session() function is used instead.
-     *
-     * @BeforeScenario @javascript
      * @param BeforeScenarioScope $scope scope passed by event fired before scenario.
      */
+    #[\Behat\Hook\BeforeScenario('@javascript')]
     public function before_subsequent_scenario_start_session(BeforeScenarioScope $scope) {
         if (self::is_first_javascript_scenario()) {
             // The initial init has not yet finished.
@@ -390,9 +388,9 @@ EOF;
     /**
      * Resets the test environment.
      *
-     * @BeforeScenario
      * @param BeforeScenarioScope $scope scope passed by event fired before scenario.
      */
+    #[\Behat\Hook\BeforeScenario]
     public function before_scenario_hook(BeforeScenarioScope $scope) {
         global $DB;
         if (self::$currentscenarioexception) {
@@ -483,9 +481,9 @@ EOF;
     /**
      * Mark the first Javascript Scenario as have been seen.
      *
-     * @BeforeScenario
      * @param BeforeScenarioScope $scope scope passed by event fired before scenario.
      */
+    #[\Behat\Hook\BeforeScenario]
     public function mark_first_js_scenario_as_seen(BeforeScenarioScope $scope) {
         self::$firstjavascriptscenarioseen = true;
     }
@@ -496,8 +494,8 @@ EOF;
      * to the test being incorrectly marked as skipped with no way to force the test to be failed.
      *
      * @param BeforeStepScope $scope
-     * @BeforeStep
      */
+    #[\Behat\Hook\BeforeStep]
     public function before_step(BeforeStepScope $scope) {
         global $CFG;
 
@@ -560,8 +558,8 @@ EOF;
      * the run.
      *
      * @param BeforeStepScope $scope scope passed by event fired before step.
-     * @BeforeStep
      */
+    #[\Behat\Hook\BeforeStep]
     public function before_step_javascript(BeforeStepScope $scope) {
         if (self::$currentscenarioexception) {
             // A BeforeScenario hook triggered an exception and marked this test as failed.
@@ -594,8 +592,8 @@ EOF;
      * the run.
      *
      * @param AfterStepScope $scope scope passed by event fired after step..
-     * @AfterStep
      */
+    #[\Behat\Hook\AfterStep]
     public function after_step_javascript(AfterStepScope $scope) {
         global $CFG, $DB;
 
@@ -663,8 +661,8 @@ EOF;
      * Reset the session between each scenario.
      *
      * @param AfterScenarioScope $scope scope passed by event fired after scenario.
-     * @AfterScenario
      */
+    #[\Behat\Hook\AfterScenario]
     public function reset_webdriver_between_scenarios(AfterScenarioScope $scope) {
         try {
             $this->getSession()->stop();
@@ -797,10 +795,10 @@ EOF;
      * Part of behat_hooks class as is part of the testing framework, is auto-executed
      * after each step so no features will splicitly use it.
      *
-     * @Given /^I look for exceptions$/
      * @throw Exception Unknown type, depending on what we caught in the hook or basic \Exception.
      * @see Moodle\BehatExtension\EventDispatcher\Tester\ChainedStepTester
      */
+    #[\Behat\Step\Given('/^I look for exceptions$/')]
     public function i_look_for_exceptions() {
         // If the scenario already failed in a hook throw the exception.
         if (!is_null(self::$currentscenarioexception)) {
@@ -870,8 +868,8 @@ EOF;
      * This must be the last BeforeStep hook in the setup.
      *
      * @param BeforeStepScope $scope
-     * @BeforeStep
      */
+    #[\Behat\Hook\BeforeStep]
     public function first_step_setup_complete(BeforeStepScope $scope): void {
         self::$initprocessesfinished = true;
     }

@@ -41,10 +41,10 @@ class behat_mod_workshop extends behat_base {
     /**
      * Changes the submission phase for the workshop.
      *
-     * @When /^I change phase in workshop "(?P<workshop_name_string>(?:[^"]|\\")*)" to "(?P<phase_name_string>(?:[^"]|\\")*)"$/
      * @param string $questiontype
      * @param string $workshopname
      */
+    #[\Behat\Step\When('/^I change phase in workshop "(?P<workshop_name_string>(?:[^"]|\\\\")*)" to "(?P<phase_name_string>(?:[^"]|\\\\")*)"$/')]
     public function i_change_phase_in_workshop_to($workshopname, $phase) {
         $workshopname = $this->escape($workshopname);
         $phaseliteral = behat_context_helper::escape($phase);
@@ -64,11 +64,11 @@ class behat_mod_workshop extends behat_base {
     /**
      * Adds or edits a student workshop submission.
      *
-     * @When /^I add a submission in workshop "(?P<workshop_name_string>(?:[^"]|\\")*)" as:$/
-     * @When /^I add a submission in workshop "(?P<workshop_name_string>(?:[^"]|\\")*)" as:"$/
      * @param string $workshopname
      * @param TableNode $table data to fill the submission form with, must contain 'Title'
      */
+    #[\Behat\Step\When('/^I add a submission in workshop "(?P<workshop_name_string>(?:[^"]|\\\\")*)" as:$/')]
+    #[\Behat\Step\When('/^I add a submission in workshop "(?P<workshop_name_string>(?:[^"]|\\\\")*)" as:"$/')]
     public function i_add_a_submission_in_workshop_as($workshopname, $table) {
         $workshopname = $this->escape($workshopname);
         $savechanges = $this->escape(get_string('savechanges'));
@@ -86,11 +86,11 @@ class behat_mod_workshop extends behat_base {
     /**
      * Sets the workshop assessment form.
      *
-     * @When /^I edit assessment form in workshop "(?P<workshop_name_string>(?:[^"]|\\")*)" as:$/
-     * @When /^I edit assessment form in workshop "(?P<workshop_name_string>(?:[^"]|\\")*)" as:"$/
      * @param string $workshopname
      * @param TableNode $table data to fill the submission form with, must contain 'Title'
      */
+    #[\Behat\Step\When('/^I edit assessment form in workshop "(?P<workshop_name_string>(?:[^"]|\\\\")*)" as:$/')]
+    #[\Behat\Step\When('/^I edit assessment form in workshop "(?P<workshop_name_string>(?:[^"]|\\\\")*)" as:"$/')]
     public function i_edit_assessment_form_in_workshop_as($workshopname, $table) {
         $this->execute("behat_navigation::i_am_on_page_instance", [$this->escape($workshopname), 'workshop activity']);
 
@@ -105,12 +105,12 @@ class behat_mod_workshop extends behat_base {
     /**
      * Peer-assesses a workshop submission.
      *
-     * @When /^I assess submission "(?P<submission_string>(?:[^"]|\\")*)" in workshop "(?P<workshop_name_string>(?:[^"]|\\")*)" as:$/
-     * @When /^I assess submission "(?P<submission_string>(?:[^"]|\\")*)" in workshop "(?P<workshop_name_string>(?:[^"]|\\")*)" as:"$/
      * @param string $submission
      * @param string $workshopname
      * @param TableNode $table
      */
+    #[\Behat\Step\When('/^I assess submission "(?P<submission_string>(?:[^"]|\\\\")*)" in workshop "(?P<workshop_name_string>(?:[^"]|\\\\")*)" as:$/')]
+    #[\Behat\Step\When('/^I assess submission "(?P<submission_string>(?:[^"]|\\\\")*)" in workshop "(?P<workshop_name_string>(?:[^"]|\\\\")*)" as:"$/')]
     public function i_assess_submission_in_workshop_as($submission, $workshopname, TableNode $table) {
         $workshopname = $this->escape($workshopname);
         $submissionliteral = behat_context_helper::escape($submission);
@@ -133,11 +133,11 @@ class behat_mod_workshop extends behat_base {
     /**
      * Checks that the user has particular grade set by his reviewing peer in workshop
      *
-     * @Then /^I should see grade "(?P<grade_string>[^"]*)" for workshop participant "(?P<participant_name_string>(?:[^"]|\\")*)" set by peer "(?P<reviewer_name_string>(?:[^"]|\\")*)"$/
      * @param string $grade
      * @param string $participant
      * @param string $reviewer
      */
+    #[\Behat\Step\Then('/^I should see grade "(?P<grade_string>[^"]*)" for workshop participant "(?P<participant_name_string>(?:[^"]|\\\\")*)" set by peer "(?P<reviewer_name_string>(?:[^"]|\\\\")*)"$/')]
     public function i_should_see_grade_for_workshop_participant_set_by_peer($grade, $participant, $reviewer) {
         $participantliteral = behat_context_helper::escape($participant);
         $reviewerliteral = behat_context_helper::escape($reviewer);
@@ -164,10 +164,10 @@ class behat_mod_workshop extends behat_base {
     /**
      * Configure portfolio plugin, set value for portfolio instance
      *
-     * @When /^I set portfolio instance "(?P<portfolioinstance_string>(?:[^"]|\\")*)" to "(?P<value_string>(?:[^"]|\\")*)"$/
      * @param string $portfolioinstance
      * @param string $value
      */
+    #[\Behat\Step\When('/^I set portfolio instance "(?P<portfolioinstance_string>(?:[^"]|\\\\")*)" to "(?P<value_string>(?:[^"]|\\\\")*)"$/')]
     public function i_set_portfolio_instance_to($portfolioinstance, $value) {
 
         $rowxpath = "//table[contains(@class, 'generaltable')]//tr//td[contains(text(), '"

@@ -40,11 +40,11 @@ class behat_grade_deprecated extends behat_deprecated_base {
      * - I confirm "Group" in "group" search within the gradebook widget exists
      * - I confirm "Grade item" in "grade" search within the gradebook widget exists
      *
-     * @Given /^I confirm "(?P<needle>(?:[^"]|\\")*)" in "(?P<haystack>(?:[^"]|\\")*)" search within the gradebook widget exists$/
      * @param string $needle The value to search for.
      * @param string $haystack The type of the search widget.
      * @deprecated since 4.5
      */
+    #[\Behat\Step\Given('/^I confirm "(?P<needle>(?:[^"]|\\\\")*)" in "(?P<haystack>(?:[^"]|\\\\")*)" search within the gradebook widget exists$/')]
     public function i_confirm_in_search_within_the_gradebook_widget_exists($needle, $haystack) {
         $this->deprecated_message('behat_general::i_confirm_in_search_combobox_exists');
 
@@ -80,11 +80,11 @@ class behat_grade_deprecated extends behat_deprecated_base {
      * - I confirm "Group" in "group" search within the gradebook widget does not exist
      * - I confirm "Grade item" in "grade" search within the gradebook widget does not exist
      *
-     * @Given /^I confirm "(?P<needle>(?:[^"]|\\")*)" in "(?P<haystack>(?:[^"]|\\")*)" search within the gradebook widget does not exist$/
      * @param string $needle The value to search for.
      * @param string $haystack The type of the search widget.
      * @deprecated since 4.5
      */
+    #[\Behat\Step\Given('/^I confirm "(?P<needle>(?:[^"]|\\\\")*)" in "(?P<haystack>(?:[^"]|\\\\")*)" search within the gradebook widget does not exist$/')]
     public function i_confirm_in_search_within_the_gradebook_widget_does_not_exist($needle, $haystack) {
         $this->deprecated_message('behat_general::i_confirm_in_search_combobox_does_not_exist');
 
@@ -120,11 +120,11 @@ class behat_grade_deprecated extends behat_deprecated_base {
      * - I click on "Group" in the "group" search widget
      * - I click on "Grade item" in the "grade" search widget
      *
-     * @Given /^I click on "(?P<needle>(?:[^"]|\\")*)" in the "(?P<haystack>(?:[^"]|\\")*)" search widget$/
      * @param string $needle The value to search for.
      * @param string $haystack The type of the search widget.
      * @deprecated since 4.5
      */
+    #[\Behat\Step\Given('/^I click on "(?P<needle>(?:[^"]|\\\\")*)" in the "(?P<haystack>(?:[^"]|\\\\")*)" search widget$/')]
     public function i_click_on_in_search_widget(string $needle, string $haystack) {
         $this->deprecated_message('behat_general::i_click_on_in_search_combobox');
 

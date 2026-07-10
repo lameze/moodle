@@ -57,9 +57,8 @@ class behat_mod_forum extends behat_base {
 
     /**
      * Reset forum caches between tests.
-     *
-     * @BeforeScenario @mod_forum
      */
+    #[\Behat\Hook\BeforeScenario('@mod_forum')]
     public function reset_forum_caches(): void {
         \mod_forum\subscriptions::reset_discussion_cache();
         \mod_forum\subscriptions::reset_forum_cache();
@@ -68,10 +67,10 @@ class behat_mod_forum extends behat_base {
     /**
      * Adds a topic to the forum specified by it's name. Useful for the Announcements and blog-style forums.
      *
-     * @Given /^I add a new topic to "(?P<forum_name_string>(?:[^"]|\\")*)" forum with:$/
      * @param string $forumname
      * @param TableNode $table
      */
+    #[\Behat\Step\Given('/^I add a new topic to "(?P<forum_name_string>(?:[^"]|\\\\")*)" forum with:$/')]
     public function i_add_a_new_topic_to_forum_with($forumname, TableNode $table) {
         $this->add_new_discussion($forumname, $table, get_string('addanewdiscussion', 'forum'));
     }
@@ -79,10 +78,10 @@ class behat_mod_forum extends behat_base {
     /**
      * Adds a Q&A discussion to the Q&A-type forum specified by it's name with the provided table data.
      *
-     * @Given /^I add a new question to "(?P<forum_name_string>(?:[^"]|\\")*)" forum with:$/
      * @param string $forumname
      * @param TableNode $table
      */
+    #[\Behat\Step\Given('/^I add a new question to "(?P<forum_name_string>(?:[^"]|\\\\")*)" forum with:$/')]
     public function i_add_a_new_question_to_forum_with($forumname, TableNode $table) {
         $this->add_new_discussion($forumname, $table, get_string('addanewdiscussion', 'forum'));
     }
@@ -90,10 +89,10 @@ class behat_mod_forum extends behat_base {
     /**
      * Adds a discussion to the forum specified by it's name with the provided table data (usually Subject and Message). The step begins from the forum's course page.
      *
-     * @Given /^I add a new discussion to "(?P<forum_name_string>(?:[^"]|\\")*)" forum with:$/
      * @param string $forumname
      * @param TableNode $table
      */
+    #[\Behat\Step\Given('/^I add a new discussion to "(?P<forum_name_string>(?:[^"]|\\\\")*)" forum with:$/')]
     public function i_add_a_forum_discussion_to_forum_with($forumname, TableNode $table) {
         $this->add_new_discussion($forumname, $table, get_string('addanewdiscussion', 'forum'));
     }
@@ -102,10 +101,10 @@ class behat_mod_forum extends behat_base {
      * Adds a discussion to the forum specified by it's name with the provided table data (usually Subject and Message).
      * The step begins from the forum's course page.
      *
-     * @Given /^I add a new discussion to "(?P<forum_name_string>(?:[^"]|\\")*)" forum inline with:$/
      * @param string $forumname
      * @param TableNode $table
      */
+    #[\Behat\Step\Given('/^I add a new discussion to "(?P<forum_name_string>(?:[^"]|\\\\")*)" forum inline with:$/')]
     public function i_add_a_forum_discussion_to_forum_inline_with($forumname, TableNode $table) {
         $this->add_new_discussion_inline($forumname, $table, get_string('addanewdiscussion', 'forum'));
     }
@@ -113,11 +112,11 @@ class behat_mod_forum extends behat_base {
     /**
      * Adds a reply to the specified post of the specified forum. The step begins from the forum's page or from the forum's course page.
      *
-     * @Given /^I reply "(?P<post_subject_string>(?:[^"]|\\")*)" post from "(?P<forum_name_string>(?:[^"]|\\")*)" forum with:$/
      * @param string $postname The subject of the post
      * @param string $forumname The forum name
      * @param TableNode $table
      */
+    #[\Behat\Step\Given('/^I reply "(?P<post_subject_string>(?:[^"]|\\\\")*)" post from "(?P<forum_name_string>(?:[^"]|\\\\")*)" forum with:$/')]
     public function i_reply_post_from_forum_with($postsubject, $forumname, TableNode $table) {
 
         // Navigate to forum.
@@ -133,11 +132,11 @@ class behat_mod_forum extends behat_base {
     /**
      * Inpage Reply - adds a reply to the specified post of the specified forum. The step begins from the forum's page or from the forum's course page.
      *
-     * @Given /^I reply "(?P<post_subject_string>(?:[^"]|\\")*)" post from "(?P<forum_name_string>(?:[^"]|\\")*)" forum using an inpage reply with:$/
      * @param string $postsubject The subject of the post
      * @param string $forumname The forum name
      * @param TableNode $table
      */
+    #[\Behat\Step\Given('/^I reply "(?P<post_subject_string>(?:[^"]|\\\\")*)" post from "(?P<forum_name_string>(?:[^"]|\\\\")*)" forum using an inpage reply with:$/')]
     public function i_reply_post_from_forum_using_an_inpage_reply_with($postsubject, $forumname, TableNode $table) {
         // Navigate to forum.
         $this->execute('behat_navigation::i_am_on_page_instance', [$this->escape($forumname), 'forum activity']);
@@ -153,10 +152,10 @@ class behat_mod_forum extends behat_base {
     /**
      * Navigates to a particular discussion page
      *
-     * @Given /^I navigate to post "(?P<post_subject_string>(?:[^"]|\\")*)" in "(?P<forum_name_string>(?:[^"]|\\")*)" forum$/
      * @param string $postsubject The subject of the post
      * @param string $forumname The forum name
      */
+    #[\Behat\Step\Given('/^I navigate to post "(?P<post_subject_string>(?:[^"]|\\\\")*)" in "(?P<forum_name_string>(?:[^"]|\\\\")*)" forum$/')]
     public function i_navigate_to_post_in_forum($postsubject, $forumname) {
         // Navigate to forum discussion.
         $this->execute('behat_navigation::i_am_on_page_instance', [$this->escape($forumname), 'forum activity']);
@@ -166,9 +165,9 @@ class behat_mod_forum extends behat_base {
     /**
      * Opens up the action menu for the discussion
      *
-     * @Given /^I click on "(?P<post_subject_string>(?:[^"]|\\")*)" action menu$/
      * @param string $discussion The subject of the discussion
      */
+    #[\Behat\Step\Given('/^I click on "(?P<post_subject_string>(?:[^"]|\\\\")*)" action menu$/')]
     public function i_click_on_action_menu($discussion) {
         $this->execute('behat_general::i_click_on_in_the', [
             "[data-container='discussion-tools'] [data-bs-toggle='dropdown']", "css_element",
@@ -180,10 +179,10 @@ class behat_mod_forum extends behat_base {
     /**
      * Creates new discussions within forums of a given course.
      *
-     * @Given the following forum discussions exist in course :coursename:
      * @param string $coursename The full name of the course where the forums exist.
      * @param TableNode $discussionsdata The discussion posts to be created.
      */
+    #[\Behat\Step\Given('the following forum discussions exist in course :coursename:')]
     public function the_following_forum_discussions_exist(string $coursename, TableNode $discussionsdata) {
         global $DB;
 
@@ -250,10 +249,10 @@ class behat_mod_forum extends behat_base {
     /**
      * Creates replies to discussions within forums of a given course.
      *
-     * @Given the following forum replies exist in course :coursename:
      * @param string $coursename The full name of the course where the forums exist.
      * @param TableNode $repliesdata The reply posts to be created.
      */
+    #[\Behat\Step\Given('the following forum replies exist in course :coursename:')]
     public function the_following_forum_replies_exist(string $coursename, TableNode $repliesdata) {
         global $DB;
 
@@ -301,36 +300,32 @@ class behat_mod_forum extends behat_base {
 
     /**
      * Checks if the user can subscribe to the forum.
-     *
-     * @Given /^I can subscribe to this forum$/
      */
+    #[\Behat\Step\Given('/^I can subscribe to this forum$/')]
     public function i_can_subscribe_to_this_forum() {
         $this->execute('behat_forms::the_field_matches_value', [get_string('subscribe', 'mod_forum'), '0']);
     }
 
     /**
      * Checks if the user can unsubscribe from the forum.
-     *
-     * @Given /^I can unsubscribe from this forum$/
      */
+    #[\Behat\Step\Given('/^I can unsubscribe from this forum$/')]
     public function i_can_unsubscribe_from_this_forum() {
         $this->execute('behat_forms::the_field_matches_value', [get_string('subscribe', 'mod_forum'), '1']);
     }
 
     /**
      * Subscribes to the forum.
-     *
-     * @Given /^I subscribe to this forum$/
      */
+    #[\Behat\Step\Given('/^I subscribe to this forum$/')]
     public function i_subscribe_to_this_forum() {
         $this->execute('behat_general::i_click_on', [get_string('subscribe', 'mod_forum'), 'field']);
     }
 
     /**
      * Unsubscribes from the forum.
-     *
-     * @Given /^I unsubscribe from this forum$/
      */
+    #[\Behat\Step\Given('/^I unsubscribe from this forum$/')]
     public function i_unsubscribe_from_this_forum() {
         $this->i_subscribe_to_this_forum();
     }

@@ -67,11 +67,11 @@ class behat_tiny_html extends behat_base {
      * Gets the specified formatted single line source code from the editor
      * and compares it to what is expected.
      *
-     * @When /^I should see "(?P<sourcecodelocator_string>(?:[^"]|\\")*)" source code for the "(?P<locator_string>(?:[^"]|\\")*)" TinyMCE editor$/
      * @throws ExpectationException
      * @param string $sourcecode The type of element to select (for example `p` or `span`)
      * @param string $locator The editor to select within
      */
+    #[\Behat\Step\When('/^I should see "(?P<sourcecodelocator_string>(?:[^"]|\\\\")*)" source code for the "(?P<locator_string>(?:[^"]|\\\\")*)" TinyMCE editor$/')]
     public function get_source_code(string $sourcecode, string $locator): void {
         $this->require_tiny_tags();
 
@@ -88,12 +88,12 @@ class behat_tiny_html extends behat_base {
      * Gets the specified formatted multiline source code from the editor
      * and compares it to what is expected.
      *
-     * @When /^I should see this multiline source code for the "(?P<locator_string>(?:[^"]|\\")*)" TinyMCE editor:$/
      * @throws ExpectationException
      * @param string $locator
      * @param PyStringNode $sourcecode
      * @return void
      */
+    #[\Behat\Step\When('/^I should see this multiline source code for the "(?P<locator_string>(?:[^"]|\\\\")*)" TinyMCE editor:$/')]
     public function get_multiline_source_code(string $locator, PyStringNode $sourcecode): void {
         $this->require_tiny_tags();
 

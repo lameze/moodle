@@ -50,9 +50,8 @@ class behat_qtype_gapselect extends behat_base {
      *
      * @param int $spacenumber the number of the gap to drop into.
      * @param string $value the text of the response to select.
-     *
-     * @Given /^I set space "(?P<space_number>\d+)" to "(?P<value>[^"]*)" in the select missing words question$/
      */
+    #[\Behat\Step\Given('/^I set space "(?P<space_number>\d+)" to "(?P<value>[^"]*)" in the select missing words question$/')]
     public function i_set_space_to_in_the_select_missing_words_question($spacenumber, $value) {
         $formscontext = behat_context_helper::get('behat_forms');
         $formscontext->i_set_the_field_with_xpath_to($this->space_xpath($spacenumber), $value);

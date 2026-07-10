@@ -39,9 +39,8 @@ class behat_assignfeedback_editpdf extends behat_base {
 
     /**
      * Checks that Ghostscript is installed.
-     *
-     * @Given /^ghostscript is installed$/
      */
+    #[\Behat\Step\Given('/^ghostscript is installed$/')]
     public function ghostscript_is_installed() {
         $testpath = assignfeedback_editpdf\pdf::test_gs_path();
         if (!extension_loaded('zlib') or
@@ -52,9 +51,8 @@ class behat_assignfeedback_editpdf extends behat_base {
 
     /**
      * Draw on the pdf.
-     *
-     * @When /^I draw on the pdf$/
      */
+    #[\Behat\Step\When('/^I draw on the pdf$/')]
     public function i_draw_on_the_pdf() {
         // There appears to be a bug with detecting changes to
         // annotations. If a PDF is annotated, then the student
@@ -105,9 +103,8 @@ class behat_assignfeedback_editpdf extends behat_base {
 
     /**
      * I wait for all pages in the PDF document to be converted to images and loaded.
-     *
-     * @Given /^I wait for the complete PDF to load$/
      */
+    #[\Behat\Step\Given('/^I wait for the complete PDF to load$/')]
     public function i_wait_for_all_editpdf_pages_to_load() {
         // No need to wait if not running JS.
         if (!$this->running_javascript()) {

@@ -42,10 +42,10 @@ class behat_permissions extends behat_base {
 
     /**
      * Set system level permissions to the specified role. Expects a table with capability name and permission (Inherit/Allow/Prevent/Prohibit) columns.
-     * @Given /^I set the following system permissions of "(?P<rolefullname_string>(?:[^"]|\\")*)" role:$/
      * @param string $rolename
      * @param TableNode $table
      */
+    #[\Behat\Step\Given('/^I set the following system permissions of "(?P<rolefullname_string>(?:[^"]|\\\\")*)" role:$/')]
     public function i_set_the_following_system_permissions_of_role($rolename, $table) {
         // Applied in the System context.
         $context = \context_system::instance();
@@ -92,10 +92,10 @@ class behat_permissions extends behat_base {
 
     /**
      * Overrides system capabilities at category, course and module levels. This step begins after clicking 'Permissions' link. Expects a table with capability name and permission (Inherit/Allow/Prevent/Prohibit) columns.
-     * @Given /^I override the system permissions of "(?P<rolefullname_string>(?:[^"]|\\")*)" role with:$/
      * @param string $rolename
      * @param TableNode $table
      */
+    #[\Behat\Step\Given('/^I override the system permissions of "(?P<rolefullname_string>(?:[^"]|\\\\")*)" role with:$/')]
     public function i_override_the_system_permissions_of_role_with($rolename, $table) {
 
         // We don't know the number of overrides so we have to get it to match the option contents.
@@ -121,10 +121,10 @@ class behat_permissions extends behat_base {
 
     /**
      * Fills the advanced permissions form with the provided data. Expects a table with capability name and permission (Inherit/Allow/Prevent/Prohibit) columns.
-     * @Given /^I fill the capabilities form with the following permissions:$/
      * @param TableNode $table
      * @return void
      */
+    #[\Behat\Step\Given('/^I fill the capabilities form with the following permissions:$/')]
     public function i_fill_the_capabilities_form_with_the_following_permissions($table) {
 
         // Ensure we are using the advanced view.
@@ -177,12 +177,12 @@ class behat_permissions extends behat_base {
     /**
      * Checks if the capability has the specified permission. Works in the role definition advanced page.
      *
-     * @Then /^"(?P<capability_string>(?:[^"]|\\")*)" capability has "(?P<permission_string>Not set|Allow|Prevent|Prohibit)" permission$/
      * @throws ExpectationException
      * @param string $capabilityname
      * @param string $permission
      * @return void
      */
+    #[\Behat\Step\Then('/^"(?P<capability_string>(?:[^"]|\\\\")*)" capability has "(?P<permission_string>Not set|Allow|Prevent|Prohibit)" permission$/')]
     public function capability_has_permission($capabilityname, $permission) {
 
         // We already know the name, so we just need the value.
@@ -218,11 +218,11 @@ class behat_permissions extends behat_base {
     /**
      * Set the allowed role assignments for the specified role.
      *
-     * @Given /^I define the allowed role assignments for the "(?P<rolefullname_string>(?:[^"]|\\")*)" role as:$/
      * @param string $rolename
      * @param TableNode $table
      * @return void Executes other steps
      */
+    #[\Behat\Step\Given('/^I define the allowed role assignments for the "(?P<rolefullname_string>(?:[^"]|\\\\")*)" role as:$/')]
     public function i_define_the_allowed_role_assignments_for_a_role_as($rolename, $table) {
         $parentnodes = get_string('users', 'admin') . ' > ' .
             get_string('permissions', 'role');
@@ -249,11 +249,11 @@ class behat_permissions extends behat_base {
      * Takes a table with two columns. Each row should contain the target
      * role, and either "Assignable" or "Not assignable".
      *
-     * @Given /^I fill in the allowed role assignments form for the "(?P<rolefullname_string>(?:[^"]|\\")*)" role with:$/
      * @param String $sourcerole
      * @param TableNode $table
      * @return void
      */
+    #[\Behat\Step\Given('/^I fill in the allowed role assignments form for the "(?P<rolefullname_string>(?:[^"]|\\\\")*)" role with:$/')]
     public function i_fill_in_the_allowed_role_assignments_form_for_a_role_with($sourcerole, $table) {
         foreach ($table->getRows() as $key => $row) {
             list($targetrole, $allowed) = $row;
@@ -283,11 +283,11 @@ class behat_permissions extends behat_base {
     /**
      * Mark context as frozen.
      *
-     * @Then /^the "(?P<element_string>(?:[^"]|\\")*)" "(?P<selector_string>[^"]*)" is context frozen$/
      * @throws ExpectationException if the context cannot be frozen or found
      * @param string $element Element we look on
      * @param string $selector The type of where we look (activity, course)
      */
+    #[\Behat\Step\Then('/^the "(?P<element_string>(?:[^"]|\\\\")*)" "(?P<selector_string>[^"]*)" is context frozen$/')]
     public function the_context_is_context_frozen(string $element, string $selector) {
 
         // Enable context freeze if it is not done yet.
@@ -303,11 +303,11 @@ class behat_permissions extends behat_base {
     /**
      * Unmark context as frozen.
      *
-     * @Then /^the "(?P<element_string>(?:[^"]|\\")*)" "(?P<selector_string>[^"]*)" is not context frozen$/
      * @throws ExpectationException if the context cannot be frozen or found
      * @param string $element Element we look on
      * @param string $selector The type of where we look (activity, course)
      */
+    #[\Behat\Step\Then('/^the "(?P<element_string>(?:[^"]|\\\\")*)" "(?P<selector_string>[^"]*)" is not context frozen$/')]
     public function the_context_is_not_context_frozen(string $element, string $selector) {
 
         // Enable context freeze if it is not done yet.

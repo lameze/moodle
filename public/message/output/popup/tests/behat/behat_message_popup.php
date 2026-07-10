@@ -39,9 +39,8 @@ class behat_message_popup extends behat_base {
 
     /**
      * Open the notification popover in the nav bar.
-     *
-     * @Given /^I open the notification popover$/
      */
+    #[\Behat\Step\Given('/^I open the notification popover$/')]
     public function i_open_the_notification_popover() {
         $this->execute('behat_general::i_click_on',
             array("#nav-notification-popover-container [data-region='popover-region-toggle']", 'css_element'));
@@ -53,9 +52,8 @@ class behat_message_popup extends behat_base {
 
     /**
      * Open the message popover in the nav bar.
-     *
-     * @Given /^I open the message popover$/
      */
+    #[\Behat\Step\Given('/^I open the message popover$/')]
     public function i_open_the_message_popover() {
         $this->execute('behat_general::i_click_on',
             array("#nav-message-popover-container [data-region='popover-region-toggle']", 'css_element'));

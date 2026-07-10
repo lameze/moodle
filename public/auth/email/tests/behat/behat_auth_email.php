@@ -38,10 +38,10 @@ class behat_auth_email extends behat_base {
     /**
      * Emulate clicking on confirmation link from the email
      *
-     * @When /^I confirm email for "(?P<username>(?:[^"]|\\")*)"$/
      *
      * @param string $username
      */
+    #[\Behat\Step\When('/^I confirm email for "(?P<username>(?:[^"]|\\\\")*)"$/')]
     public function i_confirm_email_for($username) {
         global $DB;
         $secret = $DB->get_field('user', 'secret', ['username' => $username], MUST_EXIST);

@@ -42,9 +42,9 @@ class behat_user extends behat_base {
     /**
      * Choose from the bulk action menu.
      *
-     * @Given /^I choose "(?P<nodetext_string>(?:[^"]|\\")*)" from the participants page bulk action menu$/
      * @param string $nodetext The menu item to select.
      */
+    #[\Behat\Step\Given('/^I choose "(?P<nodetext_string>(?:[^"]|\\\\")*)" from the participants page bulk action menu$/')]
     public function i_choose_from_the_participants_page_bulk_action_menu($nodetext) {
         $this->execute("behat_forms::i_set_the_field_to", [
             "With selected users...",
@@ -55,10 +55,10 @@ class behat_user extends behat_base {
     /**
      * Deletes a user.
      *
-     * @Given the user :identifier is deleted
      * @param string $identifier
      */
     #[\core\attribute\example('And the user student1 is deleted')]
+    #[\Behat\Step\Given('the user :identifier is deleted')]
     public function the_user_is_deleted($identifier) {
         global $DB;
         $userid = $this->get_user_id_by_identifier($identifier);
@@ -71,10 +71,10 @@ class behat_user extends behat_base {
     /**
      * The input field should have autocomplete set to this value.
      *
-     * @Then /^the field "(?P<field_string>(?:[^"]|\\")*)" should have purpose "(?P<purpose_string>(?:[^"]|\\")*)"$/
      * @param string $field The field to select.
      * @param string $purpose The expected purpose.
      */
+    #[\Behat\Step\Then('/^the field "(?P<field_string>(?:[^"]|\\\\")*)" should have purpose "(?P<purpose_string>(?:[^"]|\\\\")*)"$/')]
     public function the_field_should_have_purpose($field, $purpose) {
         $fld = behat_field_manager::get_form_field_from_label($field, $this);
 
@@ -88,10 +88,10 @@ class behat_user extends behat_base {
     /**
      * The input field should not have autocomplete set to this value.
      *
-     * @Then /^the field "(?P<field_string>(?:[^"]|\\")*)" should not have purpose "(?P<purpose_string>(?:[^"]|\\")*)"$/
      * @param string $field The field to select.
      * @param string $purpose The expected purpose we do not want.
      */
+    #[\Behat\Step\Then('/^the field "(?P<field_string>(?:[^"]|\\\\")*)" should not have purpose "(?P<purpose_string>(?:[^"]|\\\\")*)"$/')]
     public function the_field_should_not_have_purpose($field, $purpose) {
         $fld = behat_field_manager::get_form_field_from_label($field, $this);
 

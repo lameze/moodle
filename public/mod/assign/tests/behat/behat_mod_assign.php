@@ -39,9 +39,9 @@ class behat_mod_assign extends behat_base {
     /**
      * Check that the marking guide information is displayed correctly.
      *
-     * @Then /^I should see the marking guide information displayed as:$/
      * @param TableNode $table The table of marking guide information to check.
      */
+    #[\Behat\Step\Then('/^I should see the marking guide information displayed as:$/')]
     public function i_should_see_marking_guide_information(TableNode $table) {
 
         if (!$table->getRowsHash()) {
@@ -74,9 +74,8 @@ class behat_mod_assign extends behat_base {
 
     /**
      * Enable grade penalty.
-     *
-     * @Given I enable grade penalties for assignment
      */
+    #[\Behat\Step\Given('I enable grade penalties for assignment')]
     public function i_enable_grade_penalties_for_assignment(): void {
         global $DB;
 
@@ -90,10 +89,10 @@ class behat_mod_assign extends behat_base {
     /**
      * Goes to the student's advanced marking page.
      *
-     * @Given /^I go to "(?P<user_fullname>(?:[^"]|\\")*)" "(?P<activity_name>(?:[^"]|\\")*)" activity advanced marking page$/
      * @param string $userfullname The user's full name including firstname and lastname.
      * @param string $activityname The activity name
      */
+    #[\Behat\Step\Given('/^I go to "(?P<user_fullname>(?:[^"]|\\\\")*)" "(?P<activity_name>(?:[^"]|\\\\")*)" activity advanced marking page$/')]
     public function i_go_to_activity_advanced_marking_page(string $userfullname, string $activityname): void {
 
         // Step to access the user grade page from the grading page.
