@@ -178,7 +178,7 @@ if ($options['suite']) {
 if ($options['feature']) {
     $extraopts['feature'] = $options['feature'];
     // Only run 1 process as process.
-    // Feature file is picked from absolute path provided, so no need to check for behat.yml.
+    // Feature file is picked from absolute path provided, so no need to check for behat.php.
     $options['torun'] = $options['fromrun'];
 }
 

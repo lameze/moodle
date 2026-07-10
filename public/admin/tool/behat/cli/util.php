@@ -233,7 +233,7 @@ if ($options['diag'] || $options['enable'] || $options['disable']) {
     if (empty($options['parallel'])) {
         behat_config_manager::update_config_file('', true, '', $options['add-core-features-to-theme'], false, false);
     } else {
-        // Update config file, ensuring we have up-to-date behat.yml.
+        // Update config file, ensuring we have up-to-date behat.php.
         for ($i = $options['fromrun']; $i <= $options['torun']; $i++) {
             $CFG->behatrunprocess = $i;
 

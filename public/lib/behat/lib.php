@@ -502,7 +502,7 @@ function behat_get_run_process() {
                 if (!empty($CFG->behat_parallel_run)) {
                     foreach ($CFG->behat_parallel_run as $run => $parallelconfig) {
                         if (!empty($parallelconfig['behat_dataroot']) &&
-                                $parallelconfig['behat_dataroot'] . '/behat/behat.yml' == $behatconfig) {
+                                $parallelconfig['behat_dataroot'] . '/behat/behat.php' == $behatconfig) {
                             $behatrunprocess = $run + 1; // We start process from 1.
                             break;
                         }
@@ -511,7 +511,7 @@ function behat_get_run_process() {
                 // Check if default behat dataroot increment was done.
                 if (empty($behatrunprocess)) {
                     $behatdataroot = str_replace("\\", "/", $CFG->behat_dataroot . '/' . BEHAT_PARALLEL_SITE_NAME);
-                    $behatrunprocess = preg_filter("#^{$behatdataroot}" . "(.+?)[/|\\\]behat[/|\\\]behat\.yml#", '$1',
+                    $behatrunprocess = preg_filter("#^{$behatdataroot}" . "(.+?)[/|\\\]behat[/|\\\]behat\.php#", '$1',
                         $behatconfig);
                 }
             }

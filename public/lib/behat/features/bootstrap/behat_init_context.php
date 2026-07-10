@@ -45,7 +45,7 @@ class behat_init_context extends BehatContext {
     /**
      * Initializes subcontexts
      *
-     * @param  array $parameters context parameters (set them up through behat.yml)
+     * @param  array $parameters context parameters (set them up through the behat config file)
      * @return void
      */
     public function __construct(array $parameters) {

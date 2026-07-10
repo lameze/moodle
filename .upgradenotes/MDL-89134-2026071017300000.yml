@@ -1,0 +1,15 @@
+issueNumber: MDL-89134
+notes:
+  core:
+    - message: >-
+        Behat init now generates the Behat configuration as a PHP file
+        (`$CFG->behat_dataroot/behat/behat.php`, returning a
+        `\Behat\Config\Config` instance) instead of YAML (`behat.yml`), since
+        Behat 4.0 removes YAML configuration support. The
+        `$CFG->behat_config` and `$CFG->behat_profile` settings in config.php
+        keep exactly the same array format - only the generated file changes.
+        Anything consuming the generated behat.yml directly (custom CI
+        scripts, wrappers passing --config) must point at behat.php instead;
+        legacy behat.yml files are removed automatically when the config is
+        regenerated.
+      type: changed

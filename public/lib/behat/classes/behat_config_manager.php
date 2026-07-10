@@ -70,7 +70,7 @@ class behat_config_manager {
      * config files to avoid problems with concurrent executions.
      *
      * The steps definitions list can be filtered by component so it's
-     * behat.yml is different from the $CFG->dirroot one.
+     * behat.php is different from the $CFG->dirroot one.
      *
      * @param  string $component Restricts the obtained steps definitions to the specified component
      * @param  string $testsrunner If the config file will be used to run tests
@@ -85,12 +85,18 @@ class behat_config_manager {
 
         global $CFG;
 
-        // Behat must have a separate behat.yml to have access to the whole set of features and steps definitions.
+        // Behat must have a separate behat.php to have access to the whole set of features and steps definitions.
         if ($testsrunner === true) {
-            $configfilepath = behat_command::get_behat_dir($run) . '/behat.yml';
+            $configfilepath = behat_command::get_behat_dir($run) . '/behat.php';
         } else {
             // Alternative for steps definitions filtering, one for each user.
             $configfilepath = self::get_steps_list_config_filepath();
+        }
+
+        // Remove the legacy YAML config if present, so it cannot be picked up by mistake.
+        $legacyconfigfilepath = preg_replace('/\.php$/', '.yml', $configfilepath);
+        if (file_exists($legacyconfigfilepath)) {
+            unlink($legacyconfigfilepath);
         }
 
         $behatconfigutil = self::get_behat_config_util();
@@ -147,7 +153,7 @@ class behat_config_manager {
         $userdir = behat_command::get_behat_dir() . '/users/' . $USER->id;
         make_writable_directory($userdir);
 
-        return $userdir . '/behat.yml';
+        return $userdir . '/behat.php';
     }
 
     /**
@@ -168,7 +174,7 @@ class behat_config_manager {
         } else {
             $command = $CFG->behat_dataroot;
         }
-        $command .= DIRECTORY_SEPARATOR . 'behat' . DIRECTORY_SEPARATOR . 'behat.yml';
+        $command .= DIRECTORY_SEPARATOR . 'behat' . DIRECTORY_SEPARATOR . 'behat.php';
 
         // Cygwin uses linux-style directory separators.
         if (testing_is_cygwin()) {
