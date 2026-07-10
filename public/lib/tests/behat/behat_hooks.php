@@ -799,7 +799,7 @@ EOF;
      *
      * @Given /^I look for exceptions$/
      * @throw Exception Unknown type, depending on what we caught in the hook or basic \Exception.
-     * @see Moodle\BehatExtension\EventDispatcher\Tester\ChainedStepTester
+     * @see Moodle\BehatExtension\EventDispatcher\Tester\ExceptionCheckingStepTester
      */
     public function i_look_for_exceptions() {
         // If the scenario already failed in a hook throw the exception.

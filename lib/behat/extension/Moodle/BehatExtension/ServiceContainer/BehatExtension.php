@@ -82,8 +82,8 @@ class BehatExtension implements ExtensionInterface {
         // Load custom step tester event dispatcher.
         $this->loadEventDispatchingStepTester($container);
 
-        // Load chained step tester.
-        $this->loadChainedStepTester($container);
+        // Load exception-checking step tester.
+        $this->loadExceptionCheckingStepTester($container);
 
         // Load step count formatter.
         $this->loadMoodleListFormatter($container);
@@ -93,9 +93,6 @@ class BehatExtension implements ExtensionInterface {
 
         // Load screenshot formatter.
         $this->loadMoodleScreenshotFormatter($container);
-
-        // Load namespace alias.
-        $this->alias_old_namespaces();
     }
 
     /**
@@ -191,17 +188,17 @@ class BehatExtension implements ExtensionInterface {
     }
 
     /**
-     * Loads chained step tester.
+     * Loads exception-checking step tester.
      *
      * @param ContainerBuilder $container
      */
-    protected function loadChainedStepTester(ContainerBuilder $container) {
-        // Chained steps.
-        $definition = new Definition('Moodle\BehatExtension\EventDispatcher\Tester\ChainedStepTester', [
+    protected function loadExceptionCheckingStepTester(ContainerBuilder $container) {
+        // Looks for exceptions and debugging messages after each step.
+        $definition = new Definition('Moodle\BehatExtension\EventDispatcher\Tester\ExceptionCheckingStepTester', [
             new Reference(TesterExtension::STEP_TESTER_ID),
         ]);
         $definition->addTag(TesterExtension::STEP_TESTER_WRAPPER_TAG, ['priority' => 100]);
-        $container->setDefinition(TesterExtension::STEP_TESTER_WRAPPER_TAG . '.substep', $definition);
+        $container->setDefinition(TesterExtension::STEP_TESTER_WRAPPER_TAG . '.exception_checking', $definition);
     }
 
     /**
@@ -276,14 +273,5 @@ class BehatExtension implements ExtensionInterface {
         // Load controller for definition printing.
         $this->loadDefinitionPrinters($container);
         $this->loadController($container);
-    }
-
-    /**
-     * Alias old namespace of given. when and then for BC.
-     */
-    private function alias_old_namespaces() {
-        class_alias('Moodle\\BehatExtension\\Context\\Step\\Given', 'Behat\\Behat\\Context\\Step\\Given', true);
-        class_alias('Moodle\\BehatExtension\\Context\\Step\\When', 'Behat\\Behat\\Context\\Step\\When', true);
-        class_alias('Moodle\\BehatExtension\\Context\\Step\\Then', 'Behat\\Behat\\Context\\Step\\Then', true);
     }
 }

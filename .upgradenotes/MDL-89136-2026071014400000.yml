@@ -1,0 +1,15 @@
+issueNumber: MDL-89136
+notes:
+  core:
+    - message: >-
+        Chained step support has been removed from the Moodle Behat extension.
+        Chained steps (step definitions returning
+        `Moodle\BehatExtension\Context\Step\Given|When|Then` objects, or the
+        aliased `Behat\Behat\Context\Step\*` classes) were a Behat 2 feature
+        deprecated since the Behat 3 migration and are no longer executed.
+        Any remaining custom step definitions relying on them must be
+        converted to call the target context methods directly. The
+        `ChainedStepTester` class has been replaced by
+        `ExceptionCheckingStepTester`, which retains the automatic
+        exception/debugging check that runs after each step.
+      type: removed
