@@ -20,12 +20,9 @@ Feature: Control the aggregation of the scales
     And I set the following administration settings values:
       | grade_aggregations_visible | Mean of grades,Weighted mean of grades,Simple weighted mean of grades,Mean of grades (with extra credits),Median of grades,Lowest grade,Highest grade,Mode of grades,Natural |
       | grade_report_user_showcontributiontocoursetotal | 1 |
-    And I navigate to "Grades > Scales" in site administration
-    And I press "Add a new scale"
-    And I set the following fields to these values:
-      | Name  | Letterscale |
-      | Scale | F,D,C,B,A   |
-    And I press "Save changes"
+    And the following "scales" exist:
+      | name        | scale     |
+      | Letterscale | F,D,C,B,A |
     And the following "grade items" exist:
       | itemname | course |
       | Grade me | C1     |
