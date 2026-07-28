@@ -9,12 +9,9 @@ Feature: View gradebook when scales are used
     And I set the following administration settings values:
       | grade_report_showranges    | 1 |
       | grade_aggregations_visible | Mean of grades,Weighted mean of grades,Simple weighted mean of grades,Mean of grades (with extra credits),Median of grades,Lowest grade,Highest grade,Mode of grades,Natural |
-    And I navigate to "Grades > Scales" in site administration
-    And I press "Add a new scale"
-    And I set the following fields to these values:
-      | Name  | Letterscale |
-      | Scale | F,D,C,B,A   |
-    And I press "Save changes"
+    And the following "scales" exist:
+      | name        | scale     |
+      | Letterscale | F,D,C,B,A |
     And I log out
     And the following "courses" exist:
       | fullname | shortname |
@@ -46,21 +43,13 @@ Feature: View gradebook when scales are used
     And I set the field "grade[modgrade_type]" to "Scale"
     And I set the field "grade[modgrade_scale]" to "Letterscale"
     And I press "Save and display"
-    And I go to "Student 1" "Test assignment one" activity advanced grading page
-    And I set the field "Grade" to "A"
-    And I press "Save changes"
-    And I click on "[data-action=next-user]" "css_element"
-    And I set the field "Grade" to "B"
-    And I press "Save changes"
-    And I click on "[data-action=next-user]" "css_element"
-    And I set the field "Grade" to "C"
-    And I press "Save changes"
-    And I click on "[data-action=next-user]" "css_element"
-    And I set the field "Grade" to "D"
-    And I press "Save changes"
-    And I click on "[data-action=next-user]" "css_element"
-    And I set the field "Grade" to "F"
-    And I press "Save changes"
+    And the following "grade grades" exist:
+      | gradeitem           | user     | grade |
+      | Test assignment one | student1 | 5     |
+      | Test assignment one | student2 | 4     |
+      | Test assignment one | student3 | 3     |
+      | Test assignment one | student4 | 2     |
+      | Test assignment one | student5 | 1     |
     And I am on "Course 1" course homepage
     And I navigate to "Setup > Course grade settings" in the course gradebook
     And I set the field "Show weightings" to "Show"
