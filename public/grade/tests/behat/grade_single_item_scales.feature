@@ -11,12 +11,9 @@ Feature: View gradebook when single item scales are used
     And I set the following administration settings values:
       | grade_report_showranges    | 1 |
       | grade_aggregations_visible | Mean of grades,Weighted mean of grades,Simple weighted mean of grades,Mean of grades (with extra credits),Median of grades,Lowest grade,Highest grade,Mode of grades,Natural |
-    And I navigate to "Grades > Scales" in site administration
-    And I press "Add a new scale"
-    And I set the following fields to these values:
-      | Name  | <span lang="en" class="multilang">EN</span><span lang="fr" class="multilang">FR</span> Singleitem |
-      | Scale | Ace!                                                                                              |
-    And I press "Save changes"
+    And the following "scales" exist:
+      | name                                                                                                | scale |
+      | <span lang="en" class="multilang">EN</span><span lang="fr" class="multilang">FR</span> Singleitem   | Ace!  |
     And I log out
     And the following "courses" exist:
       | fullname | shortname |
@@ -44,9 +41,9 @@ Feature: View gradebook when single item scales are used
     And I set the field "grade[modgrade_type]" to "Scale"
     And I set the field "grade[modgrade_scale]" to "EN Singleitem"
     And I press "Save and display"
-    And I go to "Student 1" "Test assignment one" activity advanced grading page
-    And I set the field "Grade" to "A"
-    And I press "Save changes"
+    And the following "grade grades" exist:
+      | gradeitem           | user     | grade |
+      | Test assignment one | student1 | 1     |
     When I am on the "Course 1" "grades > course grade settings" page
     And I set the field "Show weightings" to "Show"
     And I set the field "Show contribution to course total" to "Show"
