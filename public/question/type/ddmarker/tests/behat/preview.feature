@@ -25,6 +25,8 @@ Feature: Preview a drag-drop marker question
   @javascript @_bug_phantomjs
   Scenario: Preview a question using the mouse
     When I am on the "Drag markers" "core_question > preview" page logged in as teacher
+    # The whole map must be inside the viewport, otherwise the drag targets fall outside it.
+    And I change window size to "large"
     And I drag "OU" to "322,213" in the drag and drop markers question
     And I drag "Railway station" to "144,84" in the drag and drop markers question
     And I drag "Railway station" to "195,180" in the drag and drop markers question
