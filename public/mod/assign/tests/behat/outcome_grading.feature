@@ -93,6 +93,8 @@ Feature: Outcome grading
     And I press "Save changes"
     And I am on the "Test assignment name" "assign activity" page
     And I navigate to "Submissions" in current page administration
+    # At the default window size the sticky grading table header overlaps the action menu.
+    And I change window size to "large"
     Then I should see "Outcome Test: Excellent" in the "Student 0" "table_row"
     And I should see "Outcome Test: Excellent" in the "Student 1" "table_row"
     And I should not see "Outcome Test: Excellent" in the "Student 2" "table_row"

@@ -48,6 +48,8 @@ Feature: Display feedback on the Grader report
 
   Scenario: View the feedback modal from the action menu
     When I am on the "Course 1" "grades > Grader report > View" page
+    # At the default window size the sticky grade item header overlaps the action menu items.
+    And I change window size to "large"
     And I click on "Test assignment name 1" "core_grades > grade_actions" in the "Student 1" "table_row"
     When I choose "View feedback" in the open action menu
     Then I should see "This is feedback" in the "Test assignment name 1" "dialogue"

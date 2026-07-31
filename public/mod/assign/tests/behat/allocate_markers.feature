@@ -54,6 +54,8 @@ Feature: Allocate markers to student submissions
 
   Scenario: Allocate markers to students via the Quick Grading page
     Given I am on the "A1" "assign activity" page logged in as teacher1
+    # At the default window size the sticky grading table header overlaps the controls.
+    And I change window size to "large"
     And I navigate to "Submissions" in current page administration
     And I click on "Quick grading" "checkbox"
     When I set the field "Allocated marker 1" in the "Student One" "table_row" to "Teacher One"

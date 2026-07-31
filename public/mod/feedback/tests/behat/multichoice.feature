@@ -23,6 +23,9 @@ Feature: Testing multichoice questions in feedback
       | feedback   | Learning experience | C1     | feedback0   |
     And I am on the "Learning experience" "feedback activity" page logged in as teacher1
     And I navigate to "Questions" in current page administration
+    # As questions are added the page grows, and at the default window size the action menu
+    # items end up underneath the sticky navbar, which intercepts the click.
+    And I change window size to "large"
 
   @javascript
   Scenario: Non-rated single-answer multiple choice questions in feedback

@@ -80,6 +80,8 @@ Feature: Assignments settings can be changed
     And I press "Save changes"
 
     And I am on the "Test assignment name" Activity page logged in as teacher1
+    # At the default window size the sticky grading table header overlaps the action menu.
+    And I change window size to "large"
     And I go to "Student 2" "Test assignment name" activity advanced grading page
     And I set the field "Grade out of 100" to "40"
     And I set the field "Notify student" to "0"

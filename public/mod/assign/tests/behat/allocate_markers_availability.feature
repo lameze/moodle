@@ -128,6 +128,8 @@ Feature: Marker allocation rules
 
   Scenario: Marker allocation rules are enforced on the Grader page
     Given I am on the "A1" "assign activity" page logged in as teacher1
+    # At the default window size the sticky grading table header overlaps the controls.
+    And I change window size to "large"
     When I go to "Student One" "Assignment 1" activity advanced grading page
     Then the "Marker 1" "select" should be disabled
     And the "Marker 2" "select" should be enabled
