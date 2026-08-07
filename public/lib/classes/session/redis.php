@@ -315,11 +315,18 @@ class redis extends handler implements SessionHandlerInterface {
             // Make a connection to Redis server(s).
             try {
                 // Create a $redis object of a RedisCluster or Redis class.
+                //
+                // Note: the connection calls below are deliberately prefixed with @. When a host
+                // cannot be resolved, phpredis raises a PHP warning (php_network_getaddresses:
+                // getaddrinfo failed) as well as throwing. The exception is caught below and
+                // reported through debugging(), so the warning carries no extra information, and
+                // left unsuppressed it turns an expected connection failure into a failed PHPUnit
+                // run.
                 $phpredisversion = phpversion('redis');
                 if ($this->clustermode) {
                     if (version_compare($phpredisversion, '6.0.0', '>=')) {
                         // Named parameters are fully supported starting from version 6.0.0.
-                        $this->connection = new \RedisCluster(
+                        $this->connection = @new \RedisCluster(
                             name: null,
                             seeds: $trimmedservers,
                             timeout: $this->connectiontimeout, // Timeout.
@@ -329,7 +336,7 @@ class redis extends handler implements SessionHandlerInterface {
                             context: !empty($opts) ? $opts : null,
                         );
                     } else {
-                        $this->connection = new \RedisCluster(
+                        $this->connection = @new \RedisCluster(
                             null,
                             $trimmedservers,
                             $this->connectiontimeout,
@@ -344,7 +351,7 @@ class redis extends handler implements SessionHandlerInterface {
                     $this->connection = new \Redis();
                     if (version_compare($phpredisversion, '6.0.0', '>=')) {
                         // Named parameters are fully supported starting from version 6.0.0.
-                        $this->connection->connect(
+                        @$this->connection->connect(
                             host: $server,
                             port: $port,
                             timeout: $this->connectiontimeout, // Timeout.
@@ -353,7 +360,7 @@ class redis extends handler implements SessionHandlerInterface {
                             context: $opts,
                         );
                     } else {
-                        $this->connection->connect(
+                        @$this->connection->connect(
                             $server,
                             $port,
                             $this->connectiontimeout,

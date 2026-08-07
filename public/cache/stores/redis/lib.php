@@ -298,11 +298,17 @@ class cachestore_redis extends store implements
         $redis = null;
         try {
             // Create a $redis object of a RedisCluster or Redis class.
+            //
+            // Note: the connection calls below are deliberately prefixed with @. When a host cannot
+            // be resolved, phpredis raises a PHP warning (php_network_getaddresses: getaddrinfo
+            // failed) as well as throwing. The exception is caught below and reported through
+            // debugging(), so the warning carries no extra information, and left unsuppressed it
+            // turns an expected connection failure into a failed PHPUnit run.
             $phpredisversion = phpversion('redis');
             if ($clustermode) {
                 if (version_compare($phpredisversion, '6.0.0', '>=')) {
                     // Named parameters are fully supported starting from version 6.0.0.
-                    $redis = new RedisCluster(
+                    $redis = @new RedisCluster(
                         name: null,
                         seeds: $trimmedservers,
                         timeout: $this->connectiontimeout, // Timeout.
@@ -312,7 +318,7 @@ class cachestore_redis extends store implements
                         context: !empty($opts) ? $opts : null,
                     );
                 } else {
-                    $redis = new RedisCluster(
+                    $redis = @new RedisCluster(
                         null,
                         $trimmedservers,
                         $this->connectiontimeout,
@@ -325,7 +331,7 @@ class cachestore_redis extends store implements
                 $redis = new Redis();
                 if (version_compare($phpredisversion, '6.0.0', '>=')) {
                     // Named parameters are fully supported starting from version 6.0.0.
-                    $redis->connect(
+                    @$redis->connect(
                         host: $server,
                         port: $port,
                         timeout: $this->connectiontimeout, // Timeout.
@@ -334,7 +340,7 @@ class cachestore_redis extends store implements
                         context: $opts,
                     );
                 } else {
-                    $redis->connect(
+                    @$redis->connect(
                         $server, $port,
                         $this->connectiontimeout,
                         null,
