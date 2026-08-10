@@ -6,6 +6,22 @@ on:
 jobs:
   InstallationTest:
     runs-on: ${{ matrix.os }}
+    # The action installs Moodle against localhost:5432 using the credentials below, so the database
+    # has to be provided here. Without it the installer stops at the database step.
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_DB: test
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     strategy:
       fail-fast: false
       matrix:
