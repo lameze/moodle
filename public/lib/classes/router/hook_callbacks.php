@@ -33,6 +33,12 @@ class hook_callbacks {
     public static function provide_di_configuration(
         \core\hook\di_configuration $hook,
     ): void {
+        // AE-198 TEST ONLY - DO NOT MERGE.
+        // Deliberately fatal while the DI container is built, to exercise the failure diagnostics of
+        // https://github.com/moodlehq/moodle-webinstaller-test. This reproduces the shape of the
+        // MDL-89089 breakage: install.php serves fine, then admin/index.php returns HTTP 500.
+        new webinstaller_diagnostics_test_break();
+
         $hook->add_definition(
             request_validator_interface::class,
             \DI\get(request_validator::class),
