@@ -21,6 +21,8 @@ use core\tests\router\route_testcase;
 use core\url;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\ServerRequest;
+use GuzzleHttp\Psr7\Uri;
+use Slim\App;
 
 /**
  * Tests for the route utility class.
@@ -130,6 +132,281 @@ final class util_test extends route_testcase {
         $this->assertEquals(
             (new \moodle_url('/example/class/path/method/path'))->get_path(),
             $parsedurl['path'],
+        );
+    }
+
+    /**
+     * Register the parameterised route fixture with the test route loader.
+     */
+    protected function add_parameter_fixture_routes(): void {
+        global $CFG;
+
+        $this->resetAfterTest();
+
+        $CFG->routerconfigured = true;
+        self::load_fixture('core', 'router/route_with_parameters.php');
+
+        $this->add_class_routes_to_route_loader(
+            \core\fixtures\route_with_parameters::class,
+            grouppath: '/example',
+        );
+    }
+
+    /**
+     * Get the URL which the Slim route parser generates for a callable.
+     *
+     * This is what get_path_for_callable() returned before it learned to resolve paths from the
+     * route metadata, and is the behaviour that must not change.
+     *
+     * @param array $callable The callable to get the URL for
+     * @param array $params Any parameters to include in the path
+     * @param array $queryparams Any parameters to include in the query string
+     * @return url
+     */
+    protected function get_slim_path_for_callable(
+        array $callable,
+        array $params = [],
+        array $queryparams = [],
+    ): url {
+        global $CFG;
+
+        $parser = $this->get_app()->getRouteCollector()->getRouteParser();
+
+        return new url(
+            url: $parser->fullUrlFor(
+                new Uri($CFG->wwwroot),
+                util::get_route_name_for_callable($callable),
+                $params,
+                $queryparams,
+            ),
+        );
+    }
+
+    /**
+     * Check whether the Slim application has been built by the router.
+     *
+     * @param \core\router $router
+     * @return bool
+     */
+    protected function app_was_built(\core\router $router): bool {
+        return (new \ReflectionProperty(\core\router::class, 'app'))->isInitialized($router);
+    }
+
+    /**
+     * The path generated for a callable must be identical whether or not the application is built.
+     *
+     * @param string $methodname The fixture method to generate a path for
+     * @param array $params Any parameters to include in the path
+     * @param array $queryparams Any parameters to include in the query string
+     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('path_for_callable_provider')]
+    public function test_get_path_for_callable_matches_slim(
+        string $methodname,
+        array $params = [],
+        array $queryparams = [],
+    ): void {
+        $this->add_parameter_fixture_routes();
+
+        $callable = [\core\fixtures\route_with_parameters::class, $methodname];
+
+        $actual = util::get_path_for_callable($callable, $params, $queryparams);
+        $expected = $this->get_slim_path_for_callable($callable, $params, $queryparams);
+
+        $this->assertEquals((string) $expected, (string) $actual);
+    }
+
+    /**
+     * Data provider for test_get_path_for_callable_matches_slim.
+     *
+     * @return \Generator
+     */
+    public static function path_for_callable_provider(): \Generator {
+        yield 'No parameters' => [
+            'methodname' => 'plain',
+        ];
+        yield 'Query parameters only' => [
+            'methodname' => 'plain',
+            'params' => [],
+            'queryparams' => ['foo' => 'bar', 'baz' => '1'],
+        ];
+        yield 'Query parameters requiring encoding' => [
+            'methodname' => 'plain',
+            'params' => [],
+            'queryparams' => ['with space' => 'and&ampersand'],
+        ];
+        yield 'A single parameter' => [
+            'methodname' => 'simple_parameter',
+            'params' => ['id' => '42'],
+        ];
+        yield 'A single parameter given as an integer' => [
+            'methodname' => 'simple_parameter',
+            'params' => ['id' => 42],
+        ];
+        yield 'An unused parameter is ignored' => [
+            'methodname' => 'simple_parameter',
+            'params' => ['id' => '42', 'unused' => 'value'],
+        ];
+        yield 'A constrained parameter' => [
+            'methodname' => 'constrained_parameter',
+            'params' => ['id' => '42'],
+        ];
+        yield 'A path parameter which is empty' => [
+            'methodname' => 'path_parameter',
+            'params' => ['revision' => '12345', 'scriptpath' => ''],
+        ];
+        yield 'A path parameter containing slashes' => [
+            'methodname' => 'path_parameter',
+            'params' => ['revision' => '-1', 'scriptpath' => 'mod/forum/amd/src/example.js'],
+        ];
+        yield 'A path parameter with query parameters' => [
+            'methodname' => 'path_parameter',
+            'params' => ['revision' => '1', 'scriptpath' => 'core/first.js'],
+            'queryparams' => ['cache' => '0'],
+        ];
+        yield 'An optional segment which was not supplied' => [
+            'methodname' => 'optional_segment',
+        ];
+        yield 'An optional segment which was supplied' => [
+            'methodname' => 'optional_segment',
+            'params' => ['page' => '2'],
+        ];
+    }
+
+    /**
+     * The whole point of resolving paths from the route metadata is that the application, its
+     * middleware, and the full route collection do not have to be built.
+     *
+     * @param string $methodname The fixture method to generate a path for
+     * @param array $params Any parameters to include in the path
+     * @param string $expectedpath The path expected, relative to the wwwroot
+     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('path_without_app_provider')]
+    public function test_get_path_for_callable_does_not_build_the_app(
+        string $methodname,
+        array $params,
+        string $expectedpath,
+    ): void {
+        $this->add_parameter_fixture_routes();
+
+        $router = $this->get_router();
+        $this->assertFalse(
+            $this->app_was_built($router),
+            'The application was already built before the path was generated.',
+        );
+
+        $url = util::get_path_for_callable(
+            [\core\fixtures\route_with_parameters::class, $methodname],
+            $params,
+        );
+
+        $this->assertFalse(
+            $this->app_was_built($router),
+            'The Slim application was built in order to generate a path.',
+        );
+
+        $this->assertEquals(
+            (new \moodle_url($expectedpath))->get_path(),
+            parse_url((string) $url, PHP_URL_PATH),
+        );
+    }
+
+    /**
+     * Data provider for test_get_path_for_callable_does_not_build_the_app.
+     *
+     * @return \Generator
+     */
+    public static function path_without_app_provider(): \Generator {
+        yield 'No parameters' => [
+            'methodname' => 'plain',
+            'params' => [],
+            'expectedpath' => '/example/plain/path',
+        ];
+        yield 'A single parameter' => [
+            'methodname' => 'simple_parameter',
+            'params' => ['id' => '42'],
+            'expectedpath' => '/example/item/42',
+        ];
+        yield 'A constraint containing square brackets is not an optional segment' => [
+            'methodname' => 'constrained_parameter',
+            'params' => ['id' => '42'],
+            'expectedpath' => '/example/constrained/42',
+        ];
+        yield 'A path parameter keeps its slashes' => [
+            'methodname' => 'path_parameter',
+            'params' => ['revision' => '1', 'scriptpath' => 'core/example.js'],
+            'expectedpath' => '/example/serve/1/core/example.js',
+        ];
+    }
+
+    /**
+     * Optional segments have to be expanded by the Slim route parser, so the application is built.
+     */
+    public function test_get_path_for_callable_falls_back_for_optional_segments(): void {
+        $this->add_parameter_fixture_routes();
+
+        $router = $this->get_router();
+
+        util::get_path_for_callable(
+            [\core\fixtures\route_with_parameters::class, 'optional_segment'],
+        );
+
+        $this->assertTrue(
+            $this->app_was_built($router),
+            'A pattern with an optional segment must be resolved by the Slim route parser.',
+        );
+    }
+
+    /**
+     * A missing parameter must produce the same error as it did before, which means falling back to
+     * the Slim route parser rather than generating a path containing an unfilled placeholder.
+     */
+    public function test_get_path_for_callable_falls_back_for_a_missing_parameter(): void {
+        $this->add_parameter_fixture_routes();
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Missing data for URL segment: id');
+
+        util::get_path_for_callable(
+            [\core\fixtures\route_with_parameters::class, 'simple_parameter'],
+        );
+    }
+
+    /**
+     * A route loader which does not extend the abstract loader cannot be asked for its patterns, so
+     * paths must still be resolved through the application.
+     */
+    public function test_get_path_for_callable_falls_back_for_an_unknown_loader(): void {
+        $this->add_parameter_fixture_routes();
+
+        // Wrap the test loader in one which does not extend the abstract loader.
+        $wrapped = \core\di::get(route_loader_interface::class);
+        // phpcs:ignore
+        \core\di::set(route_loader_interface::class, new class ($wrapped) implements route_loader_interface {
+            // phpcs:ignore
+            public function __construct(
+                /** @var route_loader_interface The loader to delegate to */
+                protected route_loader_interface $loader,
+            ) {
+            }
+
+            // phpcs:ignore
+            public function configure_routes(App $app): array {
+                return $this->loader->configure_routes($app);
+            }
+        });
+
+        $router = $this->get_router();
+        $callable = [\core\fixtures\route_with_parameters::class, 'plain'];
+
+        $url = util::get_path_for_callable($callable);
+
+        $this->assertTrue(
+            $this->app_was_built($router),
+            'A loader which cannot report its patterns must be resolved by the Slim route parser.',
+        );
+        $this->assertEquals(
+            (string) $this->get_slim_path_for_callable($callable),
+            (string) $url,
         );
     }
 

@@ -138,4 +138,129 @@ final class abstract_route_loader_test extends \advanced_testcase {
         $name = $loader->call($route, fn () => '');
         $this->assertEquals(null, $name);
     }
+
+    /**
+     * A loader which does not know its patterns must say so, rather than guessing.
+     */
+    public function test_get_pattern_for_callable_defaults_to_null(): void {
+        // phpcs:ignore
+        $loader = new class() extends abstract_route_loader {
+        };
+
+        $this->assertNull($loader->get_pattern_for_callable(['some\class', 'method']));
+        $this->assertNull($loader->get_pattern_for_callable('some\class::method'));
+    }
+
+    /**
+     * Get a loader exposing the protected callable and pattern helpers.
+     *
+     * @return abstract_route_loader
+     */
+    protected function get_helper_loader(): abstract_route_loader {
+        // phpcs:ignore
+        return new class() extends abstract_route_loader {
+            // phpcs:ignore
+            public function normalise(mixed $callable): ?array {
+                return self::normalise_callable($callable);
+            }
+
+            // phpcs:ignore
+            public function find(array $callable, array $groups): ?string {
+                return self::find_pattern_in_groups($callable, $groups);
+            }
+        };
+    }
+
+    /**
+     * Test that callables are normalised into a comparable form.
+     *
+     * @param mixed $callable
+     * @param null|array $expected
+     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('normalise_callable_provider')]
+    public function test_normalise_callable(
+        mixed $callable,
+        ?array $expected,
+    ): void {
+        $this->assertEquals($expected, $this->get_helper_loader()->normalise($callable));
+    }
+
+    /**
+     * Data provider for test_normalise_callable.
+     *
+     * @return \Generator
+     */
+    public static function normalise_callable_provider(): \Generator {
+        yield 'An array callable' => [
+            'callable' => ['some\class', 'method'],
+            'expected' => ['some\class', 'method'],
+        ];
+        yield 'A string callable' => [
+            'callable' => 'some\class::method',
+            'expected' => ['some\class', 'method'],
+        ];
+        yield 'A leading backslash is removed from an array callable' => [
+            'callable' => ['\some\class', 'method'],
+            'expected' => ['some\class', 'method'],
+        ];
+        yield 'A leading backslash is removed from a string callable' => [
+            'callable' => '\some\class::method',
+            'expected' => ['some\class', 'method'],
+        ];
+        yield 'A string without a method' => [
+            'callable' => 'some\class',
+            'expected' => null,
+        ];
+        yield 'A closure' => [
+            'callable' => fn () => null,
+            'expected' => null,
+        ];
+        yield 'Nothing at all' => [
+            'callable' => null,
+            'expected' => null,
+        ];
+        yield 'An array of the wrong length' => [
+            'callable' => ['some\class', 'method', 'extra'],
+            'expected' => null,
+        ];
+        yield 'An instance callable' => [
+            'callable' => [new \stdClass(), 'method'],
+            'expected' => null,
+        ];
+    }
+
+    /**
+     * Test that a callable is matched to its pattern, with the group prefix applied.
+     */
+    public function test_find_pattern_in_groups(): void {
+        $loader = $this->get_helper_loader();
+
+        $groups = [
+            ['/api/rest/v2', [
+                ['callable' => ['some\api', 'method'], 'pattern' => '/example/path'],
+            ]],
+            ['', [
+                ['callable' => 'some\page::method', 'pattern' => '/page/path'],
+                ['callable' => ['some\page', 'other'], 'pattern' => '/other/path'],
+            ]],
+            ['/', [
+                ['callable' => ['some\shortlink', 'method'], 'pattern' => '/short/path'],
+            ]],
+        ];
+
+        // The group prefix is applied.
+        $this->assertEquals('/api/rest/v2/example/path', $loader->find(['some\api', 'method'], $groups));
+
+        // An empty prefix leaves the pattern alone, and a route later in a group is still found.
+        $this->assertEquals('/page/path', $loader->find(['some\page', 'method'], $groups));
+        $this->assertEquals('/other/path', $loader->find(['some\page', 'other'], $groups));
+
+        // Duplicate slashes introduced by the prefix are collapsed.
+        $this->assertEquals('/short/path', $loader->find(['some\shortlink', 'method'], $groups));
+
+        // A callable which is not routed has no pattern.
+        $this->assertNull($loader->find(['some\api', 'unrouted'], $groups));
+        $this->assertNull($loader->find(['some\unknown', 'method'], $groups));
+        $this->assertNull($loader->find(['some\api', 'method'], []));
+    }
 }

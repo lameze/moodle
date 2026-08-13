@@ -88,4 +88,49 @@ final class route_loader_test extends route_testcase {
         $route = $app->getRouteResolver()->resolveRoute($identifier);
         $this->assertInstanceOf(\Slim\Interfaces\RouteInterface::class, $route);
     }
+
+    /**
+     * The pattern reported for a callable must be the pattern that the route was actually
+     * registered with, for every route in core.
+     *
+     * This is what allows a path to be generated without building the application, so any route
+     * whose pattern is assembled differently by the two paths would generate a different URL.
+     */
+    public function test_get_pattern_for_callable_matches_the_registered_routes(): void {
+        $loader = new route_loader();
+
+        $app = $this->get_simple_app();
+        $loader->configure_routes($app);
+
+        $patterns = [];
+        foreach ($app->getRouteCollector()->getRoutes() as $route) {
+            $callable = $route->getCallable();
+            if (!is_array($callable) || count($callable) !== 2 || !is_string($callable[0])) {
+                continue;
+            }
+            $patterns[implode('::', $callable)] = $route->getPattern();
+        }
+
+        // There should be a meaningful number of routes to compare.
+        $this->assertGreaterThan(1, count($patterns));
+
+        foreach ($patterns as $callable => $pattern) {
+            $this->assertEquals(
+                $pattern,
+                $loader->get_pattern_for_callable($callable),
+                "The pattern reported for {$callable} is not the one it was registered with.",
+            );
+        }
+    }
+
+    /**
+     * A callable which is not routed has no pattern.
+     */
+    public function test_get_pattern_for_callable_unknown(): void {
+        $loader = new route_loader();
+
+        $this->assertNull($loader->get_pattern_for_callable([route_loader::class, 'configure_routes']));
+        $this->assertNull($loader->get_pattern_for_callable('not\a\class::method'));
+        $this->assertNull($loader->get_pattern_for_callable('not a callable'));
+    }
 }

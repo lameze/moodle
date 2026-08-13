@@ -159,6 +159,67 @@ abstract class abstract_route_loader {
     }
 
     /**
+     * Get the route pattern for the specified callable, including any route group prefix.
+     *
+     * Loaders which know their routes without building the application should override this. It
+     * allows a path to be resolved without standing up the Slim application, its middleware, and
+     * the full route collection.
+     *
+     * @param array|string $callable The callable to get the pattern for
+     * @return null|string The pattern, or null if it could not be determined
+     */
+    public function get_pattern_for_callable(
+        array|string $callable,
+    ): ?string {
+        return null;
+    }
+
+    /**
+     * Normalise a callable into a [class, method] pair for comparison.
+     *
+     * @param mixed $callable
+     * @return null|array The normalised callable, or null if it is not a class/method pair
+     */
+    protected static function normalise_callable(mixed $callable): ?array {
+        if (is_string($callable) && str_contains($callable, '::')) {
+            $callable = explode('::', $callable, 2);
+        }
+
+        if (!is_array($callable) || count($callable) !== 2) {
+            return null;
+        }
+
+        if (!is_string($callable[0]) || !is_string($callable[1])) {
+            return null;
+        }
+
+        return [ltrim($callable[0], '\\'), $callable[1]];
+    }
+
+    /**
+     * Find the pattern matching a callable in a set of route groups.
+     *
+     * @param array $callable The normalised callable to look for
+     * @param array $groups An array of [group prefix, route data] pairs
+     * @return null|string
+     */
+    protected static function find_pattern_in_groups(
+        array $callable,
+        array $groups,
+    ): ?string {
+        foreach ($groups as [$prefix, $routes]) {
+            foreach ($routes as $route) {
+                if (self::normalise_callable($route['callable']) === $callable) {
+                    // Remove any duplicate slashes introduced by the group prefix.
+                    return preg_replace('@/+@', '/', $prefix . $route['pattern']);
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Normalise the component for use as part of the path.
      *
      * If the component is a subsystem, the `core_` prefix will be removed.

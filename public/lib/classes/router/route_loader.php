@@ -30,6 +30,18 @@ use Slim\Routing\RouteCollectorProxy;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class route_loader extends abstract_route_loader implements route_loader_interface {
+    /**
+     * @var array The route data for the OpenAPI documentation.
+     *
+     * Unlike every other API route this one is not discovered from a #[route] attribute, so it is
+     * described here and shared by everything which needs to know about it.
+     */
+    protected const APIDOCS_ROUTE = [
+        'methods' => ['GET'],
+        'pattern' => '/openapi.json',
+        'callable' => [apidocs::class, 'openapi_docs'],
+    ];
+
     #[\Override]
     public function configure_routes(App $app): array {
         return [
@@ -38,6 +50,25 @@ class route_loader extends abstract_route_loader implements route_loader_interfa
             route_loader_interface::ROUTE_GROUP_SHIM => $this->configure_shim_routes($app),
             route_loader_interface::ROUTE_GROUP_SHORTLINK => $this->configure_shortlink_routes($app),
         ];
+    }
+
+    #[\Override]
+    public function get_pattern_for_callable(
+        array|string $callable,
+    ): ?string {
+        $callable = self::normalise_callable($callable);
+        if ($callable === null) {
+            return null;
+        }
+
+        // All four route sets are cached in MUC and already hold the pattern that is handed to
+        // Slim. Only the group prefix has to be re-applied.
+        return self::find_pattern_in_groups($callable, [
+            [route_loader_interface::ROUTE_GROUP_API, [...$this->get_all_api_routes(), self::APIDOCS_ROUTE]],
+            ['', $this->get_all_standard_routes()],
+            ['', $this->get_all_shimmed_routes()],
+            ['', $this->get_all_shortlink_routes()],
+        ]);
     }
 
     /**
@@ -58,9 +89,8 @@ class route_loader extends abstract_route_loader implements route_loader_interfa
             }
 
             // Add the OpenAPI docs route.
-            $callable = [apidocs::class, 'openapi_docs'];
-            $slimroute = $group->get('/openapi.json', $callable);
-            $this->set_route_name_for_callable($slimroute, $callable);
+            $slimroute = $group->map(...self::APIDOCS_ROUTE);
+            $this->set_route_name_for_callable($slimroute, self::APIDOCS_ROUTE['callable']);
         });
     }
 

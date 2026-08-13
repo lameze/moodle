@@ -53,6 +53,23 @@ class mocking_route_loader extends abstract_route_loader implements route_loader
         return $routegroups;
     }
 
+    #[\Override]
+    public function get_pattern_for_callable(
+        array|string $callable,
+    ): ?string {
+        $callable = self::normalise_callable($callable);
+        if ($callable === null) {
+            return null;
+        }
+
+        $groups = [];
+        foreach ($this->groupdata as $grouppath => $groupdata) {
+            $groups[] = [$grouppath, array_column($groupdata, 'mapdata')];
+        }
+
+        return self::find_pattern_in_groups($callable, $groups);
+    }
+
     /**
      * Add a mocked route to the loader.
      *

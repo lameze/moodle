@@ -211,6 +211,13 @@ class util {
     ): url {
         global $CFG;
 
+        // Most paths can be built from the route metadata alone, which the route loader already
+        // caches. Doing so avoids constructing the entire Slim application, its middleware stack,
+        // and the full route collection just to generate a single URL.
+        if ($url = self::attempt_get_path_without_app($callable, $params, $queryparams)) {
+            return $url;
+        }
+
         $router = \core\di::get(\core\router::class);
         $app = $router->get_app();
         $parser = $app->getRouteCollector()->getRouteParser();
@@ -225,6 +232,91 @@ class util {
                 $queryparams,
             ),
         );
+    }
+
+    /**
+     * Attempt to build the path for a callable without constructing the Slim application.
+     *
+     * The route loader already knows the pattern for every route it registers, and caches it. Where
+     * that pattern is simple enough to fill in directly there is no need to build the application
+     * just to reach the route parser.
+     *
+     * Anything which cannot be resolved safely returns null, and the caller falls back to resolving
+     * the path through Slim as before. That covers patterns with optional segments, parameters
+     * which were not supplied, and any route loader which does not expose its patterns.
+     *
+     * @param string|array|callable $callable The callable to get the URI for
+     * @param array $params Any parameters to include in the path
+     * @param array $queryparams Any parameters to include in the query string
+     * @return null|url The url, or null if it could not be built without the application
+     */
+    protected static function attempt_get_path_without_app(
+        string|array|callable $callable,
+        array $params,
+        array $queryparams,
+    ): ?url {
+        global $CFG;
+
+        $loader = \core\di::get(route_loader_interface::class);
+        if (!($loader instanceof abstract_route_loader)) {
+            // A third-party loader which cannot tell us its patterns.
+            return null;
+        }
+
+        $pattern = $loader->get_pattern_for_callable($callable);
+        if ($pattern === null) {
+            return null;
+        }
+
+        // Check for optional segments, which the Slim route parser must expand. Placeholders are
+        // removed first because a parameter constraint may itself contain brackets, for example
+        // `{revision:[0-9-]+}`.
+        if (str_contains(preg_replace('/\{[^{}]*\}/', '', $pattern), '[')) {
+            return null;
+        }
+
+        $missingparam = false;
+        $path = preg_replace_callback(
+            '/\{(\w+)(?::[^{}]*)?\}/',
+            function (array $matches) use ($params, &$missingparam): string {
+                if (!array_key_exists($matches[1], $params)) {
+                    $missingparam = true;
+                    return '';
+                }
+
+                // Note: Slim substitutes the raw value without encoding it, and some routes rely on
+                // that, for example the ESM loader whose path parameter contains slashes.
+                return (string) $params[$matches[1]];
+            },
+            $pattern,
+        );
+
+        if ($missingparam || str_contains($path, '{') || str_contains($path, '}')) {
+            // A required parameter was not supplied, or the pattern was more complex than this can
+            // safely handle. Fall back so that the existing behaviour, including its errors, applies.
+            return null;
+        }
+
+        $wwwroot = parse_url($CFG->wwwroot);
+        $host = "{$wwwroot['scheme']}://{$wwwroot['host']}";
+        if (isset($wwwroot['port'])) {
+            $host .= ":{$wwwroot['port']}";
+        }
+
+        // Note: the basepath is available without building the application.
+        $basepath = \core\di::get(\core\router::class)->basepath;
+
+        // Note: the query string is assembled exactly as the Slim route parser assembles it, and
+        // passed to url() as part of the string, so that both routes through this method give
+        // byte-identical results. Handing url() the parameters as an array instead would be more
+        // direct, but parse_str() rewrites some characters in parameter names, so the two would
+        // not always agree.
+        $url = $host . $basepath . $path;
+        if ($queryparams) {
+            $url .= '?' . http_build_query($queryparams);
+        }
+
+        return new url(url: $url);
     }
 
     /**
