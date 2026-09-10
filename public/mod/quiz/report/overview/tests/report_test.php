@@ -261,6 +261,55 @@ final class report_test extends \advanced_testcase {
     }
 
     /**
+     * A column the report always selects must not be selected again as an identity field.
+     *
+     * idnumber, institution and department are always needed by the report, and any of them can
+     * also be configured in showuseridentity. If the column ends up in the select list twice the
+     * report query itself still runs, but wrapping it in a derived table to count the rows fails
+     * on MySQL, which rejects duplicate column names there.
+     */
+    public function test_base_sql_selects_each_identity_column_once(): void {
+        global $DB;
+        $this->resetAfterTest();
+        // The identity fields are only added to the query for a user who can see them.
+        $this->setAdminUser();
+
+        set_config('showuseridentity', 'username,idnumber,institution,department,email');
+
+        $generator = $this->getDataGenerator();
+        $course = $generator->create_course();
+        $quizgenerator = $generator->get_plugin_generator('mod_quiz');
+        $quiz = $quizgenerator->create_instance(['course' => $course->id,
+                'grade' => 100.0, 'sumgrades' => 10.0]);
+
+        $cm = get_coursemodule_from_instance('quiz', $quiz->id);
+        $context = \context_module::instance($cm->id);
+        $studentsjoins = get_enrolled_with_capabilities_join($context, '',
+                ['mod/quiz:attempt', 'mod/quiz:reviewmyattempts']);
+
+        $reportoptions = new quiz_overview_options('overview', $quiz, $cm, null);
+        $table = new quiz_overview_table($quiz, $context, quiz_report_qm_filter_select($quiz),
+                $reportoptions, new \core\dml\sql_join(), $studentsjoins, [], null);
+        $table->define_columns(['fullname']);
+        $table->define_baseurl(new \moodle_url('/mod/quiz/report.php'));
+        $table->setup();
+
+        [$fields, $from, $where, $params] = $table->base_sql($studentsjoins);
+
+        // Checked directly, because only MySQL treats a duplicate as an error, so merely running
+        // the count query below would not catch a regression on any other database.
+        foreach (['u.idnumber', 'u.institution', 'u.department', 'u.email'] as $column) {
+            $this->assertSame(1, substr_count($fields, $column),
+                    "Expected $column to be selected exactly once, in: $fields");
+        }
+
+        // On MySQL the duplicate is reported by the count query, which wraps the select in a
+        // derived table, so run that too. Just verify that this does not cause a fatal error.
+        $DB->count_records_sql(
+                "SELECT COUNT(1) FROM (SELECT $fields FROM $from WHERE $where) temp", $params);
+    }
+
+    /**
      * Bands provider.
      * @return array
      */

@@ -529,20 +529,20 @@ abstract class attempts_report_table extends \table_sql {
             $fields .= "\n(CASE WHEN $this->qmsubselect THEN 1 ELSE 0 END) AS gradedattempt,";
         }
 
-        $userfieldsapi = \core_user\fields::for_identity($this->context)->with_name()
-                ->excluding('id', 'picture', 'imagealt', 'email');
-        $userfields = $userfieldsapi->get_sql('u', true, '', '', false);
+        // Every user column is requested through the fields API, rather than hard-coding the ones
+        // this report always needs and appending the identity fields on top. idnumber, institution
+        // and department can be identity fields, so the two lists could name the same column and
+        // it would be selected twice. That is harmless in the report query itself, but the row
+        // count wraps it in a derived table, and MySQL rejects duplicate column names there.
+        // The fields API keys its list by field name, so a column can only ever appear once.
+        $userfieldsapi = \core_user\fields::for_identity($this->context)->with_name()->with_userpic()
+                ->including('idnumber', 'institution', 'department');
+        $userfields = $userfieldsapi->get_sql('u', true, '', 'userid', false);
 
         $fields .= '
                 quiza.uniqueid AS usageid,
                 quiza.id AS attempt,
-                u.id AS userid,
-                u.idnumber,
-                u.picture,
-                u.imagealt,
-                u.institution,
-                u.department,
-                u.email,' . $userfields->selects . ',
+                ' . $userfields->selects . ',
                 quiza.state,
                 quiza.sumgrades,
                 quiza.timefinish,
