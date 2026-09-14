@@ -26,6 +26,7 @@ namespace mod_forum\local\vaults;
 
 defined('MOODLE_INTERNAL') || die();
 
+use Generator;
 use mod_forum\local\entities\forum as forum_entity;
 use mod_forum\local\entities\post as post_entity;
 use mod_forum\local\factories\entity as entity_factory;
@@ -162,6 +163,67 @@ class post extends db_table_vault {
         if (count($filters) == 0) {
             return [];
         }
+
+        [$sql, $params] = $this->generate_filters_sql($user, $filters, $canseeprivatereplies, $orderby);
+        $records = $this->get_db()->get_records_sql($sql, $params);
+
+        return $this->transform_db_records_to_entities($records);
+    }
+
+    /**
+     * The method lazily returns posts based on a set of filters.
+     *
+     * This behaves like {@see get_from_filters} except that the posts are read from the database one at a
+     * time, rather than the whole result set being held in memory at once. It should be preferred whenever
+     * the number of matching posts is unbounded, such as when exporting a forum.
+     *
+     * Note the posts are only fetched while the returned generator is being iterated over, and the
+     * underlying recordset is closed as soon as the iteration finishes or the generator is discarded.
+     *
+     * @param stdClass $user Only used when restricting private replies
+     * @param array $filters Export filters, see {@see get_from_filters} for the list of valid filters
+     * @param bool $canseeprivatereplies Whether this user can see all private replies or not
+     * @param string $orderby Order the results
+     * @return Generator|post_entity[]
+     */
+    public function get_from_filters_iterator(
+        stdClass $user,
+        array $filters,
+        bool $canseeprivatereplies,
+        string $orderby = ''
+    ): Generator {
+        if (count($filters) == 0) {
+            return;
+        }
+
+        [$sql, $params] = $this->generate_filters_sql($user, $filters, $canseeprivatereplies, $orderby);
+        $entityfactory = $this->get_entity_factory();
+
+        $recordset = $this->get_db()->get_recordset_sql($sql, $params);
+        try {
+            foreach ($recordset as $record) {
+                yield $entityfactory->get_post_from_stdclass($record);
+            }
+        } finally {
+            $recordset->close();
+        }
+    }
+
+    /**
+     * Build the SQL and parameters used to select the posts matching a set of filters.
+     *
+     * @param stdClass $user Only used when restricting private replies
+     * @param array $filters Export filters, see {@see get_from_filters} for the list of valid filters
+     * @param bool $canseeprivatereplies Whether this user can see all private replies or not
+     * @param string $orderby Order the results
+     * @return array The SQL statement, and the parameters to execute it with
+     */
+    private function generate_filters_sql(
+        stdClass $user,
+        array $filters,
+        bool $canseeprivatereplies,
+        string $orderby = ''
+    ): array {
         $wheresql = [];
         $params = [];
         $alias = $this->get_table_alias();
@@ -210,10 +272,7 @@ class post extends db_table_vault {
             $orderbysql = '';
         }
 
-        $sql = $this->generate_get_records_sql($wheresql, $orderbysql);
-        $records = $this->get_db()->get_records_sql($sql, $params);
-
-        return $this->transform_db_records_to_entities($records);
+        return [$this->generate_get_records_sql($wheresql, $orderbysql), $params];
     }
 
     /**

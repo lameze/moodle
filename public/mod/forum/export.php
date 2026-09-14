@@ -21,6 +21,9 @@
  * @copyright  2019 Simey Lameze <simey@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+use mod_forum\local\entities\post as post_entity;
+
 define('NO_OUTPUT_BUFFERING', true);
 
 require_once(__DIR__ . '/../../config.php');
@@ -110,9 +113,12 @@ if ($form->is_cancelled()) {
     }
 
     // Retrieve posts based on the selected filters, note if forum has no discussions then there is nothing to export.
+    // The posts are read from the database one at a time as they are written out, so that exporting a busy forum
+    // doesn't require every post to be held in memory at once.
     if (!empty($filters['discussionids'])) {
         $postvault = $vaultfactory->get_post_vault();
-        $posts = $postvault->get_from_filters($USER, $filters, $capabilitymanager->can_view_any_private_reply($USER));
+        $posts = $postvault->get_from_filters_iterator($USER, $filters,
+            $capabilitymanager->can_view_any_private_reply($USER));
     } else {
         $posts = [];
     }
@@ -127,16 +133,26 @@ if ($form->is_cancelled()) {
     $canviewfullname = has_capability('moodle/site:viewfullnames', $context);
 
     $datamapper = $legacydatamapperfactory->get_post_data_mapper();
-    $exportdata = new ArrayObject($datamapper->to_legacy_objects($posts));
-    $iterator = $exportdata->getIterator();
+
+    // Authors are looked up as each post is written out, so remember the names we have already resolved rather
+    // than re-reading the same user from the database once per post they wrote.
+    $fullnames = [];
+    $getfullname = function(int $userid) use (&$fullnames, $canviewfullname): string {
+        if (!isset($fullnames[$userid])) {
+            $fullnames[$userid] = fullname(\core_user::get_user($userid), $canviewfullname);
+        }
+
+        return $fullnames[$userid];
+    };
 
     $filename = clean_filename('discussion');
     \core\dataformat::download_data(
         $filename,
         $dataformat,
         $fields,
-        $iterator,
-        function($exportdata) use ($fields, $striphtml, $humandates, $canviewfullname, $context) {
+        $posts,
+        function(post_entity $post) use ($datamapper, $getfullname, $fields, $striphtml, $humandates, $context) {
+            $exportdata = $datamapper->to_legacy_object($post);
             $data = new stdClass();
 
             foreach ($fields as $field) {
@@ -144,13 +160,11 @@ if ($form->is_cancelled()) {
                 $data->$field = $exportdata->$field ?? null;
 
                 if ($field == 'userfullname') {
-                    $user = \core_user::get_user($data->userid);
-                    $data->userfullname = fullname($user, $canviewfullname);
+                    $data->userfullname = $getfullname($data->userid);
                 }
 
                 if ($field == 'privatereplytofullname' && !empty($data->privatereplyto)) {
-                    $user = \core_user::get_user($data->privatereplyto);
-                    $data->privatereplytofullname = fullname($user, $canviewfullname);
+                    $data->privatereplytofullname = $getfullname($data->privatereplyto);
                 }
 
                 if ($field == 'message') {

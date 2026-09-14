@@ -1133,4 +1133,99 @@ final class vaults_post_test extends \advanced_testcase {
         $this->assertArrayHasKey($otherpost->id, $entities);
 
     }
+
+    /**
+     * Test get_from_filters_iterator returns the same posts as get_from_filters, in the requested order.
+     *
+     * @covers ::get_from_filters_iterator
+     */
+    public function test_get_from_filters_iterator(): void {
+        $this->resetAfterTest();
+
+        $datagenerator = $this->getDataGenerator();
+        $course = $datagenerator->create_course();
+        [$user, $user2] = $this->helper_create_users($course, 2, 'student');
+        $forum = $datagenerator->create_module('forum', ['course' => $course->id]);
+
+        [$discussion1, $post1] = $this->helper_post_to_forum($forum, $user);
+        $post2 = $this->helper_reply_to_post($post1, $user2);
+        $post3 = $this->helper_reply_to_post($post1, $user);
+
+        [$discussion2, $post4] = $this->helper_post_to_forum($forum, $user);
+        $filters = ['discussionids' => [$discussion1->id, $discussion2->id]];
+
+        $entities = iterator_to_array($this->vault->get_from_filters_iterator($user, $filters, true, 'id ASC'), false);
+
+        $this->assertCount(4, $entities);
+        $this->assertContainsOnlyInstancesOf(\mod_forum\local\entities\post::class, $entities);
+        $this->assertEquals(
+            [$post1->id, $post2->id, $post3->id, $post4->id],
+            array_map(fn($entity) => $entity->get_id(), $entities)
+        );
+
+        // Reversing the order reverses the posts.
+        $entities = iterator_to_array($this->vault->get_from_filters_iterator($user, $filters, true, 'id DESC'), false);
+        $this->assertEquals(
+            [$post4->id, $post3->id, $post2->id, $post1->id],
+            array_map(fn($entity) => $entity->get_id(), $entities)
+        );
+
+        // Filtering by user is respected.
+        $filters['userids'] = [$user->id];
+        $entities = iterator_to_array($this->vault->get_from_filters_iterator($user, $filters, true, 'id ASC'), false);
+        $this->assertEquals(
+            [$post1->id, $post3->id, $post4->id],
+            array_map(fn($entity) => $entity->get_id(), $entities)
+        );
+    }
+
+    /**
+     * Test get_from_filters_iterator when no filters were provided.
+     *
+     * @covers ::get_from_filters_iterator
+     */
+    public function test_get_from_filters_iterator_empty(): void {
+        $this->resetAfterTest();
+
+        $course = $this->getDataGenerator()->create_course();
+        [$student] = $this->helper_create_users($course, 1, 'student');
+        $forum = $this->getDataGenerator()->create_module('forum', ['course' => $course->id]);
+        $this->helper_post_to_forum($forum, $student);
+
+        $this->assertEquals([], iterator_to_array($this->vault->get_from_filters_iterator($student, [], false)));
+    }
+
+    /**
+     * Ensure get_from_filters_iterator only returns the private replies that the given user can see.
+     *
+     * @covers ::get_from_filters_iterator
+     */
+    public function test_get_from_filters_iterator_private_replies(): void {
+        $this->resetAfterTest();
+
+        $course = $this->getDataGenerator()->create_course();
+        $forum = $this->getDataGenerator()->create_module('forum', ['course' => $course->id]);
+
+        [$student, $otherstudent] = $this->helper_create_users($course, 2, 'student');
+        [$teacher] = $this->helper_create_users($course, 1, 'teacher');
+
+        [$discussion, $post] = $this->helper_post_to_forum($forum, $student);
+        $privatereply = $this->helper_reply_to_post($post, $teacher, ['privatereplyto' => $student->id]);
+
+        $filters = ['discussionids' => [$discussion->id]];
+        $getids = function(\stdClass $user, bool $canseeprivatereplies) use ($filters): array {
+            $entities = iterator_to_array(
+                $this->vault->get_from_filters_iterator($user, $filters, $canseeprivatereplies, 'id ASC'),
+                false
+            );
+            return array_map(fn($entity) => $entity->get_id(), $entities);
+        };
+
+        // The private reply is visible to its recipient, and to anyone able to see all private replies.
+        $this->assertEquals([$post->id, $privatereply->id], $getids($student, false));
+        $this->assertEquals([$post->id, $privatereply->id], $getids($otherstudent, true));
+
+        // It is hidden from an unrelated user who cannot see all private replies.
+        $this->assertEquals([$post->id], $getids($otherstudent, false));
+    }
 }
