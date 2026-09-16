@@ -171,12 +171,19 @@ UpdatableMembersCombo.prototype.refreshMembers = function () {
     if(singleSelection) {
         var sUrl = this.wwwRoot + "/group/index.php?id=" + this.courseId + "&group=" + groupId + "&action=ajax_getmembersingroup";
         var self = this;
+        // Loading the 'io' module is itself a network request, and nothing is registered as
+        // pending JS until Y.io() actually starts. Without this marker Behat sees an idle page
+        // during that gap and asserts against the members list emptied just above, which fails
+        // intermittently under CI load.
+        M.util.js_pending('core_group/refreshMembers');
         YUI().use('io', function (Y) {
             Y.io(sUrl, {
                 method: 'GET',
                 context: this,
                 on: self.connectCallback
             });
+            // Y.io() fires io:start synchronously, so 'io:<id>' now covers the request.
+            M.util.js_complete('core_group/refreshMembers');
         });
     }
 };
