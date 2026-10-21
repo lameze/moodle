@@ -36,7 +36,11 @@ Feature: Quiz password required for Safe Exam Browser
       | Require password                     | <password>    |
     And I press "Save and return to course"
     Then I should not see "Current settings require quizzes using the Safe Exam Browser to have a quiz password set."
-    And I should see "Quiz 1"
+    # Reopen the form, so that we check the settings were really saved. The redisplayed
+    # form after a failed save would also pass a plain "I should see" check.
+    And I am on the "Quiz 1" "quiz activity editing" page
+    And the field "Require the use of Safe Exam Browser" matches value "<seb_setting>"
+    And the field "Require password" matches value "<password>"
 
     Examples:
       | seb_setting              | password    |
