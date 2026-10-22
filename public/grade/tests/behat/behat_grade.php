@@ -318,4 +318,39 @@ class behat_grade extends behat_base {
         $this->i_navigate_to_in_the_course_gradebook("More > Export");
         $this->execute('behat_forms::i_set_the_field_to', [get_string('exportas', 'grades'), $gradeexportoption]);
     }
+
+    /**
+     * Sets which aggregation methods are offered when editing a grade category.
+     *
+     * The methods are listed by name, as they appear in the "Aggregation" menu. Only the ones listed are made
+     * visible, so a test that needs the full set has to list all nine of them.
+     *
+     * Examples:
+     * - the following grade aggregation methods are visible:
+     *     | Natural        |
+     *     | Mean of grades |
+     *
+     * @Given /^the following grade aggregation methods are visible:$/
+     * @param TableNode $data The names of the aggregation methods to make visible, one per row.
+     */
+    public function the_following_grade_aggregation_methods_are_visible(TableNode $data) {
+        global $CFG;
+
+        // Not autoloaded, grade_helper is a legacy class.
+        require_once($CFG->dirroot . '/grade/lib.php');
+
+        $keysbyname = array_flip(grade_helper::get_aggregation_strings());
+
+        $keys = [];
+        foreach ($data->getRows() as $row) {
+            $name = trim($row[0]);
+            if (!isset($keysbyname[$name])) {
+                throw new coding_exception("'{$name}' is not a grade aggregation method. Expected one of: " .
+                    implode(', ', array_keys($keysbyname)));
+            }
+            $keys[] = $keysbyname[$name];
+        }
+
+        set_config('grade_aggregations_visible', implode(',', $keys));
+    }
 }
