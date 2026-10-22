@@ -16,9 +16,11 @@ Feature: Extra credit contributions are normalised when going out of bounds
       | user | course | role |
       | teacher1 | C1 | editingteacher |
       | student1 | C1 | student |
+    And the following grade aggregation methods are visible:
+      | Simple weighted mean of grades      |
+      | Mean of grades (with extra credits) |
+      | Natural                             |
     And I log in as "admin"
-    And I set the following administration settings values:
-      | grade_aggregations_visible | Simple weighted mean of grades,Mean of grades (with extra credits),Natural |
     And I am on the "Course 1" "grades > gradebook setup" page
     And I choose the "Add grade item" item in the "Add" action menu
     And I set the following fields to these values:

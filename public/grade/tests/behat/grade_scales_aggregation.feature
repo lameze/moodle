@@ -16,10 +16,17 @@ Feature: Control the aggregation of the scales
       | user     | course | role           |
       | teacher1 | C1     | editingteacher |
       | student1 | C1     | student        |
+    And the following grade aggregation methods are visible:
+      | Mean of grades                      |
+      | Weighted mean of grades             |
+      | Simple weighted mean of grades      |
+      | Mean of grades (with extra credits) |
+      | Median of grades                    |
+      | Lowest grade                        |
+      | Highest grade                       |
+      | Mode of grades                      |
+      | Natural                             |
     And I log in as "admin"
-    And I set the following administration settings values:
-      | grade_aggregations_visible | Mean of grades,Weighted mean of grades,Simple weighted mean of grades,Mean of grades (with extra credits),Median of grades,Lowest grade,Highest grade,Mode of grades,Natural |
-      | grade_report_user_showcontributiontocoursetotal | 1 |
     And I navigate to "Grades > Scales" in site administration
     And I press "Add a new scale"
     And I set the following fields to these values:
@@ -33,7 +40,8 @@ Feature: Control the aggregation of the scales
       | itemname | course | scale       |
       | Scale me | C1     | Letterscale |
     And the following config values are set as admin:
-      | grade_includescalesinaggregation | 0 |
+      | grade_includescalesinaggregation                | 0 |
+      | grade_report_user_showcontributiontocoursetotal | 1 |
 
   Scenario Outline: Scales can be excluded from aggregation
     Given I am on the "Course 1" "grades > Grader report > View" page logged in as "teacher1"
@@ -52,6 +60,8 @@ Feature: Control the aggregation of the scales
       | Course total | <coursetotal>  | <coursepc>  | -                            |
     And I log out
     And I log in as "admin"
+    # This one has to go through the UI: grade_includescalesinaggregation is a regrading checkbox, so saving the
+    # form is what forces the site regrade that the totals below depend on.
     And I set the following administration settings values:
       | grade_includescalesinaggregation | 1 |
     And I am on the "Course 1" "grades > User report > View" page logged in as "teacher1"

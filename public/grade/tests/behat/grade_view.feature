@@ -21,9 +21,16 @@ Feature: We can enter in grades and view reports from the gradebook
       | activity   | name                   | course | idnumber | assignsubmission_onlinetext_enabled |
       | assign     | Test assignment name 1 | C1     | assign1  | 1                                   |
       | assign     | Test assignment name 2 | C1     | assign2  | 1                                   |
-    And I log in as "admin"
-    And I set the following administration settings values:
-      | grade_aggregations_visible | Mean of grades,Weighted mean of grades,Simple weighted mean of grades,Mean of grades (with extra credits),Median of grades,Lowest grade,Highest grade,Mode of grades,Natural |
+    And the following grade aggregation methods are visible:
+      | Mean of grades                      |
+      | Weighted mean of grades             |
+      | Simple weighted mean of grades      |
+      | Mean of grades (with extra credits) |
+      | Median of grades                    |
+      | Lowest grade                        |
+      | Highest grade                       |
+      | Mode of grades                      |
+      | Natural                             |
     And I am on the "Test assignment name 1" "assign activity" page logged in as student1
     When I press "Add submission"
     And I set the following fields to these values:

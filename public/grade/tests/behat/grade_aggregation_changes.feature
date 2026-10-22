@@ -30,10 +30,18 @@ Feature: Changing the aggregation of an item affects its weight and extra credit
       | Item b2   | C1     | Cat natural & | 0               | 0.40             | 1              |
       | Item b3   | C1     | Cat natural & | 1               | 0.10             | 1              |
       | Item b4   | C1     | Cat natural & | 1               | 0                | 0              |
+    And the following grade aggregation methods are visible:
+      | Mean of grades                      |
+      | Weighted mean of grades             |
+      | Simple weighted mean of grades      |
+      | Mean of grades (with extra credits) |
+      | Median of grades                    |
+      | Lowest grade                        |
+      | Highest grade                       |
+      | Mode of grades                      |
+      | Natural                             |
     And I log in as "admin"
     And I change window size to "large"
-    And I set the following administration settings values:
-      | grade_aggregations_visible | Mean of grades,Weighted mean of grades,Simple weighted mean of grades,Mean of grades (with extra credits),Median of grades,Lowest grade,Highest grade,Mode of grades,Natural |
     And I am on the "Course 1" "grades > Grader report > View" page
     And I turn editing mode on
     And I click on grade item menu "Cat mean" of type "category" on "grader" page

@@ -24,9 +24,16 @@ Feature: We can understand the gradebook user report
       | assign   | C1     | a4       | Test assignment four  | Submit something! |
       | assign   | C1     | a5       | Test assignment five  | Submit something! |
       | assign   | C1     | a6       | Test assignment six   | Submit something! |
-    And I log in as "admin"
-    And I set the following administration settings values:
-      | grade_aggregations_visible | Mean of grades,Weighted mean of grades,Simple weighted mean of grades,Mean of grades (with extra credits),Median of grades,Lowest grade,Highest grade,Mode of grades,Natural |
+    And the following grade aggregation methods are visible:
+      | Mean of grades                      |
+      | Weighted mean of grades             |
+      | Simple weighted mean of grades      |
+      | Mean of grades (with extra credits) |
+      | Median of grades                    |
+      | Lowest grade                        |
+      | Highest grade                       |
+      | Mode of grades                      |
+      | Natural                             |
     And the following "grade grades" exist:
       | gradeitem             | user     | grade |
       | Test assignment one   | student1 | 60.00 |

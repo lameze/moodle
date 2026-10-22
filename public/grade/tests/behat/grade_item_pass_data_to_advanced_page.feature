@@ -29,10 +29,16 @@ Feature: We carry over data from modal to advanced grade item settings
     And the following "activities" exist:
       | activity | course | idnumber | name               | intro             |
       | assign   | C1     | a1       | Test assignment 1  | Submit something! |
-    And I log in as "admin"
-    And I set the following administration settings values:
-      | grade_aggregations_visible | Mean of grades,Weighted mean of grades,Simple weighted mean of grades,Mean of grades (with extra credits),Median of grades,Lowest grade,Highest grade,Mode of grades,Natural |
-    And I log out
+    And the following grade aggregation methods are visible:
+      | Mean of grades                      |
+      | Weighted mean of grades             |
+      | Simple weighted mean of grades      |
+      | Mean of grades (with extra credits) |
+      | Median of grades                    |
+      | Lowest grade                        |
+      | Highest grade                       |
+      | Mode of grades                      |
+      | Natural                             |
     And I am on the "Course 1" course page logged in as teacher1
     And I navigate to "Setup > Gradebook setup" in the course gradebook
     And I choose the "Add grade item" item in the "Add" action menu

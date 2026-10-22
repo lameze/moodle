@@ -5,10 +5,19 @@ Feature: View gradebook when scales are used
   I need to be able to view gradebook with scales
 
   Background:
-    Given I log in as "admin"
-    And I set the following administration settings values:
-      | grade_report_showranges    | 1 |
-      | grade_aggregations_visible | Mean of grades,Weighted mean of grades,Simple weighted mean of grades,Mean of grades (with extra credits),Median of grades,Lowest grade,Highest grade,Mode of grades,Natural |
+    Given the following config values are set as admin:
+      | grade_report_showranges | 1 |
+    And the following grade aggregation methods are visible:
+      | Mean of grades                      |
+      | Weighted mean of grades             |
+      | Simple weighted mean of grades      |
+      | Mean of grades (with extra credits) |
+      | Median of grades                    |
+      | Lowest grade                        |
+      | Highest grade                       |
+      | Mode of grades                      |
+      | Natural                             |
+    And I log in as "admin"
     And I navigate to "Grades > Scales" in site administration
     And I press "Add a new scale"
     And I set the following fields to these values:
