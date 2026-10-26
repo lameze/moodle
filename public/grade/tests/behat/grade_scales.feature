@@ -5,14 +5,18 @@ Feature: View gradebook when scales are used
   I need to be able to view gradebook with scales
 
   Background:
-    Given I log in as "admin"
-    And I set the following administration settings values:
-      | grade_report_showranges    | 1 |
-      | grade_aggregations_visible | Mean of grades,Weighted mean of grades,Simple weighted mean of grades,Mean of grades (with extra credits),Median of grades,Lowest grade,Highest grade,Mode of grades,Natural |
+    # The grade_aggregations_visible value lists every aggregation type, by id:
+    # 0 Mean of grades, 10 Weighted mean of grades, 11 Simple weighted mean of grades,
+    # 12 Mean of grades (with extra credits), 2 Median of grades, 4 Lowest grade,
+    # 6 Highest grade, 8 Mode of grades, 13 Natural.
+    Given the following config values are set as admin:
+      | grade_report_showranges                    | 1                     |
+      | grade_report_showweight                    | 1                     |
+      | grade_report_showcontributiontocoursetotal | 1                     |
+      | grade_aggregations_visible                 | 0,10,11,12,2,4,6,8,13 |
     And the following "scales" exist:
       | name        | scale     |
       | Letterscale | F,D,C,B,A |
-    And I log out
     And the following "courses" exist:
       | fullname | shortname |
       | Course 1 | C1        |
@@ -36,13 +40,8 @@ Feature: View gradebook when scales are used
       | fullname       | course |
       | Sub category 1 | C1     |
     And the following "activities" exist:
-      | activity | course | idnumber | name                | intro             | gradecategory  |
-      | assign   | C1     | a1       | Test assignment one | Submit something! | Sub category 1 |
-    And I am on the "Test assignment one" "assign activity editing" page logged in as teacher1
-    And I expand all fieldsets
-    And I set the field "grade[modgrade_type]" to "Scale"
-    And I set the field "grade[modgrade_scale]" to "Letterscale"
-    And I press "Save and display"
+      | activity | course | idnumber | name                | intro             | gradecategory  | grade       |
+      | assign   | C1     | a1       | Test assignment one | Submit something! | Sub category 1 | Letterscale |
     And the following "grade grades" exist:
       | gradeitem           | user     | grade |
       | Test assignment one | student1 | 5     |
@@ -50,12 +49,7 @@ Feature: View gradebook when scales are used
       | Test assignment one | student3 | 3     |
       | Test assignment one | student4 | 2     |
       | Test assignment one | student5 | 1     |
-    And I am on "Course 1" course homepage
-    And I navigate to "Setup > Course grade settings" in the course gradebook
-    And I set the field "Show weightings" to "Show"
-    And I set the field "Show contribution to course total" to "Show"
-    And I press "Save changes"
-    And I navigate to "View > Grader report" in the course gradebook
+    And I am on the "Course 1" "grades > Grader report > View" page logged in as "teacher1"
     And I turn editing mode on
 
   Scenario: Test displaying scales in gradebook in aggregation method Natural
