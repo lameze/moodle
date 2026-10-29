@@ -171,12 +171,16 @@ UpdatableMembersCombo.prototype.refreshMembers = function () {
     if(singleSelection) {
         var sUrl = this.wwwRoot + "/group/index.php?id=" + this.courseId + "&group=" + groupId + "&action=ajax_getmembersingroup";
         var self = this;
+        // Loading the io module is asynchronous, and nothing tracks it. Hold the page as
+        // busy until the request has started; Y.io registers its own pending JS from there.
+        M.util.js_pending('core_group/refreshMembers');
         YUI().use('io', function (Y) {
             Y.io(sUrl, {
                 method: 'GET',
                 context: this,
                 on: self.connectCallback
             });
+            M.util.js_complete('core_group/refreshMembers');
         });
     }
 };
