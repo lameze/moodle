@@ -121,10 +121,12 @@ Feature: A Teacher can comment in a question
     And I click on "Add selected questions to the quiz" "button"
     And I click on "Preview question" "link"
     And I switch to "questionpreview" window
+    And I should see "Answer the first question"
     And I press "Comments"
     And I set the field "content" to "Some new comment"
     And I click on "Save comment" "link"
     And I should see "Some new comment"
+    And I close all opened windows
     And I switch to the main window
     And I am on the "Test quiz" "mod_quiz > question bank" page
     And I apply question bank filter "Category" with value "Test questions"
@@ -137,6 +139,7 @@ Feature: A Teacher can comment in a question
     And I am on the "Test quiz" "mod_quiz > edit" page
     And I click on "Preview question" "link"
     And I switch to "questionpreview" window
+    And I should see "Answer the first question"
     And I press "Comments"
     Then I should not see "Some new comment"
 
