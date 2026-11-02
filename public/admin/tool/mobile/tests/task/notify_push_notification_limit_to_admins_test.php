@@ -36,10 +36,13 @@ final class notify_push_notification_limit_to_admins_test extends \advanced_test
         $clock = $this->mock_clock_with_frozen();
         $CFG->enablemobilewebservice = 1;
 
+        // Anchor to the first day of the month, so that "-1 month" can't overflow on the 31st (Oct 31 -> Oct 1).
+        $previousmonth = $clock->now()->modify('first day of last month');
+
         $this->seed_subscription_cache_with_monthly_data([
             [
-                'year' => (int) $clock->now()->modify('-1 month')->format('Y'),
-                'month' => (int) $clock->now()->modify('-1 month')->format('n'),
+                'year' => (int) $previousmonth->format('Y'),
+                'month' => (int) $previousmonth->format('n'),
                 'limitreachedtime' => 1234567890,
             ],
         ]);
