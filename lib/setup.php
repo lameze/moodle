@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Setup file migration helper.
+ * Setup file migration helper..
  *
  * @package    core
  * @copyright  2024 Andrew Lyons <andrew@nicols.co.uk>
