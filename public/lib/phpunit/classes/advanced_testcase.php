@@ -43,20 +43,6 @@ abstract class advanced_testcase extends base_testcase {
     /** @var int timestamp used for current time asserts */
     private $currenttimestart;
 
-    /**
-     * Constructs a test case with the given name.
-     *
-     * Note: use setUp() or setUpBeforeClass() in your test cases.
-     *
-     * @param string $name
-     */
-    final public function __construct(string $name) {
-        parent::__construct($name);
-
-        $this->setBackupGlobals(false);
-        $this->setPreserveGlobalState(false);
-    }
-
     #[Before]
     final public function setup_test_environment(): void {
         global $CFG, $DB;

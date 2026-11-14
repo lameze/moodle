@@ -28,19 +28,6 @@ use PHPUnit\Framework\Attributes\After;
  */
 abstract class basic_testcase extends base_testcase {
     /**
-     * Constructs a test case with the given name.
-     *
-     *
-     * @param string $name
-     */
-    final public function __construct($name = null) {
-        parent::__construct($name);
-
-        $this->setBackupGlobals(false);
-        $this->setRunTestInSeparateProcess(false);
-    }
-
-    /**
      * Teardown method to reset data after tests.
      */
     #[After]

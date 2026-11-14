@@ -54,18 +54,6 @@ abstract class database_driver_testcase extends base_testcase {
     /** @var moodle_database used in these tests*/
     protected $tdb;
 
-    /**
-     * Constructs a test case with the given name.
-     *
-     * @param string $name
-     */
-    final public function __construct($name = null) {
-        parent::__construct($name);
-
-        $this->setBackupGlobals(false);
-        $this->setRunTestInSeparateProcess(false);
-    }
-
     public static function setUpBeforeClass(): void {
         global $CFG;
         parent::setUpBeforeClass();
