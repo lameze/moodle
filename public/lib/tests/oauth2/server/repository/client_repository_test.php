@@ -30,6 +30,12 @@ use core\oauth2\server\entity\client_entity;
 #[CoversClass(client_repository::class)]
 final class client_repository_test extends \advanced_testcase {
     /**
+     * Fixed "now" (2026-11-17 12:00 UTC) for the validateClient tests, so the secret expiry times
+     * do not depend on when the data provider ran.
+     */
+    private const NOW = 1794916800;
+
+    /**
      * Test getClientEntity under different database record scenarios.
      *
      * @param array $clientdata The data to insert into the clients table.
@@ -178,7 +184,7 @@ final class client_repository_test extends \advanced_testcase {
 
         $this->resetAfterTest();
 
-        $clock = $this->mock_clock_with_frozen();
+        $clock = $this->mock_clock_with_frozen(self::NOW);
         $repository = \core\di::get(client_repository::class);
 
         $secretid = null;
@@ -192,7 +198,7 @@ final class client_repository_test extends \advanced_testcase {
                     'secret' => password_hash($plaintextsecret, PASSWORD_DEFAULT),
                     'revoked' => $secretrevoked,
                     'expirytime' => $secretexpirytime,
-                    'timecreated' => time(),
+                    'timecreated' => $clock->time(),
                 ]);
             }
         }
@@ -223,7 +229,7 @@ final class client_repository_test extends \advanced_testcase {
                 [],
                 null,
                 client_entity::SECRET_REVOKED_NO,
-                time() + 3600,
+                self::NOW + 3600,
                 'non-existent',
                 'secret',
                 client_entity::GRANT_TYPE_AUTHORIZATION_CODE,
@@ -242,12 +248,12 @@ final class client_repository_test extends \advanced_testcase {
                             client_entity::GRANT_TYPE_REFRESH_TOKEN,
                         ],
                     ),
-                    'timecreated' => time(),
+                    'timecreated' => self::NOW,
                     'scopes' => '',
                 ],
                 'supersecret',
                 client_entity::SECRET_REVOKED_NO,
-                time() + 3600,
+                self::NOW + 3600,
                 'client-conf',
                 'supersecret',
                 client_entity::GRANT_TYPE_AUTHORIZATION_CODE,
@@ -266,12 +272,12 @@ final class client_repository_test extends \advanced_testcase {
                             client_entity::GRANT_TYPE_REFRESH_TOKEN,
                         ],
                     ),
-                    'timecreated' => time(),
+                    'timecreated' => self::NOW,
                     'scopes' => '',
                 ],
                 'supersecret',
                 client_entity::SECRET_REVOKED_NO,
-                time() + 3600,
+                self::NOW + 3600,
                 'client-conf',
                 'wrongsecret',
                 client_entity::GRANT_TYPE_AUTHORIZATION_CODE,
@@ -290,12 +296,12 @@ final class client_repository_test extends \advanced_testcase {
                             client_entity::GRANT_TYPE_REFRESH_TOKEN,
                         ],
                     ),
-                    'timecreated' => time(),
+                    'timecreated' => self::NOW,
                     'scopes' => '',
                 ],
                 'supersecret',
                 client_entity::SECRET_REVOKED_YES,
-                time() + 3600,
+                self::NOW + 3600,
                 'client-conf',
                 'supersecret',
                 client_entity::GRANT_TYPE_AUTHORIZATION_CODE,
@@ -314,12 +320,12 @@ final class client_repository_test extends \advanced_testcase {
                             client_entity::GRANT_TYPE_REFRESH_TOKEN,
                         ],
                     ),
-                    'timecreated' => time(),
+                    'timecreated' => self::NOW,
                     'scopes' => '',
                 ],
                 'supersecret',
                 client_entity::SECRET_REVOKED_NO,
-                time() + 3600,
+                self::NOW + 3600,
                 'client-conf',
                 null,
                 client_entity::GRANT_TYPE_AUTHORIZATION_CODE,
@@ -338,12 +344,12 @@ final class client_repository_test extends \advanced_testcase {
                             client_entity::GRANT_TYPE_REFRESH_TOKEN,
                         ],
                     ),
-                    'timecreated' => time() - 7200,
+                    'timecreated' => self::NOW - 7200,
                     'scopes' => '',
                 ],
                 'supersecret',
                 client_entity::SECRET_REVOKED_NO,
-                time() - 3600,
+                self::NOW - 3600,
                 'client-conf',
                 'supersecret',
                 client_entity::GRANT_TYPE_AUTHORIZATION_CODE,
