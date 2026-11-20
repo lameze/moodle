@@ -89,13 +89,13 @@ Feature: Quiz availability can be set
     And "Attempt quiz" "button" <attemptvisibility> exist
 
     Examples:
-      | opentext | timeopen        | closetext | timeclose      | attemptvisibility | quizavailability |
+      | opentext | timeopen               | closetext | timeclose              | attemptvisibility | quizavailability |
       # Case 6 - open and close are set to past date.
-      | Opened   | ##3 days ago## | Closed     | ##yesterday##  | should not        | should not       |
+      | Opened   | ##today noon -3 days## | Closed    | ##yesterday##          | should not        | should not       |
       # Case 7 - open is set to past date, close is set to future date.
-      | Opened   | ##yesterday##  | Closes     | ##tomorrow##   | should            | should not       |
+      | Opened   | ##yesterday##          | Closes    | ##tomorrow##           | should            | should not       |
       # Case 8 - open and close are set to future date
-      | Opens    | ##tomorrow##   | Closes     | ##+2 days##    | should not        | should           |
+      | Opens    | ##tomorrow##           | Closes    | ##today noon +2 days## | should not        | should           |
 
   Scenario: Quiz time open and time close are disabled
     # Case 3 - both open and close are disabled.
