@@ -195,20 +195,44 @@ function SCORMapi1_2(def, cmiobj, cmiint, cmistring256, cmistring4096, scormdebu
     }
 
     function LMSFinish (param) {
+        return finishSession(param, true);
+    }
+
+    /**
+     * Finishes the session of a SCO that has been removed without calling LMSFinish.
+     *
+     * Unlike LMSFinish, it does not launch another SCO: the learner has already chosen the SCO to open next.
+     *
+     * @return {String} 'true' if the session was finished, 'false' if the SCO had already finished it.
+     */
+    function finishWithoutNavigation () {
+        return finishSession('', false);
+    }
+
+    /**
+     * Finishes the session and stores the data of the current SCO.
+     *
+     * @param {String} param Must be an empty string.
+     * @param {Boolean} navigate Whether to launch the next or previous SCO afterwards, as nav.event or auto-continue ask.
+     * @return {String} 'true' or 'false'.
+     */
+    function finishSession (param, navigate) {
         errorCode = "0";
         if (param == "") {
             if (Initialized) {
                 Initialized = false;
                 result = StoreData(cmi,true);
-                if (nav.event != '') {
-                    if (nav.event == 'continue') {
-                        setTimeout('mod_scorm_launch_next_sco();',500);
+                if (navigate) {
+                    if (nav.event != '') {
+                        if (nav.event == 'continue') {
+                            setTimeout('mod_scorm_launch_next_sco();',500);
+                        } else {
+                            setTimeout('mod_scorm_launch_prev_sco();',500);
+                        }
                     } else {
-                        setTimeout('mod_scorm_launch_prev_sco();',500);
-                    }
-                } else {
-                    if (scormauto == 1) {
-                        setTimeout('mod_scorm_launch_next_sco();',500);
+                        if (scormauto == 1) {
+                            setTimeout('mod_scorm_launch_next_sco();',500);
+                        }
                     }
                 }
                 if (scormdebugging) {
@@ -661,6 +685,7 @@ function SCORMapi1_2(def, cmiobj, cmiint, cmistring256, cmistring4096, scormdebu
 
     this.LMSInitialize = LMSInitialize;
     this.LMSFinish = LMSFinish;
+    this.finishWithoutNavigation = finishWithoutNavigation;
     this.LMSGetValue = LMSGetValue;
     this.LMSSetValue = LMSSetValue;
     this.LMSCommit = LMSCommit;

@@ -153,6 +153,25 @@ M.mod_scorm.init = function(Y, nav_display, navposition_left, navposition_top, h
 
         mod_scorm_parse_toc_tree = scorm_parse_toc_tree;
 
+        /**
+         * Finishes the communication session of a SCO that has just been removed, if the SCO did not do it itself.
+         *
+         * SCORM 1.2 and AICC packages usually call LMSFinish from an unload event handler. Browsers are removing
+         * the unload event, so that call may never happen. The session would then stay open, the next SCO's
+         * LMSInitialize would fail with error 101, and the data the SCO had not committed would be lost.
+         * If the SCO has already called LMSFinish, this call does nothing. Unlike LMSFinish, it does not launch
+         * another SCO, because the learner has already chosen the SCO to open next.
+         *
+         * This runs after the old SCO has been removed, so that a SCO that still saves its data on pagehide or
+         * unload has done it before the session is finished.
+         */
+        var scorm_finish_previous_sco = function() {
+            if (typeof window.API !== 'undefined' && window.API &&
+                    typeof window.API.finishWithoutNavigation === 'function') {
+                window.API.finishWithoutNavigation();
+            }
+        };
+
         var scorm_activate_item = function(node) {
             if (!node) {
                 return;
@@ -170,6 +189,7 @@ M.mod_scorm.init = function(Y, nav_display, navposition_left, navposition_top, h
                 if(!window_name){
                     content.removeChild(old);
                     old = null;
+                    scorm_finish_previous_sco();
                 }
             }
             // End of - Avoid recursive calls.
