@@ -41,19 +41,18 @@ M.mod_scormform.init = function(Y) {
         scormintro.setHTML('<a href="' + course_url + '">' + M.util.get_string('popuplaunched', 'scorm') + '</a>');
     }
 
-    // When pop-up is closed return to course homepage.
-    var scormunload = function () {
-        // Onunload is called multiple times in the SCORM window - we only want to handle when it is actually closed.
-        setTimeout(function() {
-            if (winobj.closed) {
-                window.location = course_url;
-            }
-        }, 800)
-    }
-
     var scormredirect = function (winobj) {
         Y.on('load', scormload, winobj);
-        Y.on('unload', scormunload, winobj);
+        // When the pop-up is closed, return to the course page. Check for this regularly: browsers are removing
+        // the unload event, so the pop-up cannot tell us when it closes.
+        if (winobj) {
+            var popupcheck = setInterval(function() {
+                if (winobj.closed) {
+                    clearInterval(popupcheck);
+                    window.location = course_url;
+                }
+            }, 500);
+        }
         // Check to make sure pop-up has been launched - if not display a warning,
         // this shouldn't happen as the pop-up here is launched on user action but good to make sure.
         setTimeout(function() {
