@@ -1681,6 +1681,47 @@ final class api_test extends \advanced_testcase {
     }
 
     /**
+     * Test that get_conversations() never returns a deleted message as the last message, even when it was sent
+     * in the same second as the message before it.
+     */
+    public function test_get_conversations_last_message_deleted_same_timecreated(): void {
+        $this->resetAfterTest();
+
+        $user1 = self::getDataGenerator()->create_user();
+        $user2 = self::getDataGenerator()->create_user();
+        $user3 = self::getDataGenerator()->create_user();
+        $conversation = api::create_conversation(
+            api::MESSAGE_CONVERSATION_TYPE_GROUP,
+            [$user1->id, $user2->id, $user3->id],
+            'Group chat',
+        );
+
+        // Both messages share a timecreated, as happens when they are sent within the same second.
+        $time = 1700000000;
+        $firstid = testhelper::send_fake_message_to_conversation($user2, $conversation->id, 'Hey everyone', $time);
+        $secondid = testhelper::send_fake_message_to_conversation($user2, $conversation->id, 'We can do it', $time);
+
+        $getlastmessage = function(int $userid) use ($conversation): \stdClass {
+            $conversations = api::get_conversations($userid, 0, 20, api::MESSAGE_CONVERSATION_TYPE_GROUP);
+            $conversations = array_column($conversations, null, 'id');
+            $this->assertArrayHasKey($conversation->id, $conversations);
+            $this->assertCount(1, $conversations[$conversation->id]->messages);
+            return reset($conversations[$conversation->id]->messages);
+        };
+
+        // Deleting the most recent message for one user only hides it from that user.
+        api::delete_message($user1->id, $secondid);
+        $this->assertEquals($firstid, $getlastmessage($user1->id)->id);
+        $this->assertEquals($secondid, $getlastmessage($user3->id)->id);
+
+        // Deleting it for all users hides it from everyone.
+        api::delete_message_for_all_users($secondid);
+        $this->assertEquals($firstid, $getlastmessage($user1->id)->id);
+        $this->assertEquals($firstid, $getlastmessage($user3->id)->id);
+        $this->assertStringContainsString('Hey everyone', $getlastmessage($user3->id)->text);
+    }
+
+    /**
      * Test verifying the behaviour of get_conversations() when fetching favourite conversations with only a single
      * favourite.
      */

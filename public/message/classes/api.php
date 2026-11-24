@@ -523,6 +523,9 @@ class api {
                                     GROUP BY m.conversationid
                                  ) maxmessage
                                ON maxmessage.maxtime = m.timecreated AND maxmessage.conversationid = m.conversationid
+                        LEFT JOIN {message_user_actions} mua2
+                               ON (mua2.messageid = m.id AND mua2.userid = :userid5 AND mua2.action = :action2)
+                            WHERE mua2.id IS NULL
                          GROUP BY m.conversationid
                        ) lastmessage
                     ON lastmessage.conversationid = mc.id
@@ -535,7 +538,8 @@ class api {
               ORDER BY (CASE WHEN m.timecreated IS NULL THEN 0 ELSE 1 END) DESC, m.timecreated DESC, id DESC";
 
         $params = array_merge($favouriteparams, $typeparams, ['userid' => $userid, 'action' => self::MESSAGE_ACTION_DELETED,
-            'userid2' => $userid, 'userid3' => $userid, 'userid4' => $userid, 'convaction' => self::CONVERSATION_ACTION_MUTED]);
+            'userid2' => $userid, 'userid3' => $userid, 'userid4' => $userid, 'userid5' => $userid,
+            'action2' => self::MESSAGE_ACTION_DELETED, 'convaction' => self::CONVERSATION_ACTION_MUTED]);
         $conversationset = $DB->get_recordset_sql($sql, $params, $limitfrom, $limitnum);
 
         $conversations = [];
