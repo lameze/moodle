@@ -9,7 +9,7 @@
     },
     "require-dev": {
         "filp/whoops": "^2.15",
-        "moodle/moodle-testing": "^1.0",
+        "moodle/moodle-testing": "^2.0",
         "bamarni/composer-bin-plugin": "^1.9"
     },
     "autoload": {
